@@ -11,7 +11,7 @@
   /* 🌈 親ボタン（サブメニュー保有）のグラデーション */
   --rm-parent-bg: linear-gradient(135deg, rgba(0, 240, 255, 0.25), rgba(15, 23, 42, 0.85));
 
-  /* 🌈 ボーダー＆アクセントグラデーション（CSS変数） */
+  /* 🌈 ボーダー＆アクセントグラデーション */
   --rm-border-color: rgba(56, 189, 248, 0.4);
   --rm-border-hover-color: #00f0ff;
   --rm-text-color: #ffffff;
@@ -142,7 +142,7 @@ body {
   margin-left: calc(-1 * var(--rm-item-size) / 2);
   border-radius: 50%;
   border: 1px solid var(--rm-border-color);
-  background: var(--rm-item-bg); /* グラデーション対応 */
+  background: var(--rm-item-bg);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   color: var(--rm-text-color);
