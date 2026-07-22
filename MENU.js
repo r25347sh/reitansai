@@ -1,5 +1,5 @@
 /**
- * 📋 データ構造（linear-gradientはCSS変数または各要素で制御）
+ * 📋 データ構造（個数は可変長で完全自動均等計算）
  */
 const RADIAL_MENU_DATA = [
   { label: 'ホーム', icon: '🏠', url: 'index.html' },
@@ -7,7 +7,7 @@ const RADIAL_MENU_DATA = [
   {
     label: 'システム',
     icon: '⚙️',
-    // 隠し子要素：何個入っても自動計算して均等展開
+    // 隠し子要素：何個入っても自動計算して電子殻へ配置
     items: [
       { label: '音量設定', icon: '🔊', action: () => alert('音量') },
       { label: '画面輝度', icon: '☀️', action: () => alert('画面') },
@@ -76,7 +76,7 @@ const RADIAL_MENU_DATA = [
     }
   }
 
-  // 💥 軽量・高速スパークCanvasアニメーション
+  // 💥 虹色（レインボー）対応スパークCanvasアニメーション
   function triggerParticleBurst() {
     if (!canvas || !ctx) return;
     canvas.width = 550;
@@ -84,15 +84,21 @@ const RADIAL_MENU_DATA = [
     const cX = 275, cY = 275;
 
     let ringRadius = 12, ringAlpha = 1;
-    // 描画負担を減らした18本のショック・スパーク
-    const particles = Array.from({ length: 18 }, () => {
-      const a = Math.random() * Math.PI * 2;
+    
+    // 🌈 24本の粒子を全方向に飛ばし、角度に合わせて色相（Hue: 0~360度）を割り当てる
+    const particleCount = 24;
+    const particles = Array.from({ length: particleCount }, (_, idx) => {
+      const a = (idx / particleCount) * Math.PI * 2 + (Math.random() * 0.2);
       const spd = Math.random() * 6 + 3;
+      
+      // 角度をもとに鮮やかな虹色（HSL）を計算
+      const hue = Math.floor((a / (Math.PI * 2)) * 360);
+
       return {
         x: cX, y: cY,
         vx: Math.cos(a) * spd, vy: Math.sin(a) * spd,
         size: Math.random() * 2.5 + 1.5,
-        color: Math.random() > 0.4 ? '#00f0ff' : '#ec4899',
+        color: `hsl(${hue}, 100%, 65%)`, // 🌈 放射状レインボーカラー
         alpha: 1
       };
     });
@@ -111,7 +117,7 @@ const RADIAL_MENU_DATA = [
         ringAlpha -= 0.05;
       }
 
-      // 粒子
+      // 粒子を描画
       let isAlive = false;
       particles.forEach(p => {
         if (p.alpha > 0) {
@@ -134,7 +140,7 @@ const RADIAL_MENU_DATA = [
     draw();
   }
 
-  // ⚛️ 可変長自動均等レイアウト演算
+  // ⚛️ 可変長自動均等レイアウト演算（電子殻モデル）
   function calculateShellLayout(items) {
     const layout = [];
     let remaining = items.length;
@@ -187,7 +193,7 @@ const RADIAL_MENU_DATA = [
       btn.addEventListener('click', (e) => {
         e.stopPropagation();
         if (data.item.items && data.item.items.length > 0) {
-          // 💡 親要素選択時：スタックに現在状態を保存し、画面を子要素で置き換え
+          // 💡 親要素選択時：スタックに現在状態を保存し、画面を子要素で置換
           menuStack.push(items);
           renderMenuLevel(data.item.items);
           triggerParticleBurst();
