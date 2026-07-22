@@ -1,121 +1,66 @@
 /**
  * ======================================================
- * 📋 多次元配列データ（`url`指定でAjax非同期遷移）
+ * 📋 多次元配列（無限階層対応）メニューリスト
  * ======================================================
  */
 const RADIAL_MENU_DATA = [
-  { label: 'ホーム', icon: '🏠', url: 'index.html' },
-  { label: '会社概要', icon: '🏢', url: 'about.html' },
+  { label: 'ホーム', icon: '🏠', action: () => location.href = 'index.html' },
+  { label: '検索', icon: '🔍', action: () => alert('検索') },
   {
-    label: 'サービス',
-    icon: '⚡',
+    label: 'システム',
+    icon: '⚙️',
     items: [
-      { label: 'Web開発', icon: '💻', url: 'web.html' },
-      { label: 'アプリ制作', icon: '📱', url: 'app.html' },
+      { label: '音量', icon: '🔊', action: () => alert('音量設定') },
+      { label: '画面', icon: '☀️', action: () => alert('画面輝度') },
       {
-        label: '詳細設定',
-        icon: '⚙️',
+        label: 'ネットワーク',
+        icon: '📡',
+        // 3次元目の階層（さらにネスト可能）
         items: [
-          { label: 'デザイン', icon: '🎨', action: () => alert('デザイン設定') },
-          { label: '通知', icon: '🔔', action: () => alert('通知設定') }
+          { label: 'Wi-Fi', icon: '📶', action: () => alert('Wi-Fi設定') },
+          { label: 'Bluetooth', icon: '🎧', action: () => alert('Bluetooth設定') }
         ]
       }
     ]
   },
-  { label: 'お問い合わせ', icon: '✉️', url: 'contact.html' }
+  {
+    label: 'ファイル',
+    icon: '📁',
+    items: [
+      { label: 'ドキュメント', icon: '📄', action: () => alert('文書') },
+      { label: '画像', icon: '🖼️', action: () => alert('画像') },
+      { label: '音楽', icon: '🎵', action: () => alert('音楽') }
+    ]
+  },
+  { label: 'お気に入り', icon: '❤️', action: () => alert('お気に入り') }
 ];
 
 (function () {
   const LONG_PRESS_MS = 400;
   const MOVE_THRESHOLD = 8;
-  const PARTICLE_COUNT = 8;
-  const PARTICLE_RADIUS = 140;
-
+  
   let menuEl = null;
-  let particleContainer = null;
   let timer = null;
   let startX = 0, startY = 0;
   let isOpen = false;
 
-  // 🚀 1. Ajax非同期遷移
-  async function navigateAjax(url) {
-    try {
-      const response = await fetch(url);
-      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-      const htmlText = await response.text();
-
-      const parser = new DOMParser();
-      const doc = parser.parseFromString(htmlText, 'text/html');
-      const newContent = doc.querySelector('#app') || doc.querySelector('main') || doc.body;
-      const targetContainer = document.querySelector('#app') || document.querySelector('main');
-
-      if (targetContainer && newContent) {
-        targetContainer.style.opacity = '0';
-        targetContainer.style.transition = 'opacity 0.2s ease';
-        
-        setTimeout(() => {
-          targetContainer.innerHTML = newContent.innerHTML;
-          targetContainer.style.opacity = '1';
-          history.pushState({ path: url }, '', url);
-        }, 200);
-      } else {
-        location.href = url;
-      }
-    } catch (err) {
-      console.warn('Ajax遷移失敗のため、通常のページ遷移を実行します:', err);
-      location.href = url;
-    }
-  }
-
-  window.addEventListener('popstate', () => {
-    navigateAjax(location.pathname);
-  });
-
-  // ✨ 2. 粒子集束演出（位置計算と発火の修正）
-  function playGatheringParticles(centerX, centerY, callback) {
-    particleContainer.innerHTML = '';
-
-    const particles = [];
-    for (let i = 0; i < PARTICLE_COUNT; i++) {
-      const angle = (i / PARTICLE_COUNT) * 2 * Math.PI;
-      const sX = Math.cos(angle) * PARTICLE_RADIUS;
-      const sY = Math.sin(angle) * PARTICLE_RADIUS;
-
-      const p = document.createElement('div');
-      p.className = 'rm-particle';
-      p.style.setProperty('--start-x', `${sX}px`);
-      p.style.setProperty('--start-y', `${sY}px`);
-      
-      particleContainer.appendChild(p);
-      particles.push(p);
-    }
-
-    // ブラウザのレンダリングを挟んで確実にアニメーションを発火させる
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        particles.forEach(p => p.classList.add('gathering'));
-      });
-    });
-
-    setTimeout(() => {
-      particleContainer.innerHTML = '';
-      if (callback) callback();
-    }, 320);
-  }
-
-  // 3. 多次元メニュー構築
+  // 再帰的に多次元配列のDOM要素を生成する関数
   function buildMenuTree(items, depth = 0, parentAngle = null) {
     const groupEl = document.createElement('div');
     groupEl.className = 'rm-group' + (depth === 0 ? ' open' : '');
 
     const total = items.length;
+    // 階層が深くなるごとに半径を外側へ広げる
     const radius = 110 + (depth * 50);
 
     items.forEach((item, index) => {
       let angle = 0;
+      
       if (depth === 0) {
+        // 第1階層：全周（360度）にバランスよく配置
         angle = (index / total) * 2 * Math.PI - (Math.PI / 2);
       } else {
+        // 第2階層以降：親の伸ばした方向を中心に扇状（120度幅）に配置
         const spread = Math.PI * 0.65;
         angle = parentAngle + (index - (total - 1) / 2) * (spread / Math.max(total - 1, 1));
       }
@@ -124,6 +69,7 @@ const RADIAL_MENU_DATA = [
       const y = Math.round(Math.sin(angle) * radius);
 
       if (item.items && item.items.length > 0) {
+        // --- 隠しサブメニューを持つノード（グループ） ---
         const subGroup = buildMenuTree(item.items, depth + 1, angle);
         subGroup.classList.add('has-sub');
 
@@ -135,18 +81,25 @@ const RADIAL_MENU_DATA = [
         btn.style.setProperty('--y', `${y}px`);
         btn.style.transitionDelay = `${index * 0.035}s`;
 
+        // 開閉トグル処理
         btn.addEventListener('click', (e) => {
           e.stopPropagation();
           const isExpanded = subGroup.classList.contains('is-expanded');
+          
+          // 同一階層の他の開いているサブメニューを閉じる
           groupEl.querySelectorAll(':scope > .rm-group').forEach(el => {
             el.classList.remove('is-expanded', 'open');
           });
-          if (!isExpanded) subGroup.classList.add('is-expanded', 'open');
+
+          if (!isExpanded) {
+            subGroup.classList.add('is-expanded', 'open');
+          }
         });
 
         subGroup.insertBefore(btn, subGroup.firstChild);
         groupEl.appendChild(subGroup);
       } else {
+        // --- 通常のボタン項目 ---
         const btn = document.createElement('button');
         btn.className = 'rm-item';
         btn.setAttribute('data-label', item.label);
@@ -157,11 +110,7 @@ const RADIAL_MENU_DATA = [
 
         btn.addEventListener('click', (e) => {
           e.stopPropagation();
-          if (item.url) {
-            navigateAjax(item.url);
-          } else if (item.action) {
-            item.action();
-          }
+          item.action();
           closeMenu();
         });
 
@@ -176,14 +125,11 @@ const RADIAL_MENU_DATA = [
     menuEl = document.createElement('div');
     menuEl.className = 'radial-menu-wrapper';
     
-    particleContainer = document.createElement('div');
-    particleContainer.className = 'rm-particle-container';
-    menuEl.appendChild(particleContainer);
-
     const centerIndicator = document.createElement('div');
     centerIndicator.className = 'radial-menu-center-indicator';
     menuEl.appendChild(centerIndicator);
 
+    // 多次元配列から再帰的に構築
     const tree = buildMenuTree(RADIAL_MENU_DATA);
     menuEl.appendChild(tree);
 
@@ -192,32 +138,32 @@ const RADIAL_MENU_DATA = [
 
   function getAdjustedPosition(clientX, clientY) {
     const margin = 160; 
+    const maxX = window.innerWidth - margin;
+    const maxY = window.innerHeight - margin;
+
     return {
-      x: Math.max(margin, Math.min(clientX, window.innerWidth - margin)),
-      y: Math.max(margin, Math.min(clientY, window.innerHeight - margin))
+      x: Math.max(margin, Math.min(clientX, maxX)),
+      y: Math.max(margin, Math.min(clientY, maxY))
     };
   }
 
   function openMenu(x, y) {
     const pos = getAdjustedPosition(x, y);
-    
-    // まずコンテナを画面上に配置して有効化
     menuEl.style.left = `${pos.x}px`;
     menuEl.style.top = `${pos.y}px`;
     menuEl.classList.add('active');
-
-    // コンテナが表示されてから粒子集束アニメーションを開始
-    playGatheringParticles(pos.x, pos.y, () => {
-      isOpen = true;
-    });
+    isOpen = true;
   }
 
   function closeMenu() {
     if (!menuEl) return;
     menuEl.classList.remove('active');
+    // 開いた全多次元階層をまとめてリセット
     menuEl.querySelectorAll('.rm-group').forEach(el => {
       el.classList.remove('is-expanded');
-      if (el !== menuEl.querySelector('.rm-group')) el.classList.remove('open');
+      if (el !== menuEl.querySelector('.rm-group')) {
+        el.classList.remove('open');
+      }
     });
     isOpen = false;
   }
@@ -225,6 +171,7 @@ const RADIAL_MENU_DATA = [
   function initEvents() {
     document.addEventListener('pointerdown', (e) => {
       if (isOpen && menuEl.contains(e.target)) return;
+
       if (isOpen && !menuEl.contains(e.target)) {
         closeMenu();
         return;
@@ -241,7 +188,8 @@ const RADIAL_MENU_DATA = [
 
     document.addEventListener('pointermove', (e) => {
       if (!timer || isOpen) return;
-      if (Math.hypot(e.clientX - startX, e.clientY - startY) > MOVE_THRESHOLD) {
+      const dist = Math.hypot(e.clientX - startX, e.clientY - startY);
+      if (dist > MOVE_THRESHOLD) {
         clearTimeout(timer);
         timer = null;
       }
