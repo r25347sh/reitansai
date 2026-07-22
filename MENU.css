@@ -1,0 +1,203 @@
+:root {
+  /* ==============================================
+     🔤 フォント & カスタムCSS変数
+     ============================================== */
+  --rm-font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  
+  /* カラー変数 */
+  --rm-glass-bg: rgba(15, 23, 42, 0.85);
+  --rm-glass-blur: 16px;
+  --rm-text-color: #f8fafc;
+  --rm-accent-color: #38bdf8;
+  --rm-accent-glow: rgba(56, 189, 248, 0.6);
+  --rm-particle-color: #38bdf8;
+  --rm-danger-color: #f43f5e;
+
+  /* ラベル変数 */
+  --rm-label-bg: rgba(15, 23, 42, 0.95);
+  --rm-label-color: #ffffff;
+
+  /* サイズ変数 */
+  --rm-item-size: 52px;
+  --rm-particle-size: 8px;
+
+  /* イージング（バウンド＆吸い込み） */
+  --rm-suck-in-ease: cubic-bezier(0.7, 0, 0.84, 0); 
+  --rm-spring-bounce: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  --rm-z-index: 999999;
+}
+
+body {
+  user-select: none;
+  -webkit-user-select: none;
+  font-family: var(--rm-font-family);
+}
+
+/* ==============================================
+     🛡️ メニュー全体コンテナ（初期隠蔽の徹底強化）
+     ============================================== */
+.radial-menu-wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+  z-index: var(--rm-z-index);
+  pointer-events: none;
+  visibility: hidden; /* 初期状態では完全に描画・タッチを無効化 */
+  opacity: 0;
+  font-family: var(--rm-font-family);
+  transition: visibility 0s linear 0.3s, opacity 0.3s ease; /* 閉じる時のアニメーション待ち */
+}
+
+/* 長押し成功時（アクティブ） */
+.radial-menu-wrapper.active {
+  pointer-events: auto;
+  visibility: visible;
+  opacity: 1;
+  transition: visibility 0s linear 0s, opacity 0.3s ease;
+}
+
+/* ==============================================
+     ✨ 演出：集束する光の粒子（オーブ）
+     ============================================== */
+.rm-particle-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+.rm-particle {
+  position: absolute;
+  width: var(--rm-particle-size);
+  height: var(--rm-particle-size);
+  margin-top: calc(-1 * var(--rm-particle-size) / 2);
+  margin-left: calc(-1 * var(--rm-particle-size) / 2);
+  border-radius: 50%;
+  background: var(--rm-particle-color);
+  box-shadow: 0 0 10px var(--rm-particle-color), 0 0 20px var(--rm-accent-glow);
+  pointer-events: none;
+  opacity: 0;
+  transform: translate(var(--start-x), var(--start-y)) scale(1.5);
+  transition: transform 0.35s var(--rm-suck-in-ease), opacity 0.2s ease;
+}
+
+.rm-particle.gathering {
+  opacity: 1;
+  transform: translate(0, 0) scale(0.2);
+}
+
+/* 中央衝撃波インジケーター */
+.radial-menu-center-indicator {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  margin-top: -20px;
+  margin-left: -20px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--rm-accent-glow) 0%, transparent 70%);
+  border: 1px solid var(--rm-accent-color);
+  opacity: 0;
+  transform: scale(0);
+  pointer-events: none;
+  transition: transform 0.4s var(--rm-spring-bounce), opacity 0.3s ease;
+}
+
+.radial-menu-wrapper.active .radial-menu-center-indicator {
+  opacity: 1;
+  transform: scale(1.6);
+}
+
+/* ==============================================
+     🌀 アイテム ＆ 多次元メニュー
+     ============================================== */
+.rm-item {
+  position: absolute;
+  width: var(--rm-item-size);
+  height: var(--rm-item-size);
+  margin-top: calc(-1 * var(--rm-item-size) / 2);
+  margin-left: calc(-1 * var(--rm-item-size) / 2);
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: var(--rm-glass-bg);
+  backdrop-filter: blur(var(--rm-glass-blur));
+  -webkit-backdrop-filter: blur(var(--rm-glass-blur));
+  color: var(--rm-text-color);
+  font-size: 20px;
+  font-family: var(--rm-font-family);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+
+  /* 非表示状態（中心にキュッと縮む） */
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(0, 0) scale(0) rotate(-180deg);
+  transition: 
+    transform 0.45s var(--rm-spring-bounce),
+    opacity 0.25s ease,
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+/* 展開（open）時のみ飛び出す */
+.radial-menu-wrapper.active .rm-group.open > .rm-item {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translate(var(--x), var(--y)) scale(1) rotate(0deg);
+}
+
+.rm-item:hover, .rm-item:active {
+  background: rgba(30, 41, 59, 0.95);
+  border-color: var(--rm-accent-color);
+  box-shadow: 0 0 20px var(--rm-accent-glow);
+  transform: translate(var(--x), var(--y)) scale(1.18) rotate(0deg) !important;
+}
+
+/* 🏷️ ラベル設定 */
+.rm-item::after {
+  content: attr(data-label);
+  position: absolute;
+  bottom: -26px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-6px) scale(0.8);
+  background: var(--rm-label-bg);
+  color: var(--rm-label-color);
+  padding: 3px 8px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 11px;
+  font-family: var(--rm-font-family);
+  font-weight: 600;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.25s var(--rm-spring-bounce);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+}
+
+.radial-menu-wrapper.active .rm-group.open > .rm-item::after {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0) scale(1);
+}
+
+.rm-group.is-expanded > .rm-item::after {
+  opacity: 0 !important;
+  transform: translateX(-50%) translateY(-10px) scale(0.6) !important;
+}
+
+.rm-group.has-sub > .rm-item {
+  background: radial-gradient(circle, rgba(56,189,248,0.2) 0%, var(--rm-glass-bg) 100%);
+}
+
+.rm-group.is-expanded > .rm-item {
+  border-color: var(--rm-danger-color) !important;
+  box-shadow: 0 0 20px rgba(244, 63, 94, 0.4) !important;
+  transform: translate(var(--x), var(--y)) scale(1.05) rotate(135deg) !important;
+}
