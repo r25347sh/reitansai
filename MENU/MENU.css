@@ -1,3 +1,8 @@
+/* ==============================================
+   Google Fonts 読み込み（MENU専用）
+   ============================================== */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Bebas+Neue&family=Oswald:wght@500;700&display=swap');
+
 :root {
   /* ==============================================
      🎨 麗澤シラバス配色（深緑 × ゴールド）
@@ -10,7 +15,7 @@
   /* ホバーしたときの背景（鮮やかな緑で強調） */
   --rm-item-hover-bg: linear-gradient(135deg, #228B22, #66C26A);
 
-  /* サブメニューを持つ親アイテムの背景（ゴールドを少し混ぜて特別感） */
+  /* サブメニューを持つ親アイテムの背景 */
   --rm-parent-bg: linear-gradient(135deg, rgba(212, 175, 55, 0.25), rgba(15, 61, 42, 0.92));
 
   /* 通常時のボタンの枠線・発光色 */
@@ -19,7 +24,7 @@
   /* ホバー時の枠線・発光色（明るいゴールド） */
   --rm-border-hover-color: #E8B923;
 
-  /* 文字色（基本は白） */
+  /* 文字色 */
   --rm-text-color: #FFFFFF;
 
   /* 電子殻（軌道リング）の色 */
@@ -34,7 +39,7 @@
   /* アイテム下の文字ラベルの枠線 */
   --rm-label-border: #E8B923;
 
-  /* ボタンサイズ（変更不要） */
+  /* その他 */
   --rm-item-size: 56px;
   --rm-elastic-ease: cubic-bezier(0.34, 1.75, 0.64, 1);
   --rm-z-index: 9999999;
