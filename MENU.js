@@ -1,13 +1,12 @@
 /**
- * 📋 データ構造（個数は可変長で完全自動均等計算）
+ * 📋 データ構造（可変長対応・自動レイアウト）
  */
 const RADIAL_MENU_DATA = [
   { label: 'ホーム', icon: '🏠', url: 'index.html' },
-  { label: '検索', icon: '🔍', action: () => alert('検索') },
+  { label: '検索', icon: '🔍', action: () => alert('🔍 検索モーダル起動') },
   {
     label: 'システム',
     icon: '⚙️',
-    // 隠し子要素：何個入っても自動計算して電子殻へ配置
     items: [
       { label: '音量設定', icon: '🔊', action: () => alert('音量') },
       { label: '画面輝度', icon: '☀️', action: () => alert('画面') },
@@ -33,11 +32,12 @@ const RADIAL_MENU_DATA = [
 
 (function () {
   const LONG_PRESS_MS = 360;
+  const TRIPLE_TAP_DELAY_MS = 300; // 3回タップ間隔の判定時間
   const MOVE_THRESHOLD = 8;
 
-  // ⚛️ 電子殻（Shell）設定：各周の収容数とゆとりのある半径(px)
+  // ⚛️ 電子殻の自動拡張設定（収容数＆半径）
   const SHELL_CAPACITIES = [6, 10, 14];
-  const SHELL_RADII = [110, 180, 250];
+  const SHELL_RADII = [115, 185, 255];
 
   let menuEl = null;
   let itemsContainer = null;
@@ -49,7 +49,11 @@ const RADIAL_MENU_DATA = [
   let timer = null;
   let startX = 0, startY = 0;
   let isOpen = false;
-  let menuStack = []; // 階層管理スタック
+  let menuStack = [];
+
+  // トリプルタップ/クリック検出用変数
+  let tapCount = 0;
+  let tapTimer = null;
 
   // 🚀 Ajax非同期遷移
   async function navigateAjax(url) {
@@ -76,55 +80,64 @@ const RADIAL_MENU_DATA = [
     }
   }
 
-  // 💥 虹色（レインボー）対応スパークCanvasアニメーション
+  // 💥 放射状レインボースパーク ＆ ダブルショックウェーブエンジン
   function triggerParticleBurst() {
     if (!canvas || !ctx) return;
-    canvas.width = 550;
-    canvas.height = 550;
-    const cX = 275, cY = 275;
+    canvas.width = 600;
+    canvas.height = 600;
+    const cX = 300, cY = 300;
 
-    let ringRadius = 12, ringAlpha = 1;
-    
-    // 🌈 24本の粒子を全方向に飛ばし、角度に合わせて色相（Hue: 0~360度）を割り当てる
-    const particleCount = 24;
+    let ring1Radius = 10, ring1Alpha = 1;
+    let ring2Radius = 5, ring2Alpha = 0.8;
+
+    const particleCount = 28;
     const particles = Array.from({ length: particleCount }, (_, idx) => {
-      const a = (idx / particleCount) * Math.PI * 2 + (Math.random() * 0.2);
-      const spd = Math.random() * 6 + 3;
-      
-      // 角度をもとに鮮やかな虹色（HSL）を計算
-      const hue = Math.floor((a / (Math.PI * 2)) * 360);
+      const a = (idx / particleCount) * Math.PI * 2 + (Math.random() * 0.15);
+      const spd = Math.random() * 7 + 3.5;
+      const hue = Math.floor((a / (Math.PI * 2)) * 360); // 🌈 放射状角度に応じた色相
 
       return {
         x: cX, y: cY,
         vx: Math.cos(a) * spd, vy: Math.sin(a) * spd,
-        size: Math.random() * 2.5 + 1.5,
-        color: `hsl(${hue}, 100%, 65%)`, // 🌈 放射状レインボーカラー
+        size: Math.random() * 3 + 1.5,
+        color: `hsl(${hue}, 100%, 65%)`,
         alpha: 1
       };
     });
 
     function draw() {
-      ctx.clearRect(0, 0, 550, 550);
+      ctx.clearRect(0, 0, 600, 600);
 
-      // 衝撃波リング
-      if (ringAlpha > 0) {
+      // 衝撃波リング1
+      if (ring1Alpha > 0) {
         ctx.beginPath();
-        ctx.arc(cX, cY, ringRadius, 0, Math.PI * 2);
-        ctx.strokeStyle = `rgba(0, 240, 255, ${ringAlpha})`;
-        ctx.lineWidth = 2.5;
+        ctx.arc(cX, cY, ring1Radius, 0, Math.PI * 2);
+        ctx.strokeStyle = `rgba(0, 240, 255, ${ring1Alpha})`;
+        ctx.lineWidth = 3;
         ctx.stroke();
-        ringRadius += 7;
-        ringAlpha -= 0.05;
+        ring1Radius += 8;
+        ring1Alpha -= 0.045;
       }
 
-      // 粒子を描画
+      // 衝撃波リング2 (ピンク系追従)
+      if (ring2Alpha > 0) {
+        ctx.beginPath();
+        ctx.arc(cX, cY, ring2Radius, 0, Math.PI * 2);
+        ctx.strokeStyle = `rgba(255, 0, 127, ${ring2Alpha})`;
+        ctx.lineWidth = 2;
+        ctx.stroke();
+        ring2Radius += 6;
+        ring2Alpha -= 0.035;
+      }
+
+      // 粒子
       let isAlive = false;
       particles.forEach(p => {
         if (p.alpha > 0) {
           isAlive = true;
           p.x += p.vx; p.y += p.vy;
           p.vx *= 0.93; p.vy *= 0.93;
-          p.alpha -= 0.035;
+          p.alpha -= 0.032;
 
           ctx.beginPath();
           ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
@@ -134,13 +147,13 @@ const RADIAL_MENU_DATA = [
         }
       });
 
-      if (ringAlpha > 0 || isAlive) requestAnimationFrame(draw);
-      else ctx.clearRect(0, 0, 550, 550);
+      if (ring1Alpha > 0 || ring2Alpha > 0 || isAlive) requestAnimationFrame(draw);
+      else ctx.clearRect(0, 0, 600, 600);
     }
     draw();
   }
 
-  // ⚛️ 可変長自動均等レイアウト演算（電子殻モデル）
+  // ⚛️ 可変長自動レイアウト演算（電子殻モデル）
   function calculateShellLayout(items) {
     const layout = [];
     let remaining = items.length;
@@ -152,7 +165,6 @@ const RADIAL_MENU_DATA = [
       const radius = SHELL_RADII[sIdx];
 
       for (let i = 0; i < countInShell; i++) {
-        // 360度を要素数で均等分割（真上 -90度 起点）
         const angle = (i / countInShell) * 2 * Math.PI - (Math.PI / 2);
         const x = Math.round(Math.cos(angle) * radius);
         const y = Math.round(Math.sin(angle) * radius);
@@ -165,9 +177,8 @@ const RADIAL_MENU_DATA = [
     return layout;
   }
 
-  // 🔄 階層切り替え：全要素を吸い込み消去して再展開
+  // 🔄 階層切り替え：画面上の全要素を完全リプレイス
   function renderMenuLevel(items) {
-    // 既存のアイテムを中央に吸い込んで削除
     const oldItems = itemsContainer.querySelectorAll('.rm-item');
     oldItems.forEach(el => {
       el.classList.remove('rendered');
@@ -188,12 +199,11 @@ const RADIAL_MENU_DATA = [
       btn.innerHTML = data.item.icon;
       btn.style.setProperty('--x', `${data.x}px`);
       btn.style.setProperty('--y', `${data.y}px`);
-      btn.style.transitionDelay = `${index * 0.025}s`; // 時間差演出
+      btn.style.transitionDelay = `${index * 0.025}s`;
 
       btn.addEventListener('click', (e) => {
         e.stopPropagation();
         if (data.item.items && data.item.items.length > 0) {
-          // 💡 親要素選択時：スタックに現在状態を保存し、画面を子要素で置換
           menuStack.push(items);
           renderMenuLevel(data.item.items);
           triggerParticleBurst();
@@ -206,13 +216,11 @@ const RADIAL_MENU_DATA = [
 
       itemsContainer.appendChild(btn);
 
-      // フレーム同期ポップイン
       requestAnimationFrame(() => {
         setTimeout(() => btn.classList.add('rendered'), 15);
       });
     });
 
-    // 軌道リング生成
     activeShells.forEach(sIdx => {
       const orbit = document.createElement('div');
       orbit.className = 'rm-shell-orbit';
@@ -224,7 +232,6 @@ const RADIAL_MENU_DATA = [
       orbitsContainer.appendChild(orbit);
     });
 
-    // 階層に応じて中央ボタン切り替え
     if (menuStack.length > 0) {
       coreBtn.classList.add('visible');
     } else {
@@ -247,7 +254,6 @@ const RADIAL_MENU_DATA = [
     itemsContainer = document.createElement('div');
     menuEl.appendChild(itemsContainer);
 
-    // 中央の「戻る (✕)」ボタン
     coreBtn = document.createElement('button');
     coreBtn.className = 'rm-core-btn';
     coreBtn.innerHTML = '✕';
@@ -290,6 +296,7 @@ const RADIAL_MENU_DATA = [
     isOpen = false;
   }
 
+  // 🎯 トリプルタップ & 長押しイベントリスナー
   function initEvents() {
     document.addEventListener('pointerdown', (e) => {
       if (isOpen && menuEl.contains(e.target)) return;
@@ -298,9 +305,32 @@ const RADIAL_MENU_DATA = [
         return;
       }
 
-      startX = e.clientX; startY = e.clientY;
+      startX = e.clientX; 
+      startY = e.clientY;
+
+      // 🔥 トリプルタップ/クリックの判定処理
+      tapCount++;
+      clearTimeout(tapTimer);
+
+      if (tapCount === 3) {
+        // 3回連続タップ成功！即座にメニュー展開
+        clearTimeout(timer);
+        timer = null;
+        tapCount = 0;
+        openMenu(startX, startY);
+        return;
+      }
+
+      tapTimer = setTimeout(() => {
+        tapCount = 0;
+      }, TRIPLE_TAP_DELAY_MS);
+
+      // 🔥 長押しの判定処理
       clearTimeout(timer);
-      timer = setTimeout(() => openMenu(startX, startY), LONG_PRESS_MS);
+      timer = setTimeout(() => {
+        tapCount = 0;
+        openMenu(startX, startY);
+      }, LONG_PRESS_MS);
     });
 
     document.addEventListener('pointermove', (e) => {
@@ -312,10 +342,15 @@ const RADIAL_MENU_DATA = [
     });
 
     document.addEventListener('pointerup', () => {
-      if (timer && !isOpen) { clearTimeout(timer); timer = null; }
+      if (timer && !isOpen) { 
+        clearTimeout(timer); 
+        timer = null; 
+      }
     });
 
-    document.addEventListener('contextmenu', (e) => { if (isOpen) e.preventDefault(); });
+    document.addEventListener('contextmenu', (e) => { 
+      if (isOpen) e.preventDefault(); 
+    });
   }
 
   if (document.readyState === 'loading') {
