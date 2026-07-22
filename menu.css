@@ -1,33 +1,36 @@
 :root {
   /* ==============================================
-     🎨 ネオン＆ガラス・デザインシステム
+     🔤 フォント & CSS変数システム
      ============================================== */
-  --rm-glass-bg: rgba(15, 23, 42, 0.75);         /* ベース背景（ダークガラス） */
-  --rm-glass-blur: 16px;                          /* すりガラス強度 */
-  --rm-item-border: rgba(255, 255, 255, 0.15);    /* 繊細なボーダー */
-  --rm-text-color: #f8fafc;                       /* メイン文字色 */
+  --rm-font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
   
-  --rm-accent-color: #38bdf8;                     /* ネオンブルー */
-  --rm-accent-glow: rgba(56, 189, 248, 0.5);      /* ネオン発光 */
-  --rm-danger-color: #f43f5e;                     /* 閉じるボタン（ローズ） */
+  /* カラー変数 */
+  --rm-glass-bg: rgba(15, 23, 42, 0.85);          /* ベース背景 */
+  --rm-glass-blur: 16px;                           /* 背景ぼかし */
+  --rm-text-color: #f8fafc;                        /* 文字・アイコン色 */
+  --rm-accent-color: #38bdf8;                      /* アクセント（ネオンブルー） */
+  --rm-accent-glow: rgba(56, 189, 248, 0.6);       /* ネオン発光 */
+  --rm-particle-color: #38bdf8;                    /* 集束する光の粒子の色 */
+  --rm-danger-color: #f43f5e;                      /* 閉じるボタン */
 
-  /* ==============================================
-     📐 サイズ構造
-     ============================================== */
-  --rm-item-size: 50px;
-  --rm-depth-step: 60px;                          /* 階層が深くなるごとの半径加算量 */
-  --rm-base-radius: 110px;                        /* 第1階層の半径 */
+  /* ラベル変数 */
+  --rm-label-bg: rgba(15, 23, 42, 0.95);
+  --rm-label-color: #ffffff;
 
-  /* ==============================================
-     🚀 極上のフィードバック・アニメーション
-     ============================================== */
-  --rm-spring-bounce: cubic-bezier(0.175, 0.885, 0.32, 1.275); /* 超リアルな弾性バウンド */
+  /* サイズ変数 */
+  --rm-item-size: 52px;
+  --rm-particle-size: 8px;                         /* 集束粒子の大きさ */
+
+  /* イージング（吸い込まれるような速度変化） */
+  --rm-suck-in-ease: cubic-bezier(0.7, 0, 0.84, 0); 
+  --rm-spring-bounce: cubic-bezier(0.175, 0.885, 0.32, 1.275);
   --rm-z-index: 999999;
 }
 
 body {
   user-select: none;
   -webkit-user-select: none;
+  font-family: var(--rm-font-family);
 }
 
 /* コンテナ */
@@ -39,6 +42,7 @@ body {
   height: 0;
   z-index: var(--rm-z-index);
   pointer-events: none;
+  font-family: var(--rm-font-family);
 }
 
 .radial-menu-wrapper.active {
@@ -46,8 +50,31 @@ body {
 }
 
 /* ==============================================
-     ✨ 凝った背景ウェーブ＆衝撃波エフェクト
+     ✨ 演出：周囲から集まってくる光の粒子（オーブ）
      ============================================== */
+.rm-particle {
+  position: absolute;
+  width: var(--rm-particle-size);
+  height: var(--rm-particle-size);
+  margin-top: calc(-1 * var(--rm-particle-size) / 2);
+  margin-left: calc(-1 * var(--rm-particle-size) / 2);
+  border-radius: 50%;
+  background: var(--rm-particle-color);
+  box-shadow: 0 0 10px var(--rm-particle-color), 0 0 20px var(--rm-accent-glow);
+  pointer-events: none;
+  opacity: 0;
+  /* JS側で初期位置(--start-x, --start-y)を設定して中央(0,0)へ吸い込む */
+  transform: translate(var(--start-x), var(--start-y)) scale(1.5);
+  transition: transform 0.35s var(--rm-suck-in-ease), opacity 0.2s ease;
+}
+
+/* 吸い込みアニメーション実行時 */
+.rm-particle.gathering {
+  opacity: 1;
+  transform: translate(0, 0) scale(0.2);
+}
+
+/* 中央の波紋＆ポップイン衝撃波 */
 .radial-menu-center-indicator {
   position: absolute;
   width: 40px;
@@ -58,24 +85,18 @@ body {
   background: radial-gradient(circle, var(--rm-accent-glow) 0%, transparent 70%);
   border: 1px solid var(--rm-accent-color);
   opacity: 0;
-  transform: scale(0.1);
+  transform: scale(0);
   pointer-events: none;
-  transition: transform 0.5s var(--rm-spring-bounce), opacity 0.3s ease;
+  transition: transform 0.4s var(--rm-spring-bounce), opacity 0.3s ease;
 }
 
 .radial-menu-wrapper.active .radial-menu-center-indicator {
-  opacity: 0.8;
-  transform: scale(1.5);
-  animation: rm-pulse 2s infinite alternate ease-in-out;
-}
-
-@keyframes rm-pulse {
-  0% { box-shadow: 0 0 10px var(--rm-accent-glow); }
-  100% { box-shadow: 0 0 25px var(--rm-accent-glow), 0 0 40px var(--rm-accent-color); }
+  opacity: 1;
+  transform: scale(1.6);
 }
 
 /* ==============================================
-     🌀 汎用メニューアイテム（階層共通）
+     🌀 アイテム ＆ 多次元メニュー
      ============================================== */
 .rm-item {
   position: absolute;
@@ -84,19 +105,19 @@ body {
   margin-top: calc(-1 * var(--rm-item-size) / 2);
   margin-left: calc(-1 * var(--rm-item-size) / 2);
   border-radius: 50%;
-  border: 1px solid var(--rm-item-border);
+  border: 1px solid rgba(255, 255, 255, 0.15);
   background: var(--rm-glass-bg);
   backdrop-filter: blur(var(--rm-glass-blur));
   -webkit-backdrop-filter: blur(var(--rm-glass-blur));
   color: var(--rm-text-color);
   font-size: 20px;
+  font-family: var(--rm-font-family);
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
 
-  /* アニメーション（中心から回転しながらバウンドポップイン） */
   opacity: 0;
   pointer-events: none;
   transform: translate(0, 0) scale(0) rotate(-180deg);
@@ -108,36 +129,33 @@ body {
     box-shadow 0.2s ease;
 }
 
-/* 親要素（メニューコンテナ）が開いたときに飛び出す */
 .rm-group.open > .rm-item {
   opacity: 1;
   pointer-events: auto;
   transform: translate(var(--x), var(--y)) scale(1) rotate(0deg);
 }
 
-/* ホバー時のホバー効果＆ネオン輝き */
 .rm-item:hover, .rm-item:active {
-  background: rgba(30, 41, 59, 0.9);
+  background: rgba(30, 41, 59, 0.95);
   border-color: var(--rm-accent-color);
-  box-shadow: 0 0 20px var(--rm-accent-glow), 0 0 2px var(--rm-accent-color);
+  box-shadow: 0 0 20px var(--rm-accent-glow);
   transform: translate(var(--x), var(--y)) scale(1.18) rotate(0deg) !important;
 }
 
-/* ==============================================
-     🏷️ 文字ラベル（階層ごとに自動位置調整）
-     ============================================== */
+/* 🏷️ ラベル設定 */
 .rm-item::after {
   content: attr(data-label);
   position: absolute;
   bottom: -26px;
   left: 50%;
   transform: translateX(-50%) translateY(-6px) scale(0.8);
-  background: rgba(15, 23, 42, 0.95);
-  color: #ffffff;
+  background: var(--rm-label-bg);
+  color: var(--rm-label-color);
   padding: 3px 8px;
   border-radius: 6px;
   border: 1px solid rgba(255, 255, 255, 0.1);
   font-size: 11px;
+  font-family: var(--rm-font-family);
   font-weight: 600;
   white-space: nowrap;
   opacity: 0;
@@ -151,15 +169,11 @@ body {
   transform: translateX(-50%) translateY(0) scale(1);
 }
 
-/* 展開中の親メニューの文字は邪魔になるため非表示化 */
 .rm-group.is-expanded > .rm-item::after {
   opacity: 0 !important;
   transform: translateX(-50%) translateY(-10px) scale(0.6) !important;
 }
 
-/* ==============================================
-     📂 多次元（階層）トグルボタンの独自スタイル
-     ============================================== */
 .rm-group.has-sub > .rm-item {
   background: radial-gradient(circle, rgba(56,189,248,0.2) 0%, var(--rm-glass-bg) 100%);
 }
