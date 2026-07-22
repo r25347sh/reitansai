@@ -1,135 +1,150 @@
 /**
  * ======================================================
- * 📋 メニュー項目データ（配列を編集するだけで更新可能）
+ * 📋 多次元配列（無限階層対応）メニューリスト
  * ======================================================
  */
 const RADIAL_MENU_DATA = [
   { label: 'ホーム', icon: '🏠', action: () => location.href = 'index.html' },
-  { label: '検索', icon: '🔍', action: () => alert('検索メニュー') },
-  { label: '設定', icon: '⚙️', action: () => alert('設定メニュー') },
+  { label: '検索', icon: '🔍', action: () => alert('検索') },
   {
-    label: 'フォルダ',
-    icon: '📁',
-    // サブ（多隠し）メニュー
+    label: 'システム',
+    icon: '⚙️',
     items: [
-      { label: 'ドキュメント', icon: '📄', action: () => alert('📄 ドキュメントを選択') },
-      { label: '画像', icon: '🖼️', action: () => alert('🖼️ 画像を選択') },
-      { label: '音楽', icon: '🎵', action: () => alert('🎵 音楽を選択') }
+      { label: '音量', icon: '🔊', action: () => alert('音量設定') },
+      { label: '画面', icon: '☀️', action: () => alert('画面輝度') },
+      {
+        label: 'ネットワーク',
+        icon: '📡',
+        // 3次元目の階層（さらにネスト可能）
+        items: [
+          { label: 'Wi-Fi', icon: '📶', action: () => alert('Wi-Fi設定') },
+          { label: 'Bluetooth', icon: '🎧', action: () => alert('Bluetooth設定') }
+        ]
+      }
     ]
   },
-  { label: 'お気に入り', icon: '❤️', action: () => alert('お気に入り') },
-  { label: 'シェア', icon: '🚀', action: () => alert('シェア') }
+  {
+    label: 'ファイル',
+    icon: '📁',
+    items: [
+      { label: 'ドキュメント', icon: '📄', action: () => alert('文書') },
+      { label: '画像', icon: '🖼️', action: () => alert('画像') },
+      { label: '音楽', icon: '🎵', action: () => alert('音楽') }
+    ]
+  },
+  { label: 'お気に入り', icon: '❤️', action: () => alert('お気に入り') }
 ];
 
 (function () {
-  const LONG_PRESS_MS = 400;   // 長押し判定時間
-  const MOVE_THRESHOLD = 8;    // キャンセルされる移動判定幅(px)
+  const LONG_PRESS_MS = 400;
+  const MOVE_THRESHOLD = 8;
   
   let menuEl = null;
   let timer = null;
   let startX = 0, startY = 0;
   let isOpen = false;
 
-  function createMenuDOM() {
-    menuEl = document.createElement('div');
-    menuEl.className = 'radial-menu-wrapper';
-    
-    // 中央波紋インジケーター
-    const centerIndicator = document.createElement('div');
-    centerIndicator.className = 'radial-menu-center-indicator';
-    menuEl.appendChild(centerIndicator);
+  // 再帰的に多次元配列のDOM要素を生成する関数
+  function buildMenuTree(items, depth = 0, parentAngle = null) {
+    const groupEl = document.createElement('div');
+    groupEl.className = 'rm-group' + (depth === 0 ? ' open' : '');
 
-    const total = RADIAL_MENU_DATA.length;
-    const radius = 115; // 円形メニューの半径
+    const total = items.length;
+    // 階層が深くなるごとに半径を外側へ広げる
+    const radius = 110 + (depth * 50);
 
-    RADIAL_MENU_DATA.forEach((item, index) => {
-      // 真上（-90度）を起点に円状に配置する角度計算
-      const angle = (index / total) * 2 * Math.PI - (Math.PI / 2);
+    items.forEach((item, index) => {
+      let angle = 0;
+      
+      if (depth === 0) {
+        // 第1階層：全周（360度）にバランスよく配置
+        angle = (index / total) * 2 * Math.PI - (Math.PI / 2);
+      } else {
+        // 第2階層以降：親の伸ばした方向を中心に扇状（120度幅）に配置
+        const spread = Math.PI * 0.65;
+        angle = parentAngle + (index - (total - 1) / 2) * (spread / Math.max(total - 1, 1));
+      }
+
       const x = Math.round(Math.cos(angle) * radius);
       const y = Math.round(Math.sin(angle) * radius);
 
       if (item.items && item.items.length > 0) {
-        // --- 隠しサブメニュー付きの親要素 ---
-        const subContainer = document.createElement('div');
-        subContainer.className = 'rm-item rm-has-sub';
-        subContainer.setAttribute('data-label', item.label);
-        subContainer.style.setProperty('--x', `${x}px`);
-        subContainer.style.setProperty('--y', `${y}px`);
-        // 順番に飛び出す時差（Stagger）アニメーション
-        subContainer.style.transitionDelay = `${index * 0.03}s`;
+        // --- 隠しサブメニューを持つノード（グループ） ---
+        const subGroup = buildMenuTree(item.items, depth + 1, angle);
+        subGroup.classList.add('has-sub');
 
-        const toggleBtn = document.createElement('button');
-        toggleBtn.className = 'rm-toggle';
-        toggleBtn.innerHTML = item.icon;
-        
-        // サブメニュー展開トグル処理
-        toggleBtn.addEventListener('click', (e) => {
-          e.stopPropagation();
-          subContainer.classList.toggle('open');
-        });
-        subContainer.appendChild(toggleBtn);
-
-        // --- 子要素（サブアイテム）の配置 ---
-        const subTotal = item.items.length;
-        const subRadius = 68; // 親からの距離
-        
-        item.items.forEach((sub, subIdx) => {
-          const subItem = document.createElement('button');
-          subItem.className = 'rm-sub-item';
-          subItem.setAttribute('data-label', sub.label); // 子の文字ラベルをセット
-          subItem.innerHTML = sub.icon;
-
-          // 親の方向から放射状に広がる角度を計算
-          const spreadAngle = 0.55; 
-          const subAngle = angle + (subIdx - (subTotal - 1) / 2) * spreadAngle;
-          const subX = Math.round(Math.cos(subAngle) * subRadius);
-          const subY = Math.round(Math.sin(subAngle) * subRadius);
-
-          subItem.style.setProperty('--sub-x', `${subX}px`);
-          subItem.style.setProperty('--sub-y', `${subY}px`);
-          subItem.style.transitionDelay = `${subIdx * 0.04}s`; // 子の時差表示
-
-          subItem.addEventListener('click', (e) => {
-            e.stopPropagation();
-            sub.action();
-            closeMenu();
-          });
-          subContainer.appendChild(subItem);
-        });
-
-        menuEl.appendChild(subContainer);
-      } else {
-        // --- 通常のメインボタン ---
         const btn = document.createElement('button');
         btn.className = 'rm-item';
         btn.setAttribute('data-label', item.label);
         btn.innerHTML = item.icon;
         btn.style.setProperty('--x', `${x}px`);
         btn.style.setProperty('--y', `${y}px`);
-        btn.style.transitionDelay = `${index * 0.03}s`;
+        btn.style.transitionDelay = `${index * 0.035}s`;
+
+        // 開閉トグル処理
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const isExpanded = subGroup.classList.contains('is-expanded');
+          
+          // 同一階層の他の開いているサブメニューを閉じる
+          groupEl.querySelectorAll(':scope > .rm-group').forEach(el => {
+            el.classList.remove('is-expanded', 'open');
+          });
+
+          if (!isExpanded) {
+            subGroup.classList.add('is-expanded', 'open');
+          }
+        });
+
+        subGroup.insertBefore(btn, subGroup.firstChild);
+        groupEl.appendChild(subGroup);
+      } else {
+        // --- 通常のボタン項目 ---
+        const btn = document.createElement('button');
+        btn.className = 'rm-item';
+        btn.setAttribute('data-label', item.label);
+        btn.innerHTML = item.icon;
+        btn.style.setProperty('--x', `${x}px`);
+        btn.style.setProperty('--y', `${y}px`);
+        btn.style.transitionDelay = `${index * 0.035}s`;
 
         btn.addEventListener('click', (e) => {
           e.stopPropagation();
           item.action();
           closeMenu();
         });
-        menuEl.appendChild(btn);
+
+        groupEl.appendChild(btn);
       }
     });
+
+    return groupEl;
+  }
+
+  function createMenuDOM() {
+    menuEl = document.createElement('div');
+    menuEl.className = 'radial-menu-wrapper';
+    
+    const centerIndicator = document.createElement('div');
+    centerIndicator.className = 'radial-menu-center-indicator';
+    menuEl.appendChild(centerIndicator);
+
+    // 多次元配列から再帰的に構築
+    const tree = buildMenuTree(RADIAL_MENU_DATA);
+    menuEl.appendChild(tree);
 
     document.body.appendChild(menuEl);
   }
 
-  // 画面端でメニューがはみ出ないように補正（クランプ処理）
   function getAdjustedPosition(clientX, clientY) {
-    const margin = 140; 
+    const margin = 160; 
     const maxX = window.innerWidth - margin;
     const maxY = window.innerHeight - margin;
 
-    const clampedX = Math.max(margin, Math.min(clientX, maxX));
-    const clampedY = Math.max(margin, Math.min(clientY, maxY));
-
-    return { x: clampedX, y: clampedY };
+    return {
+      x: Math.max(margin, Math.min(clientX, maxX)),
+      y: Math.max(margin, Math.min(clientY, maxY))
+    };
   }
 
   function openMenu(x, y) {
@@ -143,17 +158,20 @@ const RADIAL_MENU_DATA = [
   function closeMenu() {
     if (!menuEl) return;
     menuEl.classList.remove('active');
-    // 開いているサブメニューをリセット
-    menuEl.querySelectorAll('.rm-has-sub').forEach(el => el.classList.remove('open'));
+    // 開いた全多次元階層をまとめてリセット
+    menuEl.querySelectorAll('.rm-group').forEach(el => {
+      el.classList.remove('is-expanded');
+      if (el !== menuEl.querySelector('.rm-group')) {
+        el.classList.remove('open');
+      }
+    });
     isOpen = false;
   }
 
   function initEvents() {
-    // 画面の長押し検知開始
     document.addEventListener('pointerdown', (e) => {
       if (isOpen && menuEl.contains(e.target)) return;
 
-      // メニュー外のクリックで閉じる
       if (isOpen && !menuEl.contains(e.target)) {
         closeMenu();
         return;
@@ -168,7 +186,6 @@ const RADIAL_MENU_DATA = [
       }, LONG_PRESS_MS);
     });
 
-    // 指を動かした時はキャンセル（メニュー表示前のみ）
     document.addEventListener('pointermove', (e) => {
       if (!timer || isOpen) return;
       const dist = Math.hypot(e.clientX - startX, e.clientY - startY);
@@ -178,7 +195,6 @@ const RADIAL_MENU_DATA = [
       }
     });
 
-    // 指を離した時（長押し完了前ならタイマー解除。開いた後はそのまま維持）
     document.addEventListener('pointerup', () => {
       if (timer && !isOpen) {
         clearTimeout(timer);
@@ -186,7 +202,6 @@ const RADIAL_MENU_DATA = [
       }
     });
 
-    // 右クリックなどの標準コンテキストメニュー制御
     document.addEventListener('contextmenu', (e) => {
       if (isOpen) e.preventDefault();
     });
