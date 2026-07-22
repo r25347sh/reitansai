@@ -1,31 +1,40 @@
 :root {
   /* ==============================================
-     🎨 極上サイバー・カラー & グラデーション変数
+     🎨 麗澤シラバス配色（深緑 × ゴールド）
      ============================================== */
-  --rm-font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --rm-font-family: 'Noto Sans JP', 'Inter', system-ui, sans-serif;
 
-  /* 🌈 通常ボタン：ディープサイバー・グラデーション */
-  --rm-item-bg: linear-gradient(135deg, rgba(15, 23, 42, 0.92), rgba(30, 41, 59, 0.82));
-  /* 🌈 ホバー時：鮮烈なネオンマゼンタ×シアン・グラデーション */
-  --rm-item-hover-bg: linear-gradient(135deg, #00f0ff, #ff007f);
+  /* 通常のメニューアイテムの背景（落ち着いた深緑グラデーション） */
+  --rm-item-bg: linear-gradient(135deg, #0A3D2A, #1E5A3F);
 
-  /* 🌈 サブメニュー保持（親）：ゴールド・サイバーグラデーション */
-  --rm-parent-bg: linear-gradient(135deg, rgba(255, 184, 0, 0.25), rgba(15, 23, 42, 0.9));
+  /* ホバーしたときの背景（鮮やかな緑で強調） */
+  --rm-item-hover-bg: linear-gradient(135deg, #228B22, #66C26A);
 
-  /* 🌈 発光・枠線カラー */
-  --rm-border-color: rgba(0, 240, 255, 0.45);
-  --rm-border-hover-color: #ffffff;
-  --rm-text-color: #ffffff;
+  /* サブメニューを持つ親アイテムの背景（ゴールドを少し混ぜて特別感） */
+  --rm-parent-bg: linear-gradient(135deg, rgba(212, 175, 55, 0.25), rgba(15, 61, 42, 0.92));
 
-  /* 🌌 軌道リング・コアカラー */
-  --rm-orbit-color: rgba(0, 240, 255, 0.25);
-  --rm-core-bg: linear-gradient(135deg, #ff007f, #7f00ff);
+  /* 通常時のボタンの枠線・発光色 */
+  --rm-border-color: rgba(255, 215, 0, 0.5);
 
-  /* 🏷️ ホログラフィック・ラベル */
-  --rm-label-bg: linear-gradient(135deg, rgba(5, 10, 20, 0.95), rgba(15, 23, 42, 0.95));
-  --rm-label-border: #00f0ff;
+  /* ホバー時の枠線・発光色（明るいゴールド） */
+  --rm-border-hover-color: #E8B923;
 
-  /* サイズ & 物理イージング */
+  /* 文字色（基本は白） */
+  --rm-text-color: #FFFFFF;
+
+  /* 電子殻（軌道リング）の色 */
+  --rm-orbit-color: rgba(34, 139, 34, 0.35);
+
+  /* 中央の戻るボタン（コアボタン）の背景 */
+  --rm-core-bg: linear-gradient(135deg, #E8B923, #B8860B);
+
+  /* アイテム下の文字ラベル背景 */
+  --rm-label-bg: linear-gradient(135deg, rgba(10, 61, 42, 0.95), rgba(15, 77, 53, 0.95));
+
+  /* アイテム下の文字ラベルの枠線 */
+  --rm-label-border: #E8B923;
+
+  /* ボタンサイズ（変更不要） */
   --rm-item-size: 56px;
   --rm-elastic-ease: cubic-bezier(0.34, 1.75, 0.64, 1);
   --rm-z-index: 9999999;
@@ -230,4 +239,29 @@ body {
 .radial-menu-wrapper.active .rm-item.rendered::after {
   opacity: 1;
   transform: translateX(-50%) translateY(0) scale(1);
+}
+
+/* ==============================
+  追加したやつ
+  ============================ */
+.rm-shell-orbit {
+  border-color: var(--rm-orbit-color);
+  box-shadow: 0 0 15px rgba(34, 139, 34, 0.25);
+}
+
+.rm-core-btn {
+  box-shadow: 0 0 22px rgba(232, 185, 35, 0.75), 
+              inset 0 0 12px rgba(255, 255, 255, 0.6);
+}
+
+.rm-core-btn:hover {
+  box-shadow: 0 0 35px rgba(232, 185, 35, 1), 
+              inset 0 0 18px rgba(255, 255, 255, 0.9);
+}
+
+.rm-item:hover, .rm-item:active {
+  box-shadow: 
+    0 0 32px rgba(34, 139, 34, 0.85),
+    0 0 18px rgba(232, 185, 35, 0.7),
+    inset 0 0 16px rgba(255, 255, 255, 0.85);
 }
