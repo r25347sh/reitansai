@@ -1,17 +1,17 @@
 :root {
   /* ==============================================
-     🔤 フォント & CSS変数システム
+     🔤 フォント & カスタムCSS変数
      ============================================== */
   --rm-font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
   
   /* カラー変数 */
-  --rm-glass-bg: rgba(15, 23, 42, 0.85);          /* ベース背景 */
-  --rm-glass-blur: 16px;                           /* 背景ぼかし */
-  --rm-text-color: #f8fafc;                        /* 文字・アイコン色 */
-  --rm-accent-color: #38bdf8;                      /* アクセント（ネオンブルー） */
-  --rm-accent-glow: rgba(56, 189, 248, 0.6);       /* ネオン発光 */
-  --rm-particle-color: #38bdf8;                    /* 集束する光の粒子の色 */
-  --rm-danger-color: #f43f5e;                      /* 閉じるボタン */
+  --rm-glass-bg: rgba(15, 23, 42, 0.85);
+  --rm-glass-blur: 16px;
+  --rm-text-color: #f8fafc;
+  --rm-accent-color: #38bdf8;
+  --rm-accent-glow: rgba(56, 189, 248, 0.6);
+  --rm-particle-color: #38bdf8;
+  --rm-danger-color: #f43f5e;
 
   /* ラベル変数 */
   --rm-label-bg: rgba(15, 23, 42, 0.95);
@@ -19,9 +19,9 @@
 
   /* サイズ変数 */
   --rm-item-size: 52px;
-  --rm-particle-size: 8px;                         /* 集束粒子の大きさ */
+  --rm-particle-size: 8px;
 
-  /* イージング（吸い込まれるような速度変化） */
+  /* イージング（バウンド＆吸い込み） */
   --rm-suck-in-ease: cubic-bezier(0.7, 0, 0.84, 0); 
   --rm-spring-bounce: cubic-bezier(0.175, 0.885, 0.32, 1.275);
   --rm-z-index: 999999;
@@ -33,7 +33,9 @@ body {
   font-family: var(--rm-font-family);
 }
 
-/* コンテナ */
+/* ==============================================
+     🛡️ メニュー全体コンテナ（初期隠蔽の徹底強化）
+     ============================================== */
 .radial-menu-wrapper {
   position: fixed;
   top: 0;
@@ -42,16 +44,32 @@ body {
   height: 0;
   z-index: var(--rm-z-index);
   pointer-events: none;
+  visibility: hidden; /* 初期状態では完全に描画・タッチを無効化 */
+  opacity: 0;
   font-family: var(--rm-font-family);
+  transition: visibility 0s linear 0.3s, opacity 0.3s ease; /* 閉じる時のアニメーション待ち */
 }
 
+/* 長押し成功時（アクティブ） */
 .radial-menu-wrapper.active {
   pointer-events: auto;
+  visibility: visible;
+  opacity: 1;
+  transition: visibility 0s linear 0s, opacity 0.3s ease;
 }
 
 /* ==============================================
-     ✨ 演出：周囲から集まってくる光の粒子（オーブ）
+     ✨ 演出：集束する光の粒子（オーブ）
      ============================================== */
+.rm-particle-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
 .rm-particle {
   position: absolute;
   width: var(--rm-particle-size);
@@ -63,18 +81,16 @@ body {
   box-shadow: 0 0 10px var(--rm-particle-color), 0 0 20px var(--rm-accent-glow);
   pointer-events: none;
   opacity: 0;
-  /* JS側で初期位置(--start-x, --start-y)を設定して中央(0,0)へ吸い込む */
   transform: translate(var(--start-x), var(--start-y)) scale(1.5);
   transition: transform 0.35s var(--rm-suck-in-ease), opacity 0.2s ease;
 }
 
-/* 吸い込みアニメーション実行時 */
 .rm-particle.gathering {
   opacity: 1;
   transform: translate(0, 0) scale(0.2);
 }
 
-/* 中央の波紋＆ポップイン衝撃波 */
+/* 中央衝撃波インジケーター */
 .radial-menu-center-indicator {
   position: absolute;
   width: 40px;
@@ -118,6 +134,7 @@ body {
   justify-content: center;
   box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
 
+  /* 非表示状態（中心にキュッと縮む） */
   opacity: 0;
   pointer-events: none;
   transform: translate(0, 0) scale(0) rotate(-180deg);
@@ -129,7 +146,8 @@ body {
     box-shadow 0.2s ease;
 }
 
-.rm-group.open > .rm-item {
+/* 展開（open）時のみ飛び出す */
+.radial-menu-wrapper.active .rm-group.open > .rm-item {
   opacity: 1;
   pointer-events: auto;
   transform: translate(var(--x), var(--y)) scale(1) rotate(0deg);
@@ -164,7 +182,7 @@ body {
   box-shadow: 0 4px 12px rgba(0,0,0,0.5);
 }
 
-.rm-group.open > .rm-item::after {
+.radial-menu-wrapper.active .rm-group.open > .rm-item::after {
   opacity: 1;
   transform: translateX(-50%) translateY(0) scale(1);
 }
