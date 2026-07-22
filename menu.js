@@ -28,8 +28,8 @@ const RADIAL_MENU_DATA = [
 (function () {
   const LONG_PRESS_MS = 400;
   const MOVE_THRESHOLD = 8;
-  const PARTICLE_COUNT = 8;     // 周囲から集まる粒子の数
-  const PARTICLE_RADIUS = 140;  // 粒子が発生する画面半径(px)
+  const PARTICLE_COUNT = 8;
+  const PARTICLE_RADIUS = 140;
 
   let menuEl = null;
   let particleContainer = null;
@@ -37,79 +37,73 @@ const RADIAL_MENU_DATA = [
   let startX = 0, startY = 0;
   let isOpen = false;
 
-  // 🚀 1. Ajax遷移エンジン（ページリロードなしでコンテンツ更新）
+  // 🚀 1. Ajax非同期遷移
   async function navigateAjax(url) {
     try {
       const response = await fetch(url);
       if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
       const htmlText = await response.text();
 
-      // 取得したHTMLから <main> または #app の中身を抽出
       const parser = new DOMParser();
       const doc = parser.parseFromString(htmlText, 'text/html');
       const newContent = doc.querySelector('#app') || doc.querySelector('main') || doc.body;
       const targetContainer = document.querySelector('#app') || document.querySelector('main');
 
       if (targetContainer && newContent) {
-        // スムーズなフェード入れ替え
         targetContainer.style.opacity = '0';
         targetContainer.style.transition = 'opacity 0.2s ease';
         
         setTimeout(() => {
           targetContainer.innerHTML = newContent.innerHTML;
           targetContainer.style.opacity = '1';
-          // ブラウザの履歴（URL）を更新
           history.pushState({ path: url }, '', url);
         }, 200);
       } else {
-        // コンテナが見つからない場合は通常遷移にフォールバック
         location.href = url;
       }
     } catch (err) {
-      console.warn('Ajax遷移に失敗したため、通常のページ遷移を行います:', err);
+      console.warn('Ajax遷移失敗のため、通常のページ遷移を実行します:', err);
       location.href = url;
     }
   }
 
-  // ブラウザの「戻る・進む」ボタン対応
   window.addEventListener('popstate', () => {
     navigateAjax(location.pathname);
   });
 
-  // ✨ 2. 周囲から集まってくる粒子（オーブ）エフェクト
+  // ✨ 2. 粒子集束演出（位置計算と発火の修正）
   function playGatheringParticles(centerX, centerY, callback) {
     particleContainer.innerHTML = '';
-    particleContainer.style.left = `${centerX}px`;
-    particleContainer.style.top = `${centerY}px`;
 
     const particles = [];
     for (let i = 0; i < PARTICLE_COUNT; i++) {
       const angle = (i / PARTICLE_COUNT) * 2 * Math.PI;
-      const startX = Math.cos(angle) * PARTICLE_RADIUS;
-      const startY = Math.sin(angle) * PARTICLE_RADIUS;
+      const sX = Math.cos(angle) * PARTICLE_RADIUS;
+      const sY = Math.sin(angle) * PARTICLE_RADIUS;
 
       const p = document.createElement('div');
       p.className = 'rm-particle';
-      p.style.setProperty('--start-x', `${startX}px`);
-      p.style.setProperty('--start-y', `${startY}px`);
+      p.style.setProperty('--start-x', `${sX}px`);
+      p.style.setProperty('--start-y', `${sY}px`);
       
       particleContainer.appendChild(p);
       particles.push(p);
     }
 
-    // 1フレーム遅らせて吸い込みクラスを付与
+    // ブラウザのレンダリングを挟んで確実にアニメーションを発火させる
     requestAnimationFrame(() => {
-      particles.forEach(p => p.classList.add('gathering'));
+      requestAnimationFrame(() => {
+        particles.forEach(p => p.classList.add('gathering'));
+      });
     });
 
-    // 集束完了時（0.3秒後）にコールバックを実行してメニューを開く
     setTimeout(() => {
       particleContainer.innerHTML = '';
       if (callback) callback();
     }, 320);
   }
 
-  // 3. 多次元メニュー構造の生成
+  // 3. 多次元メニュー構築
   function buildMenuTree(items, depth = 0, parentAngle = null) {
     const groupEl = document.createElement('div');
     groupEl.className = 'rm-group' + (depth === 0 ? ' open' : '');
@@ -164,7 +158,7 @@ const RADIAL_MENU_DATA = [
         btn.addEventListener('click', (e) => {
           e.stopPropagation();
           if (item.url) {
-            navigateAjax(item.url); // Ajaxページ遷移の実行
+            navigateAjax(item.url);
           } else if (item.action) {
             item.action();
           }
@@ -182,9 +176,8 @@ const RADIAL_MENU_DATA = [
     menuEl = document.createElement('div');
     menuEl.className = 'radial-menu-wrapper';
     
-    // 粒子用コンテナ
     particleContainer = document.createElement('div');
-    particleContainer.style.position = 'absolute';
+    particleContainer.className = 'rm-particle-container';
     menuEl.appendChild(particleContainer);
 
     const centerIndicator = document.createElement('div');
@@ -207,11 +200,14 @@ const RADIAL_MENU_DATA = [
 
   function openMenu(x, y) {
     const pos = getAdjustedPosition(x, y);
-    // まず粒子を集め、完了した瞬間にメニュー本体を開く！
+    
+    // まずコンテナを画面上に配置して有効化
+    menuEl.style.left = `${pos.x}px`;
+    menuEl.style.top = `${pos.y}px`;
+    menuEl.classList.add('active');
+
+    // コンテナが表示されてから粒子集束アニメーションを開始
     playGatheringParticles(pos.x, pos.y, () => {
-      menuEl.style.left = `${pos.x}px`;
-      menuEl.style.top = `${pos.y}px`;
-      menuEl.classList.add('active');
       isOpen = true;
     });
   }
