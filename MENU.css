@@ -1,30 +1,35 @@
 :root {
   /* ==============================================
-     🔤 フォント & カスタムCSS変数
+     🎨 ハイパーサイバー・カラー & フォント変数
      ============================================== */
-  --rm-font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-  
-  /* カラー変数 */
-  --rm-glass-bg: rgba(15, 23, 42, 0.85);
-  --rm-glass-blur: 16px;
-  --rm-text-color: #f8fafc;
-  --rm-accent-color: #38bdf8;
-  --rm-accent-glow: rgba(56, 189, 248, 0.6);
-  --rm-particle-color: #38bdf8;
-  --rm-danger-color: #f43f5e;
+  --rm-font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
 
-  /* ラベル変数 */
-  --rm-label-bg: rgba(15, 23, 42, 0.95);
-  --rm-label-color: #ffffff;
+  --rm-bg-glass: rgba(10, 15, 30, 0.85);          /* ベースの超透過ダークガラス */
+  --rm-bg-hover: rgba(20, 30, 55, 0.95);
+  --rm-border-color: rgba(56, 189, 248, 0.3);      /* 枠線サイバーブルー */
+  --rm-text-main: #f8fafc;                         /* アイコン・文字色 */
 
-  /* サイズ変数 */
-  --rm-item-size: 52px;
-  --rm-particle-size: 8px;
+  --rm-neon-cyan: #00f0ff;                         /* シアンネオン */
+  --rm-neon-magenta: #ff007f;                      /* マゼンタ（ホバー/アクティブ時） */
+  --rm-neon-glow-cyan: rgba(0, 240, 255, 0.6);
+  --rm-neon-glow-magenta: rgba(255, 0, 127, 0.7);
 
-  /* イージング（バウンド＆吸い込み） */
-  --rm-suck-in-ease: cubic-bezier(0.7, 0, 0.84, 0); 
-  --rm-spring-bounce: cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  --rm-z-index: 999999;
+  --rm-label-bg: rgba(5, 10, 20, 0.95);
+  --rm-label-border: #00f0ff;
+  --rm-label-text: #ffffff;
+
+  /* ==============================================
+     📐 サイズ & 構造変数
+     ============================================== */
+  --rm-item-size: 56px;                            /* アイテムの直径 */
+  --rm-hud-ring-size: 280px;                       /* 外周HUDリングのサイズ */
+
+  /* ==============================================
+     🚀 イージング (極限の弾性イージング)
+     ============================================== */
+  --rm-spring-physics: cubic-bezier(0.34, 1.75, 0.64, 1);
+  --rm-hud-rotate-speed: 12s;                      /* 外周リング回転速度 */
+  --rm-z-index: 9999999;
 }
 
 body {
@@ -34,7 +39,7 @@ body {
 }
 
 /* ==============================================
-     🛡️ メニュー全体コンテナ（初期隠蔽の徹底強化）
+     🛡️ メニュー全体コンテナ (3Dパースペクティブ)
      ============================================== */
 .radial-menu-wrapper {
   position: fixed;
@@ -44,75 +49,62 @@ body {
   height: 0;
   z-index: var(--rm-z-index);
   pointer-events: none;
-  visibility: hidden; /* 初期状態では完全に描画・タッチを無効化 */
+  visibility: hidden;
   opacity: 0;
+  perspective: 1000px; /* 3D奥行きを表現 */
   font-family: var(--rm-font-family);
-  transition: visibility 0s linear 0.3s, opacity 0.3s ease; /* 閉じる時のアニメーション待ち */
+  transition: visibility 0s linear 0.4s, opacity 0.3s ease;
 }
 
-/* 長押し成功時（アクティブ） */
 .radial-menu-wrapper.active {
   pointer-events: auto;
   visibility: visible;
   opacity: 1;
-  transition: visibility 0s linear 0s, opacity 0.3s ease;
+  transition: visibility 0s linear 0s, opacity 0.2s ease;
+}
+
+/* パーティクル用Canvas */
+.rm-canvas-layer {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 1;
 }
 
 /* ==============================================
-     ✨ 演出：集束する光の粒子（オーブ）
+     ⚙️ 回転する外周HUDリング
      ============================================== */
-.rm-particle-container {
+.rm-hud-ring {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 0;
-  height: 0;
-  pointer-events: none;
-}
-
-.rm-particle {
-  position: absolute;
-  width: var(--rm-particle-size);
-  height: var(--rm-particle-size);
-  margin-top: calc(-1 * var(--rm-particle-size) / 2);
-  margin-left: calc(-1 * var(--rm-particle-size) / 2);
+  width: var(--rm-hud-ring-size);
+  height: var(--rm-hud-ring-size);
+  margin-top: calc(-1 * var(--rm-hud-ring-size) / 2);
+  margin-left: calc(-1 * var(--rm-hud-ring-size) / 2);
   border-radius: 50%;
-  background: var(--rm-particle-color);
-  box-shadow: 0 0 10px var(--rm-particle-color), 0 0 20px var(--rm-accent-glow);
-  pointer-events: none;
+  border: 1px dashed var(--rm-neon-cyan);
+  box-shadow: 0 0 15px var(--rm-neon-glow-cyan), inset 0 0 15px var(--rm-neon-glow-cyan);
   opacity: 0;
-  transform: translate(var(--start-x), var(--start-y)) scale(1.5);
-  transition: transform 0.35s var(--rm-suck-in-ease), opacity 0.2s ease;
-}
-
-.rm-particle.gathering {
-  opacity: 1;
-  transform: translate(0, 0) scale(0.2);
-}
-
-/* 中央衝撃波インジケーター */
-.radial-menu-center-indicator {
-  position: absolute;
-  width: 40px;
-  height: 40px;
-  margin-top: -20px;
-  margin-left: -20px;
-  border-radius: 50%;
-  background: radial-gradient(circle, var(--rm-accent-glow) 0%, transparent 70%);
-  border: 1px solid var(--rm-accent-color);
-  opacity: 0;
-  transform: scale(0);
+  transform: scale(0.2) rotate(0deg);
   pointer-events: none;
-  transition: transform 0.4s var(--rm-spring-bounce), opacity 0.3s ease;
+  z-index: 2;
+  transition: transform 0.6s var(--rm-spring-physics), opacity 0.3s ease;
 }
 
-.radial-menu-wrapper.active .radial-menu-center-indicator {
-  opacity: 1;
-  transform: scale(1.6);
+.radial-menu-wrapper.active .rm-hud-ring {
+  opacity: 0.6;
+  transform: scale(1) rotate(360deg);
+  animation: rm-hud-spin var(--rm-hud-rotate-speed) linear infinite;
+}
+
+@keyframes rm-hud-spin {
+  from { transform: scale(1) rotate(0deg); }
+  to { transform: scale(1) rotate(360deg); }
 }
 
 /* ==============================================
-     🌀 アイテム ＆ 多次元メニュー
+     🌀 3Dメニューボタン項目
      ============================================== */
 .rm-item {
   position: absolute;
@@ -121,65 +113,72 @@ body {
   margin-top: calc(-1 * var(--rm-item-size) / 2);
   margin-left: calc(-1 * var(--rm-item-size) / 2);
   border-radius: 50%;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  background: var(--rm-glass-bg);
-  backdrop-filter: blur(var(--rm-glass-blur));
-  -webkit-backdrop-filter: blur(var(--rm-glass-blur));
-  color: var(--rm-text-color);
-  font-size: 20px;
-  font-family: var(--rm-font-family);
+  border: 1px solid var(--rm-border-color);
+  background: var(--rm-bg-glass);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: var(--rm-text-main);
+  font-size: 22px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  z-index: 3;
 
-  /* 非表示状態（中心にキュッと縮む） */
+  /* 初期（非表示）状態：3Dでひねられながら収縮 */
   opacity: 0;
   pointer-events: none;
-  transform: translate(0, 0) scale(0) rotate(-180deg);
+  transform: translate3d(0, 0, -200px) scale(0) rotateX(70deg) rotateZ(-180deg);
   transition: 
-    transform 0.45s var(--rm-spring-bounce),
+    transform 0.5s var(--rm-spring-physics),
     opacity 0.25s ease,
-    background-color 0.2s ease,
     border-color 0.2s ease,
-    box-shadow 0.2s ease;
+    box-shadow 0.2s ease,
+    background-color 0.2s ease;
 }
 
-/* 展開（open）時のみ飛び出す */
+/* 展開（open）時の3D飛び出し */
 .radial-menu-wrapper.active .rm-group.open > .rm-item {
   opacity: 1;
   pointer-events: auto;
-  transform: translate(var(--x), var(--y)) scale(1) rotate(0deg);
+  transform: translate3d(var(--x), var(--y), 0) scale(1) rotateX(0deg) rotateZ(0deg);
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.5), 0 0 10px var(--rm-neon-glow-cyan);
 }
 
+/* ホバー時の近未来ネオン・フラッシュ */
 .rm-item:hover, .rm-item:active {
-  background: rgba(30, 41, 59, 0.95);
-  border-color: var(--rm-accent-color);
-  box-shadow: 0 0 20px var(--rm-accent-glow);
-  transform: translate(var(--x), var(--y)) scale(1.18) rotate(0deg) !important;
+  background: var(--rm-bg-hover);
+  border-color: var(--rm-neon-magenta);
+  color: #ffffff;
+  box-shadow: 
+    0 0 25px var(--rm-neon-glow-magenta),
+    0 0 5px var(--rm-neon-magenta),
+    inset 0 0 10px var(--rm-neon-glow-magenta);
+  transform: translate3d(var(--x), var(--y), 30px) scale(1.22) !important;
 }
 
-/* 🏷️ ラベル設定 */
+/* ==============================================
+     🏷️ ホログラフィック文字ラベル
+     ============================================== */
 .rm-item::after {
   content: attr(data-label);
   position: absolute;
-  bottom: -26px;
+  bottom: -30px;
   left: 50%;
-  transform: translateX(-50%) translateY(-6px) scale(0.8);
+  transform: translateX(-50%) translateY(-10px) scale(0.7);
   background: var(--rm-label-bg);
-  color: var(--rm-label-color);
-  padding: 3px 8px;
-  border-radius: 6px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--rm-label-text);
+  padding: 3px 10px;
+  border-radius: 4px;
+  border: 1px solid var(--rm-label-border);
   font-size: 11px;
-  font-family: var(--rm-font-family);
-  font-weight: 600;
+  font-weight: 700;
+  letter-spacing: 1px;
   white-space: nowrap;
   opacity: 0;
   pointer-events: none;
-  transition: all 0.25s var(--rm-spring-bounce);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+  box-shadow: 0 0 10px var(--rm-neon-glow-cyan);
+  transition: all 0.3s var(--rm-spring-physics);
 }
 
 .radial-menu-wrapper.active .rm-group.open > .rm-item::after {
@@ -189,15 +188,16 @@ body {
 
 .rm-group.is-expanded > .rm-item::after {
   opacity: 0 !important;
-  transform: translateX(-50%) translateY(-10px) scale(0.6) !important;
+  transform: translateX(-50%) translateY(-10px) scale(0.5) !important;
 }
 
+/* 多次元サブメニューを持つ親ボタン */
 .rm-group.has-sub > .rm-item {
-  background: radial-gradient(circle, rgba(56,189,248,0.2) 0%, var(--rm-glass-bg) 100%);
+  border-color: var(--rm-neon-cyan);
 }
 
 .rm-group.is-expanded > .rm-item {
-  border-color: var(--rm-danger-color) !important;
-  box-shadow: 0 0 20px rgba(244, 63, 94, 0.4) !important;
-  transform: translate(var(--x), var(--y)) scale(1.05) rotate(135deg) !important;
+  border-color: var(--rm-neon-magenta) !important;
+  box-shadow: 0 0 25px var(--rm-neon-glow-magenta) !important;
+  transform: translate3d(var(--x), var(--y), 10px) scale(1.1) rotate(135deg) !important;
 }
