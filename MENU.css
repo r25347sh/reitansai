@@ -1,32 +1,33 @@
 :root {
   /* ==============================================
-     🎨 自由自在なグラデーション＆デザインシステム
+     🎨 極上サイバー・カラー & グラデーション変数
      ============================================== */
   --rm-font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
 
-  /* 🌈 アイテム背景：linear-gradient または 単色 */
-  --rm-item-bg: linear-gradient(135deg, rgba(15, 23, 42, 0.88), rgba(30, 41, 59, 0.75));
-  --rm-item-hover-bg: linear-gradient(135deg, rgba(56, 189, 248, 0.9), rgba(236, 72, 153, 0.9));
-  
-  /* 🌈 親ボタン（サブメニュー保有）のグラデーション */
-  --rm-parent-bg: linear-gradient(135deg, rgba(0, 240, 255, 0.25), rgba(15, 23, 42, 0.85));
+  /* 🌈 通常ボタン：ディープサイバー・グラデーション */
+  --rm-item-bg: linear-gradient(135deg, rgba(15, 23, 42, 0.92), rgba(30, 41, 59, 0.82));
+  /* 🌈 ホバー時：鮮烈なネオンマゼンタ×シアン・グラデーション */
+  --rm-item-hover-bg: linear-gradient(135deg, #00f0ff, #ff007f);
 
-  /* 🌈 ボーダー＆アクセントグラデーション */
-  --rm-border-color: rgba(56, 189, 248, 0.4);
-  --rm-border-hover-color: #00f0ff;
+  /* 🌈 サブメニュー保持（親）：ゴールド・サイバーグラデーション */
+  --rm-parent-bg: linear-gradient(135deg, rgba(255, 184, 0, 0.25), rgba(15, 23, 42, 0.9));
+
+  /* 🌈 発光・枠線カラー */
+  --rm-border-color: rgba(0, 240, 255, 0.45);
+  --rm-border-hover-color: #ffffff;
   --rm-text-color: #ffffff;
 
   /* 🌌 軌道リング・コアカラー */
-  --rm-orbit-color: rgba(0, 240, 255, 0.2);
-  --rm-core-bg: linear-gradient(135deg, rgba(244, 63, 94, 0.9), rgba(236, 72, 153, 0.9));
+  --rm-orbit-color: rgba(0, 240, 255, 0.25);
+  --rm-core-bg: linear-gradient(135deg, #ff007f, #7f00ff);
 
-  /* ラベル用 */
-  --rm-label-bg: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(2, 6, 23, 0.95));
-  --rm-label-border: rgba(56, 189, 248, 0.5);
+  /* 🏷️ ホログラフィック・ラベル */
+  --rm-label-bg: linear-gradient(135deg, rgba(5, 10, 20, 0.95), rgba(15, 23, 42, 0.95));
+  --rm-label-border: #00f0ff;
 
   /* サイズ & 物理イージング */
-  --rm-item-size: 54px;
-  --rm-elastic-ease: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  --rm-item-size: 56px;
+  --rm-elastic-ease: cubic-bezier(0.34, 1.75, 0.64, 1);
   --rm-z-index: 9999999;
 }
 
@@ -37,7 +38,7 @@ body {
 }
 
 /* ==============================================
-     🛡️ メニュー本体（GPUアクセラレーション）
+     🛡️ メニュー全体コンテナ
      ============================================== */
 .radial-menu-wrapper {
   position: fixed;
@@ -50,17 +51,17 @@ body {
   visibility: hidden;
   opacity: 0;
   will-change: transform, opacity;
-  transition: visibility 0s linear 0.25s, opacity 0.2s ease-out;
+  transition: visibility 0s linear 0.25s, opacity 0.15s ease-out;
 }
 
 .radial-menu-wrapper.active {
   pointer-events: auto;
   visibility: visible;
   opacity: 1;
-  transition: visibility 0s linear 0s, opacity 0.15s ease-in;
+  transition: visibility 0s linear 0s, opacity 0.1s ease-in;
 }
 
-/* 描画用Canvas層 */
+/* 描画Canvas */
 .rm-canvas-layer {
   position: absolute;
   top: 50%;
@@ -71,54 +72,62 @@ body {
 }
 
 /* ==============================================
-     ⚛️ 電子殻のグラデーション軌道リング
+     ⚛️ 電子殻グラデーション軌道 & パルス効果
      ============================================== */
 .rm-shell-orbit {
   position: absolute;
   border-radius: 50%;
   border: 1px dashed var(--rm-orbit-color);
+  box-shadow: 0 0 12px rgba(0, 240, 255, 0.15);
   pointer-events: none;
   z-index: 2;
-  transform: scale(0.3) rotate(-45deg);
+  transform: scale(0.2) rotate(-90deg);
   opacity: 0;
   will-change: transform, opacity;
-  transition: transform 0.45s var(--rm-elastic-ease), opacity 0.3s ease;
+  transition: transform 0.5s var(--rm-elastic-ease), opacity 0.3s ease;
 }
 
 .radial-menu-wrapper.active .rm-shell-orbit {
   transform: scale(1) rotate(0deg);
   opacity: 1;
+  animation: orbitPulse 8s linear infinite;
+}
+
+@keyframes orbitPulse {
+  0% { transform: scale(1) rotate(0deg); }
+  50% { transform: scale(1.02) rotate(180deg); }
+  100% { transform: scale(1) rotate(360deg); }
 }
 
 /* ==============================================
-     🎯 階層切替用 中央コアボタン（グラデーション仕様）
+     🎯 階層切替用 中央コアボタン（ネオンボム）
      ============================================== */
 .rm-core-btn {
   position: absolute;
-  width: 46px;
-  height: 46px;
-  margin-top: -23px;
-  margin-left: -23px;
+  width: 48px;
+  height: 48px;
+  margin-top: -24px;
+  margin-left: -24px;
   border-radius: 50%;
-  border: 1px solid rgba(255, 255, 255, 0.4);
+  border: 2px solid #ffffff;
   background: var(--rm-core-bg);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   color: #ffffff;
-  font-size: 16px;
-  font-weight: bold;
+  font-size: 18px;
+  font-weight: 900;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 10;
-  box-shadow: 0 4px 20px rgba(244, 63, 94, 0.4);
+  box-shadow: 0 0 20px rgba(255, 0, 127, 0.7), inset 0 0 10px rgba(255, 255, 255, 0.5);
 
   opacity: 0;
   pointer-events: none;
   transform: scale(0) rotate(-180deg);
   will-change: transform, opacity;
-  transition: transform 0.35s var(--rm-elastic-ease), opacity 0.2s ease;
+  transition: transform 0.4s var(--rm-elastic-ease), opacity 0.2s ease;
 }
 
 .rm-core-btn.visible {
@@ -128,11 +137,12 @@ body {
 }
 
 .rm-core-btn:hover {
-  transform: scale(1.15) rotate(90deg) !important;
+  transform: scale(1.22) rotate(90deg) !important;
+  box-shadow: 0 0 30px rgba(255, 0, 127, 1), inset 0 0 15px rgba(255, 255, 255, 0.8);
 }
 
 /* ==============================================
-     🌀 均等配置ボタン（linear-gradient対応）
+     🌀 均等配置ボタン（ネオン・ハイパーグロー）
      ============================================== */
 .rm-item {
   position: absolute;
@@ -141,50 +151,56 @@ body {
   margin-top: calc(-1 * var(--rm-item-size) / 2);
   margin-left: calc(-1 * var(--rm-item-size) / 2);
   border-radius: 50%;
-  border: 1px solid var(--rm-border-color);
+  border: 1.5px solid var(--rm-border-color);
   background: var(--rm-item-bg);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   color: var(--rm-text-color);
-  font-size: 20px;
+  font-size: 22px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 3;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.6), inset 0 0 10px rgba(0, 240, 255, 0.2);
 
-  /* 出現・吸い込み消着（GPU駆動） */
+  /* ポップイン・吸い込み */
   opacity: 0;
   pointer-events: none;
-  transform: translate3d(0, 0, 0) scale(0) rotate(-120deg);
+  transform: translate3d(0, 0, 0) scale(0) rotate(-180deg);
   will-change: transform, opacity;
   transition: 
-    transform 0.4s var(--rm-elastic-ease),
+    transform 0.45s var(--rm-elastic-ease),
     opacity 0.25s ease,
     border-color 0.2s ease,
-    background 0.2s ease;
+    box-shadow 0.2s ease;
 }
 
-/* 描画完了時のポップイン */
+/* ポップイン展開 */
 .radial-menu-wrapper.active .rm-item.rendered {
   opacity: 1;
   pointer-events: auto;
   transform: translate3d(var(--x), var(--y), 0) scale(1) rotate(0deg);
 }
 
-/* ホバー時の近未来グラデーションチェンジ */
+/* ⚡ ホバー時：爆発的グラデーション & ネオンフラッシュ */
 .rm-item:hover, .rm-item:active {
   background: var(--rm-item-hover-bg) !important;
   border-color: var(--rm-border-hover-color);
   color: #ffffff;
-  transform: translate3d(var(--x), var(--y), 0) scale(1.22) rotate(0deg) !important;
+  transform: translate3d(var(--x), var(--y), 0) scale(1.25) rotate(0deg) !important;
+  box-shadow: 
+    0 0 30px rgba(0, 240, 255, 0.8),
+    0 0 15px rgba(255, 0, 127, 0.8),
+    inset 0 0 15px rgba(255, 255, 255, 0.9);
   z-index: 5;
 }
 
-/* 親（サブメニュー持ち）ボタン */
+/* サブメニュー保持ノード */
 .rm-item.has-sub {
   background: var(--rm-parent-bg);
-  border-color: rgba(0, 240, 255, 0.6);
+  border-color: rgba(255, 184, 0, 0.8);
+  box-shadow: 0 0 15px rgba(255, 184, 0, 0.3);
 }
 
 /* ==============================================
@@ -193,21 +209,22 @@ body {
 .rm-item::after {
   content: attr(data-label);
   position: absolute;
-  bottom: -28px;
+  bottom: -30px;
   left: 50%;
-  transform: translateX(-50%) translateY(-6px) scale(0.8);
+  transform: translateX(-50%) translateY(-8px) scale(0.7);
   background: var(--rm-label-bg);
   color: var(--rm-text-color);
-  padding: 3px 9px;
+  padding: 3px 10px;
   border-radius: 6px;
   border: 1px solid var(--rm-label-border);
   font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.5px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
   white-space: nowrap;
   opacity: 0;
   pointer-events: none;
-  transition: transform 0.25s var(--rm-elastic-ease), opacity 0.2s ease;
+  box-shadow: 0 0 12px rgba(0, 240, 255, 0.4);
+  transition: transform 0.3s var(--rm-elastic-ease), opacity 0.2s ease;
 }
 
 .radial-menu-wrapper.active .rm-item.rendered::after {
