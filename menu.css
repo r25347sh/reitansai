@@ -1,0 +1,195 @@
+:root {
+  /* ==============================================
+     🎨 デザイン & カラー設定
+     ============================================== */
+  --rm-main-color: #2563eb;         /* サブメニュー展開ボタンの色 */
+  --rm-item-bg: #ffffff;            /* メニュー項目の背景色 */
+  --rm-item-hover-bg: #f8fafc;      /* ホバー・アクティブ時の背景色 */
+  --rm-text-color: #0f172a;         /* アイコン・文字の色 */
+  --rm-label-bg: rgba(15, 23, 42, 0.85); /* ツールチップラベルの背景 */
+  --rm-label-color: #ffffff;        /* ツールチップラベルの文字色 */
+  --rm-shadow-color: rgba(0, 0, 0, 0.25);
+  --rm-glow-color: rgba(37, 99, 235, 0.4);
+
+  /* ==============================================
+     📐 サイズ & 距離設定
+     ============================================== */
+  --rm-menu-radius: 110px;          /* メインメニューの円半径 */
+  --rm-sub-radius: 70px;            /* サブメニューの広がり距離 */
+  --rm-item-size: 54px;             /* メインボタンのサイズ */
+  --rm-sub-item-size: 44px;         /* サブボタンのサイズ */
+  --rm-center-hole-size: 40px;      /* 誤タップ防止用のアウトライン径 */
+
+  /* ==============================================
+     ✨ アニメーション & イージング
+     ============================================== */
+  --rm-anim-duration: 0.4s;
+  --rm-anim-ease: cubic-bezier(0.34, 1.56, 0.64, 1); /* ダイナミックな弾むイージング */
+  --rm-backdrop-blur: 8px;           /* 背景のぼかし強度 */
+  --rm-z-index: 999999;              /* 表示優先度（最高レベル） */
+}
+
+/* 画面全体のタッチ選択防止 */
+body {
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* ==============================================
+     メニュー全体コンテナ（表示優先度 最高）
+     ============================================== */
+.radial-menu-wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+  z-index: var(--rm-z-index);
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+
+.radial-menu-wrapper.active {
+  pointer-events: auto;
+}
+
+/* 誤タップ防止用の中央リング */
+.radial-menu-center-indicator {
+  position: absolute;
+  width: var(--rm-center-hole-size);
+  height: var(--rm-center-hole-size);
+  margin-top: calc(-1 * var(--rm-center-hole-size) / 2);
+  margin-left: calc(-1 * var(--rm-center-hole-size) / 2);
+  border-radius: 50%;
+  border: 2px dashed rgba(255, 255, 255, 0.6);
+  box-shadow: 0 0 15px var(--rm-glow-color);
+  opacity: 0;
+  transform: scale(0.2);
+  transition: all var(--rm-anim-duration) var(--rm-anim-ease);
+  pointer-events: none;
+}
+
+.radial-menu-wrapper.active .radial-menu-center-indicator {
+  opacity: 0.8;
+  transform: scale(1);
+}
+
+/* ==============================================
+     メニュー項目（ボタン）
+     ============================================== */
+.rm-item {
+  position: absolute;
+  width: var(--rm-item-size);
+  height: var(--rm-item-size);
+  margin-top: calc(-1 * var(--rm-item-size) / 2);
+  margin-left: calc(-1 * var(--rm-item-size) / 2);
+  border-radius: 50%;
+  border: none;
+  background-color: var(--rm-item-bg);
+  color: var(--rm-text-color);
+  box-shadow: 0 8px 20px var(--rm-shadow-color), 0 0 0 1px rgba(255,255,255,0.8) inset;
+  font-size: 22px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(var(--rm-backdrop-blur));
+  -webkit-backdrop-filter: blur(var(--rm-backdrop-blur));
+  
+  /* 初期（非表示）状態：中央にキュッと縮んでいる */
+  opacity: 0;
+  transform: translate(0, 0) scale(0) rotate(-180deg);
+  transition: 
+    transform var(--rm-anim-duration) var(--rm-anim-ease),
+    opacity 0.2s ease,
+    background-color 0.2s,
+    box-shadow 0.2s;
+}
+
+/* アクティブ（表示）状態：放射状に飛び出す */
+.radial-menu-wrapper.active .rm-item {
+  opacity: 1;
+  /* --x, --y はJSから動的に付与 */
+  transform: translate(var(--x), var(--y)) scale(1) rotate(0deg);
+}
+
+.rm-item:hover, .rm-item:active {
+  background-color: var(--rm-item-hover-bg);
+  box-shadow: 0 12px 28px var(--rm-shadow-color), 0 0 15px var(--rm-glow-color);
+  transform: translate(var(--x), var(--y)) scale(1.15) rotate(0deg) !important;
+}
+
+/* テキストラベル（視認性爆上げ） */
+.rm-item::after {
+  content: attr(data-label);
+  position: absolute;
+  bottom: -28px;
+  left: 50%;
+  transform: translateX(-50%) scale(0.8);
+  background-color: var(--rm-label-bg);
+  color: var(--rm-label-color);
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: bold;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+.radial-menu-wrapper.active .rm-item::after {
+  opacity: 1;
+  transform: translateX(-50%) scale(1);
+}
+
+/* ==============================================
+     サブメニュー（多隠し構造）
+     ============================================== */
+.rm-has-sub .rm-toggle {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: none;
+  background-color: var(--rm-main-color);
+  color: #fff;
+  font-size: 22px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px var(--rm-glow-color);
+  transition: transform 0.3s ease;
+}
+
+.rm-has-sub.open .rm-toggle {
+  transform: rotate(45deg); /* 展開時に回転アイコン化 */
+}
+
+.rm-sub-item {
+  position: absolute;
+  width: var(--rm-sub-item-size);
+  height: var(--rm-sub-item-size);
+  margin-top: calc(-1 * var(--rm-sub-item-size) / 2);
+  margin-left: calc(-1 * var(--rm-sub-item-size) / 2);
+  border-radius: 50%;
+  border: none;
+  background-color: var(--rm-item-bg);
+  color: var(--rm-text-color);
+  box-shadow: 0 6px 16px var(--rm-shadow-color);
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(0, 0) scale(0);
+  transition: transform var(--rm-anim-duration) var(--rm-anim-ease), opacity 0.2s ease;
+}
+
+/* サブメニュー展開時 */
+.rm-has-sub.open .rm-sub-item {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translate(var(--sub-x), var(--sub-y)) scale(1);
+}
