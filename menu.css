@@ -1,42 +1,40 @@
 :root {
   /* ==============================================
-     🎨 デザイン & カラー設定
+     ✨ モダンデザイン & カラーシステム
      ============================================== */
-  --rm-main-color: #2563eb;         /* サブメニュー展開ボタンの色 */
-  --rm-item-bg: #ffffff;            /* メニュー項目の背景色 */
-  --rm-item-hover-bg: #f8fafc;      /* ホバー・アクティブ時の背景色 */
-  --rm-text-color: #0f172a;         /* アイコン・文字の色 */
-  --rm-label-bg: rgba(15, 23, 42, 0.85); /* ツールチップラベルの背景 */
-  --rm-label-color: #ffffff;        /* ツールチップラベルの文字色 */
-  --rm-shadow-color: rgba(0, 0, 0, 0.25);
-  --rm-glow-color: rgba(37, 99, 235, 0.4);
+  --rm-bg-glass: rgba(255, 255, 255, 0.85);        /* アイテム背景（すりガラス） */
+  --rm-bg-hover: #ffffff;                         /* ホバー時背景 */
+  --rm-sub-bg: rgba(241, 245, 249, 0.95);          /* 子メニュー背景 */
+  
+  --rm-text-main: #0f172a;                        /* テキスト・アイコン色 */
+  --rm-accent-color: #3b82f6;                     /* サブメニュー親ボタン色 */
+  --rm-accent-glow: rgba(59, 130, 246, 0.35);     /* 発光グラデーション */
+
+  --rm-label-bg: rgba(15, 23, 42, 0.9);           /* ラベル背景 */
+  --rm-label-color: #ffffff;                      /* ラベル文字色 */
 
   /* ==============================================
-     📐 サイズ & 距離設定
+     📐 サイズ・配置設定
      ============================================== */
-  --rm-menu-radius: 110px;          /* メインメニューの円半径 */
-  --rm-sub-radius: 70px;            /* サブメニューの広がり距離 */
-  --rm-item-size: 54px;             /* メインボタンのサイズ */
-  --rm-sub-item-size: 44px;         /* サブボタンのサイズ */
-  --rm-center-hole-size: 40px;      /* 誤タップ防止用のアウトライン径 */
+  --rm-item-size: 52px;                           /* メインボタンサイズ */
+  --rm-sub-size: 42px;                            /* 子ボタンサイズ */
+  --rm-border-radius: 50%;                        /* 完全な真円 */
 
   /* ==============================================
-     ✨ アニメーション & イージング
+     🚀 イージング & アニメーション (弾む曲線)
      ============================================== */
-  --rm-anim-duration: 0.4s;
-  --rm-anim-ease: cubic-bezier(0.34, 1.56, 0.64, 1); /* ダイナミックな弾むイージング */
-  --rm-backdrop-blur: 8px;           /* 背景のぼかし強度 */
-  --rm-z-index: 999999;              /* 表示優先度（最高レベル） */
+  --rm-spring-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --rm-smooth-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --rm-z-index: 999999;
 }
 
-/* 画面全体のタッチ選択防止 */
 body {
   user-select: none;
   -webkit-user-select: none;
 }
 
 /* ==============================================
-     メニュー全体コンテナ（表示優先度 最高）
+     メニュー全体コンテナ（最高表示優先度）
      ============================================== */
 .radial-menu-wrapper {
   position: fixed;
@@ -46,36 +44,35 @@ body {
   height: 0;
   z-index: var(--rm-z-index);
   pointer-events: none;
-  will-change: transform, opacity;
 }
 
 .radial-menu-wrapper.active {
   pointer-events: auto;
 }
 
-/* 誤タップ防止用の中央リング */
+/* 中央の波紋アニメーション（長押し成功の視覚フィードバック） */
 .radial-menu-center-indicator {
   position: absolute;
-  width: var(--rm-center-hole-size);
-  height: var(--rm-center-hole-size);
-  margin-top: calc(-1 * var(--rm-center-hole-size) / 2);
-  margin-left: calc(-1 * var(--rm-center-hole-size) / 2);
+  width: 30px;
+  height: 30px;
+  margin-top: -15px;
+  margin-left: -15px;
   border-radius: 50%;
-  border: 2px dashed rgba(255, 255, 255, 0.6);
-  box-shadow: 0 0 15px var(--rm-glow-color);
+  border: 2px solid var(--rm-accent-color);
+  box-shadow: 0 0 20px var(--rm-accent-glow);
   opacity: 0;
-  transform: scale(0.2);
-  transition: all var(--rm-anim-duration) var(--rm-anim-ease);
+  transform: scale(0.3);
   pointer-events: none;
+  transition: all 0.4s var(--rm-spring-bounce);
 }
 
 .radial-menu-wrapper.active .radial-menu-center-indicator {
-  opacity: 0.8;
-  transform: scale(1);
+  opacity: 0.6;
+  transform: scale(1.2);
 }
 
 /* ==============================================
-     メニュー項目（ボタン）
+     メインメニュー項目
      ============================================== */
 .rm-item {
   position: absolute;
@@ -83,113 +80,152 @@ body {
   height: var(--rm-item-size);
   margin-top: calc(-1 * var(--rm-item-size) / 2);
   margin-left: calc(-1 * var(--rm-item-size) / 2);
-  border-radius: 50%;
-  border: none;
-  background-color: var(--rm-item-bg);
-  color: var(--rm-text-color);
-  box-shadow: 0 8px 20px var(--rm-shadow-color), 0 0 0 1px rgba(255,255,255,0.8) inset;
-  font-size: 22px;
+  border-radius: var(--rm-border-radius);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  background: var(--rm-bg-glass);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: var(--rm-text-main);
+  box-shadow: 
+    0 10px 25px -5px rgba(0, 0, 0, 0.1),
+    0 8px 10px -6px rgba(0, 0, 0, 0.1),
+    0 0 0 1px rgba(255, 255, 255, 0.5) inset;
+  font-size: 20px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  backdrop-filter: blur(var(--rm-backdrop-blur));
-  -webkit-backdrop-filter: blur(var(--rm-backdrop-blur));
-  
-  /* 初期（非表示）状態：中央にキュッと縮んでいる */
+
+  /* アニメーション初期状態（中央に収縮） */
   opacity: 0;
-  transform: translate(0, 0) scale(0) rotate(-180deg);
+  transform: translate(0, 0) scale(0.2) rotate(-90deg);
   transition: 
-    transform var(--rm-anim-duration) var(--rm-anim-ease),
-    opacity 0.2s ease,
-    background-color 0.2s,
-    box-shadow 0.2s;
+    transform 0.45s var(--rm-spring-bounce),
+    opacity 0.25s ease,
+    background-color 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
-/* アクティブ（表示）状態：放射状に飛び出す */
+/* 展開（アクティブ）時の弾むアニメーション */
 .radial-menu-wrapper.active .rm-item {
   opacity: 1;
-  /* --x, --y はJSから動的に付与 */
   transform: translate(var(--x), var(--y)) scale(1) rotate(0deg);
 }
 
+/* ホバー・タップ時の浮遊エフェクト */
 .rm-item:hover, .rm-item:active {
-  background-color: var(--rm-item-hover-bg);
-  box-shadow: 0 12px 28px var(--rm-shadow-color), 0 0 15px var(--rm-glow-color);
-  transform: translate(var(--x), var(--y)) scale(1.15) rotate(0deg) !important;
+  background: var(--rm-bg-hover);
+  box-shadow: 
+    0 15px 30px -5px rgba(0, 0, 0, 0.18),
+    0 0 20px var(--rm-accent-glow);
+  transform: translate(var(--x), var(--y)) scale(1.15) !important;
 }
 
-/* テキストラベル（視認性爆上げ） */
-.rm-item::after {
+/* ==============================================
+     ラベル（文字）表示設定 - 親＆子
+     ============================================== */
+.rm-item::after,
+.rm-sub-item::after {
   content: attr(data-label);
   position: absolute;
   bottom: -28px;
   left: 50%;
-  transform: translateX(-50%) scale(0.8);
-  background-color: var(--rm-label-bg);
+  transform: translateX(-50%) translateY(-4px) scale(0.85);
+  background: var(--rm-label-bg);
   color: var(--rm-label-color);
   padding: 3px 8px;
   border-radius: 6px;
   font-size: 11px;
-  font-weight: bold;
+  font-weight: 600;
+  letter-spacing: 0.5px;
   white-space: nowrap;
   opacity: 0;
   pointer-events: none;
-  transition: all 0.2s ease;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  backdrop-filter: blur(4px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  transition: 
+    opacity 0.25s ease,
+    transform 0.25s var(--rm-spring-bounce);
 }
 
+/* メニュー表示時に親ラベルを表示 */
 .radial-menu-wrapper.active .rm-item::after {
   opacity: 1;
-  transform: translateX(-50%) scale(1);
+  transform: translateX(-50%) translateY(0) scale(1);
+}
+
+/* ⚠️ 【修正ポイント1】 サブメニュー展開時、親の文字ラベルを消す */
+.rm-has-sub.open::after {
+  opacity: 0 !important;
+  transform: translateX(-50%) translateY(-8px) scale(0.7) !important;
 }
 
 /* ==============================================
-     サブメニュー（多隠し構造）
+     サブメニュー（多隠し展開）
      ============================================== */
 .rm-has-sub .rm-toggle {
   width: 100%;
   height: 100%;
-  border-radius: 50%;
+  border-radius: var(--rm-border-radius);
   border: none;
-  background-color: var(--rm-main-color);
-  color: #fff;
-  font-size: 22px;
+  background: var(--rm-accent-color);
+  color: #ffffff;
+  font-size: 20px;
   cursor: pointer;
-  box-shadow: 0 4px 12px var(--rm-glow-color);
-  transition: transform 0.3s ease;
+  box-shadow: 0 4px 14px var(--rm-accent-glow);
+  transition: transform 0.35s var(--rm-spring-bounce), background-color 0.2s;
 }
 
 .rm-has-sub.open .rm-toggle {
-  transform: rotate(45deg); /* 展開時に回転アイコン化 */
+  transform: rotate(135deg); /* プラスやフォルダアイコンを回転変換 */
+  background: #ef4444;       /* 閉じる状態の色（赤系）へシフト */
 }
 
+/* 子メニュー（サブアイテム）の初期状態 */
 .rm-sub-item {
   position: absolute;
-  width: var(--rm-sub-item-size);
-  height: var(--rm-sub-item-size);
-  margin-top: calc(-1 * var(--rm-sub-item-size) / 2);
-  margin-left: calc(-1 * var(--rm-sub-item-size) / 2);
-  border-radius: 50%;
-  border: none;
-  background-color: var(--rm-item-bg);
-  color: var(--rm-text-color);
-  box-shadow: 0 6px 16px var(--rm-shadow-color);
-  font-size: 18px;
+  width: var(--rm-sub-size);
+  height: var(--rm-sub-size);
+  margin-top: calc(-1 * var(--rm-sub-size) / 2);
+  margin-left: calc(-1 * var(--rm-sub-size) / 2);
+  border-radius: var(--rm-border-radius);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  background: var(--rm-sub-bg);
+  backdrop-filter: blur(12px);
+  color: var(--rm-text-main);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+  font-size: 16px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  
+
   opacity: 0;
   pointer-events: none;
-  transform: translate(0, 0) scale(0);
-  transition: transform var(--rm-anim-duration) var(--rm-anim-ease), opacity 0.2s ease;
+  transform: translate(0, 0) scale(0.2);
+  transition: 
+    transform 0.4s var(--rm-spring-bounce),
+    opacity 0.2s ease,
+    background-color 0.2s;
 }
 
-/* サブメニュー展開時 */
+/* サブメニュー展開時のアニメーション */
 .rm-has-sub.open .rm-sub-item {
   opacity: 1;
   pointer-events: auto;
   transform: translate(var(--sub-x), var(--sub-y)) scale(1);
+}
+
+/* ⚠️ 【修正ポイント2】 サブメニュー展開時、子メニューの文字ラベルを表示 */
+.rm-has-sub.open .rm-sub-item::after {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0) scale(1);
+  /* 子のラベル位置調整（親と重ならないように位置を微妙に下へ） */
+  bottom: -26px;
+}
+
+.rm-sub-item:hover, .rm-sub-item:active {
+  background: #ffffff;
+  transform: translate(var(--sub-x), var(--sub-y)) scale(1.15) !important;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
 }
