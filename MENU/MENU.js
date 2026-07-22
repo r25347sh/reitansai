@@ -80,78 +80,86 @@ const RADIAL_MENU_DATA = [
     }
   }
 
-  // 💥 放射状レインボースパーク ＆ ダブルショックウェーブエンジン
-  function triggerParticleBurst() {
-    if (!canvas || !ctx) return;
-    canvas.width = 600;
-    canvas.height = 600;
-    const cX = 300, cY = 300;
+// 💥 放射状レインボースパーク ＆ ダブルショックウェーブエンジン
+// （麗澤シラバス配色に調整済み：深緑＋ゴールド中心）
+function triggerParticleBurst() {
+  if (!canvas || !ctx) return;
+  canvas.width = 600;
+  canvas.height = 600;
+  const cX = 300, cY = 300;
 
-    let ring1Radius = 10, ring1Alpha = 1;
-    let ring2Radius = 5, ring2Alpha = 0.8;
+  let ring1Radius = 10, ring1Alpha = 1;
+  let ring2Radius = 5, ring2Alpha = 0.8;
 
-    const particleCount = 28;
-    const particles = Array.from({ length: particleCount }, (_, idx) => {
-      const a = (idx / particleCount) * Math.PI * 2 + (Math.random() * 0.15);
-      const spd = Math.random() * 7 + 3.5;
-      const hue = Math.floor((a / (Math.PI * 2)) * 360); // 🌈 放射状角度に応じた色相
+  const particleCount = 28;
+  const particles = Array.from({ length: particleCount }, (_, idx) => {
+    const a = (idx / particleCount) * Math.PI * 2 + (Math.random() * 0.15);
+    const spd = Math.random() * 7 + 3.5;
+    
+    // 麗澤テーマ用：緑〜黄緑〜ゴールド寄りの色相
+    const hue = 80 + Math.floor(Math.random() * 70); // 80〜150度（緑〜ライム）
 
-      return {
-        x: cX, y: cY,
-        vx: Math.cos(a) * spd, vy: Math.sin(a) * spd,
-        size: Math.random() * 3 + 1.5,
-        color: `hsl(${hue}, 100%, 65%)`,
-        alpha: 1
-      };
+    return {
+      x: cX, y: cY,
+      vx: Math.cos(a) * spd, vy: Math.sin(a) * spd,
+      size: Math.random() * 3 + 1.5,
+      color: `hsl(${hue}, 95%, 68%)`,
+      alpha: 1
+    };
+  });
+
+  function draw() {
+    ctx.clearRect(0, 0, 600, 600);
+
+    // 衝撃波リング1（深緑）
+    if (ring1Alpha > 0) {
+      ctx.beginPath();
+      ctx.arc(cX, cY, ring1Radius, 0, Math.PI * 2);
+      ctx.strokeStyle = `rgba(34, 139, 34, ${ring1Alpha})`;   // #228B22
+      ctx.lineWidth = 3.5;
+      ctx.stroke();
+      ring1Radius += 8;
+      ring1Alpha -= 0.048;
+    }
+
+    // 衝撃波リング2（ゴールド）
+    if (ring2Alpha > 0) {
+      ctx.beginPath();
+      ctx.arc(cX, cY, ring2Radius, 0, Math.PI * 2);
+      ctx.strokeStyle = `rgba(232, 185, 35, ${ring2Alpha})`;  // #E8B923
+      ctx.lineWidth = 2.5;
+      ctx.stroke();
+      ring2Radius += 6.5;
+      ring2Alpha -= 0.038;
+    }
+
+    // 粒子
+    let isAlive = false;
+    particles.forEach(p => {
+      if (p.alpha > 0) {
+        isAlive = true;
+        p.x += p.vx; 
+        p.y += p.vy;
+        p.vx *= 0.93; 
+        p.vy *= 0.93;
+        p.alpha -= 0.033;
+
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fillStyle = p.color;
+        ctx.globalAlpha = Math.max(0, p.alpha);
+        ctx.fill();
+      }
     });
 
-    function draw() {
+    if (ring1Alpha > 0 || ring2Alpha > 0 || isAlive) {
+      requestAnimationFrame(draw);
+    } else {
       ctx.clearRect(0, 0, 600, 600);
-
-      // 衝撃波リング1
-      if (ring1Alpha > 0) {
-        ctx.beginPath();
-        ctx.arc(cX, cY, ring1Radius, 0, Math.PI * 2);
-        ctx.strokeStyle = `rgba(0, 240, 255, ${ring1Alpha})`;
-        ctx.lineWidth = 3;
-        ctx.stroke();
-        ring1Radius += 8;
-        ring1Alpha -= 0.045;
-      }
-
-      // 衝撃波リング2 (ピンク系追従)
-      if (ring2Alpha > 0) {
-        ctx.beginPath();
-        ctx.arc(cX, cY, ring2Radius, 0, Math.PI * 2);
-        ctx.strokeStyle = `rgba(255, 0, 127, ${ring2Alpha})`;
-        ctx.lineWidth = 2;
-        ctx.stroke();
-        ring2Radius += 6;
-        ring2Alpha -= 0.035;
-      }
-
-      // 粒子
-      let isAlive = false;
-      particles.forEach(p => {
-        if (p.alpha > 0) {
-          isAlive = true;
-          p.x += p.vx; p.y += p.vy;
-          p.vx *= 0.93; p.vy *= 0.93;
-          p.alpha -= 0.032;
-
-          ctx.beginPath();
-          ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-          ctx.fillStyle = p.color;
-          ctx.globalAlpha = Math.max(0, p.alpha);
-          ctx.fill();
-        }
-      });
-
-      if (ring1Alpha > 0 || ring2Alpha > 0 || isAlive) requestAnimationFrame(draw);
-      else ctx.clearRect(0, 0, 600, 600);
     }
-    draw();
   }
+  draw();
+}
 
   // ⚛️ 可変長自動レイアウト演算（電子殻モデル）
   function calculateShellLayout(items) {
