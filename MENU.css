@@ -1,34 +1,25 @@
 :root {
   /* ==============================================
-     🎨 ハイパーサイバー・カラー & フォント変数
+     ⚛️ 電子殻 (Electron Shell) カラー＆変数
      ============================================== */
   --rm-font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
 
-  --rm-bg-glass: rgba(10, 15, 30, 0.85);          /* ベースの超透過ダークガラス */
-  --rm-bg-hover: rgba(20, 30, 55, 0.95);
-  --rm-border-color: rgba(56, 189, 248, 0.3);      /* 枠線サイバーブルー */
-  --rm-text-main: #f8fafc;                         /* アイコン・文字色 */
+  --rm-bg-glass: rgba(10, 15, 30, 0.88);
+  --rm-bg-hover: rgba(20, 35, 65, 0.95);
+  --rm-border-color: rgba(56, 189, 248, 0.35);
+  --rm-text-main: #f8fafc;
 
-  --rm-neon-cyan: #00f0ff;                         /* シアンネオン */
-  --rm-neon-magenta: #ff007f;                      /* マゼンタ（ホバー/アクティブ時） */
-  --rm-neon-glow-cyan: rgba(0, 240, 255, 0.6);
-  --rm-neon-glow-magenta: rgba(255, 0, 127, 0.7);
+  --rm-neon-cyan: #00f0ff;
+  --rm-neon-magenta: #ff007f;
+  --rm-neon-glow-cyan: rgba(0, 240, 255, 0.5);
+  --rm-neon-glow-magenta: rgba(255, 0, 127, 0.6);
 
   --rm-label-bg: rgba(5, 10, 20, 0.95);
   --rm-label-border: #00f0ff;
   --rm-label-text: #ffffff;
 
-  /* ==============================================
-     📐 サイズ & 構造変数
-     ============================================== */
-  --rm-item-size: 56px;                            /* アイテムの直径 */
-  --rm-hud-ring-size: 280px;                       /* 外周HUDリングのサイズ */
-
-  /* ==============================================
-     🚀 イージング (極限の弾性イージング)
-     ============================================== */
-  --rm-spring-physics: cubic-bezier(0.34, 1.75, 0.64, 1);
-  --rm-hud-rotate-speed: 12s;                      /* 外周リング回転速度 */
+  --rm-item-size: 52px;
+  --rm-spring-physics: cubic-bezier(0.34, 1.56, 0.64, 1);
   --rm-z-index: 9999999;
 }
 
@@ -38,9 +29,6 @@ body {
   font-family: var(--rm-font-family);
 }
 
-/* ==============================================
-     🛡️ メニュー全体コンテナ (3Dパースペクティブ)
-     ============================================== */
 .radial-menu-wrapper {
   position: fixed;
   top: 0;
@@ -51,9 +39,8 @@ body {
   pointer-events: none;
   visibility: hidden;
   opacity: 0;
-  perspective: 1000px; /* 3D奥行きを表現 */
-  font-family: var(--rm-font-family);
-  transition: visibility 0s linear 0.4s, opacity 0.3s ease;
+  perspective: 1000px;
+  transition: visibility 0s linear 0.3s, opacity 0.25s ease;
 }
 
 .radial-menu-wrapper.active {
@@ -63,7 +50,6 @@ body {
   transition: visibility 0s linear 0s, opacity 0.2s ease;
 }
 
-/* パーティクル用Canvas */
 .rm-canvas-layer {
   position: absolute;
   top: 50%;
@@ -73,39 +59,62 @@ body {
   z-index: 1;
 }
 
-/* ==============================================
-     ⚙️ 回転する外周HUDリング
-     ============================================== */
-.rm-hud-ring {
+/* ⚛️ 電子殻軌道（オービットリング） */
+.rm-shell-orbit {
   position: absolute;
-  width: var(--rm-hud-ring-size);
-  height: var(--rm-hud-ring-size);
-  margin-top: calc(-1 * var(--rm-hud-ring-size) / 2);
-  margin-left: calc(-1 * var(--rm-hud-ring-size) / 2);
   border-radius: 50%;
-  border: 1px dashed var(--rm-neon-cyan);
-  box-shadow: 0 0 15px var(--rm-neon-glow-cyan), inset 0 0 15px var(--rm-neon-glow-cyan);
-  opacity: 0;
-  transform: scale(0.2) rotate(0deg);
+  border: 1px dashed rgba(0, 240, 255, 0.25);
+  box-shadow: 0 0 10px rgba(0, 240, 255, 0.1);
   pointer-events: none;
   z-index: 2;
-  transition: transform 0.6s var(--rm-spring-physics), opacity 0.3s ease;
+  transform: scale(0);
+  opacity: 0;
+  transition: transform 0.5s var(--rm-spring-physics), opacity 0.3s ease;
 }
 
-.radial-menu-wrapper.active .rm-hud-ring {
-  opacity: 0.6;
-  transform: scale(1) rotate(360deg);
-  animation: rm-hud-spin var(--rm-hud-rotate-speed) linear infinite;
+.radial-menu-wrapper.active .rm-shell-orbit {
+  transform: scale(1);
+  opacity: 1;
 }
 
-@keyframes rm-hud-spin {
-  from { transform: scale(1) rotate(0deg); }
-  to { transform: scale(1) rotate(360deg); }
+/* ⚛️ 階層切替時の「中央・閉じる/戻る」コアボタン */
+.rm-core-close-btn {
+  position: absolute;
+  width: 44px;
+  height: 44px;
+  margin-top: -22px;
+  margin-left: -22px;
+  border-radius: 50%;
+  border: 1px solid var(--rm-neon-magenta);
+  background: rgba(255, 0, 127, 0.15);
+  backdrop-filter: blur(8px);
+  color: #ffffff;
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  box-shadow: 0 0 15px var(--rm-neon-glow-magenta);
+  
+  opacity: 0;
+  pointer-events: none;
+  transform: scale(0) rotate(-90deg);
+  transition: transform 0.4s var(--rm-spring-physics), opacity 0.25s ease;
 }
 
-/* ==============================================
-     🌀 3Dメニューボタン項目
-     ============================================== */
+.rm-core-close-btn.visible {
+  opacity: 1;
+  pointer-events: auto;
+  transform: scale(1) rotate(0deg);
+}
+
+.rm-core-close-btn:hover {
+  background: rgba(255, 0, 127, 0.4);
+  transform: scale(1.15) rotate(90deg) !important;
+}
+
+/* 🌀 メニューアイテム */
 .rm-item {
   position: absolute;
   width: var(--rm-item-size);
@@ -118,86 +127,68 @@ body {
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   color: var(--rm-text-main);
-  font-size: 22px;
+  font-size: 20px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 3;
 
-  /* 初期（非表示）状態：3Dでひねられながら収縮 */
+  /* 出現/消滅アニメーション（収縮・消滅） */
   opacity: 0;
   pointer-events: none;
-  transform: translate3d(0, 0, -200px) scale(0) rotateX(70deg) rotateZ(-180deg);
+  transform: translate3d(0, 0, -100px) scale(0) rotate(-180deg);
   transition: 
-    transform 0.5s var(--rm-spring-physics),
+    transform 0.45s var(--rm-spring-physics),
     opacity 0.25s ease,
     border-color 0.2s ease,
     box-shadow 0.2s ease,
     background-color 0.2s ease;
 }
 
-/* 展開（open）時の3D飛び出し */
-.radial-menu-wrapper.active .rm-group.open > .rm-item {
+.radial-menu-wrapper.active .rm-item.rendered {
   opacity: 1;
   pointer-events: auto;
-  transform: translate3d(var(--x), var(--y), 0) scale(1) rotateX(0deg) rotateZ(0deg);
+  transform: translate3d(var(--x), var(--y), 0) scale(1) rotate(0deg);
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.5), 0 0 10px var(--rm-neon-glow-cyan);
 }
 
-/* ホバー時の近未来ネオン・フラッシュ */
 .rm-item:hover, .rm-item:active {
   background: var(--rm-bg-hover);
   border-color: var(--rm-neon-magenta);
   color: #ffffff;
-  box-shadow: 
-    0 0 25px var(--rm-neon-glow-magenta),
-    0 0 5px var(--rm-neon-magenta),
-    inset 0 0 10px var(--rm-neon-glow-magenta);
-  transform: translate3d(var(--x), var(--y), 30px) scale(1.22) !important;
+  box-shadow: 0 0 25px var(--rm-neon-glow-magenta), inset 0 0 10px var(--rm-neon-glow-magenta);
+  transform: translate3d(var(--x), var(--y), 20px) scale(1.2) !important;
 }
 
-/* ==============================================
-     🏷️ ホログラフィック文字ラベル
-     ============================================== */
+/* 🏷️ ラベル表示 */
 .rm-item::after {
   content: attr(data-label);
   position: absolute;
-  bottom: -30px;
+  bottom: -28px;
   left: 50%;
-  transform: translateX(-50%) translateY(-10px) scale(0.7);
+  transform: translateX(-50%) translateY(-6px) scale(0.8);
   background: var(--rm-label-bg);
   color: var(--rm-label-text);
-  padding: 3px 10px;
+  padding: 2px 8px;
   border-radius: 4px;
   border: 1px solid var(--rm-label-border);
   font-size: 11px;
   font-weight: 700;
-  letter-spacing: 1px;
   white-space: nowrap;
   opacity: 0;
   pointer-events: none;
   box-shadow: 0 0 10px var(--rm-neon-glow-cyan);
-  transition: all 0.3s var(--rm-spring-physics);
+  transition: all 0.25s var(--rm-spring-physics);
 }
 
-.radial-menu-wrapper.active .rm-group.open > .rm-item::after {
+.radial-menu-wrapper.active .rm-item.rendered::after {
   opacity: 1;
   transform: translateX(-50%) translateY(0) scale(1);
 }
 
-.rm-group.is-expanded > .rm-item::after {
-  opacity: 0 !important;
-  transform: translateX(-50%) translateY(-10px) scale(0.5) !important;
-}
-
-/* 多次元サブメニューを持つ親ボタン */
-.rm-group.has-sub > .rm-item {
+/* サブメニュー保有のノード（親） */
+.rm-item.has-sub {
   border-color: var(--rm-neon-cyan);
-}
-
-.rm-group.is-expanded > .rm-item {
-  border-color: var(--rm-neon-magenta) !important;
-  box-shadow: 0 0 25px var(--rm-neon-glow-magenta) !important;
-  transform: translate3d(var(--x), var(--y), 10px) scale(1.1) rotate(135deg) !important;
+  background: radial-gradient(circle, rgba(0, 240, 255, 0.15) 0%, var(--rm-bg-glass) 100%);
 }
