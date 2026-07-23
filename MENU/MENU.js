@@ -2,32 +2,31 @@
  * 📋 データ構造（可変長対応・自動レイアウト）
  */
 const RADIAL_MENU_DATA = [
-  { label: 'ホーム', icon: '🏠', url: 'index.html' },
-  { label: '検索', icon: '🔍', action: () => alert('🔍 検索モーダル起動') },
+  { label: 'ホーム', icon: '🏠', url: '/reitansai/index.html' },
+  { label: '統括責任者', icon: '👔', url: '/reitansai/pages/takimura_t.html' },
   {
-    label: 'ゼミ',
-    icon: '📗',
+    label: 'ゼミ一覧',
+    icon: '📚',
     items: [
-      { label: 'データサイエンス', icon: '🔊', url:'/reitansai/subpages/' },
-      { label: '画面輝度', icon: '☀️', action: () => alert('画面') },
-      { label: '通信設定', icon: '📡', action: () => alert('通信') },
-      { label: 'セキュリティ', icon: '🛡️', action: () => alert('保護') },
-      { label: 'ストレージ', icon: '💾', action: () => alert('容量') },
-      { label: 'バッテリー', icon: '🔋', action: () => alert('電池') },
-      { label: 'システム更新', icon: '🔄', action: () => alert('更新') }
+      { label: 'データサイエンス探究 AIゼミ', icon: '📊', url: '/reitansai/pages/zemi/data-science-ai.html' },
+      { label: '教育ゼミ', icon: '📖', url: '/reitansai/pages/zemi/kyoiku.html' },
+      { label: '国際地域研究ゼミ', icon: '🌍', url: '/reitansai/pages/zemi/kokusai-chiiki.html' },
+      { label: '文藝創作ゼミ', icon: '🖋️', url: '/reitansai/pages/zemi/bungei-sakuhin.html' },
+      { label: '化学ゼミ', icon: '🧪', url: '/reitansai/pages/zemi/kagaku.html' },
+      { label: '文学ゼミ', icon: '📜', url: '/reitansai/pages/zemi/bungaku.html' },
+      { label: 'メディアゼミ', icon: '📺', url: '/reitansai/pages/zemi/media.html' },
+      { label: '社会ゼミ', icon: '👥', url: '/reitansai/pages/zemi/shakai.html' },
+      { label: '農業ゼミ', icon: '🌾', url: '/reitansai/pages/zemi/nogyo.html' },
+      { label: '観光ゼミ', icon: '🗼', url: '/reitansai/pages/zemi/kanko.html' },
+      { label: '語学ゼミ', icon: '🗣️', url: '/reitansai/pages/zemi/gengo.html' },
+      { label: '遊びの探究ゼミ', icon: '🎮', url: '/reitansai/pages/zemi/asobi-tankyu.html' },
+      { label: '医療ゼミ', icon: '🩺', url: '/reitansai/pages/zemi/iryo.html' },
+      { label: '映像クリエイターゼミ', icon: '🎥', url: '/reitansai/pages/zemi/eizo-creator.html' },
+      { label: 'スポーツゼミ', icon: '⚽', url: '/reitansai/pages/zemi/sports.html' }
     ]
   },
-  {
-    label: 'ライブラリ',
-    icon: '📁',
-    items: [
-      { label: 'ドキュメント', icon: '📄', url: 'docs.html' },
-      { label: 'ギャラリー', icon: '🖼️', url: 'gallery.html' },
-      { label: 'ミュージック', icon: '🎵', url: 'music.html' }
-    ]
-  },
-  { label: 'お気に入り', icon: '⭐', action: () => alert('お気に入り') },
-  { label: '通知センター', icon: '🔔', action: () => alert('通知') }
+  { label: '麗探祭', icon: '🎉', url: '/reitansai/pages/event.html' },
+  { label: 'このサイトについて', icon: '⭐', url: '/reitansai/pages/aboutsite.html' }
 ];
 
 (function () {
