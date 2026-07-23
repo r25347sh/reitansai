@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
-    const JSON_PATH = 'json/autovalue.json';
+    const JSON_PATH = 'https://r25347sh.github.io/reitansai/json/autovalue.json';
     
     // 現在のページのURLパスを取得（index.html や second.html など）
     let currentPath = window.location.pathname;
