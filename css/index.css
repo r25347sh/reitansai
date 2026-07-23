@@ -1,29 +1,78 @@
-:root{
-  --text-color:;
+/* 画面全体の余白リセット */
+body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden; /* 横スクロールバー防止 */
 }
 
-.header {
-  background-image: url('画像のURL');
-  background-size: 100% auto;
+/* ヘッダー全体の設定 */
+.important_main_header {
+  background-image: url('/asobiseminar/sozai/HOMEbackground.png');
+  background-size: 100% auto; /* 横幅だけ画面端にぴったり合わせる */
   background-repeat: no-repeat;
-  background-position: top center; /* 必要に応じて位置を調整 */
+  background-position: top center;
+
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;     /* 上から下へ順番に並べる */
+  justify-content: center;    /* 垂直方向のど真ん中 */
+  align-items: center;        /* 水平方向のど真ん中 */
+  padding: 40px 0;            /* 上下の最低限の余白 */
+  box-sizing: border-box;
 }
+
+/* 一番上の「REITAKU」 */
+.reitaku {
+  color: #f7e39e;             /* 画像のような品のある薄いゴールド・黄白色 */
+  margin: 0 0 30px 0;         /* 下に少し隙間を空ける */
+  font-size: 70px;            /* 文字の大きさ */
+  font-weight: 900;
+  letter-spacing: 0.15em;     /* 文字の間隔を広めにとる */
+  font-family: 'Times New Roman', Times, serif; /* カチッとしたセリフ体 */
+  text-align: center;
+}
+
+/* 真ん中の「麗探祭」のコンテナ */
 .logo {
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
+  margin-bottom: 40px;        /* 日付との間に少し隙間を空ける */
 }
 
 /* 「麗探」「祭　」の文字スタイル */
 .logo h1 {
-  color: #ffffff;
+  color: #ffffff;             /* 白文字 */
   margin: 0;
   padding: 0;
   font-size: 120px;
   font-weight: 900;
   line-height: 1.05;
   letter-spacing: 0.05em;
-  /* 画像の力強いインパクトに近づけるためのフォント設定 */
   font-family: "游明朝", "Yu Mincho", "ヒラギノ明朝 ProN", serif;
+}
+
+/* 一番下の日付（10/3 Sat. OPEN） */
+.important_main_header p {
+  color: #f7e39e;             /* REITAKUと同じゴールド・黄白色 */
+  margin: 0;
+  padding: 0;
+  font-size: 65px;            /* 画像のようにインパクトのある大きさに */
+  font-weight: 900;
+  font-family: 'Times New Roman', Times, serif;
+  display: flex;              /* 曜日を縦並びにするための設定 */
+  align-items: center;
+  justify-content: center;
+}
+
+/* 日付の中の「Sat.」（縦書き・小さな文字にする部分） */
+.headerp {
+  font-size: 20px;            /* 文字を小さく */
+  line-height: 1.1;
+  margin: 0 15px;             /* 左右に程よい隙間を空ける */
+  display: inline-flex;
+  flex-direction: column;     /* アルファベットを縦に並べる */
+  align-items: center;
+  font-weight: bold;
 }
