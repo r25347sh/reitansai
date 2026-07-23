@@ -5,10 +5,10 @@ const RADIAL_MENU_DATA = [
   { label: 'ホーム', icon: '🏠', url: 'index.html' },
   { label: '検索', icon: '🔍', action: () => alert('🔍 検索モーダル起動') },
   {
-    label: 'システム',
-    icon: '⚙️',
+    label: 'ゼミ',
+    icon: '📗',
     items: [
-      { label: '音量設定', icon: '🔊', action: () => alert('音量') },
+      { label: 'データサイエンス', icon: '🔊', url:'/reitansai/subpages/' },
       { label: '画面輝度', icon: '☀️', action: () => alert('画面') },
       { label: '通信設定', icon: '📡', action: () => alert('通信') },
       { label: 'セキュリティ', icon: '🛡️', action: () => alert('保護') },
