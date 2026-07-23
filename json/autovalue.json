@@ -1,0 +1,18 @@
+[
+    {
+        "url": "/reitansai/index.html",
+        "value": {
+            "card-title1": "生徒一人ひとりが没頭する時間",
+            "card-p1": "2022年度より学習指導要領に追加された「総合的な探究の時間」。\n麗澤ではこの時間で「ゼミ活動」を行っている。",
+            "sample_img_url": "https://example.com/image.jpeg",
+            "sample_a_url": {
+                "url": "https://example.com/",
+                "text": "これはサンプルリンクです。"
+            }
+        }
+    },
+    {
+        "url": "second.html",
+        "value": { ... }
+    }
+]
