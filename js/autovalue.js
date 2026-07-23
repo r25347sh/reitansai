@@ -1,92 +1,61 @@
 document.addEventListener('DOMContentLoaded', function() {
-    const JSON_PATH = 'https://r25347sh.github.io/reitansai/json/autovalue.json';
-    
-    // 現在のページのURLパスを取得（index.html や second.html など）
-    let currentPath = window.location.pathname;
-    // 末尾の / を除去し、ファイル名だけにする（柔軟対応）
-    if (currentPath.endsWith('/')) {
-        currentPath = currentPath.slice(0, -1);
-    }
-    const currentFile = currentPath.split('/').pop() || 'index.html';
-
-    fetch(JSON_PATH)
+    // autovalue.json を読み込む
+    fetch('autovalue.json')
         .then(response => {
-            if (!response.ok) throw new Error('JSONファイルが見つかりません');
+            if (!response.ok) {
+                throw new Error('autovalue.json の読み込みに失敗しました');
+            }
             return response.json();
         })
         .then(data => {
-            // data が配列として格納されている前提
-            const pageData = data.find(item => item.url === currentFile);
+            // 現在のページのURLからベース名を取得（index.html → index, second.html → second など）
+            let currentPath = window.location.pathname;
+            let currentFile = currentPath.split('/').pop() || 'index';
+            
+            // .html を除去
+            let baseName = currentFile.replace(/\.html$/i, '');
+            
+            // ルートや空の場合を index 扱い
+            if (baseName === '' || baseName === '/' || currentPath.endsWith('/')) {
+                baseName = 'index';
+            }
+            
+            console.log('現在のページ:', baseName);
+
+            // 該当するURLのデータを探す（柔軟にマッチング）
+            const pageData = data.find(item => {
+                if (!item.url) return false;
+                const itemBase = item.url.replace(/\.html$/i, '');
+                return (
+                    itemBase === baseName ||
+                    item.url === currentFile ||
+                    item.url === currentPath ||
+                    item.url === baseName + '.html'
+                );
+            });
+
             if (!pageData || !pageData.value) {
-                console.warn(`ページ ${currentFile} に対応するデータが見つかりません`);
+                console.warn(`「${baseName}」に対応するデータが見つかりませんでした`);
                 return;
             }
 
             const values = pageData.value;
-            
-            // data-value属性を持つすべての要素を処理
-            const elements = document.querySelectorAll('[data-value]');
-            
-            elements.forEach(el => {
-                const dataValue = el.getAttribute('data-value').trim();
-                if (!dataValue) return;
-                
-                // "key type1 type2 ..." の形式で解析
-                const parts = dataValue.split(/\s+/);
-                const key = parts[0];
-                const types = parts.slice(1); // 残りがタイプ指定
-                
-                if (!values[key]) {
-                    console.warn(`キー ${key} が見つかりません`);
-                    return;
-                }
-                
-                const val = values[key];
-                
-                // タイプに応じた処理
-                if (types.includes('txt') || types.includes('text')) {
-                    // テキストコンテンツ
-                    el.textContent = val;
-                }
-                else if (types.includes('htm') || types.includes('html')) {
-                    // HTML挿入
-                    el.innerHTML = val;
-                }
-                else if (types.includes('url') && el.tagName === 'IMG') {
-                    // 画像 src
-                    el.src = val;
-                }
-                else if (types.includes('url') && el.tagName === 'A') {
-                    // リンク
-                    if (typeof val === 'object' && val.url) {
-                        el.href = val.url;
-                        if (val.text) {
-                            el.textContent = val.text;
-                        }
-                    } else if (typeof val === 'string') {
-                        el.href = val;
+
+            // data-value 属性を持つ全要素を更新
+            Object.keys(values).forEach(key => {
+                const elements = document.querySelectorAll(`[data-value="${key}"]`);
+                elements.forEach(element => {
+                    if (element) {
+                        // 改行（\n）を <br> に変換して反映
+                        const content = values[key].replace(/\n/g, '<br>');
+                        element.innerHTML = content;
                     }
-                }
-                else if (types.length === 0) {
-                    // タイプ指定なしの場合は要素の種類で自動判定
-                    if (el.tagName === 'IMG') {
-                        el.src = val;
-                    } else if (el.tagName === 'A') {
-                        if (typeof val === 'object') {
-                            el.href = val.url || '';
-                            el.textContent = val.text || '';
-                        } else {
-                            el.href = val;
-                        }
-                    } else {
-                        el.textContent = val;
-                    }
-                }
+                });
             });
-            
-            console.log('AutoValue: ページ内容を自動設定しました');
+
+            console.log(`✅ ${baseName} の内容を自動反映しました`);
         })
         .catch(error => {
-            console.error('AutoValue エラー:', error);
+            console.error('autovalue.js エラー:', error);
         });
 });
