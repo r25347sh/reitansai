@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
     // autovalue.json を読み込む
-    fetch('autovalue.json')
+    fetch('https://r25347sh.github.io/reitansai/json/autovalue.json')
         .then(response => {
             if (!response.ok) {
                 throw new Error('autovalue.json の読み込みに失敗しました');
