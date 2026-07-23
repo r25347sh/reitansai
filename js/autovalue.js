@@ -1,4 +1,3 @@
-// /asobiseminar/js/autovalue.js
 document.addEventListener('DOMContentLoaded', function() {
     const JSON_PATH = '/reitansai/json/autovalue.json';
     
