@@ -95,8 +95,8 @@ function triggerParticleBurst() {
     const a = (idx / particleCount) * Math.PI * 2 + (Math.random() * 0.15);
     const spd = Math.random() * 7 + 3.5;
     
-    // 麗澤テーマ用：緑〜黄緑〜ゴールド寄りの色相
-    const hue = 80 + Math.floor(Math.random() * 70); // 80〜150度（緑〜ライム）
+    // 🌈 虹色パーティクル（フルスペクトラム）
+    const hue = Math.random() * 360; // 0〜360度で完全な虹色
 
     return {
       x: cX, y: cY,
