@@ -2,34 +2,58 @@
 body {
   margin: 0;
   padding: 0;
-  overflow-x: hidden; /* 横スクロールバー防止 */
+  overflow-x: hidden;
 }
 
-/* ヘッダー全体の設定 */
+/* ヘッダー全体のコンテナ（位置基準） */
 .important_main_header {
-  background-image: url('/asobiseminar/sozai/HOMEbackground.png');
-  background-size: 100% auto; /* 横幅だけ画面端にぴったり合わせる */
-  background-repeat: no-repeat;
-  background-position: top center;
-
-  min-height: 100vh;
+  position: relative;
+  width: 100%;
+  /* 
+    画像の縦横比（横562×縦1000の場合、高さは横幅の177%）
+    スマホ画面の端から端までぴったり背景画像を収めるための設定です
+  */
+  height: 177vw; 
+  min-height: 100vh; /* 最低でも画面いっぱいの高さを確保 */
   display: flex;
-  flex-direction: column;     /* 上から下へ順番に並べる */
-  justify-content: center;    /* 垂直方向のど真ん中 */
-  align-items: center;        /* 水平方向のど真ん中 */
-  padding: 40px 0;            /* 上下の最低限の余白 */
-  box-sizing: border-box;
+  justify-content: center;
+  align-items: center;
+  background-color: #1a5235; /* 画像が読み込まれるまでの背景（深緑） */
+}
+
+/* 100% widthで画面端までしっかり合わせる背景画像 */
+.bg-image-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('/reitansai/sozai/HOMEbackground.png');
+  background-size: 100% auto; /* 横幅だけしっかり画面端に合わせる */
+  background-repeat: no-repeat;
+  background-position: center center;
+  z-index: 1; /* 文字の後ろに配置 */
+}
+
+/* 画像の上に重ねる文字全体のコンテナ */
+.header-content {
+  position: relative;
+  z-index: 2; /* 画像より前に出す */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  pointer-events: none; /* 下にあるボタンなどの邪魔をしない設定 */
 }
 
 /* 一番上の「REITAKU」 */
 .reitaku {
-  color: #f7e39e;             /* 画像のような品のある薄いゴールド・黄白色 */
-  margin: 0 0 30px 0;         /* 下に少し隙間を空ける */
-  font-size: 70px;            /* 文字の大きさ */
+  color: #f7e39e;
+  margin: 0 0 15px 0;
+  font-size: 8vw; /* 画面幅に合わせて文字サイズを自動調整 */
   font-weight: 900;
-  letter-spacing: 0.15em;     /* 文字の間隔を広めにとる */
-  font-family: 'Times New Roman', Times, serif; /* カチッとしたセリフ体 */
-  text-align: center;
+  letter-spacing: 0.15em;
+  font-family: 'Times New Roman', Times, serif;
 }
 
 /* 真ん中の「麗探祭」のコンテナ */
@@ -38,15 +62,15 @@ body {
   flex-direction: column;
   align-items: center;
   text-align: center;
-  margin-bottom: 40px;        /* 日付との間に少し隙間を空ける */
+  margin-bottom: 25px;
 }
 
-/* 「麗探」「祭　」の文字スタイル */
+/* 「麗探」「祭」の文字スタイル */
 .logo h1 {
-  color: #ffffff;             /* 白文字 */
+  color: #ffffff;
   margin: 0;
   padding: 0;
-  font-size: 120px;
+  font-size: 14vw; /* 画面幅に合わせて文字サイズを自動調整 */
   font-weight: 900;
   line-height: 1.05;
   letter-spacing: 0.05em;
@@ -55,24 +79,24 @@ body {
 
 /* 一番下の日付（10/3 Sat. OPEN） */
 .important_main_header p {
-  color: #f7e39e;             /* REITAKUと同じゴールド・黄白色 */
+  color: #f7e39e;
   margin: 0;
   padding: 0;
-  font-size: 65px;            /* 画像のようにインパクトのある大きさに */
+  font-size: 8vw; /* 画面幅に合わせて文字サイズを自動調整 */
   font-weight: 900;
   font-family: 'Times New Roman', Times, serif;
-  display: flex;              /* 曜日を縦並びにするための設定 */
+  display: flex;
   align-items: center;
   justify-content: center;
 }
 
-/* 日付の中の「Sat.」（縦書き・小さな文字にする部分） */
+/* 日付の中の「Sat.」（縦書き） */
 .headerp {
-  font-size: 20px;            /* 文字を小さく */
+  font-size: 2.5vw;
   line-height: 1.1;
-  margin: 0 15px;             /* 左右に程よい隙間を空ける */
+  margin: 0 2vw;
   display: inline-flex;
-  flex-direction: column;     /* アルファベットを縦に並べる */
+  flex-direction: column;
   align-items: center;
   font-weight: bold;
 }
