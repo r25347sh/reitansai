@@ -1,45 +1,22 @@
 /* ==============================================
-   Google Fonts 読み込み（MENU専用）
+   Google Fonts 読み込み
    ============================================== */
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Bebas+Neue&family=Oswald:wght@500;700&display=swap');
 
 :root {
-  /* ==============================================
-     🎨 麗澤シラバス配色（深緑 × ゴールド）
-     ============================================== */
+  /* 🎨 麗澤シラバス配色（深緑 × ゴールド） */
   --rm-font-family: 'Noto Sans JP', 'Inter', system-ui, sans-serif;
-
-  /* 通常のメニューアイテムの背景（落ち着いた深緑グラデーション） */
   --rm-item-bg: linear-gradient(135deg, #0A3D2A, #1E5A3F);
-
-  /* ホバーしたときの背景（鮮やかな緑で強調） */
   --rm-item-hover-bg: linear-gradient(135deg, #228B22, #66C26A);
-
-  /* サブメニューを持つ親アイテムの背景 */
-  --rm-parent-bg: linear-gradient(135deg, rgba(212, 175, 55, 0.25), rgba(15, 61, 42, 0.92));
-
-  /* 通常時のボタンの枠線・発光色 */
-  --rm-border-color: rgba(255, 215, 0, 0.5);
-
-  /* ホバー時の枠線・発光色（明るいゴールド） */
+  --rm-parent-bg: linear-gradient(135deg, rgba(212, 175, 55, 0.30), rgba(15, 61, 42, 0.95));
+  --rm-border-color: rgba(255, 215, 0, 0.55);
   --rm-border-hover-color: #E8B923;
-
-  /* 文字色 */
   --rm-text-color: #FFFFFF;
-
-  /* 電子殻（軌道リング）の色 */
-  --rm-orbit-color: rgba(34, 139, 34, 0.35);
-
-  /* 中央の戻るボタン（コアボタン）の背景 */
+  --rm-orbit-color: rgba(34, 139, 34, 0.40);
   --rm-core-bg: linear-gradient(135deg, #E8B923, #B8860B);
-
-  /* アイテム下の文字ラベル背景 */
-  --rm-label-bg: linear-gradient(135deg, rgba(10, 61, 42, 0.95), rgba(15, 77, 53, 0.95));
-
-  /* アイテム下の文字ラベルの枠線 */
+  --rm-label-bg: linear-gradient(135deg, rgba(10, 61, 42, 0.96), rgba(15, 77, 53, 0.96));
   --rm-label-border: #E8B923;
 
-  /* その他 */
   --rm-item-size: 56px;
   --rm-elastic-ease: cubic-bezier(0.34, 1.75, 0.64, 1);
   --rm-z-index: 9999999;
@@ -51,9 +28,7 @@ body {
   font-family: var(--rm-font-family);
 }
 
-/* ==============================================
-     🛡️ メニュー全体コンテナ
-     ============================================== */
+/* 🛡️ メニュー全体コンテナ */
 .radial-menu-wrapper {
   position: fixed;
   top: 0;
@@ -72,7 +47,7 @@ body {
   pointer-events: auto;
   visibility: visible;
   opacity: 1;
-  transition: visibility 0s linear 0s, opacity 0.1s ease-in;
+  transition: visibility 0s linear 0s, opacity 0.10s ease-in;
 }
 
 /* 描画Canvas */
@@ -83,16 +58,16 @@ body {
   transform: translate(-50%, -50%);
   pointer-events: none;
   z-index: 1;
+  width: 600px;
+  height: 600px;
 }
 
-/* ==============================================
-     ⚛️ 電子殻グラデーション軌道 & パルス効果
-     ============================================== */
+/* ⚛️ 電子殻軌道 & パルス効果 */
 .rm-shell-orbit {
   position: absolute;
   border-radius: 50%;
   border: 1px dashed var(--rm-orbit-color);
-  box-shadow: 0 0 12px rgba(0, 240, 255, 0.15);
+  box-shadow: 0 0 15px rgba(34, 139, 34, 0.25);
   pointer-events: none;
   z-index: 2;
   transform: scale(0.2) rotate(-90deg);
@@ -102,7 +77,6 @@ body {
 }
 
 .radial-menu-wrapper.active .rm-shell-orbit {
-  transform: scale(1) rotate(0deg);
   opacity: 1;
   animation: orbitPulse 8s linear infinite;
 }
@@ -113,9 +87,7 @@ body {
   100% { transform: scale(1) rotate(360deg); }
 }
 
-/* ==============================================
-     🎯 階層切替用 中央コアボタン（ネオンボム）
-     ============================================== */
+/* 🎯 階層切替用 中央コアボタン */
 .rm-core-btn {
   position: absolute;
   width: 48px;
@@ -135,13 +107,13 @@ body {
   align-items: center;
   justify-content: center;
   z-index: 10;
-  box-shadow: 0 0 20px rgba(255, 0, 127, 0.7), inset 0 0 10px rgba(255, 255, 255, 0.5);
-
+  box-shadow: 0 0 22px rgba(232, 185, 35, 0.75), inset 0 0 12px rgba(255, 255, 255, 0.6);
   opacity: 0;
   pointer-events: none;
   transform: scale(0) rotate(-180deg);
   will-change: transform, opacity;
   transition: transform 0.4s var(--rm-elastic-ease), opacity 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .rm-core-btn.visible {
@@ -152,12 +124,10 @@ body {
 
 .rm-core-btn:hover {
   transform: scale(1.22) rotate(90deg) !important;
-  box-shadow: 0 0 30px rgba(255, 0, 127, 1), inset 0 0 15px rgba(255, 255, 255, 0.8);
+  box-shadow: 0 0 35px rgba(232, 185, 35, 1), inset 0 0 18px rgba(255, 255, 255, 0.9);
 }
 
-/* ==============================================
-     🌀 均等配置ボタン（ネオン・ハイパーグロー）
-     ============================================== */
+/* 🌀 メニューボタン */
 .rm-item {
   position: absolute;
   width: var(--rm-item-size);
@@ -176,9 +146,7 @@ body {
   align-items: center;
   justify-content: center;
   z-index: 3;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.6), inset 0 0 10px rgba(0, 240, 255, 0.2);
-
-  /* ポップイン・吸い込み */
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.6), inset 0 0 10px rgba(0, 240, 255, 0.15);
   opacity: 0;
   pointer-events: none;
   transform: translate3d(0, 0, 0) scale(0) rotate(-180deg);
@@ -188,57 +156,55 @@ body {
     opacity 0.25s ease,
     border-color 0.2s ease,
     box-shadow 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
 }
 
-/* ポップイン展開 */
 .radial-menu-wrapper.active .rm-item.rendered {
   opacity: 1;
   pointer-events: auto;
   transform: translate3d(var(--x), var(--y), 0) scale(1) rotate(0deg);
 }
 
-/* ⚡ ホバー時：爆発的グラデーション & ネオンフラッシュ */
+/* ⚡ ホバー/アクティブ時ネオンエフェクト */
 .rm-item:hover, .rm-item:active {
   background: var(--rm-item-hover-bg) !important;
   border-color: var(--rm-border-hover-color);
   color: #ffffff;
   transform: translate3d(var(--x), var(--y), 0) scale(1.25) rotate(0deg) !important;
   box-shadow: 
-    0 0 30px rgba(0, 240, 255, 0.8),
-    0 0 15px rgba(255, 0, 127, 0.8),
-    inset 0 0 15px rgba(255, 255, 255, 0.9);
+    0 0 32px rgba(34, 139, 34, 0.85),
+    0 0 18px rgba(232, 185, 35, 0.75),
+    inset 0 0 16px rgba(255, 255, 255, 0.85);
   z-index: 5;
 }
 
-/* サブメニュー保持ノード */
 .rm-item.has-sub {
   background: var(--rm-parent-bg);
   border-color: rgba(255, 184, 0, 0.8);
-  box-shadow: 0 0 15px rgba(255, 184, 0, 0.3);
+  box-shadow: 0 0 15px rgba(255, 184, 0, 0.35);
 }
 
-/* ==============================================
-     🏷️ ホログラフィック文字ラベル
-     ============================================== */
+/* 🏷️ 文字ラベル */
 .rm-item::after {
   content: attr(data-label);
   position: absolute;
-  bottom: -30px;
+  bottom: -28px;
   left: 50%;
   transform: translateX(-50%) translateY(-8px) scale(0.7);
   background: var(--rm-label-bg);
   color: var(--rm-text-color);
-  padding: 3px 10px;
+  padding: 3px 8px;
   border-radius: 6px;
   border: 1px solid var(--rm-label-border);
   font-size: 11px;
   font-weight: 700;
-  letter-spacing: 0.8px;
+  letter-spacing: 0.5px;
   white-space: nowrap;
   opacity: 0;
   pointer-events: none;
-  box-shadow: 0 0 12px rgba(0, 240, 255, 0.4);
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.5);
   transition: transform 0.3s var(--rm-elastic-ease), opacity 0.2s ease;
+  z-index: 6;
 }
 
 .radial-menu-wrapper.active .rm-item.rendered::after {
@@ -246,27 +212,15 @@ body {
   transform: translateX(-50%) translateY(0) scale(1);
 }
 
-/* ==============================
-  追加したやつ
-  ============================ */
-.rm-shell-orbit {
-  border-color: var(--rm-orbit-color);
-  box-shadow: 0 0 15px rgba(34, 139, 34, 0.25);
-}
-
-.rm-core-btn {
-  box-shadow: 0 0 22px rgba(232, 185, 35, 0.75), 
-              inset 0 0 12px rgba(255, 255, 255, 0.6);
-}
-
-.rm-core-btn:hover {
-  box-shadow: 0 0 35px rgba(232, 185, 35, 1), 
-              inset 0 0 18px rgba(255, 255, 255, 0.9);
-}
-
-.rm-item:hover, .rm-item:active {
-  box-shadow: 
-    0 0 32px rgba(34, 139, 34, 0.85),
-    0 0 18px rgba(232, 185, 35, 0.7),
-    inset 0 0 16px rgba(255, 255, 255, 0.85);
+/* 📱 スマホサイズ調整 */
+@media (max-width: 600px) {
+  :root {
+    --rm-item-size: 46px;
+  }
+  .rm-item { font-size: 18px; }
+  .rm-item::after {
+    font-size: 10px;
+    padding: 2px 6px;
+    bottom: -24px;
+  }
 }
