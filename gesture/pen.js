@@ -1,5 +1,5 @@
 /**
- * ✏️ pen.js - 手書きジェスチャー描画エンジン（決定版）
+ * ✏️ pen.js - 手書きジェスチャー描画エンジン（複数筆対応版）
  */
 (function () {
   'use strict';
@@ -31,7 +31,7 @@
     const statusText = document.createElement('span');
     statusText.className = 'pen-status-text';
     statusText.id = 'pen-status';
-    statusText.textContent = '✨ 魔法陣（ジェスチャー）を描いてください';
+    statusText.textContent = '✨ 魔法陣を描いてください（複数筆OK）';
 
     const clearBtn = document.createElement('button');
     clearBtn.className = 'pen-btn';
@@ -74,11 +74,11 @@
   function addParticle(x, y) {
     for (let i = 0; i < 2; i++) {
       particles.push({
-        x: x + (Math.random() - 0.5) * 14,
-        y: y + (Math.random() - 0.5) * 14,
-        vx: (Math.random() - 0.5) * 1.8,
-        vy: Math.random() * 1.8 + 0.4,
-        size: Math.random() * 3.5 + 1.2,
+        x: x + (Math.random() - 0.5) * 16,
+        y: y + (Math.random() - 0.5) * 16,
+        vx: (Math.random() - 0.5) * 2,
+        vy: Math.random() * 2 + 0.5,
+        size: Math.random() * 4 + 1.5,
         color: `hsl(${hue}, 100%, 75%)`,
         alpha: 1
       });
@@ -100,7 +100,7 @@
       ctx.save();
       ctx.globalAlpha = Math.max(0, p.alpha);
       ctx.fillStyle = p.color;
-      ctx.shadowBlur = 10;
+      ctx.shadowBlur = 12;
       ctx.shadowColor = p.color;
       ctx.beginPath();
       ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
@@ -124,7 +124,7 @@
       ctx.moveTo(p1.x, p1.y);
       ctx.lineTo(p2.x, p2.y);
       ctx.strokeStyle = p2.color || `hsl(${p2.hue}, 95%, 68%)`;
-      ctx.shadowBlur = 16;
+      ctx.shadowBlur = 18;
       ctx.shadowColor = ctx.strokeStyle;
       ctx.stroke();
     }
@@ -140,7 +140,7 @@
   }
 
   function loop() {
-    hue = (hue + 2) % 360;
+    hue = (hue + 2.5) % 360;
     redraw();
     animFrameId = requestAnimationFrame(loop);
   }
@@ -154,7 +154,7 @@
       try { overlayEl.setPointerCapture(e.pointerId); } catch (err) {}
 
       isDrawing = true;
-      clearTimeout(recognizerTimer);
+      clearTimeout(recognizerTimer); // 書き足している間は解析タイマーをストップ！
       currentStroke = [{ x: e.clientX, y: e.clientY, hue: hue }];
       addParticle(e.clientX, e.clientY);
     });
@@ -175,7 +175,7 @@
         allStrokes.push(currentStroke);
         currentStroke = [];
       }
-      scheduleRecognition();
+      scheduleRecognition(); // 手が離れてから900ms待って解析！
     };
 
     overlayEl.addEventListener('pointerup', stopDrawing);
@@ -185,22 +185,23 @@
   function scheduleRecognition() {
     clearTimeout(recognizerTimer);
     const statusEl = document.getElementById('pen-status');
-    if (statusEl) statusEl.textContent = '⚡ 魔法陣解析中...';
+    if (statusEl) statusEl.textContent = `⚡ 魔法陣解析中... (${allStrokes.length} 筆)`;
 
+    // 複数筆を最後まで描き切れるよう900ms待機
     recognizerTimer = setTimeout(() => {
       if (allStrokes.length === 0) return;
       const result = window.GestureRecognizer ? window.GestureRecognizer.recognize(allStrokes) : null;
-      
+
       if (result && window.GestureActions) {
-        if (statusEl) statusEl.textContent = `🎯 発動: 【${result}】`;
+        if (statusEl) statusEl.textContent = `🎯 属性発動: 【${result}】`;
         window.GestureActions.execute(result);
       } else if (statusEl) {
-        statusEl.textContent = '❌ 魔法陣が認識できませんでした';
+        statusEl.textContent = '❌ 魔法陣が判定できませんでした';
         setTimeout(() => {
-          if (statusEl) statusEl.textContent = '✨ 魔法陣（ジェスチャー）を描いてください';
-        }, 1500);
+          if (statusEl) statusEl.textContent = '✨ 魔法陣を描いてください（複数筆OK）';
+        }, 1600);
       }
-    }, 750);
+    }, 900);
   }
 
   function open() {
@@ -225,15 +226,11 @@
     particles = [];
     clearTimeout(recognizerTimer);
     const statusEl = document.getElementById('pen-status');
-    if (statusEl) statusEl.textContent = '✨ 魔法陣（ジェスチャー）を描いてください';
+    if (statusEl) statusEl.textContent = '✨ 魔法陣を描いてください（複数筆OK）';
     if (ctx) ctx.clearRect(0, 0, canvas.width, canvas.height);
   }
 
-  function getCanvasDataURL() {
-    return canvas ? canvas.toDataURL('image/png') : null;
-  }
-
-  window.PenEngine = { open, close, clearCanvas, getCanvasDataURL };
+  window.PenEngine = { open, close, clearCanvas };
 
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', createUI);
