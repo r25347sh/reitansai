@@ -1,0 +1,150 @@
+/* ==============================================
+   ✏️ Gesture & Pen System (pen.css)
+   ============================================== */
+
+:root {
+  --pen-glow-color: #E8B923;
+  --pen-overlay-bg: rgba(5, 20, 14, 0.72);
+  --pen-border-gold: rgba(232, 185, 35, 0.8);
+}
+
+/* 🛡️ 全画面暗転 ＆ ブラー・オーバーレイ */
+.pen-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 999999;
+  background: var(--pen-overlay-bg);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+  cursor: crosshair;
+}
+
+.pen-overlay.active {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+/* 🎨 描画用 Canvas レイヤー */
+.pen-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10;
+}
+
+/* ⚙️ 画面下部コントロールバー */
+.pen-bottom-bar {
+  position: absolute;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 10px 24px;
+  background: linear-gradient(135deg, rgba(10, 61, 42, 0.9), rgba(15, 77, 53, 0.9));
+  border: 1.5px solid var(--pen-border-gold);
+  border-radius: 40px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), 0 0 15px rgba(232, 185, 35, 0.3);
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  opacity: 0;
+}
+
+.pen-overlay.active .pen-bottom-bar {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+.pen-status-text {
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+
+.pen-btn {
+  background: linear-gradient(135deg, #E8B923, #B8860B);
+  color: #0A3D2A;
+  border: none;
+  border-radius: 20px;
+  padding: 6px 16px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.pen-btn:hover {
+  transform: scale(1.08);
+  box-shadow: 0 0 12px rgba(232, 185, 35, 0.8);
+}
+
+/* 🔲 ドローイング専用モーダル */
+.pen-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 1000000;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(12px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: penModalFadeIn 0.3s ease;
+}
+
+.pen-modal-card {
+  width: 90%;
+  max-width: 520px;
+  background: linear-gradient(145deg, rgba(10, 61, 42, 0.95), rgba(15, 77, 53, 0.95));
+  border: 1.5px solid var(--pen-border-gold);
+  border-radius: 16px;
+  padding: 28px;
+  color: #ffffff;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.6), 0 0 25px rgba(232, 185, 35, 0.25);
+  position: relative;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.pen-modal-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #E8B923;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pen-modal-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: transparent;
+  border: none;
+  color: #ffffff;
+  font-size: 20px;
+  cursor: pointer;
+  opacity: 0.8;
+}
+
+.pen-modal-close:hover { opacity: 1; }
+
+@keyframes penModalFadeIn {
+  from { opacity: 0; transform: scale(0.92); }
+  to { opacity: 1; transform: scale(1); }
+}
