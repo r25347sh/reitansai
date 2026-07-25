@@ -1,44 +1,65 @@
-// js/load-css.js - Ajax・GitHub Pages完全対応決定版
+// js/load-css.js - 非同期・順序保証・重複防止 完全対応版
 (function() {
   'use strict';
 
   const base = '/reitansai';
-  // キャッシュを強制突破するためのランダムな数字を自動生成
-  const cacheBuster = 'v=' + new Date().getTime();
+  // キャッシュ対策（毎ミリ秒変わると重複チェックが壊れるため、リロード時固定）
+  const cacheBuster = 'v=' + Date.now();
 
-  // 1. 全ページ共通の基本CSS
+  // 1. 全ページ共通CSSの動的読み込み
   const baseCssFiles = [
-    `${base}/gesture/pen.css?${cacheBuster}`,
-    `${base}/MENU/MENU.css?${cacheBuster}`
+    `${base}/gesture/pen.css`,
+    `${base}/MENU/MENU.css`
   ];
 
-  baseCssFiles.forEach(url => {
-    // 既に同じ共通CSSが入っていればスキップ（二重読み込み防止）
-    if (document.querySelector(`link[href^="${url.split('?')}"]`)) return;
-
-    const link = document.createElement('link');
-    link.rel = 'stylesheet';
-    link.href = url;
-    document.head.appendChild(link); // 確実に効かせるため後ろに追加
-  });
-
-  // 2. JavaScriptのロード（リスト管理・重複防止）
-  const jsFiles = [
-    `${base}/gesture/pen.js?${cacheBuster}`,
-    `${base}/gesture/gesture.js?${cacheBuster}`,
-    `${base}/gesture/action.js?${cacheBuster}`,
-    `${base}/MENU/MENU.js?${cacheBuster}` // 【追加】MENU.jsをリストに組み込み
-  ];
-
-  jsFiles.forEach(url => {
-    const cleanUrl = url.split('?'); // 重複チェック用にクエリを取り除く
-    if (!document.querySelector(`script[src^="${cleanUrl}"]`)) {
-      const script = document.createElement('script');
-      script.src = url;
-      script.async = false;
-      document.head.appendChild(script);
+  baseCssFiles.forEach(cssPath => {
+    // クエリを除いた純粋なパスで重複チェック
+    const isAlreadyLoaded = document.querySelector(`link[href*="${cssPath}"]`);
+    if (!isAlreadyLoaded) {
+      const link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = `${cssPath}?${cacheBuster}`;
+      document.head.appendChild(link);
     }
   });
 
-  console.log('%c✅ Load-css re-executed for path: ' + window.location.pathname, 'color:#00ff88');
+  // 2. JavaScriptの依存関係順序ロード（順番を絶対保証）
+  const jsFiles = [
+    `${base}/gesture/gesture.js`, // ① 基盤
+    `${base}/gesture/pen.js`,     // ② 描画エンジン
+    `${base}/gesture/action.js`,  // ③ アクション（①と②に依存）
+    `${base}/MENU/MENU.js`        // ④ メニュー（②に依存）
+  ];
+
+  // 1つずつ順番にロードを完了させてから次を読み込む再帰関数
+  function loadScriptsSequentially(index) {
+    if (index >= jsFiles.length) {
+      console.log('%c✅ All scripts sequentially loaded for: ' + window.location.pathname, 'color:#00ff88');
+      return;
+    }
+
+    const jsPath = jsFiles[index];
+    const isAlreadyLoaded = document.querySelector(`script[src*="${jsPath}"]`);
+
+    if (isAlreadyLoaded) {
+      // 既に読み込み済みの場合はスキップして次へ
+      loadScriptsSequentially(index + 1);
+    } else {
+      const script = document.createElement('script');
+      script.src = `${jsPath}?${cacheBuster}`;
+
+      // 読み込み完了を待ってから次のスクリプトをロード
+      script.onload = () => loadScriptsSequentially(index + 1);
+      script.onerror = () => {
+        console.error(`❌ Failed to load script: ${jsPath}`);
+        loadScriptsSequentially(index + 1); // エラーが起きても止まらず次へ
+      };
+
+      document.head.appendChild(script);
+    }
+  }
+
+  // 順序保障ロード開始
+  loadScriptsSequentially(0);
+
 })();
