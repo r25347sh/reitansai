@@ -1,11 +1,11 @@
 /* ==============================================
-   ✏️ Gesture & Pen System (pen.css)
+   ✏️ Gesture & Pen System (pen.css) - 麗澤プレミアムモデル
    ============================================== */
 
 :root {
   --pen-glow-color: #E8B923;
-  --pen-overlay-bg: rgba(5, 20, 14, 0.72);
-  --pen-border-gold: rgba(232, 185, 35, 0.8);
+  --pen-overlay-bg: rgba(5, 20, 14, 0.78);
+  --pen-border-gold: rgba(232, 185, 35, 0.85);
 }
 
 /* 🛡️ 全画面暗転 ＆ ブラー・オーバーレイ */
@@ -13,17 +13,19 @@
   position: fixed;
   top: 0;
   left: 0;
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
+  height: 100dvh;
   z-index: 999999;
   background: var(--pen-overlay-bg);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
   transition: opacity 0.3s ease, visibility 0.3s ease;
   cursor: crosshair;
+  touch-action: none;
 }
 
 .pen-overlay.active {
@@ -40,6 +42,7 @@
   width: 100%;
   height: 100%;
   z-index: 10;
+  touch-action: none;
 }
 
 /* ⚙️ 画面下部コントロールバー */
@@ -51,14 +54,16 @@
   z-index: 20;
   display: flex;
   align-items: center;
-  gap: 16px;
-  padding: 10px 24px;
-  background: linear-gradient(135deg, rgba(10, 61, 42, 0.9), rgba(15, 77, 53, 0.9));
+  gap: 14px;
+  padding: 10px 22px;
+  background: linear-gradient(135deg, rgba(10, 61, 42, 0.95), rgba(15, 77, 53, 0.95));
   border: 1.5px solid var(--pen-border-gold);
   border-radius: 40px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), 0 0 15px rgba(232, 185, 35, 0.3);
-  transition: transform 0.3s ease, opacity 0.3s ease;
+  box-shadow: 0 10px 36px rgba(0, 0, 0, 0.6), 0 0 20px rgba(232, 185, 35, 0.35);
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
   opacity: 0;
+  max-width: 92vw;
+  box-sizing: border-box;
 }
 
 .pen-overlay.active .pen-bottom-bar {
@@ -69,8 +74,12 @@
 .pen-status-text {
   color: #ffffff;
   font-size: 13px;
-  font-weight: 500;
+  font-weight: 700;
   letter-spacing: 0.5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-shadow: 0 0 8px rgba(232, 185, 35, 0.6);
 }
 
 .pen-btn {
@@ -79,15 +88,21 @@
   border: none;
   border-radius: 20px;
   padding: 6px 16px;
-  font-size: 13px;
-  font-weight: 700;
+  font-size: 12px;
+  font-weight: 800;
   cursor: pointer;
+  white-space: nowrap;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .pen-btn:hover {
-  transform: scale(1.08);
-  box-shadow: 0 0 12px rgba(232, 185, 35, 0.8);
+  transform: scale(1.06);
+  box-shadow: 0 0 14px rgba(232, 185, 35, 0.9);
+}
+
+.pen-btn:active {
+  transform: scale(0.94);
 }
 
 /* 🔲 ドローイング専用モーダル */
@@ -95,39 +110,46 @@
   position: fixed;
   top: 0;
   left: 0;
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
+  height: 100dvh;
   z-index: 1000000;
-  background: rgba(0, 0, 0, 0.7);
-  backdrop-filter: blur(12px);
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
   display: flex;
   align-items: center;
   justify-content: center;
-  animation: penModalFadeIn 0.3s ease;
+  animation: penModalFadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  padding: 16px;
+  box-sizing: border-box;
 }
 
 .pen-modal-card {
-  width: 90%;
+  width: 100%;
   max-width: 520px;
-  background: linear-gradient(145deg, rgba(10, 61, 42, 0.95), rgba(15, 77, 53, 0.95));
+  background: linear-gradient(145deg, rgba(10, 61, 42, 0.96), rgba(15, 77, 53, 0.96));
   border: 1.5px solid var(--pen-border-gold);
-  border-radius: 16px;
-  padding: 28px;
+  border-radius: 18px;
+  padding: 26px;
   color: #ffffff;
-  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.6), 0 0 25px rgba(232, 185, 35, 0.25);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7), 0 0 30px rgba(232, 185, 35, 0.3);
   position: relative;
-  max-height: 80vh;
+  max-height: 85dvh;
   overflow-y: auto;
+  box-sizing: border-box;
 }
 
 .pen-modal-title {
-  font-size: 20px;
+  font-size: 19px;
   font-weight: 700;
   color: #E8B923;
   margin-bottom: 16px;
+  padding-right: 28px;
   display: flex;
   align-items: center;
   gap: 8px;
+  text-shadow: 0 0 10px rgba(232, 185, 35, 0.5);
 }
 
 .pen-modal-close {
@@ -137,14 +159,27 @@
   background: transparent;
   border: none;
   color: #ffffff;
-  font-size: 20px;
+  font-size: 22px;
   cursor: pointer;
   opacity: 0.8;
+  padding: 4px 8px;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .pen-modal-close:hover { opacity: 1; }
 
 @keyframes penModalFadeIn {
-  from { opacity: 0; transform: scale(0.92); }
-  to { opacity: 1; transform: scale(1); }
+  from { opacity: 0; transform: scale(0.90) translateY(10px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+@media (max-width: 600px) {
+  .pen-bottom-bar {
+    bottom: 16px;
+    padding: 8px 14px;
+    gap: 8px;
+  }
+  .pen-status-text { font-size: 11px; }
+  .pen-btn { padding: 6px 12px; font-size: 11px; }
+  .pen-modal-card { padding: 20px 16px; }
 }
