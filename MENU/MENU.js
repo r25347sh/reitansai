@@ -3,10 +3,10 @@
  */
 const RADIAL_MENU_DATA = [
   { 
-  label: 'ドローイング', 
-  icon: '✏️', 
-  action: () => { window.PenEngine && window.PenEngine.open(); } 
-  }
+    label: 'ドローイング', 
+    icon: '✏️', 
+    action: () => { window.PenEngine && window.PenEngine.open(); } 
+  },
   { label: 'ホーム', icon: '🏠', url: '/reitansai/index.html' },
   { label: '統括責任者', icon: '👔', url: '/reitansai/pages/takimura_t.html' },
   {
@@ -35,11 +35,15 @@ const RADIAL_MENU_DATA = [
 ];
 
 (function () {
-  const LONG_PRESS_MS = 360;
-  const TRIPLE_TAP_DELAY_MS = 300; // 3回タップ間隔の判定時間
-  const MOVE_THRESHOLD = 8;
+  'use strict';
 
-  // ⚛️ 電子殻の自動拡張設定（収容数＆半径）
+  if (window.RadialMenuInitialized) return;
+  window.RadialMenuInitialized = true;
+
+  const LONG_PRESS_MS = 380;
+  const TRIPLE_TAP_DELAY_MS = 300;
+  const MOVE_THRESHOLD = 10;
+
   const SHELL_CAPACITIES = [6, 10, 14];
   const SHELL_RADII = [115, 185, 255];
 
@@ -55,11 +59,9 @@ const RADIAL_MENU_DATA = [
   let isOpen = false;
   let menuStack = [];
 
-  // トリプルタップ/クリック検出用変数
   let tapCount = 0;
   let tapTimer = null;
 
-  // 🚀 Ajax非同期遷移
   async function navigateAjax(url) {
     try {
       const response = await fetch(url);
@@ -84,88 +86,82 @@ const RADIAL_MENU_DATA = [
     }
   }
 
-// 💥 放射状レインボースパーク ＆ ダブルショックウェーブエンジン
-// （麗澤シラバス配色に調整済み：深緑＋ゴールド中心）
-function triggerParticleBurst() {
-  if (!canvas || !ctx) return;
-  canvas.width = 600;
-  canvas.height = 600;
-  const cX = 300, cY = 300;
+  function triggerParticleBurst() {
+    if (!canvas || !ctx) return;
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = 600 * dpr;
+    canvas.height = 600 * dpr;
+    ctx.scale(dpr, dpr);
 
-  let ring1Radius = 10, ring1Alpha = 1;
-  let ring2Radius = 5, ring2Alpha = 0.8;
+    const cX = 300, cY = 300;
+    let ring1Radius = 10, ring1Alpha = 1;
+    let ring2Radius = 5, ring2Alpha = 0.8;
 
-  const particleCount = 28;
-  const particles = Array.from({ length: particleCount }, (_, idx) => {
-    const a = (idx / particleCount) * Math.PI * 2 + (Math.random() * 0.15);
-    const spd = Math.random() * 7 + 3.5;
-    
-    // 🌈 虹色パーティクル（フルスペクトラム）
-    const hue = Math.random() * 360; // 0〜360度で完全な虹色
+    const particleCount = 28;
+    const particles = Array.from({ length: particleCount }, (_, idx) => {
+      const a = (idx / particleCount) * Math.PI * 2 + (Math.random() * 0.15);
+      const spd = Math.random() * 7 + 3.5;
+      const hue = Math.random() * 360;
 
-    return {
-      x: cX, y: cY,
-      vx: Math.cos(a) * spd, vy: Math.sin(a) * spd,
-      size: Math.random() * 3 + 1.5,
-      color: `hsl(${hue}, 95%, 68%)`,
-      alpha: 1
-    };
-  });
-
-  function draw() {
-    ctx.clearRect(0, 0, 600, 600);
-
-    // 衝撃波リング1（深緑）
-    if (ring1Alpha > 0) {
-      ctx.beginPath();
-      ctx.arc(cX, cY, ring1Radius, 0, Math.PI * 2);
-      ctx.strokeStyle = `rgba(34, 139, 34, ${ring1Alpha})`;   // #228B22
-      ctx.lineWidth = 3.5;
-      ctx.stroke();
-      ring1Radius += 8;
-      ring1Alpha -= 0.048;
-    }
-
-    // 衝撃波リング2（ゴールド）
-    if (ring2Alpha > 0) {
-      ctx.beginPath();
-      ctx.arc(cX, cY, ring2Radius, 0, Math.PI * 2);
-      ctx.strokeStyle = `rgba(232, 185, 35, ${ring2Alpha})`;  // #E8B923
-      ctx.lineWidth = 2.5;
-      ctx.stroke();
-      ring2Radius += 6.5;
-      ring2Alpha -= 0.038;
-    }
-
-    // 粒子
-    let isAlive = false;
-    particles.forEach(p => {
-      if (p.alpha > 0) {
-        isAlive = true;
-        p.x += p.vx; 
-        p.y += p.vy;
-        p.vx *= 0.93; 
-        p.vy *= 0.93;
-        p.alpha -= 0.033;
-
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-        ctx.fillStyle = p.color;
-        ctx.globalAlpha = Math.max(0, p.alpha);
-        ctx.fill();
-      }
+      return {
+        x: cX, y: cY,
+        vx: Math.cos(a) * spd, vy: Math.sin(a) * spd,
+        size: Math.random() * 3 + 1.5,
+        color: `hsl(${hue}, 95%, 68%)`,
+        alpha: 1
+      };
     });
 
-    if (ring1Alpha > 0 || ring2Alpha > 0 || isAlive) {
-      requestAnimationFrame(draw);
-    } else {
+    function draw() {
       ctx.clearRect(0, 0, 600, 600);
-    }
-  }
-  draw();
-}
 
-  // ⚛️ 可変長自動レイアウト演算（電子殻モデル）
+      if (ring1Alpha > 0) {
+        ctx.beginPath();
+        ctx.arc(cX, cY, ring1Radius, 0, Math.PI * 2);
+        ctx.strokeStyle = `rgba(34, 139, 34, ${ring1Alpha})`;
+        ctx.lineWidth = 3.5;
+        ctx.stroke();
+        ring1Radius += 8;
+        ring1Alpha -= 0.048;
+      }
+
+      if (ring2Alpha > 0) {
+        ctx.beginPath();
+        ctx.arc(cX, cY, ring2Radius, 0, Math.PI * 2);
+        ctx.strokeStyle = `rgba(232, 185, 35, ${ring2Alpha})`;
+        ctx.lineWidth = 2.5;
+        ctx.stroke();
+        ring2Radius += 6.5;
+        ring2Alpha -= 0.038;
+      }
+
+      let isAlive = false;
+      particles.forEach(p => {
+        if (p.alpha > 0) {
+          isAlive = true;
+          p.x += p.vx; 
+          p.y += p.vy;
+          p.vx *= 0.93; 
+          p.vy *= 0.93;
+          p.alpha -= 0.033;
+
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+          ctx.fillStyle = p.color;
+          ctx.globalAlpha = Math.max(0, p.alpha);
+          ctx.fill();
+        }
+      });
+
+      if (ring1Alpha > 0 || ring2Alpha > 0 || isAlive) {
+        requestAnimationFrame(draw);
+      } else {
+        ctx.clearRect(0, 0, 600, 600);
+      }
+    }
+    draw();
+  }
+
   function calculateShellLayout(items) {
     const layout = [];
     let remaining = items.length;
@@ -189,7 +185,6 @@ function triggerParticleBurst() {
     return layout;
   }
 
-  // 🔄 階層切り替え：画面上の全要素を完全リプレイス
   function renderMenuLevel(items) {
     const oldItems = itemsContainer.querySelectorAll('.rm-item');
     oldItems.forEach(el => {
@@ -252,6 +247,8 @@ function triggerParticleBurst() {
   }
 
   function createMenuDOM() {
+    if (document.querySelector('.radial-menu-wrapper')) return;
+
     menuEl = document.createElement('div');
     menuEl.className = 'radial-menu-wrapper';
 
@@ -308,9 +305,11 @@ function triggerParticleBurst() {
     isOpen = false;
   }
 
-  // 🎯 トリプルタップ & 長押しイベントリスナー
   function initEvents() {
     document.addEventListener('pointerdown', (e) => {
+      // 🛡️ ドローイングオーバーレイ表示中はメニューを絶対に起動させない
+      if (document.querySelector('.pen-overlay.active')) return;
+
       if (isOpen && menuEl.contains(e.target)) return;
       if (isOpen && !menuEl.contains(e.target)) {
         closeMenu();
@@ -320,12 +319,10 @@ function triggerParticleBurst() {
       startX = e.clientX; 
       startY = e.clientY;
 
-      // 🔥 トリプルタップ/クリックの判定処理
       tapCount++;
       clearTimeout(tapTimer);
 
       if (tapCount === 3) {
-        // 3回連続タップ成功！即座にメニュー展開
         clearTimeout(timer);
         timer = null;
         tapCount = 0;
@@ -337,7 +334,6 @@ function triggerParticleBurst() {
         tapCount = 0;
       }, TRIPLE_TAP_DELAY_MS);
 
-      // 🔥 長押しの判定処理
       clearTimeout(timer);
       timer = setTimeout(() => {
         tapCount = 0;
