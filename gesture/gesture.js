@@ -1,216 +1,258 @@
 /**
- * 🔮 GestureRecognizer - 複数筆（マルチストローク）＆高精度ハイブリッド認識エンジン
+ * 🔮 GestureRecognizer - 完全書き順不問・見た目形状（2Dラスター）認識エンジン
  */
 (function () {
   'use strict';
 
-  const NUM_POINTS = 64;
-  const SQUARE_SIZE = 250.0;
-  const MIN_SCORE_THRESHOLD = 0.65; // 65%未満は未認識（ハート誤判定防止！）
+  const GRID_SIZE = 32;       // 32x32 ピクセルのグリッドで判定
+  const CANVAS_SIZE = 128;    // 規格化用の内部キャンバスサイズ
+  const MIN_SCORE_THRESHOLD = 0.58; // 類似度58%以上で合格
 
-  // 🌟 対応ジェスチャーテンプレート（マルチ筆記対応）
+  // 判定用オフスクリーンキャンバス
+  const offCanvas = document.createElement('canvas');
+  offCanvas.width = CANVAS_SIZE;
+  offCanvas.height = CANVAS_SIZE;
+  const offCtx = offCanvas.getContext('2d', { willReadFrequently: true });
+
+  // 🌟 登録ジェスチャー定義
   const TEMPLATES = [
-    { name: '♡ ハート', type: 'heart', points: generateHeartPoints() },
-    { name: '★ 星', type: 'star', points: generateStarPoints() },
-    { name: '◯ 円', type: 'circle', points: generateCirclePoints() },
-    { name: '△ 三角', type: 'triangle', points: generatePolygonPoints(3) },
-    { name: '□ 四角', type: 'square', points: generatePolygonPoints(4) },
-    { name: '⚡ 稲妻', type: 'lightning', points: generateLightningPoints() },
-    { name: '❌ バツ', type: 'cross', points: generateCrossPoints() },
-    { name: '✅ チェック', type: 'check', points: generateCheckPoints() },
-    { name: '↑ 上矢印', type: 'arrow_up', points: generateArrowPoints('up') },
-    { name: '↓ 下矢印', type: 'arrow_down', points: generateArrowPoints('down') }
+    { name: '♡ ハート', draw: drawHeartTemplate },
+    { name: '★ 星', draw: drawStarTemplate },
+    { name: '◯ 円', draw: drawCircleTemplate },
+    { name: '△ 三角', draw: drawTriangleTemplate },
+    { name: '□ 四角', draw: drawSquareTemplate },
+    { name: '⚡ 稲妻', draw: drawLightningTemplate },
+    { name: '❌ バツ', draw: drawCrossTemplate },
+    { name: '✅ チェック', draw: drawCheckTemplate },
+    { name: '↑ 上矢印', draw: drawArrowUpTemplate },
+    { name: '↓ 下矢印', draw: drawArrowDownTemplate }
   ];
 
-  // 1. 複数ストローク（複数筆）を1つの連続した点列に自動統合
-  function combineStrokes(strokes) {
-    const points = [];
+  let compiledTemplates = null;
+
+  // --- 🎨 テンプレート画像を事前にグリッドデータ化 ---
+  function initTemplates() {
+    compiledTemplates = TEMPLATES.map(tpl => {
+      offCtx.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+      offCtx.fillStyle = '#000000';
+      offCtx.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+
+      offCtx.strokeStyle = '#ffffff';
+      offCtx.fillStyle = '#ffffff';
+      offCtx.lineWidth = 10;
+      offCtx.lineCap = 'round';
+      offCtx.lineJoin = 'round';
+
+      tpl.draw(offCtx, CANVAS_SIZE);
+
+      const grid = extractBlurredGrid();
+      return { name: tpl.name, grid };
+    });
+  }
+
+  // --- 📐 ユーザー入力ストロークをバウンディングボックス正規化して描画 ---
+  function renderStrokesToGrid(strokes) {
+    let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+
     strokes.forEach(stroke => {
       stroke.forEach(pt => {
-        points.push({ x: pt.x, y: pt.y });
+        minX = Math.min(minX, pt.x);
+        maxX = Math.max(maxX, pt.x);
+        minY = Math.min(minY, pt.y);
+        maxY = Math.max(maxY, pt.y);
       });
     });
-    return points;
-  }
 
-  // 2. 点群のリサンプリング（全64点に均等化）
-  function resample(points, n) {
-    if (points.length === 0) return [];
-    const I = pathLength(points) / (n - 1);
-    if (I === 0) return points;
-
-    let D = 0;
-    const newPoints = [{ x: points[0].x, y: points[0].y }];
-
-    for (let i = 1; i < points.length; i++) {
-      const d = distance(points[i - 1], points[i]);
-      if (D + d >= I) {
-        const qx = points[i - 1].x + ((I - D) / d) * (points[i].x - points[i - 1].x);
-        const qy = points[i - 1].y + ((I - D) / d) * (points[i].y - points[i - 1].y);
-        const q = { x: qx, y: qy };
-        newPoints.push(q);
-        points.splice(i, 0, q);
-        D = 0;
-      } else {
-        D += d;
-      }
-    }
-    while (newPoints.length < n) {
-      newPoints.push({ x: points[points.length - 1].x, y: points[points.length - 1].y });
-    }
-    return newPoints;
-  }
-
-  // 3. 重心を原点(0,0)に移動
-  function centroid(points) {
-    let x = 0, y = 0;
-    points.forEach(p => { x += p.x; y += p.y; });
-    return { x: x / points.length, y: y / points.length };
-  }
-
-  function translateToOrigin(points) {
-    const c = centroid(points);
-    return points.map(p => ({ x: p.x - c.x, y: p.y - c.y }));
-  }
-
-  // 4. バウンディングボックス正方形スケーリング
-  function scaleToSquare(points, size) {
-    let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
-    points.forEach(p => {
-      minX = Math.min(minX, p.x);
-      maxX = Math.max(maxX, p.x);
-      minY = Math.min(minY, p.y);
-      maxY = Math.max(maxY, p.y);
-    });
     const width = maxX - minX || 1;
     const height = maxY - minY || 1;
-    return points.map(p => ({
-      x: (p.x * size) / width,
-      y: (p.y * size) / height
-    }));
+    const scale = (CANVAS_SIZE * 0.72) / Math.max(width, height);
+    const offsetX = (CANVAS_SIZE - width * scale) / 2;
+    const offsetY = (CANVAS_SIZE - height * scale) / 2;
+
+    offCtx.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+    offCtx.fillStyle = '#000000';
+    offCtx.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+
+    offCtx.strokeStyle = '#ffffff';
+    offCtx.lineWidth = 10;
+    offCtx.lineCap = 'round';
+    offCtx.lineJoin = 'round';
+
+    strokes.forEach(stroke => {
+      if (stroke.length < 2) return;
+      offCtx.beginPath();
+      offCtx.moveTo((stroke[0].x - minX) * scale + offsetX, (stroke[0].y - minY) * scale + offsetY);
+      for (let i = 1; i < stroke.length; i++) {
+        offCtx.lineTo((stroke[i].x - minX) * scale + offsetX, (stroke[i].y - minY) * scale + offsetY);
+      }
+      offCtx.stroke();
+    });
+
+    return extractBlurredGrid();
   }
 
-  // 5. 点群間の距離計測（パス類似度計算）
-  function pathDistance(pts1, pts2) {
-    let d = 0;
-    for (let i = 0; i < pts1.length; i++) {
-      d += distance(pts1[i], pts2[i]);
+  // --- 🌫️ 32x32への縮小 ＆ ぼかし（揺らぎ吸収）処理 ---
+  function extractBlurredGrid() {
+    const imgData = offCtx.getImageData(0, 0, CANVAS_SIZE, CANVAS_SIZE).data;
+    const rawGrid = new Float32Array(GRID_SIZE * GRID_SIZE);
+    const ratio = CANVAS_SIZE / GRID_SIZE;
+
+    for (let gy = 0; gy < GRID_SIZE; gy++) {
+      for (let gx = 0; gx < GRID_SIZE; gx++) {
+        let sum = 0;
+        const startY = Math.floor(gy * ratio);
+        const startX = Math.floor(gx * ratio);
+
+        for (let py = 0; py < ratio; py++) {
+          for (let px = 0; px < ratio; px++) {
+            const idx = ((startY + py) * CANVAS_SIZE + (startX + px)) * 4;
+            sum += imgData[idx]; // R値（白さ）を取得
+          }
+        }
+        rawGrid[gy * GRID_SIZE + gx] = sum / (ratio * ratio * 255);
+      }
     }
-    return d / pts1.length;
-  }
 
-  function distance(p1, p2) {
-    const dx = p2.x - p1.x;
-    const dy = p2.y - p1.y;
-    return Math.sqrt(dx * dx + dy * dy);
-  }
-
-  function pathLength(points) {
-    let d = 0;
-    for (let i = 1; i < points.length; i++) {
-      d += distance(points[i - 1], points[i]);
+    // 線のブレやズレを許容するための3x3ボックステクスチャぼかし
+    const blurredGrid = new Float32Array(GRID_SIZE * GRID_SIZE);
+    for (let y = 0; y < GRID_SIZE; y++) {
+      for (let x = 0; x < GRID_SIZE; x++) {
+        let val = 0;
+        let count = 0;
+        for (let dy = -1; dy <= 1; dy++) {
+          for (let dx = -1; dx <= 1; dx++) {
+            const nx = x + dx;
+            const ny = y + dy;
+            if (nx >= 0 && nx < GRID_SIZE && ny >= 0 && ny < GRID_SIZE) {
+              val += rawGrid[ny * GRID_SIZE + nx];
+              count++;
+            }
+          }
+        }
+        blurredGrid[y * GRID_SIZE + x] = val / count;
+      }
     }
-    return d;
+    return blurredGrid;
   }
 
-  // --- 📐 テンプレート生成用関数群 ---
-  function generateHeartPoints() {
-    const pts = [];
-    for (let i = 0; i < NUM_POINTS; i++) {
-      const t = (i / NUM_POINTS) * Math.PI * 2;
-      const x = 16 * Math.pow(Math.sin(t), 3);
-      const y = -(13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t));
-      pts.push({ x, y });
+  // --- 📊 重なり度（ソフトIoU＆コサイン類似度）計算 ---
+  function compareGrids(gridA, gridB) {
+    let dot = 0, normA = 0, normB = 0;
+    for (let i = 0; i < gridA.length; i++) {
+      dot += gridA[i] * gridB[i];
+      normA += gridA[i] * gridA[i];
+      normB += gridB[i] * gridB[i];
     }
-    return pts;
+    if (normA === 0 || normB === 0) return 0;
+    return dot / (Math.sqrt(normA) * Math.sqrt(normB));
   }
 
-  function generateStarPoints() {
-    const pts = [];
+  // --- 🎯 テンプレート描画関数群 ---
+  function drawHeartTemplate(ctx, sz) {
+    ctx.beginPath();
+    ctx.moveTo(sz / 2, sz * 0.82);
+    ctx.bezierCurveTo(sz * 0.05, sz * 0.5, sz * 0.05, sz * 0.15, sz * 0.32, sz * 0.15);
+    ctx.bezierCurveTo(sz * 0.45, sz * 0.15, sz * 0.5, sz * 0.3, sz / 2, sz * 0.35);
+    ctx.bezierCurveTo(sz * 0.5, sz * 0.3, sz * 0.55, sz * 0.15, sz * 0.68, sz * 0.15);
+    ctx.bezierCurveTo(sz * 0.95, sz * 0.15, sz * 0.95, sz * 0.5, sz / 2, sz * 0.82);
+    ctx.stroke();
+  }
+
+  function drawStarTemplate(ctx, sz) {
+    const cx = sz / 2, cy = sz / 2, r = sz * 0.42;
+    ctx.beginPath();
     for (let i = 0; i < 5; i++) {
-      const aOuter = (i * 4 * Math.PI) / 5 - Math.PI / 2;
-      pts.push({ x: Math.cos(aOuter) * 100, y: Math.sin(aOuter) * 100 });
+      const a = (i * 4 * Math.PI) / 5 - Math.PI / 2;
+      const x = cx + r * Math.cos(a);
+      const y = cy + r * Math.sin(a);
+      if (i === 0) ctx.moveTo(x, y);
+      else ctx.lineTo(x, y);
     }
-    return resample(pts, NUM_POINTS);
+    ctx.closePath();
+    ctx.stroke();
   }
 
-  function generateCirclePoints() {
-    const pts = [];
-    for (let i = 0; i < NUM_POINTS; i++) {
-      const a = (i / NUM_POINTS) * Math.PI * 2;
-      pts.push({ x: Math.cos(a) * 100, y: Math.sin(a) * 100 });
-    }
-    return pts;
+  function drawCircleTemplate(ctx, sz) {
+    ctx.beginPath();
+    ctx.arc(sz / 2, sz / 2, sz * 0.36, 0, Math.PI * 2);
+    ctx.stroke();
   }
 
-  function generatePolygonPoints(sides) {
-    const pts = [];
-    for (let i = 0; i <= sides; i++) {
-      const a = (i / sides) * Math.PI * 2 - Math.PI / 2;
-      pts.push({ x: Math.cos(a) * 100, y: Math.sin(a) * 100 });
-    }
-    return resample(pts, NUM_POINTS);
+  function drawTriangleTemplate(ctx, sz) {
+    ctx.beginPath();
+    ctx.moveTo(sz / 2, sz * 0.15);
+    ctx.lineTo(sz * 0.85, sz * 0.85);
+    ctx.lineTo(sz * 0.15, sz * 0.85);
+    ctx.closePath();
+    ctx.stroke();
   }
 
-  function generateLightningPoints() {
-    const raw = [
-      {x: 20, y: -100}, {x: -30, y: -10}, {x: 10, y: 0},
-      {x: -20, y: 100}, {x: 30, y: 10}, {x: -10, y: 0}
-    ];
-    return resample(raw, NUM_POINTS);
+  function drawSquareTemplate(ctx, sz) {
+    ctx.strokeRect(sz * 0.18, sz * 0.18, sz * 0.64, sz * 0.64);
   }
 
-  function generateCrossPoints() {
-    const raw = [{x: -80, y: -80}, {x: 80, y: 80}, {x: 80, y: -80}, {x: -80, y: 80}];
-    return resample(raw, NUM_POINTS);
+  function drawLightningTemplate(ctx, sz) {
+    ctx.beginPath();
+    ctx.moveTo(sz * 0.6, sz * 0.12);
+    ctx.lineTo(sz * 0.25, sz * 0.5);
+    ctx.lineTo(sz * 0.5, sz * 0.5);
+    ctx.lineTo(sz * 0.4, sz * 0.88);
+    ctx.lineTo(sz * 0.75, sz * 0.48);
+    ctx.lineTo(sz * 0.5, sz * 0.48);
+    ctx.closePath();
+    ctx.stroke();
   }
 
-  function generateCheckPoints() {
-    const raw = [{x: -80, y: 0}, {x: -20, y: 60}, {x: 80, y: -80}];
-    return resample(raw, NUM_POINTS);
+  function drawCrossTemplate(ctx, sz) {
+    ctx.beginPath();
+    ctx.moveTo(sz * 0.2, sz * 0.2); ctx.lineTo(sz * 0.8, sz * 0.8);
+    ctx.moveTo(sz * 0.8, sz * 0.2); ctx.lineTo(sz * 0.2, sz * 0.8);
+    ctx.stroke();
   }
 
-  function generateArrowPoints(dir) {
-    let raw = [];
-    if (dir === 'up') raw = [{x: -50, y: 50}, {x: 0, y: -80}, {x: 50, y: 50}, {x: 0, y: -80}, {x: 0, y: 100}];
-    else raw = [{x: -50, y: -50}, {x: 0, y: 80}, {x: 50, y: -50}, {x: 0, y: 80}, {x: 0, y: -100}];
-    return resample(raw, NUM_POINTS);
+  function drawCheckTemplate(ctx, sz) {
+    ctx.beginPath();
+    ctx.moveTo(sz * 0.15, sz * 0.55);
+    ctx.lineTo(sz * 0.4, sz * 0.8);
+    ctx.lineTo(sz * 0.85, sz * 0.2);
+    ctx.stroke();
   }
 
-  // --- 🎯 メイン判定メソッド ---
+  function drawArrowUpTemplate(ctx, sz) {
+    ctx.beginPath();
+    ctx.moveTo(sz * 0.2, sz * 0.45); ctx.lineTo(sz / 2, sz * 0.15); ctx.lineTo(sz * 0.8, sz * 0.45);
+    ctx.moveTo(sz / 2, sz * 0.15); ctx.lineTo(sz / 2, sz * 0.85);
+    ctx.stroke();
+  }
+
+  function drawArrowDownTemplate(ctx, sz) {
+    ctx.beginPath();
+    ctx.moveTo(sz * 0.2, sz * 0.55); ctx.lineTo(sz / 2, sz * 0.85); ctx.lineTo(sz * 0.8, sz * 0.55);
+    ctx.moveTo(sz / 2, sz * 0.85); ctx.lineTo(sz / 2, sz * 0.15);
+    ctx.stroke();
+  }
+
+  // --- 🎯 メイン判定関数 ---
   function recognize(strokes) {
     if (!strokes || strokes.length === 0) return null;
+    if (!compiledTemplates) initTemplates();
 
-    let points = combineStrokes(strokes);
-    if (points.length < 8) return null;
-
-    points = resample(points, NUM_POINTS);
-    points = scaleToSquare(points, SQUARE_SIZE);
-    points = translateToOrigin(points);
+    const userGrid = renderStrokesToGrid(strokes);
 
     let bestMatch = null;
-    let bestDistance = Infinity;
+    let maxScore = 0;
 
-    TEMPLATES.forEach(tpl => {
-      let tplPoints = resample(tpl.points, NUM_POINTS);
-      tplPoints = scaleToSquare(tplPoints, SQUARE_SIZE);
-      tplPoints = translateToOrigin(tplPoints);
-
-      const d = pathDistance(points, tplPoints);
-      if (d < bestDistance) {
-        bestDistance = d;
+    compiledTemplates.forEach(tpl => {
+      const score = compareGrids(userGrid, tpl.grid);
+      if (score > maxScore) {
+        maxScore = score;
         bestMatch = tpl;
       }
     });
 
-    // スコア計算 (1 - distance / (正方形対角線))
-    const maxDist = Math.sqrt(SQUARE_SIZE * SQUARE_SIZE + SQUARE_SIZE * SQUARE_SIZE);
-    const score = Math.max(0, 1 - bestDistance / maxDist);
+    console.log(`✨ Shape Match: ${bestMatch ? bestMatch.name : 'None'} (Score: ${(maxScore * 100).toFixed(1)}%)`);
 
-    console.log(`✨ Gesture Match: ${bestMatch ? bestMatch.name : 'None'} (Score: ${(score * 100).toFixed(1)}%)`);
-
-    // 65%以上のスコアが出た場合のみ認定！
-    if (score >= MIN_SCORE_THRESHOLD && bestMatch) {
+    if (maxScore >= MIN_SCORE_THRESHOLD && bestMatch) {
       return bestMatch.name;
     }
     return null;
