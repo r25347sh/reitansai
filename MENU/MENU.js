@@ -2,6 +2,11 @@
  * 📋 データ構造（可変長対応・自動レイアウト）
  */
 const RADIAL_MENU_DATA = [
+  { 
+  label: 'ドローイング', 
+  icon: '✏️', 
+  action: () => { window.PenEngine && window.PenEngine.open(); } 
+  }
   { label: 'ホーム', icon: '🏠', url: '/reitansai/index.html' },
   { label: '統括責任者', icon: '👔', url: '/reitansai/pages/takimura_t.html' },
   {
