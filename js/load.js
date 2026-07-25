@@ -2,7 +2,7 @@
   // 読み込みたい外部ファイルのリスト
   const resources = {
     css: [
-      '/reitansai/MEMO/MEMO.css',
+      '/reitansai/MENU/MENU.css',
       '/reitansai/gesture/pen.css'
     ],
     js: [
