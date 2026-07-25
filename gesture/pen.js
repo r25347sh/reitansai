@@ -1,7 +1,9 @@
 /**
- * ✏️ pen.js - 手書きジェスチャー描画エンジン
+ * ✏️ pen.js - 手書きジェスチャー描画エンジン（決定版）
  */
 (function () {
+  'use strict';
+
   let overlayEl = null;
   let canvas = null;
   let ctx = null;
@@ -14,6 +16,8 @@
   let animFrameId = null;
 
   function createUI() {
+    if (overlayEl) return;
+
     overlayEl = document.createElement('div');
     overlayEl.className = 'pen-overlay';
 
@@ -31,8 +35,8 @@
 
     const clearBtn = document.createElement('button');
     clearBtn.className = 'pen-btn';
-    clearBtn.style.background = 'rgba(255,255,255,0.2)';
-    clearBtn.style.color = '#fff';
+    clearBtn.style.background = 'rgba(255, 255, 255, 0.15)';
+    clearBtn.style.color = '#ffffff';
     clearBtn.textContent = 'クリア';
     clearBtn.addEventListener('click', (e) => {
       e.stopPropagation();
@@ -57,6 +61,7 @@
 
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
+    initEvents();
   }
 
   function resizeCanvas() {
@@ -66,15 +71,14 @@
     redraw();
   }
 
-  // ✨ 虹色ラメ粒子の追加
   function addParticle(x, y) {
     for (let i = 0; i < 2; i++) {
       particles.push({
-        x: x + (Math.random() - 0.5) * 12,
-        y: y + (Math.random() - 0.5) * 12,
-        vx: (Math.random() - 0.5) * 1.5,
-        vy: Math.random() * 1.5 + 0.5,
-        size: Math.random() * 3 + 1,
+        x: x + (Math.random() - 0.5) * 14,
+        y: y + (Math.random() - 0.5) * 14,
+        vx: (Math.random() - 0.5) * 1.8,
+        vy: Math.random() * 1.8 + 0.4,
+        size: Math.random() * 3.5 + 1.2,
         color: `hsl(${hue}, 100%, 75%)`,
         alpha: 1
       });
@@ -86,7 +90,7 @@
       const p = particles[i];
       p.x += p.vx;
       p.y += p.vy;
-      p.alpha -= 0.025;
+      p.alpha -= 0.022;
 
       if (p.alpha <= 0) {
         particles.splice(i, 1);
@@ -96,7 +100,7 @@
       ctx.save();
       ctx.globalAlpha = Math.max(0, p.alpha);
       ctx.fillStyle = p.color;
-      ctx.shadowBlur = 8;
+      ctx.shadowBlur = 10;
       ctx.shadowColor = p.color;
       ctx.beginPath();
       ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
@@ -119,8 +123,8 @@
       ctx.beginPath();
       ctx.moveTo(p1.x, p1.y);
       ctx.lineTo(p2.x, p2.y);
-      ctx.strokeStyle = p2.color || `hsl(${p2.hue}, 95%, 65%)`;
-      ctx.shadowBlur = 14;
+      ctx.strokeStyle = p2.color || `hsl(${p2.hue}, 95%, 68%)`;
+      ctx.shadowBlur = 16;
       ctx.shadowColor = ctx.strokeStyle;
       ctx.stroke();
     }
@@ -128,6 +132,7 @@
   }
 
   function redraw() {
+    if (!ctx) return;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     allStrokes.forEach(stroke => drawStroke(stroke));
     if (currentStroke.length > 0) drawStroke(currentStroke);
@@ -142,7 +147,12 @@
 
   function initEvents() {
     overlayEl.addEventListener('pointerdown', (e) => {
+      if (!overlayEl.classList.contains('active')) return;
       if (e.target.closest('.pen-bottom-bar')) return;
+
+      e.preventDefault();
+      try { overlayEl.setPointerCapture(e.pointerId); } catch (err) {}
+
       isDrawing = true;
       clearTimeout(recognizerTimer);
       currentStroke = [{ x: e.clientX, y: e.clientY, hue: hue }];
@@ -151,14 +161,16 @@
 
     overlayEl.addEventListener('pointermove', (e) => {
       if (!isDrawing) return;
-      const pt = { x: e.clientX, y: e.clientY, hue: hue };
-      currentStroke.push(pt);
+      e.preventDefault();
+      currentStroke.push({ x: e.clientX, y: e.clientY, hue: hue });
       addParticle(e.clientX, e.clientY);
     });
 
-    const stopDrawing = () => {
+    const stopDrawing = (e) => {
       if (!isDrawing) return;
       isDrawing = false;
+      try { overlayEl.releasePointerCapture(e.pointerId); } catch (err) {}
+
       if (currentStroke.length > 0) {
         allStrokes.push(currentStroke);
         currentStroke = [];
@@ -173,15 +185,17 @@
   function scheduleRecognition() {
     clearTimeout(recognizerTimer);
     const statusEl = document.getElementById('pen-status');
-    if (statusEl) statusEl.textContent = '⚡ 解析中...';
+    if (statusEl) statusEl.textContent = '⚡ 魔法陣解析中...';
 
     recognizerTimer = setTimeout(() => {
       if (allStrokes.length === 0) return;
       const result = window.GestureRecognizer ? window.GestureRecognizer.recognize(allStrokes) : null;
+      
       if (result && window.GestureActions) {
+        if (statusEl) statusEl.textContent = `🎯 発動: 【${result}】`;
         window.GestureActions.execute(result);
       } else if (statusEl) {
-        statusEl.textContent = '❌ ジェスチャーが認識できませんでした';
+        statusEl.textContent = '❌ 魔法陣が認識できませんでした';
         setTimeout(() => {
           if (statusEl) statusEl.textContent = '✨ 魔法陣（ジェスチャー）を描いてください';
         }, 1500);
@@ -221,8 +235,9 @@
 
   window.PenEngine = { open, close, clearCanvas, getCanvasDataURL };
 
-  document.addEventListener('DOMContentLoaded', () => {
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', createUI);
+  } else {
     createUI();
-    initEvents();
-  });
+  }
 })();
