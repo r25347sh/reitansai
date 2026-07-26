@@ -1,10 +1,103 @@
 /**
- * ⚡ GestureActions - 魔法陣発動アクション＆ド派手演出モジュール
+ * ⚡ GestureActions - 隠しイースターエッグアニメーション演出エンジン
  */
 (function () {
   'use strict';
 
-  function createMagicModal(title, icon, text, themeColor, bgGradient) {
+  // 🎆 イースターエッグ1: 全画面花火エフェクト
+  function launchFireworks() {
+    const canvas = document.createElement('canvas');
+    canvas.style.position = 'fixed';
+    canvas.style.top = '0';
+    canvas.style.left = '0';
+    canvas.style.width = '100vw';
+    canvas.style.height = '100vh';
+    canvas.style.zIndex = '9999999';
+    canvas.style.pointerEvents = 'none';
+    document.body.appendChild(canvas);
+
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const particles = [];
+    const colors = ['#E8B923', '#FF0055', '#00F0FF', '#FF00FF', '#00FF66'];
+
+    for (let i = 0; i < 150; i++) {
+      const angle = Math.random() * Math.PI * 2;
+      const speed = Math.random() * 12 + 2;
+      particles.push({
+        x: canvas.width / 2,
+        y: canvas.height / 2,
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed,
+        size: Math.random() * 4 + 2,
+        color: colors[Math.floor(Math.random() * colors.length)],
+        alpha: 1
+      });
+    }
+
+    function anim() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      let alive = false;
+
+      particles.forEach(p => {
+        if (p.alpha > 0) {
+          alive = true;
+          p.x += p.vx;
+          p.y += p.vy;
+          p.vy += 0.15; // 重力
+          p.alpha -= 0.015;
+
+          ctx.save();
+          ctx.globalAlpha = Math.max(0, p.alpha);
+          ctx.fillStyle = p.color;
+          ctx.shadowBlur = 10;
+          ctx.shadowColor = p.color;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.restore();
+        }
+      });
+
+      if (alive) requestAnimationFrame(anim);
+      else canvas.remove();
+    }
+    anim();
+  }
+
+  // 🌀 イースターエッグ2: 画面ブラックホール歪み（ヴォイド）
+  function triggerVoidEffect() {
+    document.body.style.transition = 'transform 0.8s cubic-bezier(0.6, -0.28, 0.735, 0.045), filter 0.8s ease';
+    document.body.style.transform = 'scale(0.8) rotate(720deg)';
+    document.body.style.filter = 'invert(1) hue-rotate(180deg) blur(4px)';
+
+    setTimeout(() => {
+      document.body.style.transform = 'none';
+      document.body.style.filter = 'none';
+    }, 1600);
+  }
+
+  // ♾️ イースターエッグ3: サイバーパンク・グリッチモード
+  function triggerGlitchMode() {
+    let count = 0;
+    const interval = setInterval(() => {
+      count++;
+      const rx = (Math.random() - 0.5) * 18;
+      const ry = (Math.random() - 0.5) * 18;
+      document.body.style.transform = `translate(${rx}px, ${ry}px)`;
+      document.body.style.filter = `hue-rotate(${Math.random() * 360}deg) contrast(200%)`;
+
+      if (count > 20) {
+        clearInterval(interval);
+        document.body.style.transform = 'none';
+        document.body.style.filter = 'none';
+      }
+    }, 60);
+  }
+
+  function createMagicModal(title, icon, text, themeColor) {
     const existing = document.querySelector('.pen-modal-overlay');
     if (existing) existing.remove();
 
@@ -13,7 +106,6 @@
 
     const card = document.createElement('div');
     card.className = 'pen-modal-card';
-    card.style.background = bgGradient || 'linear-gradient(145deg, rgba(10, 61, 42, 0.96), rgba(15, 77, 53, 0.96))';
     card.style.borderColor = themeColor || '#E8B923';
 
     card.innerHTML = `
@@ -29,61 +121,49 @@
     overlay.appendChild(card);
     document.body.appendChild(overlay);
 
-    const closeBtn = card.querySelector('.pen-modal-close');
-    closeBtn.addEventListener('click', () => overlay.remove());
-    overlay.addEventListener('click', (e) => {
-      if (e.target === overlay) overlay.remove();
-    });
+    card.querySelector('.pen-modal-close').addEventListener('click', () => overlay.remove());
+    overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.remove(); });
   }
 
   function execute(gestureName) {
-    console.log('%c🎯 魔法陣発動: ' + gestureName, 'color:#00ff88; font-size:16px; font-weight:bold;');
-
-    // 描画オーバーレイを自動で閉じる
     if (window.PenEngine) {
-      setTimeout(() => window.PenEngine.close(), 600);
+      setTimeout(() => window.PenEngine.close(), 400);
     }
 
     switch (gestureName) {
+      // 🎁 イースターエッグアクション
+      case '🎆 花火':
+        launchFireworks();
+        createMagicModal('祝祭の花火 (Reitansai Fireworks)', '🎆', '麗探祭の開催を祝う祝砲花火が打ち上がりました！', '#FF0055');
+        break;
+
+      case '🌀 ヴォイド':
+        triggerVoidEffect();
+        createMagicModal('時空歪曲 (Void Distortion)', '🌀', '画面の時空が歪み、空間がリセットされました。', '#00F0FF');
+        break;
+
+      case '♾️ インフィニティ':
+        triggerGlitchMode();
+        createMagicModal('無限演算 (Infinity Glitch)', '♾️', '無限の可能性を秘めたグリッチモードが起動しました。', '#FF00FF');
+        break;
+
+      // 通常アクション
+      case '✅ チェック':
+        createMagicModal('承認完了 (Check Complete)', '✅', '魔法陣の承認が正常に行われました。', '#00FF66');
+        break;
+
       case '♡ ハート':
-        createMagicModal(
-          '愛と絆の召喚陣 (Heart Magic)',
-          '💖',
-          '麗探祭へようこそ！あなたの訪れを歓迎する愛の波動が発動しました。',
-          '#FF69B4',
-          'linear-gradient(145deg, rgba(60, 10, 35, 0.96), rgba(90, 15, 50, 0.96))'
-        );
+        createMagicModal('愛の波動 (Heart Magic)', '💖', '麗探祭へのご来場ありがとうございます！', '#FF69B4');
         break;
 
       case '★ 星':
-        createMagicModal(
-          'スターバースト召喚 (Star Burst)',
-          '🌟',
-          '星々の煌めきが集結！麗探祭の全企画情報にアクセス可能な状態になりました。',
-          '#FFD700',
-          'linear-gradient(145deg, rgba(60, 50, 10, 0.96), rgba(90, 75, 15, 0.96))'
-        );
-        break;
-
-      case '◯ 円':
-        createMagicModal(
-          '全方位結界・結び (Circle Shield)',
-          '⭕',
-          '完全な円形結界が展開されました。サイトの全メニューを展開します。',
-          '#00F0FF',
-          'linear-gradient(145deg, rgba(10, 45, 60, 0.96), rgba(15, 65, 90, 0.96))'
-        );
+        launchFireworks();
+        createMagicModal('スターバースト (Star Burst)', '🌟', '星々の祝福が舞い降りました。', '#FFD700');
         break;
 
       case '⚡ 稲妻':
-        createMagicModal(
-          '迅雷フリック (Lightning Bolt)',
-          '⚡',
-          '高速アクセス発動！トップページへ一瞬でバインド移動します。',
-          '#FFE600',
-          'linear-gradient(145deg, rgba(50, 50, 10, 0.96), rgba(80, 80, 15, 0.96))'
-        );
-        setTimeout(() => { location.href = '/reitansai/index.html'; }, 1800);
+        createMagicModal('迅雷アクセス (Lightning Bolt)', '⚡', 'トップページへバインドジャンプします。', '#FFE600');
+        setTimeout(() => { location.href = '/reitansai/index.html'; }, 1500);
         break;
 
       case '↑ 上矢印':
@@ -94,17 +174,8 @@
         window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
         break;
 
-      case '❌ バツ':
-        if (window.PenEngine) window.PenEngine.clearCanvas();
-        break;
-
       default:
-        createMagicModal(
-          `魔法陣【${gestureName}】発動`,
-          '✨',
-          `ジェスチャー [${gestureName}] が正常に認識されました！`,
-          '#E8B923'
-        );
+        createMagicModal(`【${gestureName}】発動`, '✨', `魔法陣 [${gestureName}] が展開されました。`, '#E8B923');
         break;
     }
   }
