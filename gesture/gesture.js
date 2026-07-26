@@ -1,21 +1,22 @@
 /**
- * 🔮 GestureRecognizer - 完全書き順不問・見た目形状（2Dラスター）認識エンジン
+ * 🔮 GestureRecognizer - 判定精度強化 ＆ イースターエッグジェスチャー搭載版
  */
 (function () {
   'use strict';
 
-  const GRID_SIZE = 32;       // 32x32 ピクセルのグリッドで判定
-  const CANVAS_SIZE = 128;    // 規格化用の内部キャンバスサイズ
-  const MIN_SCORE_THRESHOLD = 0.58; // 類似度58%以上で合格
+  const GRID_SIZE = 32;
+  const CANVAS_SIZE = 128;
+  const MIN_SCORE_THRESHOLD = 0.55; // 判定閾値を調整
 
-  // 判定用オフスクリーンキャンバス
   const offCanvas = document.createElement('canvas');
   offCanvas.width = CANVAS_SIZE;
   offCanvas.height = CANVAS_SIZE;
   const offCtx = offCanvas.getContext('2d', { willReadFrequently: true });
 
-  // 🌟 登録ジェスチャー定義
+  // 🌟 登録ジェスチャー（通常 ＋ 隠しイースターエッグ）
   const TEMPLATES = [
+    { name: '✅ チェック', draw: drawCheckTemplateStandard },
+    { name: '✅ チェック', draw: drawCheckTemplateSharp }, // チェック精度向上のための変形パターン
     { name: '♡ ハート', draw: drawHeartTemplate },
     { name: '★ 星', draw: drawStarTemplate },
     { name: '◯ 円', draw: drawCircleTemplate },
@@ -23,14 +24,17 @@
     { name: '□ 四角', draw: drawSquareTemplate },
     { name: '⚡ 稲妻', draw: drawLightningTemplate },
     { name: '❌ バツ', draw: drawCrossTemplate },
-    { name: '✅ チェック', draw: drawCheckTemplate },
     { name: '↑ 上矢印', draw: drawArrowUpTemplate },
-    { name: '↓ 下矢印', draw: drawArrowDownTemplate }
+    { name: '↓ 下矢印', draw: drawArrowDownTemplate },
+
+    // 🎁 【イースターエッグジェスチャー】
+    { name: '♾️ インフィニティ', draw: drawInfinityTemplate },  // 数字の「8」または「∞」
+    { name: '🌀 ヴォイド', draw: drawSpiralTemplate },           // 渦巻き（渦）
+    { name: '🎆 花火', draw: drawBurstTemplate }                 // 放射状の線（パッと開く形）
   ];
 
   let compiledTemplates = null;
 
-  // --- 🎨 テンプレート画像を事前にグリッドデータ化 ---
   function initTemplates() {
     compiledTemplates = TEMPLATES.map(tpl => {
       offCtx.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
@@ -39,7 +43,7 @@
 
       offCtx.strokeStyle = '#ffffff';
       offCtx.fillStyle = '#ffffff';
-      offCtx.lineWidth = 10;
+      offCtx.lineWidth = 14; // 線幅をやや太くして判定強度アップ
       offCtx.lineCap = 'round';
       offCtx.lineJoin = 'round';
 
@@ -50,7 +54,6 @@
     });
   }
 
-  // --- 📐 ユーザー入力ストロークをバウンディングボックス正規化して描画 ---
   function renderStrokesToGrid(strokes) {
     let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
 
@@ -74,7 +77,7 @@
     offCtx.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
 
     offCtx.strokeStyle = '#ffffff';
-    offCtx.lineWidth = 10;
+    offCtx.lineWidth = 14;
     offCtx.lineCap = 'round';
     offCtx.lineJoin = 'round';
 
@@ -91,7 +94,6 @@
     return extractBlurredGrid();
   }
 
-  // --- 🌫️ 32x32への縮小 ＆ ぼかし（揺らぎ吸収）処理 ---
   function extractBlurredGrid() {
     const imgData = offCtx.getImageData(0, 0, CANVAS_SIZE, CANVAS_SIZE).data;
     const rawGrid = new Float32Array(GRID_SIZE * GRID_SIZE);
@@ -106,14 +108,13 @@
         for (let py = 0; py < ratio; py++) {
           for (let px = 0; px < ratio; px++) {
             const idx = ((startY + py) * CANVAS_SIZE + (startX + px)) * 4;
-            sum += imgData[idx]; // R値（白さ）を取得
+            sum += imgData[idx];
           }
         }
         rawGrid[gy * GRID_SIZE + gx] = sum / (ratio * ratio * 255);
       }
     }
 
-    // 線のブレやズレを許容するための3x3ボックステクスチャぼかし
     const blurredGrid = new Float32Array(GRID_SIZE * GRID_SIZE);
     for (let y = 0; y < GRID_SIZE; y++) {
       for (let x = 0; x < GRID_SIZE; x++) {
@@ -135,7 +136,6 @@
     return blurredGrid;
   }
 
-  // --- 📊 重なり度（ソフトIoU＆コサイン類似度）計算 ---
   function compareGrids(gridA, gridB) {
     let dot = 0, normA = 0, normB = 0;
     for (let i = 0; i < gridA.length; i++) {
@@ -147,7 +147,62 @@
     return dot / (Math.sqrt(normA) * Math.sqrt(normB));
   }
 
-  // --- 🎯 テンプレート描画関数群 ---
+  // --- 📐 チェックマーク専用高精度テンプレート ---
+  function drawCheckTemplateStandard(ctx, sz) {
+    ctx.beginPath();
+    ctx.moveTo(sz * 0.12, sz * 0.52);
+    ctx.lineTo(sz * 0.38, sz * 0.82);
+    ctx.lineTo(sz * 0.88, sz * 0.18);
+    ctx.stroke();
+  }
+
+  function drawCheckTemplateSharp(ctx, sz) {
+    ctx.beginPath();
+    ctx.moveTo(sz * 0.20, sz * 0.60);
+    ctx.lineTo(sz * 0.42, sz * 0.85);
+    ctx.lineTo(sz * 0.82, sz * 0.25);
+    ctx.stroke();
+  }
+
+  // --- 🎁 イースターエッグ用テンプレート ---
+  function drawInfinityTemplate(ctx, sz) { // ∞ マーク
+    ctx.beginPath();
+    for (let t = 0; t <= Math.PI * 2; t += 0.1) {
+      const scale = 2 / (3 - Math.cos(2 * t));
+      const x = sz / 2 + (sz * 0.38) * scale * Math.cos(t);
+      const y = sz / 2 + (sz * 0.38) * scale * Math.sin(2 * t) / 2;
+      if (t === 0) ctx.moveTo(x, y);
+      else ctx.lineTo(x, y);
+    }
+    ctx.closePath();
+    ctx.stroke();
+  }
+
+  function drawSpiralTemplate(ctx, sz) { // 🌀 渦巻き
+    ctx.beginPath();
+    const cx = sz / 2, cy = sz / 2;
+    for (let i = 0; i < 60; i++) {
+      const angle = 0.35 * i;
+      const x = cx + (1.2 * i) * Math.cos(angle);
+      const y = cy + (1.2 * i) * Math.sin(angle);
+      if (i === 0) ctx.moveTo(x, y);
+      else ctx.lineTo(x, y);
+    }
+    ctx.stroke();
+  }
+
+  function drawBurstTemplate(ctx, sz) { // 🎆 放射状（花火）
+    const cx = sz / 2, cy = sz / 2;
+    ctx.beginPath();
+    for (let i = 0; i < 8; i++) {
+      const a = (i / 8) * Math.PI * 2;
+      ctx.moveTo(cx, cy);
+      ctx.lineTo(cx + Math.cos(a) * sz * 0.4, cy + Math.sin(a) * sz * 0.4);
+    }
+    ctx.stroke();
+  }
+
+  // 基本図形テンプレート
   function drawHeartTemplate(ctx, sz) {
     ctx.beginPath();
     ctx.moveTo(sz / 2, sz * 0.82);
@@ -210,14 +265,6 @@
     ctx.stroke();
   }
 
-  function drawCheckTemplate(ctx, sz) {
-    ctx.beginPath();
-    ctx.moveTo(sz * 0.15, sz * 0.55);
-    ctx.lineTo(sz * 0.4, sz * 0.8);
-    ctx.lineTo(sz * 0.85, sz * 0.2);
-    ctx.stroke();
-  }
-
   function drawArrowUpTemplate(ctx, sz) {
     ctx.beginPath();
     ctx.moveTo(sz * 0.2, sz * 0.45); ctx.lineTo(sz / 2, sz * 0.15); ctx.lineTo(sz * 0.8, sz * 0.45);
@@ -232,7 +279,6 @@
     ctx.stroke();
   }
 
-  // --- 🎯 メイン判定関数 ---
   function recognize(strokes) {
     if (!strokes || strokes.length === 0) return null;
     if (!compiledTemplates) initTemplates();
@@ -250,7 +296,7 @@
       }
     });
 
-    console.log(`✨ Shape Match: ${bestMatch ? bestMatch.name : 'None'} (Score: ${(maxScore * 100).toFixed(1)}%)`);
+    console.log(`✨ Gesture: ${bestMatch ? bestMatch.name : 'None'} (Score: ${(maxScore * 100).toFixed(1)}%)`);
 
     if (maxScore >= MIN_SCORE_THRESHOLD && bestMatch) {
       return bestMatch.name;
