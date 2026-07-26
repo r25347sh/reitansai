@@ -1,22 +1,30 @@
 /**
- * 🔮 GestureRecognizer - 判定精度強化 ＆ イースターエッグジェスチャー搭載版
+ * 🔮 GestureRecognizer - インフィニティ精度超強化 ＆ 全形状ラスターエンジン
  */
 (function () {
   'use strict';
 
   const GRID_SIZE = 32;
   const CANVAS_SIZE = 128;
-  const MIN_SCORE_THRESHOLD = 0.55; // 判定閾値を調整
+  const MIN_SCORE_THRESHOLD = 0.52; // 判定域を最適調整
 
   const offCanvas = document.createElement('canvas');
   offCanvas.width = CANVAS_SIZE;
   offCanvas.height = CANVAS_SIZE;
   const offCtx = offCanvas.getContext('2d', { willReadFrequently: true });
 
-  // 🌟 登録ジェスチャー（通常 ＋ 隠しイースターエッグ）
   const TEMPLATES = [
+    // ♾️ インフィニティの認識精度向上のための極太2パターン
+    { name: '♾️ インフィニティ', draw: drawInfinityTemplateHorizontal },
+    { name: '♾️ インフィニティ', draw: drawInfinityTemplateVertical },
+    
+    // ✅ チェックの多角精度向上
     { name: '✅ チェック', draw: drawCheckTemplateStandard },
-    { name: '✅ チェック', draw: drawCheckTemplateSharp }, // チェック精度向上のための変形パターン
+    { name: '✅ チェック', draw: drawCheckTemplateSharp },
+
+    // 🎁 その他イースターエッグ＆基本ジェスチャー
+    { name: '🌀 ヴォイド', draw: drawSpiralTemplate },
+    { name: '🎆 花火', draw: drawBurstTemplate },
     { name: '♡ ハート', draw: drawHeartTemplate },
     { name: '★ 星', draw: drawStarTemplate },
     { name: '◯ 円', draw: drawCircleTemplate },
@@ -25,12 +33,7 @@
     { name: '⚡ 稲妻', draw: drawLightningTemplate },
     { name: '❌ バツ', draw: drawCrossTemplate },
     { name: '↑ 上矢印', draw: drawArrowUpTemplate },
-    { name: '↓ 下矢印', draw: drawArrowDownTemplate },
-
-    // 🎁 【イースターエッグジェスチャー】
-    { name: '♾️ インフィニティ', draw: drawInfinityTemplate },  // 数字の「8」または「∞」
-    { name: '🌀 ヴォイド', draw: drawSpiralTemplate },           // 渦巻き（渦）
-    { name: '🎆 花火', draw: drawBurstTemplate }                 // 放射状の線（パッと開く形）
+    { name: '↓ 下矢印', draw: drawArrowDownTemplate }
   ];
 
   let compiledTemplates = null;
@@ -43,7 +46,7 @@
 
       offCtx.strokeStyle = '#ffffff';
       offCtx.fillStyle = '#ffffff';
-      offCtx.lineWidth = 14; // 線幅をやや太くして判定強度アップ
+      offCtx.lineWidth = 18; // 線幅を18pxに太くして線の掠れを完全防止！
       offCtx.lineCap = 'round';
       offCtx.lineJoin = 'round';
 
@@ -77,7 +80,7 @@
     offCtx.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
 
     offCtx.strokeStyle = '#ffffff';
-    offCtx.lineWidth = 14;
+    offCtx.lineWidth = 18;
     offCtx.lineCap = 'round';
     offCtx.lineJoin = 'round';
 
@@ -147,7 +150,26 @@
     return dot / (Math.sqrt(normA) * Math.sqrt(normB));
   }
 
-  // --- 📐 チェックマーク専用高精度テンプレート ---
+  // --- ♾️ 横向きインフィニティ（ベジェ曲線で交差部を美しく太描画） ---
+  function drawInfinityTemplateHorizontal(ctx, sz) {
+    ctx.beginPath();
+    ctx.moveTo(sz * 0.5, sz * 0.5);
+    ctx.bezierCurveTo(sz * 0.7, sz * 0.1, sz * 0.95, sz * 0.2, sz * 0.95, sz * 0.5);
+    ctx.bezierCurveTo(sz * 0.95, sz * 0.8, sz * 0.7, sz * 0.9, sz * 0.5, sz * 0.5);
+    ctx.bezierCurveTo(sz * 0.3, sz * 0.1, sz * 0.05, sz * 0.2, sz * 0.05, sz * 0.5);
+    ctx.bezierCurveTo(sz * 0.05, sz * 0.8, sz * 0.3, sz * 0.9, sz * 0.5, sz * 0.5);
+    ctx.stroke();
+  }
+
+  // --- ♾️ 縦向きインフィニティ (数字の8) ---
+  function drawInfinityTemplateVertical(ctx, sz) {
+    ctx.beginPath();
+    ctx.arc(sz * 0.5, sz * 0.3, sz * 0.22, 0, Math.PI * 2);
+    ctx.arc(sz * 0.5, sz * 0.7, sz * 0.24, 0, Math.PI * 2);
+    ctx.stroke();
+  }
+
+  // チェック・その他
   function drawCheckTemplateStandard(ctx, sz) {
     ctx.beginPath();
     ctx.moveTo(sz * 0.12, sz * 0.52);
@@ -155,7 +177,6 @@
     ctx.lineTo(sz * 0.88, sz * 0.18);
     ctx.stroke();
   }
-
   function drawCheckTemplateSharp(ctx, sz) {
     ctx.beginPath();
     ctx.moveTo(sz * 0.20, sz * 0.60);
@@ -163,46 +184,28 @@
     ctx.lineTo(sz * 0.82, sz * 0.25);
     ctx.stroke();
   }
-
-  // --- 🎁 イースターエッグ用テンプレート ---
-  function drawInfinityTemplate(ctx, sz) { // ∞ マーク
-    ctx.beginPath();
-    for (let t = 0; t <= Math.PI * 2; t += 0.1) {
-      const scale = 2 / (3 - Math.cos(2 * t));
-      const x = sz / 2 + (sz * 0.38) * scale * Math.cos(t);
-      const y = sz / 2 + (sz * 0.38) * scale * Math.sin(2 * t) / 2;
-      if (t === 0) ctx.moveTo(x, y);
-      else ctx.lineTo(x, y);
-    }
-    ctx.closePath();
-    ctx.stroke();
-  }
-
-  function drawSpiralTemplate(ctx, sz) { // 🌀 渦巻き
-    ctx.beginPath();
+  function drawSpiralTemplate(ctx, sz) {
     const cx = sz / 2, cy = sz / 2;
-    for (let i = 0; i < 60; i++) {
-      const angle = 0.35 * i;
-      const x = cx + (1.2 * i) * Math.cos(angle);
-      const y = cy + (1.2 * i) * Math.sin(angle);
+    ctx.beginPath();
+    for (let i = 0; i < 50; i++) {
+      const angle = 0.38 * i;
+      const x = cx + (1.3 * i) * Math.cos(angle);
+      const y = cy + (1.3 * i) * Math.sin(angle);
       if (i === 0) ctx.moveTo(x, y);
       else ctx.lineTo(x, y);
     }
     ctx.stroke();
   }
-
-  function drawBurstTemplate(ctx, sz) { // 🎆 放射状（花火）
+  function drawBurstTemplate(ctx, sz) {
     const cx = sz / 2, cy = sz / 2;
     ctx.beginPath();
     for (let i = 0; i < 8; i++) {
       const a = (i / 8) * Math.PI * 2;
       ctx.moveTo(cx, cy);
-      ctx.lineTo(cx + Math.cos(a) * sz * 0.4, cy + Math.sin(a) * sz * 0.4);
+      ctx.lineTo(cx + Math.cos(a) * sz * 0.42, cy + Math.sin(a) * sz * 0.42);
     }
     ctx.stroke();
   }
-
-  // 基本図形テンプレート
   function drawHeartTemplate(ctx, sz) {
     ctx.beginPath();
     ctx.moveTo(sz / 2, sz * 0.82);
@@ -212,7 +215,6 @@
     ctx.bezierCurveTo(sz * 0.95, sz * 0.15, sz * 0.95, sz * 0.5, sz / 2, sz * 0.82);
     ctx.stroke();
   }
-
   function drawStarTemplate(ctx, sz) {
     const cx = sz / 2, cy = sz / 2, r = sz * 0.42;
     ctx.beginPath();
@@ -226,13 +228,11 @@
     ctx.closePath();
     ctx.stroke();
   }
-
   function drawCircleTemplate(ctx, sz) {
     ctx.beginPath();
     ctx.arc(sz / 2, sz / 2, sz * 0.36, 0, Math.PI * 2);
     ctx.stroke();
   }
-
   function drawTriangleTemplate(ctx, sz) {
     ctx.beginPath();
     ctx.moveTo(sz / 2, sz * 0.15);
@@ -241,11 +241,9 @@
     ctx.closePath();
     ctx.stroke();
   }
-
   function drawSquareTemplate(ctx, sz) {
     ctx.strokeRect(sz * 0.18, sz * 0.18, sz * 0.64, sz * 0.64);
   }
-
   function drawLightningTemplate(ctx, sz) {
     ctx.beginPath();
     ctx.moveTo(sz * 0.6, sz * 0.12);
@@ -257,21 +255,18 @@
     ctx.closePath();
     ctx.stroke();
   }
-
   function drawCrossTemplate(ctx, sz) {
     ctx.beginPath();
     ctx.moveTo(sz * 0.2, sz * 0.2); ctx.lineTo(sz * 0.8, sz * 0.8);
     ctx.moveTo(sz * 0.8, sz * 0.2); ctx.lineTo(sz * 0.2, sz * 0.8);
     ctx.stroke();
   }
-
   function drawArrowUpTemplate(ctx, sz) {
     ctx.beginPath();
     ctx.moveTo(sz * 0.2, sz * 0.45); ctx.lineTo(sz / 2, sz * 0.15); ctx.lineTo(sz * 0.8, sz * 0.45);
     ctx.moveTo(sz / 2, sz * 0.15); ctx.lineTo(sz / 2, sz * 0.85);
     ctx.stroke();
   }
-
   function drawArrowDownTemplate(ctx, sz) {
     ctx.beginPath();
     ctx.moveTo(sz * 0.2, sz * 0.55); ctx.lineTo(sz / 2, sz * 0.85); ctx.lineTo(sz * 0.8, sz * 0.55);
