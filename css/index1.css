@@ -1,0 +1,21 @@
+:root{
+  --card-bg-color:#235C4C;
+  --card-f-color:#ffffff;
+}
+
+body:not(footer),main,header{
+  background:#1a5235;
+}
+
+footer{
+  background:#000000;
+}
+
+/* ==============================
+  カード
+============================== */
+
+card{
+  background:var(--card-bg-color);
+  color:var(--card-f-color);
+}
