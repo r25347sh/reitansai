@@ -7,8 +7,8 @@
 
   // 1. 全ページ共通CSSの動的読み込み
   const baseCssFiles = [
-    `${base}/gesture/pen.css`,
-    `${base}/MENU/MENU.css`
+    `${base}/MENU/MENU.css`,
+    `${base}/css/style.css`
   ];
 
   baseCssFiles.forEach(cssPath => {
@@ -23,10 +23,8 @@
 
   // 2. JavaScriptの依存関係順序ロード
   const jsFiles = [
-    `${base}/gesture/gesture.js`, // ① 認識エンジン
-    `${base}/gesture/pen.js`,     // ② 描画エンジン
-    `${base}/gesture/action.js`,  // ③ アクション実行部
-    `${base}/MENU/MENU.js`        // ④ ラジアルメニュー
+    `${base}/js/auva.js`,
+    `${base}/MENU/MENU.js`
   ];
 
   function loadScriptsSequentially(index) {
