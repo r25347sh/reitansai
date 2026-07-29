@@ -73,7 +73,7 @@ const RADIAL_MENU_DATA = [
 
     const script = document.createElement('script');
     script.id = 'dynamic-load-css';
-    script.src = '/asobiseminar/js/load-css.js';
+    script.src = '/reitansai/js/load.js';
     script.async = true;
     document.head.appendChild(script);
   }
