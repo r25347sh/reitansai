@@ -1,0 +1,10 @@
+<link rel="autovalue" href="takivar.auva">
+<value>
+  name="瀧村尚也"
+</value>
+<!-- 基本概要 -->
+((
+[img](src="/reitansai/sozai/taki.jpg")
+[h1:name]
+[p:"社会科、探究担当"](class="jobp")
+))(class="basic")
