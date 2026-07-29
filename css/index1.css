@@ -15,7 +15,18 @@ footer{
   カード
 ============================== */
 
-card{
+.card{
+  width: 100%;
+  max-width: 350px;
+  margin: 16px;
   background:var(--card-bg-color);
   color:var(--card-f-color);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
 }
