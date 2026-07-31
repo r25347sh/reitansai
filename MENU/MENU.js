@@ -24,9 +24,9 @@ const RADIAL_MENU_DATA = [
         label:'外部企業ゼミ',
         icon:'',
         items: [
-          { label: '映像編集ゼミ', icon: '⏯️', url: '/reitansai/pages/zemi/eizo-henshu.html' },
-          { label: 'デジタルコンテンツ制作ゼミ', icon: '01', url: '/reitansai/pages/zemi/digital-content-create.html' },
-          { label: 'イベント企画ゼミ', icon: '🎪', url: '/reitansai/pages/zemi/event-kikaku.html' }
+          { label: '映像編集ゼミ', icon: '⏯️', url: '/reitansai/pages/zemi/mieta/eizo-henshu.html' },
+          { label: 'デジタルコンテンツ制作ゼミ', icon: '01', url: '/reitansai/pages/zemi/mieta/digital-content-create.html' },
+          { label: 'イベント企画ゼミ', icon: '🎪', url: '/reitansai/pages/zemi/mieta/event-kikaku.html' }
         ]
     ]
   },
