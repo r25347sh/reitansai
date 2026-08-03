@@ -1,5 +1,5 @@
 /**
- * 📋 データ構造（可変長対応・自動レイアウト）
+ * MENU/MENU.js - 麗探祭 放射状メニュー（修整版）
  */
 const RADIAL_MENU_DATA = [
   { label: 'ホーム', icon: '🏠', url: '/reitansai/index.html' },
@@ -21,25 +21,25 @@ const RADIAL_MENU_DATA = [
       { label: '語学ゼミ', icon: '🗣️', url: '/reitansai/pages/zemi/gengo.html' },
       { label: '遊びの探究ゼミ', icon: '🎮', url: '/reitansai/pages/zemi/asobi-tankyu.html' },
       {
-        label:'外部企業ゼミ',
-        icon:'',
+        label: '外部企業ゼミ',
+        icon: '🏢',
         items: [
           { label: '映像編集ゼミ', icon: '⏯️', url: '/reitansai/pages/zemi/mieta/eizo-henshu.html' },
-          { label: 'デジタルコンテンツ制作ゼミ', icon: '01', url: '/reitansai/pages/zemi/mieta/digital-content-create.html' },
+          { label: 'デジタルコンテンツ制作ゼミ', icon: '💻', url: '/reitansai/pages/zemi/mieta/digital-content-create.html' },
           { label: 'イベント企画ゼミ', icon: '🎪', url: '/reitansai/pages/zemi/mieta/event-kikaku.html' }
         ]
+      }
     ]
   },
   { label: '麗探祭', icon: '🎉', url: '/reitansai/pages/event.html' },
-  { label: 'このサイトについて', icon: '⭐', url: '/reitansai/pages/aboutsite.html' }
+  { label: 'このサイトについて', icon: '⭐', url: '/reitansai/pages/aboutsite.html' },
+  { label: 'テーマ設定', icon: '⚙️', url: '/reitansai/pages/settings.html' }
 ];
 
 (function () {
   const LONG_PRESS_MS = 360;
   const TRIPLE_TAP_DELAY_MS = 300;
   const MOVE_THRESHOLD = 8;
-
-  // ⚛️ 電子殻の自動拡張設定（収容数＆半径）
   const SHELL_CAPACITIES = [6, 10, 14];
   const SHELL_RADII = [115, 185, 255];
 
@@ -49,116 +49,69 @@ const RADIAL_MENU_DATA = [
   let coreBtn = null;
   let canvas = null;
   let ctx = null;
-
   let timer = null;
   let startX = 0, startY = 0;
   let isOpen = false;
   let menuStack = [];
-
-  // トリプルタップ/クリック検出用変数
   let tapCount = 0;
   let tapTimer = null;
 
-  // 🚀 メニューが消えるのを待ってから普通にページ遷移する関数
   function navigateWithDelay(url) {
     closeMenu();
-    setTimeout(() => {
-      location.href = url;
-    }, 180);
+    setTimeout(() => { location.href = url; }, 180);
   }
 
-  // 💥 放射状レインボースパーク ＆ ダブルショックウェーブエンジン
   function triggerParticleBurst() {
     if (!canvas || !ctx) return;
     canvas.width = 600;
     canvas.height = 600;
     const cX = 300, cY = 300;
-
     let ring1Radius = 10, ring1Alpha = 1;
     let ring2Radius = 5, ring2Alpha = 0.8;
-
-    const particleCount = 28;
-    const particles = Array.from({ length: particleCount }, (_, idx) => {
-      const a = (idx / particleCount) * Math.PI * 2 + (Math.random() * 0.15);
+    const particles = Array.from({ length: 28 }, (_, idx) => {
+      const a = (idx / 28) * Math.PI * 2 + (Math.random() * 0.15);
       const spd = Math.random() * 7 + 3.5;
-      const hue = 80 + Math.floor(Math.random() * 70);
-
-      return {
-        x: cX, y: cY,
-        vx: Math.cos(a) * spd, vy: Math.sin(a) * spd,
-        size: Math.random() * 3 + 1.5,
-        color: `hsl(${hue}, 95%, 68%)`,
-        alpha: 1
-      };
+      const hue = 40 + Math.floor(Math.random() * 40);
+      return { x: cX, y: cY, vx: Math.cos(a) * spd, vy: Math.sin(a) * spd, size: Math.random() * 3 + 1.5, color: `hsl(${hue}, 90%, 60%)`, alpha: 1 };
     });
-
     function draw() {
       ctx.clearRect(0, 0, 600, 600);
-
       if (ring1Alpha > 0) {
-        ctx.beginPath();
-        ctx.arc(cX, cY, ring1Radius, 0, Math.PI * 2);
-        ctx.strokeStyle = `rgba(34, 139, 34, ${ring1Alpha})`;
-        ctx.lineWidth = 3.5;
-        ctx.stroke();
-        ring1Radius += 8;
-        ring1Alpha -= 0.048;
+        ctx.beginPath(); ctx.arc(cX, cY, ring1Radius, 0, Math.PI * 2);
+        ctx.strokeStyle = `rgba(34, 139, 34, ${ring1Alpha})`; ctx.lineWidth = 3.5; ctx.stroke();
+        ring1Radius += 8; ring1Alpha -= 0.048;
       }
-
       if (ring2Alpha > 0) {
-        ctx.beginPath();
-        ctx.arc(cX, cY, ring2Radius, 0, Math.PI * 2);
-        ctx.strokeStyle = `rgba(232, 185, 35, ${ring2Alpha})`;
-        ctx.lineWidth = 2.5;
-        ctx.stroke();
-        ring2Radius += 6.5;
-        ring2Alpha -= 0.038;
+        ctx.beginPath(); ctx.arc(cX, cY, ring2Radius, 0, Math.PI * 2);
+        ctx.strokeStyle = `rgba(232, 185, 35, ${ring2Alpha})`; ctx.lineWidth = 2.5; ctx.stroke();
+        ring2Radius += 6.5; ring2Alpha -= 0.038;
       }
-
       let isAlive = false;
       particles.forEach(p => {
         if (p.alpha > 0) {
           isAlive = true;
-          p.x += p.vx;
-          p.y += p.vy;
-          p.vx *= 0.93;
-          p.vy *= 0.93;
-          p.alpha -= 0.033;
-
-          ctx.beginPath();
-          ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-          ctx.fillStyle = p.color;
-          ctx.globalAlpha = Math.max(0, p.alpha);
-          ctx.fill();
+          p.x += p.vx; p.y += p.vy; p.vx *= 0.93; p.vy *= 0.93; p.alpha -= 0.033;
+          ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+          ctx.fillStyle = p.color; ctx.globalAlpha = Math.max(0, p.alpha); ctx.fill();
         }
       });
-
-      if (ring1Alpha > 0 || ring2Alpha > 0 || isAlive) {
-        requestAnimationFrame(draw);
-      } else {
-        ctx.clearRect(0, 0, 600, 600);
-      }
+      ctx.globalAlpha = 1;
+      if (ring1Alpha > 0 || ring2Alpha > 0 || isAlive) requestAnimationFrame(draw);
+      else ctx.clearRect(0, 0, 600, 600);
     }
     draw();
   }
 
-  // ⚛️ 可変長自動レイアウト演算（電子殻モデル）
   function calculateShellLayout(items) {
     const layout = [];
-    let remaining = items.length;
-    let itemIdx = 0;
-
+    let remaining = items.length, itemIdx = 0;
     for (let sIdx = 0; sIdx < SHELL_CAPACITIES.length && remaining > 0; sIdx++) {
       const capacity = SHELL_CAPACITIES[sIdx];
       const countInShell = Math.min(remaining, capacity);
       const radius = SHELL_RADII[sIdx];
-
       for (let i = 0; i < countInShell; i++) {
         const angle = (i / countInShell) * 2 * Math.PI - (Math.PI / 2);
-        const x = Math.round(Math.cos(angle) * radius);
-        const y = Math.round(Math.sin(angle) * radius);
-
-        layout.push({ item: items[itemIdx], x, y, shellIndex: sIdx });
+        layout.push({ item: items[itemIdx], x: Math.round(Math.cos(angle) * radius), y: Math.round(Math.sin(angle) * radius), shellIndex: sIdx });
         itemIdx++;
       }
       remaining -= countInShell;
@@ -166,26 +119,21 @@ const RADIAL_MENU_DATA = [
     return layout;
   }
 
-  // 🔄 階層切り替え：画面上の全要素を完全リプレイス
   function renderMenuLevel(items) {
-    const oldItems = itemsContainer.querySelectorAll('.rm-item');
-    oldItems.forEach(el => {
+    itemsContainer.querySelectorAll('.rm-item').forEach(el => {
       el.classList.remove('rendered');
       setTimeout(() => el.remove(), 200);
     });
-
     orbitsContainer.innerHTML = '';
-
     const layout = calculateShellLayout(items);
     const activeShells = new Set();
-
     layout.forEach((data, index) => {
       activeShells.add(data.shellIndex);
-
       const btn = document.createElement('button');
       btn.className = 'rm-item' + (data.item.items ? ' has-sub' : '');
+      btn.type = 'button';
       btn.setAttribute('data-label', data.item.label);
-      btn.innerHTML = data.item.icon;
+      btn.innerHTML = data.item.icon || '•';
       btn.style.setProperty('--x', `${data.x}px`);
       btn.style.setProperty('--y', `${data.y}px`);
       btn.style.transitionDelay = `${index * 0.025}s`;
@@ -195,84 +143,61 @@ const RADIAL_MENU_DATA = [
           menuStack.push(items);
           renderMenuLevel(data.item.items);
           triggerParticleBurst();
-        } else {
-          if (data.item.url) {
-            navigateWithDelay(data.item.url);
-          } else if (data.item.action) {
-            data.item.action();
-            closeMenu();
-          }
+        } else if (data.item.url) {
+          navigateWithDelay(data.item.url);
         }
       });
-
       itemsContainer.appendChild(btn);
-
-      requestAnimationFrame(() => {
-        setTimeout(() => btn.classList.add('rendered'), 15);
-      });
+      requestAnimationFrame(() => setTimeout(() => btn.classList.add('rendered'), 15));
     });
-
     activeShells.forEach(sIdx => {
       const orbit = document.createElement('div');
       orbit.className = 'rm-shell-orbit';
       const d = SHELL_RADII[sIdx] * 2;
-      orbit.style.width = `${d}px`;
-      orbit.style.height = `${d}px`;
+      orbit.style.width = `${d}px`; orbit.style.height = `${d}px`;
       orbit.style.marginTop = `-${SHELL_RADII[sIdx]}px`;
       orbit.style.marginLeft = `-${SHELL_RADII[sIdx]}px`;
       orbitsContainer.appendChild(orbit);
     });
-
-    if (menuStack.length > 0) {
-      coreBtn.classList.add('visible');
-    } else {
-      coreBtn.classList.remove('visible');
-    }
+    if (menuStack.length > 0) coreBtn.classList.add('visible');
+    else coreBtn.classList.remove('visible');
   }
 
   function createMenuDOM() {
+    if (document.querySelector('.radial-menu-wrapper')) return;
     menuEl = document.createElement('div');
     menuEl.className = 'radial-menu-wrapper';
-
+    menuEl.setAttribute('role', 'navigation');
     canvas = document.createElement('canvas');
     canvas.className = 'rm-canvas-layer';
     ctx = canvas.getContext('2d');
     menuEl.appendChild(canvas);
-
     orbitsContainer = document.createElement('div');
     menuEl.appendChild(orbitsContainer);
-
     itemsContainer = document.createElement('div');
     menuEl.appendChild(itemsContainer);
-
     coreBtn = document.createElement('button');
     coreBtn.className = 'rm-core-btn';
+    coreBtn.type = 'button';
     coreBtn.innerHTML = '✕';
     coreBtn.addEventListener('click', (e) => {
       e.stopPropagation();
       if (menuStack.length > 0) {
-        const prevLevel = menuStack.pop();
-        renderMenuLevel(prevLevel);
+        renderMenuLevel(menuStack.pop());
         triggerParticleBurst();
-      } else {
-        closeMenu();
-      }
+      } else closeMenu();
     });
     menuEl.appendChild(coreBtn);
-
     document.body.appendChild(menuEl);
   }
 
   function openMenu(x, y) {
+    if (!menuEl) createMenuDOM();
     const margin = 180;
-    const clampedX = Math.max(margin, Math.min(x, window.innerWidth - margin));
-    const clampedY = Math.max(margin, Math.min(y, window.innerHeight - margin));
-
-    menuEl.style.left = `${clampedX}px`;
-    menuEl.style.top = `${clampedY}px`;
+    menuEl.style.left = `${Math.max(margin, Math.min(x, window.innerWidth - margin))}px`;
+    menuEl.style.top = `${Math.max(margin, Math.min(y, window.innerHeight - margin))}px`;
     menuEl.classList.add('active');
     isOpen = true;
-
     menuStack = [];
     renderMenuLevel(RADIAL_MENU_DATA);
     triggerParticleBurst();
@@ -281,72 +206,40 @@ const RADIAL_MENU_DATA = [
   function closeMenu() {
     if (!menuEl) return;
     menuEl.classList.remove('active');
-    const oldItems = itemsContainer.querySelectorAll('.rm-item');
-    oldItems.forEach(el => el.classList.remove('rendered'));
+    itemsContainer.querySelectorAll('.rm-item').forEach(el => el.classList.remove('rendered'));
     coreBtn.classList.remove('visible');
     isOpen = false;
   }
 
-  // 🎯 トリプルタップ & 長押しイベントリスナー
   function initEvents() {
     document.addEventListener('pointerdown', (e) => {
-      if (isOpen && menuEl.contains(e.target)) return;
-      if (isOpen && !menuEl.contains(e.target)) {
-        closeMenu();
-        return;
-      }
-
-      startX = e.clientX;
-      startY = e.clientY;
-
-      // トリプルタップ/クリックの判定処理
+      if (isOpen && menuEl && menuEl.contains(e.target)) return;
+      if (isOpen && menuEl && !menuEl.contains(e.target)) { closeMenu(); return; }
+      startX = e.clientX; startY = e.clientY;
       tapCount++;
       clearTimeout(tapTimer);
-
       if (tapCount === 3) {
-        clearTimeout(timer);
-        timer = null;
-        tapCount = 0;
-        openMenu(startX, startY);
-        return;
+        clearTimeout(timer); timer = null; tapCount = 0;
+        openMenu(startX, startY); return;
       }
-
-      tapTimer = setTimeout(() => {
-        tapCount = 0;
-      }, TRIPLE_TAP_DELAY_MS);
-
-      // 長押しの判定処理
+      tapTimer = setTimeout(() => { tapCount = 0; }, TRIPLE_TAP_DELAY_MS);
       clearTimeout(timer);
-      timer = setTimeout(() => {
-        tapCount = 0;
-        openMenu(startX, startY);
-      }, LONG_PRESS_MS);
+      timer = setTimeout(() => { tapCount = 0; openMenu(startX, startY); }, LONG_PRESS_MS);
     });
-
     document.addEventListener('pointermove', (e) => {
       if (!timer || isOpen) return;
       if (Math.hypot(e.clientX - startX, e.clientY - startY) > MOVE_THRESHOLD) {
-        clearTimeout(timer);
-        timer = null;
+        clearTimeout(timer); timer = null;
       }
     });
-
     document.addEventListener('pointerup', () => {
-      if (timer && !isOpen) {
-        clearTimeout(timer);
-        timer = null;
-      }
+      if (timer && !isOpen) { clearTimeout(timer); timer = null; }
     });
-
-    document.addEventListener('contextmenu', (e) => {
-      if (isOpen) e.preventDefault();
-    });
+    document.addEventListener('contextmenu', (e) => { if (isOpen) e.preventDefault(); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && isOpen) closeMenu(); });
   }
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => { createMenuDOM(); initEvents(); });
-  } else {
-    createMenuDOM();
-    initEvents();
-  }
+  function boot() { createMenuDOM(); initEvents(); }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
+  else boot();
 })();
