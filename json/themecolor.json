@@ -1,0 +1,81 @@
+{
+  "themes": [
+    {
+      "name": "麗澤ゴールド (Reitaku Gold)",
+      "maincolor": "#E8B923",
+      "balancecolor": "#22A06B",
+      "variationcolor": "#FFFFFF",
+      "accentcolor": "#0A2F1F"
+    },
+    {
+      "name": "深緑アカデミア (Deep Forest Academia)",
+      "maincolor": "#F7E39E",
+      "balancecolor": "#1A6348",
+      "variationcolor": "#F5FFF8",
+      "accentcolor": "#062818"
+    },
+    {
+      "name": "探究ミッドナイト (Inquiry Midnight)",
+      "maincolor": "#E8B923",
+      "balancecolor": "#0F4A35",
+      "variationcolor": "#FFFFFF",
+      "accentcolor": "#050F0A"
+    },
+    {
+      "name": "ポスタークラシック (Poster Classic)",
+      "maincolor": "#EFA83E",
+      "balancecolor": "#235C4C",
+      "variationcolor": "#FFFFFF",
+      "accentcolor": "#1A5235"
+    },
+    {
+      "name": "月光ラボ (Moonlit Lab)",
+      "maincolor": "#A8D8FF",
+      "balancecolor": "#2A5A6A",
+      "variationcolor": "#F0F8FF",
+      "accentcolor": "#0A1A24"
+    },
+    {
+      "name": "桜リサーチ (Sakura Research)",
+      "maincolor": "#FF8AB5",
+      "balancecolor": "#5A3A48",
+      "variationcolor": "#FFF5F8",
+      "accentcolor": "#1A0A12"
+    },
+    {
+      "name": "オーシャン探究 (Ocean Inquiry)",
+      "maincolor": "#4DC9FF",
+      "balancecolor": "#1A4A5A",
+      "variationcolor": "#E8F8FF",
+      "accentcolor": "#061820"
+    },
+    {
+      "name": "アンバーフォーカス (Amber Focus)",
+      "maincolor": "#FFAA44",
+      "balancecolor": "#5A3A1A",
+      "variationcolor": "#FFF8F0",
+      "accentcolor": "#1A1008"
+    },
+    {
+      "name": "ハイコントラスト (High Contrast)",
+      "maincolor": "#FFE066",
+      "balancecolor": "#000000",
+      "variationcolor": "#FFFFFF",
+      "accentcolor": "#000000"
+    },
+    {
+      "name": "ソフトデイ (Soft Day)",
+      "maincolor": "#2A7A4A",
+      "balancecolor": "#D4E8D8",
+      "variationcolor": "#1A2A1A",
+      "accentcolor": "#F4F8F4"
+    }
+  ],
+  "fonts": [
+    { "name": "Noto Sans JP - モダン標準", "fontFamily": "'Noto Sans JP', sans-serif" },
+    { "name": "Noto Serif JP - エレガント明朝", "fontFamily": "'Noto Serif JP', serif" },
+    { "name": "Zen Kaku Gothic New - 角ゴシック", "fontFamily": "'Zen Kaku Gothic New', sans-serif" },
+    { "name": "游明朝系 - 伝統", "fontFamily": "'游明朝', 'Yu Mincho', 'Hiragino Mincho ProN', serif" },
+    { "name": "システム UI", "fontFamily": "system-ui, -apple-system, 'Segoe UI', sans-serif" }
+  ]
+}

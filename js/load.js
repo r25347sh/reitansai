@@ -1,54 +1,89 @@
-// js/load-css.js - 非同期・順序保証・重複防止 完全対応版
+/**
+ * js/load.js
+ * 麗探祭 共通ローダー（CSS / JS 順序保証・重複防止）
+ */
 (function () {
-  'use strict';
+  "use strict";
 
-  const base = '/reitansai';
-  const cacheBuster = 'v=' + Date.now();
+  const base = "/reitansai";
+  const cacheBuster = "v=" + Date.now();
 
-  // 1. 全ページ共通CSSの動的読み込み
-  const baseCssFiles = [
-    `${base}/MENU/MENU.css`,
-    `${base}/css/style.css`
-  ];
-
-  baseCssFiles.forEach(cssPath => {
-    const isAlreadyLoaded = document.querySelector(`link[href*="${cssPath}"]`);
-    if (!isAlreadyLoaded) {
-      const link = document.createElement('link');
-      link.rel = 'stylesheet';
-      link.href = `${cssPath}?${cacheBuster}`;
-      document.head.appendChild(link);
-    }
-  });
-
-  // 2. JavaScriptの依存関係順序ロード
-  const jsFiles = [
-    `${base}/js/auva.js`,
-    `${base}/MENU/MENU.js`
-  ];
-
-  function loadScriptsSequentially(index) {
-    if (index >= jsFiles.length) {
-      console.log('%c✨ 麗探祭システム全モジュール正常ロード完了: ' + window.location.pathname, 'color:#E8B923; font-weight:bold;');
-      return;
-    }
-
-    const jsPath = jsFiles[index];
-    const isAlreadyLoaded = document.querySelector(`script[src*="${jsPath}"]`);
-
-    if (isAlreadyLoaded) {
-      loadScriptsSequentially(index + 1);
-    } else {
-      const script = document.createElement('script');
-      script.src = `${jsPath}?${cacheBuster}`;
-      script.onload = () => loadScriptsSequentially(index + 1);
-      script.onerror = () => {
-        console.error(`❌ ファイルの読み込みに失敗しました: ${jsPath}`);
-        loadScriptsSequentially(index + 1);
-      };
-      document.head.appendChild(script);
-    }
+  function alreadyHas(selector) {
+    return !!document.querySelector(selector);
   }
 
-  loadScriptsSequentially(0);
+  function injectCss(href) {
+    const bare = href.split("?")[0];
+    if (alreadyHas('link[href*="' + bare + '"]')) return;
+    const link = document.createElement("link");
+    link.rel = "stylesheet";
+    link.href = href;
+    document.head.appendChild(link);
+  }
+
+  function injectScript(src, onload) {
+    const bare = src.split("?")[0];
+    if (alreadyHas('script[src*="' + bare + '"]')) {
+      if (onload) onload();
+      return;
+    }
+    const script = document.createElement("script");
+    script.src = src;
+    script.onload = onload || null;
+    script.onerror = function () {
+      console.error("❌ load failed:", src);
+      if (onload) onload();
+    };
+    document.head.appendChild(script);
+  }
+
+  const commonCss = [
+    base + "/css/base.css",
+    base + "/css/style.css",
+    base + "/MENU/MENU.css"
+  ];
+  commonCss.forEach(function (p) {
+    injectCss(p + "?" + cacheBuster);
+  });
+
+  const path = window.location.pathname;
+  let pageCss = "";
+
+  if (path.endsWith("/") || path.endsWith("index.html") || path === base || path === base + "/") {
+    pageCss = base + "/css/index.css";
+  } else if (path.includes("settings")) {
+    pageCss = base + "/css/settings.css";
+  } else if (path.includes("takimura")) {
+    pageCss = base + "/css/takimura_t.css";
+  } else if (path.includes("event.html")) {
+    pageCss = base + "/css/event.css";
+  } else if (path.includes("aboutsite")) {
+    pageCss = base + "/css/aboutsite.css";
+  } else if (path.includes("/zemi/")) {
+    const name = path.split("/").pop().replace(".html", "");
+    pageCss = base + "/css/zemi/" + name + ".css";
+  }
+
+  if (pageCss) injectCss(pageCss + "?" + cacheBuster);
+
+  const jsQueue = [
+    base + "/js/setThemeColor.js",
+    base + "/js/auva.js",
+    base + "/MENU/MENU.js"
+  ];
+
+  function loadNext(i) {
+    if (i >= jsQueue.length) {
+      console.log(
+        "%c✨ 麗探祭システムロード完了: " + path,
+        "color:#E8B923;font-weight:bold;"
+      );
+      return;
+    }
+    injectScript(jsQueue[i] + "?" + cacheBuster, function () {
+      loadNext(i + 1);
+    });
+  }
+
+  loadNext(0);
 })();
