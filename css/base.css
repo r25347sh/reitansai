@@ -1,0 +1,167 @@
+/* ===================================================
+   麗探祭 共通デザイン変数（ポスター準拠）
+   Deep Green × Gold × Academic Expo
+   =================================================== */
+
+:root {
+  --page-bg:        #0A2F1F;
+  --page-bg-alt:    #0F3D2A;
+  --card-bg:        #13503A;
+  --card-bg-hover:  #1A6348;
+  --gold:           #E8B923;
+  --gold-light:     #F7E39E;
+  --gold-dark:      #B8860B;
+  --text:           #FFFFFF;
+  --text-muted:     rgba(255, 255, 255, 0.72);
+  --accent-orange:  #EFA83E;
+  --border-gold:    rgba(232, 185, 35, 0.45);
+  --shadow:         0 8px 32px rgba(0, 0, 0, 0.35);
+
+  --main-color:     #E8B923;
+  --balance-color:  #22A06B;
+  --variation-color:#FFFFFF;
+  --accent-color:   #0A2F1F;
+  --font-family:    "Noto Sans JP", "Hiragino Sans", "Yu Gothic", sans-serif;
+
+  --radius:         14px;
+  --max-width:      960px;
+  --header-height:  64px;
+}
+
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-family);
+  background-color: var(--accent-color, var(--page-bg));
+  color: var(--variation-color, var(--text));
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+  min-height: 100vh;
+  line-height: 1.7;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+a {
+  color: var(--main-color, var(--gold));
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+a:hover {
+  color: var(--gold-light);
+}
+
+.container {
+  width: 100%;
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.card {
+  width: 100%;
+  max-width: 720px;
+  margin: 20px auto;
+  background: linear-gradient(145deg, var(--card-bg) 0%, #0F3D2A 100%);
+  color: var(--variation-color, var(--text));
+  border-radius: var(--radius);
+  border: 1px solid var(--border-gold);
+  box-shadow: var(--shadow);
+  padding: clamp(18px, 4vw, 28px);
+  transition: transform 0.28s ease, box-shadow 0.28s ease, border-color 0.28s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.45);
+  border-color: var(--main-color, var(--gold));
+}
+
+.card h1,
+.card h2,
+.card h3 {
+  color: var(--main-color, var(--gold));
+  margin: 0 0 12px;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.card h2 {
+  font-size: clamp(1.2rem, 2vw + 1rem, 1.55rem);
+}
+
+.card p {
+  margin: 0 0 0.85em;
+  font-size: clamp(0.9rem, 1vw + 0.75rem, 1.05rem);
+  color: var(--variation-color, var(--text));
+  opacity: 0.92;
+}
+
+.card p:last-child {
+  margin-bottom: 0;
+}
+
+.site-footer {
+  margin-top: 64px;
+  padding: 28px 20px;
+  text-align: center;
+  background: #050F0A;
+  border-top: 1px solid var(--border-gold);
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+.site-footer a {
+  color: var(--gold-light);
+}
+
+.page-hero {
+  position: relative;
+  padding: 48px 20px 36px;
+  text-align: center;
+  background: linear-gradient(180deg, #0F3D2A 0%, var(--accent-color, var(--page-bg)) 100%);
+  border-bottom: 1px solid var(--border-gold);
+}
+
+.page-hero h1 {
+  font-size: clamp(1.6rem, 4vw, 2.4rem);
+  color: var(--main-color, var(--gold));
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
+}
+
+.page-hero .subtitle {
+  margin-top: 8px;
+  color: var(--gold-light);
+  font-size: 0.95rem;
+  opacity: 0.85;
+}
+
+main {
+  position: relative;
+  z-index: 2;
+  padding: 32px 16px 64px;
+  min-height: 50vh;
+}
+
+@media (min-width: 768px) {
+  main {
+    padding: 48px 24px 80px;
+  }
+}
