@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>テーマ設定 | 麗探祭</title>
+  <link rel="icon" href="/reitansai/favicon/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/reitansai/css/base.css">
+  <link rel="stylesheet" href="/reitansai/css/style.css">
+  <link rel="stylesheet" href="/reitansai/css/settings.css">
+  <link rel="stylesheet" href="/reitansai/MENU/MENU.css">
+  <script src="/reitansai/js/setThemeColor.js"></script>
+</head>
+<body>
+  <header class="page-hero">
+    <h1>⚙️ テーマ・デザイン設定</h1>
+    <p class="subtitle">配色・フォント・表示オプション</p>
+  </header>
+  <div class="settings-wrap">
+    <div class="settings-panel">
+      <label>🎨 テーマを選択</label>
+      <select id="theme-select"></select>
+      <div class="preview-grid" id="theme-preview">
+        <div class="preview-swatch">
+          <p>メインカラー</p>
+          <div class="chip" id="preview-main"></div>
+        </div>
+        <div class="preview-swatch" style="border-left-color: var(--balance-color);">
+          <p>バランスカラー</p>
+          <div class="chip" id="preview-balance"></div>
+        </div>
+      </div>
+    </div>
+    <div class="settings-panel">
+      <label>🔤 フォントを選択</label>
+      <select id="font-select"></select>
+      <div class="font-preview-box">
+        <p class="label">プレビュー</p>
+        <p class="sample" id="font-preview-text">あいうえお ABCabc 123 麗探祭</p>
+      </div>
+    </div>
+    <div class="settings-panel">
+      <label>✨ デザインオプション</label>
+      <div class="extra-row"><span>コンパクト表示</span><input type="checkbox" id="opt-compact"></div>
+      <div class="extra-row"><span>ハイコントラスト補助</span><input type="checkbox" id="opt-contrast"></div>
+      <div class="extra-row"><span>モーション軽減</span><input type="checkbox" id="opt-motion"></div>
+      <div class="extra-row"><span>カード角丸</span><input type="range" id="opt-radius" min="4" max="28" value="14"></div>
+    </div>
+    <div class="btn-row">
+      <button type="button" class="btn-save" id="save-btn">💾 設定を保存する</button>
+      <button type="button" class="btn-reset" id="reset-btn">↺ リセット</button>
+    </div>
+    <p class="save-msg" id="save-message"></p>
+  </div>
+  <footer class="site-footer">
+    <p>© 2026 麗探祭 / 設定はブラウザの localStorage に保存されます</p>
+  </footer>
+  <script src="/reitansai/js/load.js"></script>
+  <script src="/reitansai/js/settings.js"></script>
+</body>
+</html>

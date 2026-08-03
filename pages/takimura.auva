@@ -1,10 +1,10 @@
-<link rel="autovalue" href="takivar.auva">
 <value>
-  name="瀧村尚也"
+name = "瀧村尚也"
 </value>
-<!-- 基本概要 -->
 ((
-[img](src="/reitansai/sozai/taki.jpg")
-[h1:name]
-[p:"社会科、探究担当"](class="jobp")
-))(class="basic")
+[[h2:"統括責任者"]]
+[[h1:"{name}"]]
+[[p:"社会科・探究担当"]]
+[[p:"麗探祭の運営を統括し、生徒一人ひとりの探究を支えています。"]]
+[[p:"（プロフィール詳細・写真は準備中です。）"]]
+))(class="card")
