@@ -220,3 +220,109 @@
     border-radius: 50%;
   }
 }
+
+/* ---------- Submenu (ゼミ一覧など) ---------- */
+.menu-list li.has-sub {
+  position: relative;
+}
+
+.menu-list .sub-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  width: 100%;
+  padding: 0.7rem 1.3rem;
+  background: none;
+  border: none;
+  color: #e8d5a3;
+  font-size: 0.88rem;
+  font-weight: 500;
+  font-family: inherit;
+  letter-spacing: 0.03em;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.25s, color 0.25s, padding-left 0.3s;
+  position: relative;
+}
+
+.menu-list .sub-toggle::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: #d4af37;
+  transform: scaleY(0);
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.menu-list .sub-toggle:hover {
+  background: rgba(212, 175, 55, 0.1);
+  color: #f5ecd7;
+  padding-left: 1.5rem;
+}
+
+.menu-list .sub-toggle:hover::before,
+.menu-list .sub-toggle[aria-expanded="true"]::before {
+  transform: scaleY(1);
+}
+
+.menu-list .sub-toggle .chevron {
+  margin-left: auto;
+  font-size: 1.1rem;
+  color: #d4af37;
+  transition: transform 0.3s;
+  opacity: 0.8;
+}
+
+.menu-list .sub-toggle[aria-expanded="true"] .chevron {
+  transform: rotate(90deg);
+}
+
+.menu-list .sub-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-height: 0;
+  overflow: hidden;
+  background: rgba(0, 0, 0, 0.25);
+  transition: max-height 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.menu-list .sub-list.open {
+  max-height: 720px;
+}
+
+.menu-list .sub-list a {
+  padding-left: 1.8rem;
+  font-size: 0.8rem;
+}
+
+.menu-list .sub-list .sub-list a {
+  padding-left: 2.4rem;
+  font-size: 0.76rem;
+}
+
+.menu-list .sub-list .sub-toggle {
+  padding-left: 1.8rem;
+  font-size: 0.8rem;
+}
+
+.menu-list .sub-list .sub-toggle:hover {
+  padding-left: 2rem;
+}
+
+.menu-panel {
+  max-height: min(80vh, 640px);
+  overflow-y: auto;
+  width: 280px;
+}
+
+.menu-panel::-webkit-scrollbar {
+  width: 4px;
+}
+.menu-panel::-webkit-scrollbar-thumb {
+  background: rgba(212, 175, 55, 0.35);
+  border-radius: 2px;
+}
