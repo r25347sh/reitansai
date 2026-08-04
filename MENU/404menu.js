@@ -1,5 +1,6 @@
 /**
  * 麗探祭 404 Specialized Menu Controller
+ * 項目は MENU/MENU.js の RADIAL_MENU_DATA と同じ構成
  */
 (function () {
   "use strict";
@@ -20,6 +21,10 @@
     panel.classList.remove("open");
     document.removeEventListener("click", onOutside, true);
     document.removeEventListener("keydown", onKey);
+    panel.querySelectorAll(".sub-list.open").forEach((el) => el.classList.remove("open"));
+    panel.querySelectorAll(".sub-toggle[aria-expanded='true']").forEach((btn) => {
+      btn.setAttribute("aria-expanded", "false");
+    });
   }
 
   function onOutside(e) {
@@ -45,7 +50,22 @@
     }
   });
 
-  // keyboard accessibility for links
+  panel.querySelectorAll(".sub-toggle").forEach((btn) => {
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const expanded = btn.getAttribute("aria-expanded") === "true";
+      const subList = btn.nextElementSibling;
+      if (!subList || !subList.classList.contains("sub-list")) return;
+
+      btn.setAttribute("aria-expanded", expanded ? "false" : "true");
+      if (expanded) {
+        subList.classList.remove("open");
+      } else {
+        subList.classList.add("open");
+      }
+    });
+  });
+
   panel.querySelectorAll("a").forEach((link) => {
     link.addEventListener("click", () => {
       closeMenu();
