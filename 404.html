@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#031a0d">
+  <meta name="description" content="麗探祭 2026 — ページが見つかりません。探究の旅は続きます。">
+  <title>404 | 麗探祭 — Reitaku Inquiry EXPO 2026</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;500;600;700;900&family=Shippori+Mincho:wght@400;500;600;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/reitansai/css/404.css">
+  <link rel="stylesheet" href="/reitansai/MENU/404menu.css">
+</head>
+<body>
+  <!-- Particle Network Canvas -->
+  <canvas id="network-canvas"></canvas>
+  <div class="gold-particles" id="gold-particles"></div>
+  <div class="vignette"></div>
+  <div class="scanlines"></div>
+
+  <!-- Floating Knowledge Icons -->
+  <div class="floating-icons" aria-hidden="true">
+    <div class="f-icon" data-icon="book" style="--d:0s;--x:8%;--y:18%;--s:1.1">📖</div>
+    <div class="f-icon" data-icon="bulb" style="--d:1.2s;--x:82%;--y:12%;--s:0.95">💡</div>
+    <div class="f-icon" data-icon="search" style="--d:2.4s;--x:15%;--y:72%;--s:1.05">🔍</div>
+    <div class="f-icon" data-icon="pencil" style="--d:0.6s;--x:88%;--y:65%;--s:0.9">✏️</div>
+    <div class="f-icon" data-icon="chart" style="--d:1.8s;--x:6%;--y:42%;--s:1">📊</div>
+    <div class="f-icon" data-icon="flask" style="--d:3s;--x:78%;--y:38%;--s:0.85">🧪</div>
+    <div class="f-icon" data-icon="globe" style="--d:0.9s;--x:48%;--y:8%;--s:0.8">🌐</div>
+    <div class="f-icon" data-icon="laurel" style="--d:2.1s;--x:92%;--y:88%;--s:1.15">🌿</div>
+  </div>
+
+  <!-- 404 Specialized Menu -->
+  <nav class="menu-404" id="menu404" aria-label="404専用ナビゲーション">
+    <button class="menu-toggle" id="menuToggle" aria-expanded="false" aria-controls="menuPanel">
+      <span class="toggle-bars">
+        <i></i><i></i><i></i>
+      </span>
+      <span class="toggle-label">MENU</span>
+    </button>
+    <div class="menu-panel" id="menuPanel">
+      <div class="menu-ornament top">
+        <svg viewBox="0 0 200 20" preserveAspectRatio="none"><path d="M0,10 Q50,0 100,10 T200,10" fill="none" stroke="currentColor" stroke-width="1.2"/></svg>
+      </div>
+      <ul class="menu-list">
+        <li><a href="/reitansai/" data-hint="探究の起点へ戻る"><span class="m-icon">🏠</span><span class="m-text">ホーム</span></a></li>
+        <li><a href="/reitansai/#about" data-hint="麗探祭とは"><span class="m-icon">✨</span><span class="m-text">麗探祭について</span></a></li>
+        <li><a href="/reitansai/#timeline" data-hint="1年間の探究の流れ"><span class="m-icon">📅</span><span class="m-text">探究の流れ</span></a></li>
+        <li><a href="/reitansai/#highlights" data-hint="見どころを探る"><span class="m-icon">🔭</span><span class="m-text">見どころ</span></a></li>
+        <li><a href="/reitansai/#contact" data-hint="外部有識者・参加案内"><span class="m-icon">🤝</span><span class="m-text">参加・お問い合わせ</span></a></li>
+      </ul>
+      <div class="menu-footer">
+        <p>問いから始まる学びの革命</p>
+        <small>Reitaku Inquiry EXPO 2026</small>
+      </div>
+      <div class="menu-ornament bottom">
+        <svg viewBox="0 0 200 20" preserveAspectRatio="none"><path d="M0,10 Q50,20 100,10 T200,10" fill="none" stroke="currentColor" stroke-width="1.2"/></svg>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main 404 Stage -->
+  <main class="stage" id="stage">
+    <!-- Crest / Laurel Header -->
+    <header class="crest-header">
+      <div class="laurel left">
+        <svg viewBox="0 0 60 120" class="laurel-svg">
+          <path d="M30,110 C20,90 8,70 12,50 C16,30 28,20 30,5 C32,20 44,30 48,50 C52,70 40,90 30,110 Z" fill="url(#goldGrad)"/>
+          <path d="M30,100 C22,85 14,70 16,55 C18,40 26,32 30,18" fill="none" stroke="#c9a227" stroke-width="1.5" opacity="0.6"/>
+        </svg>
+      </div>
+      <div class="crest-center">
+        <div class="crest-badge">
+          <span class="crest-leaf">🍃</span>
+          <span class="crest-text">Reitaku</span>
+        </div>
+      </div>
+      <div class="laurel right">
+        <svg viewBox="0 0 60 120" class="laurel-svg mirror">
+          <path d="M30,110 C20,90 8,70 12,50 C16,30 28,20 30,5 C32,20 44,30 48,50 C52,70 40,90 30,110 Z" fill="url(#goldGrad)"/>
+          <path d="M30,100 C22,85 14,70 16,55 C18,40 26,32 30,18" fill="none" stroke="#c9a227" stroke-width="1.5" opacity="0.6"/>
+        </svg>
+      </div>
+    </header>
+
+    <!-- Giant 404 with Gold Ornate Frame -->
+    <section class="error-hero">
+      <div class="ornate-frame">
+        <div class="frame-corner tl"></div>
+        <div class="frame-corner tr"></div>
+        <div class="frame-corner bl"></div>
+        <div class="frame-corner br"></div>
+        <div class="frame-line top"></div>
+        <div class="frame-line bottom"></div>
+        <div class="frame-line left"></div>
+        <div class="frame-line right"></div>
+
+        <div class="error-code-wrap">
+          <div class="error-code" id="errorCode">
+            <span class="digit" data-d="4">4</span>
+            <span class="digit mid" data-d="0">0</span>
+            <span class="digit" data-d="4">4</span>
+          </div>
+          <div class="error-glow"></div>
+        </div>
+
+        <h1 class="error-title">
+          <span class="title-jp">ページが見つかりません</span>
+          <span class="title-en">Page Not Found — Lost in Inquiry</span>
+        </h1>
+      </div>
+    </section>
+
+    <!-- Inquiry Message -->
+    <section class="inquiry-message">
+      <div class="message-card">
+        <div class="message-icon">🔎</div>
+        <p class="lead">
+          この場所には、まだ<strong>問い</strong>が残されていません。<br>
+          探究の旅は、時に予想外の道に迷い込みます。
+        </p>
+        <p class="sub">
+          しかし、迷いこそが新たな発見の始まり。<br>
+          ここから、もう一度「なぜ？」を問い直してみませんか。
+        </p>
+        <div class="quote-box">
+          <blockquote>
+            「問いから始まる学びの革命<br>
+            未来を、自分たちの手で。」
+          </blockquote>
+          <cite>— 麗探祭 2026</cite>
+        </div>
+      </div>
+    </section>
+
+    <!-- Interactive Inquiry Compass -->
+    <section class="compass-section">
+      <div class="compass" id="compass">
+        <div class="compass-ring outer"></div>
+        <div class="compass-ring mid"></div>
+        <div class="compass-ring inner"></div>
+        <div class="compass-needle" id="needle"></div>
+        <div class="compass-center">
+          <span>探究</span>
+        </div>
+        <div class="compass-labels">
+          <span class="cl n">HOME</span>
+          <span class="cl e">EXPO</span>
+          <span class="cl s">ABOUT</span>
+          <span class="cl w">FLOW</span>
+        </div>
+      </div>
+      <p class="compass-hint">コンパスを動かして、行きたい方向を探そう</p>
+    </section>
+
+    <!-- Action Cards (matching poster info style) -->
+    <section class="action-grid">
+      <a href="/reitansai/" class="action-card home">
+        <div class="ac-icon">🏠</div>
+        <h3>探究の起点へ</h3>
+        <p>トップページに戻る</p>
+        <span class="ac-arrow">→</span>
+      </a>
+      <a href="/reitansai/#timeline" class="action-card flow">
+        <div class="ac-icon">📅</div>
+        <h3>探究の1年の流れ</h3>
+        <p>4年生〜EXPOまで</p>
+        <span class="ac-arrow">→</span>
+      </a>
+      <a href="/reitansai/#highlights" class="action-card highlight">
+        <div class="ac-icon">✨</div>
+        <h3>麗探祭の見どころ</h3>
+        <p>多様な発表とフィードバック</p>
+        <span class="ac-arrow">→</span>
+      </a>
+      <button type="button" class="action-card random" id="randomExplore">
+        <div class="ac-icon">🎲</div>
+        <h3>ランダム探究</h3>
+        <p>偶然の発見を楽しむ</p>
+        <span class="ac-arrow">?</span>
+      </button>
+    </section>
+
+    <!-- Mini Timeline (poster style) -->
+    <section class="mini-timeline">
+      <div class="tl-title">
+        <span class="tl-deco">✦</span>
+        探究の1年の流れ
+        <span class="tl-deco">✦</span>
+      </div>
+      <div class="tl-track">
+        <div class="tl-node">
+          <div class="tl-dot">I</div>
+          <div class="tl-label">
+            <strong>4年生</strong>
+            <span>探究ゼミⅠ</span>
+            <small>課題発見・仮説・中間発表</small>
+          </div>
+        </div>
+        <div class="tl-line"></div>
+        <div class="tl-node">
+          <div class="tl-dot">II</div>
+          <div class="tl-label">
+            <strong>5年生</strong>
+            <span>探究ゼミⅡ</span>
+            <small>研究深化・成果まとめ</small>
+          </div>
+        </div>
+        <div class="tl-line"></div>
+        <div class="tl-node active">
+          <div class="tl-dot trophy">🏆</div>
+          <div class="tl-label">
+            <strong>10月</strong>
+            <span>EXPO開催</span>
+            <small>麗探祭で成果を発信！</small>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="page-footer">
+      <div class="footer-ornament">
+        <svg viewBox="0 0 400 30" preserveAspectRatio="none">
+          <path d="M0,15 Q100,5 200,15 T400,15" fill="none" stroke="url(#goldGrad)" stroke-width="1.5"/>
+          <circle cx="200" cy="15" r="4" fill="#d4af37"/>
+        </svg>
+      </div>
+      <p class="footer-brand">麗探祭 — Reitaku Inquiry EXPO 2026</p>
+      <p class="footer-school">麗澤高等学校 探究ゼミ成果発表会</p>
+      <p class="footer-date">2026年10月3日（土） 9:00〜12:00</p>
+      <div class="footer-icons">
+        <span title="開かれた発表会">🎓</span>
+        <span title="多様な発表形式">📊</span>
+        <span title="外部フィードバック">🤝</span>
+        <span title="問いから始まる">💡</span>
+      </div>
+    </footer>
+  </main>
+
+  <!-- SVG Defs -->
+  <svg width="0" height="0" style="position:absolute">
+    <defs>
+      <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#f5e6b8"/>
+        <stop offset="40%" stop-color="#d4af37"/>
+        <stop offset="70%" stop-color="#b8860b"/>
+        <stop offset="100%" stop-color="#8b6914"/>
+      </linearGradient>
+      <linearGradient id="goldShine" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#fff8e0"/>
+        <stop offset="50%" stop-color="#d4af37"/>
+        <stop offset="100%" stop-color="#9a7b0a"/>
+      </linearGradient>
+      <filter id="goldGlow">
+        <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+        <feMerge>
+          <feMergeNode in="coloredBlur"/>
+          <feMergeNode in="SourceGraphic"/>
+        </feMerge>
+      </filter>
+    </defs>
+  </svg>
+
+  <script src="/reitansai/js/404.js"></script>
+  <script src="/reitansai/MENU/404menu.js"></script>
+</body>
+</html>
