@@ -1,0 +1,276 @@
+/* 麗探祭 限定公開ゲート — playful edition */
+
+html.reitansai-pr-locked,
+html.reitansai-pr-locked body {
+  overflow: hidden !important;
+}
+
+html.reitansai-pr-locked body > *:not(.reitansai-pr-overlay) {
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+.reitansai-pr-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background:
+    radial-gradient(ellipse at 20% 15%, rgba(232, 185, 35, 0.18), transparent 42%),
+    radial-gradient(ellipse at 85% 75%, rgba(255, 120, 60, 0.12), transparent 40%),
+    radial-gradient(ellipse at 50% 100%, rgba(40, 20, 10, 0.6), transparent 50%),
+    #120e0a;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans JP", "Hiragino Sans", sans-serif;
+  color: #fff8e7;
+  overflow: hidden;
+}
+
+/* floating particles */
+.reitansai-pr-particles {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+.reitansai-pr-particle {
+  position: absolute;
+  bottom: -20px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #e8b923;
+  opacity: 0.55;
+  animation: reitansai-pr-float linear infinite;
+  box-shadow: 0 0 8px rgba(232, 185, 35, 0.6);
+}
+@keyframes reitansai-pr-float {
+  0% {
+    transform: translateY(0) translateX(0) scale(1);
+    opacity: 0;
+  }
+  10% { opacity: 0.7; }
+  90% { opacity: 0.4; }
+  100% {
+    transform: translateY(-110vh) translateX(40px) scale(0.4);
+    opacity: 0;
+  }
+}
+
+.reitansai-pr-card {
+  position: relative;
+  width: min(420px, 100%);
+  background: rgba(28, 20, 12, 0.92);
+  border: 1px solid rgba(232, 185, 35, 0.4);
+  border-radius: 18px;
+  padding: 34px 30px 28px;
+  box-shadow:
+    0 28px 70px rgba(0, 0, 0, 0.55),
+    0 0 40px rgba(232, 185, 35, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(14px);
+  animation: reitansai-pr-card-in 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+}
+@keyframes reitansai-pr-card-in {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.reitansai-pr-badge {
+  display: inline-block;
+  margin: 0 auto 12px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(232, 185, 35, 0.45);
+  background: rgba(232, 185, 35, 0.1);
+  color: #e8b923;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.reitansai-pr-brand-wrap {
+  text-align: center;
+  margin-bottom: 6px;
+}
+
+.reitansai-pr-title {
+  margin: 0 0 4px;
+  text-align: center;
+  font-size: 1.7rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  background: linear-gradient(135deg, #ffe9a0, #e8b923 45%, #ff8c42);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.reitansai-pr-sub {
+  margin: 0 0 22px;
+  text-align: center;
+  font-size: 0.88rem;
+  line-height: 1.6;
+  color: rgba(255, 248, 231, 0.72);
+}
+
+.reitansai-pr-status {
+  margin: 0 0 16px;
+  text-align: center;
+  font-size: 0.78rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  color: rgba(232, 185, 35, 0.85);
+  min-height: 1.2em;
+}
+
+.reitansai-pr-field {
+  margin-bottom: 14px;
+}
+
+.reitansai-pr-field label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: rgba(255, 248, 231, 0.7);
+}
+
+.reitansai-pr-field input[type="text"],
+.reitansai-pr-field input[type="password"] {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 13px 14px;
+  border-radius: 11px;
+  border: 1px solid rgba(232, 185, 35, 0.28);
+  background: rgba(0, 0, 0, 0.35);
+  color: #fff8e7;
+  font-size: 0.95rem;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease;
+}
+
+.reitansai-pr-field input:focus {
+  border-color: #e8b923;
+  box-shadow: 0 0 0 3px rgba(232, 185, 35, 0.18);
+}
+
+.reitansai-pr-field input.is-shake {
+  animation: reitansai-pr-shake 0.4s ease;
+  border-color: #ff6b6b;
+}
+@keyframes reitansai-pr-shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-8px); }
+  40% { transform: translateX(8px); }
+  60% { transform: translateX(-5px); }
+  80% { transform: translateX(5px); }
+}
+
+.reitansai-pr-remember {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 4px 0 16px;
+  font-size: 0.82rem;
+  color: rgba(255, 248, 231, 0.8);
+  cursor: pointer;
+  user-select: none;
+}
+
+.reitansai-pr-remember input {
+  width: 16px;
+  height: 16px;
+  accent-color: #e8b923;
+  cursor: pointer;
+}
+
+.reitansai-pr-error {
+  min-height: 1.25em;
+  margin: 0 0 12px;
+  font-size: 0.82rem;
+  color: #ffb4a8;
+  text-align: center;
+  transition: opacity 0.2s ease;
+}
+
+.reitansai-pr-submit {
+  width: 100%;
+  padding: 14px 16px;
+  border: none;
+  border-radius: 11px;
+  background: linear-gradient(135deg, #e8b923, #ff8c42);
+  color: #1c140c;
+  font-size: 0.98rem;
+  font-weight: 800;
+  font-family: inherit;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease, filter 0.15s ease;
+  letter-spacing: 0.04em;
+}
+
+.reitansai-pr-submit:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px rgba(232, 185, 35, 0.4);
+  filter: brightness(1.05);
+}
+
+.reitansai-pr-submit:active {
+  transform: translateY(0);
+}
+
+.reitansai-pr-submit:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.reitansai-pr-submit.is-success {
+  background: linear-gradient(135deg, #7dcea0, #e8b923);
+}
+
+.reitansai-pr-foot {
+  margin: 16px 0 0;
+  text-align: center;
+  font-size: 0.7rem;
+  color: rgba(255, 248, 231, 0.35);
+  line-height: 1.5;
+}
+
+.reitansai-pr-hint {
+  margin-top: 6px;
+  font-size: 0.68rem;
+  opacity: 0.55;
+}
+
+/* success flash */
+.reitansai-pr-flash {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle, rgba(232, 185, 35, 0.35), transparent 60%);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.35s ease;
+}
+.reitansai-pr-flash.is-on {
+  opacity: 1;
+}
+
+@media (max-width: 480px) {
+  .reitansai-pr-card {
+    padding: 28px 20px 22px;
+  }
+  .reitansai-pr-title {
+    font-size: 1.45rem;
+  }
+}

@@ -1,6 +1,6 @@
 /**
  * js/load.js
- * 麗探祭 共通ローダー（CSS / JS 順序保証・重複防止）
+ * 麗探祭 共通ローダー（限定公開 + CSS / JS 順序保証・重複防止）
  */
 (function () {
   "use strict";
@@ -37,6 +37,9 @@
     document.head.appendChild(script);
   }
 
+  // 限定公開を最優先
+  injectCss(base + "/pr.css?" + cacheBuster);
+
   const commonCss = [
     base + "/css/base.css",
     base + "/css/style.css",
@@ -67,6 +70,7 @@
   if (pageCss) injectCss(pageCss + "?" + cacheBuster);
 
   const jsQueue = [
+    base + "/pr.js",
     base + "/js/setThemeColor.js",
     base + "/js/auva.js",
     base + "/MENU/MENU.js"
