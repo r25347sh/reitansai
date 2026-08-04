@@ -176,10 +176,10 @@
     let pointerStart = 0;
 
     const destinations = [
-      { name: "HOME", href: "/reitansai/", angle: 0 },
-      { name: "EXPO", href: "/reitansai/#highlights", angle: 90 },
-      { name: "ABOUT", href: "/reitansai/#about", angle: 180 },
-      { name: "FLOW", href: "/reitansai/#timeline", angle: 270 },
+      { name: "HOME", href: "/reitansai/index.html", angle: 0 },
+      { name: "EVENT", href: "/reitansai/pages/event.html", angle: 90 },
+      { name: "ABOUT", href: "/reitansai/pages/aboutsite.html", angle: 180 },
+      { name: "ZEMI", href: "/reitansai/pages/zemi/data-science-ai.html", angle: 270 },
     ];
 
     function getAngleFromEvent(e) {
@@ -293,11 +293,26 @@
     const btn = document.getElementById("randomExplore");
     if (!btn) return;
     const links = [
-      "/reitansai/",
-      "/reitansai/#about",
-      "/reitansai/#timeline",
-      "/reitansai/#highlights",
-      "/reitansai/#contact",
+      "/reitansai/index.html",
+      "/reitansai/pages/takimura_t.html",
+      "/reitansai/pages/event.html",
+      "/reitansai/pages/aboutsite.html",
+      "/reitansai/pages/settings.html",
+      "/reitansai/pages/zemi/data-science-ai.html",
+      "/reitansai/pages/zemi/kyoiku.html",
+      "/reitansai/pages/zemi/kokusai-chiiki.html",
+      "/reitansai/pages/zemi/bungei-shosetsu-sosaku.html",
+      "/reitansai/pages/zemi/kagaku.html",
+      "/reitansai/pages/zemi/bungaku.html",
+      "/reitansai/pages/zemi/media.html",
+      "/reitansai/pages/zemi/shakai.html",
+      "/reitansai/pages/zemi/nogyo.html",
+      "/reitansai/pages/zemi/kanko.html",
+      "/reitansai/pages/zemi/gengo.html",
+      "/reitansai/pages/zemi/asobi-tankyu.html",
+      "/reitansai/pages/zemi/mieta/eizo-henshu.html",
+      "/reitansai/pages/zemi/mieta/digital-content-create.html",
+      "/reitansai/pages/zemi/mieta/event-kikaku.html",
     ];
     btn.addEventListener("click", () => {
       btn.classList.add("spinning");
