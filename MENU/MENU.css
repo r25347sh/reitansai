@@ -1,24 +1,38 @@
 /* ==============================================
-   Google Fonts 読み込み
+   麗探祭 Radial Menu — Poster-matched theme
+   Deep forest green × Metallic gold (EXPO 2026)
    ============================================== */
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Bebas+Neue&family=Oswald:wght@500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Cormorant+Garamond:wght@600;700&display=swap');
 
 :root {
-  /* 🎨 麗澤シラバス配色（深緑 × ゴールド） */
-  --rm-font-family: 'Noto Sans JP', 'Inter', system-ui, sans-serif;
-  --rm-item-bg: linear-gradient(135deg, #0A3D2A, #1E5A3F);
-  --rm-item-hover-bg: linear-gradient(135deg, #228B22, #66C26A);
-  --rm-parent-bg: linear-gradient(135deg, rgba(212, 175, 55, 0.30), rgba(15, 61, 42, 0.95));
-  --rm-border-color: rgba(255, 215, 0, 0.55);
-  --rm-border-hover-color: #E8B923;
-  --rm-text-color: #FFFFFF;
-  --rm-orbit-color: rgba(34, 139, 34, 0.40);
-  --rm-core-bg: linear-gradient(135deg, #E8B923, #B8860B);
-  --rm-label-bg: linear-gradient(135deg, rgba(10, 61, 42, 0.96), rgba(15, 77, 53, 0.96));
-  --rm-label-border: #E8B923;
+  --rm-font-family: 'Noto Sans JP', system-ui, sans-serif;
+
+  /* Poster palette */
+  --rm-forest-deep: #06140e;
+  --rm-forest: #0a2e1c;
+  --rm-forest-mid: #14532d;
+  --rm-gold: #e8c547;
+  --rm-gold-bright: #f5d76e;
+  --rm-gold-deep: #b8860b;
+  --rm-gold-muted: rgba(232, 197, 71, 0.45);
+
+  --rm-item-bg: linear-gradient(145deg, rgba(10, 46, 28, 0.92), rgba(6, 20, 14, 0.95));
+  --rm-item-hover-bg: linear-gradient(145deg, #1a6b3c, #0d4a28);
+  --rm-parent-bg: linear-gradient(145deg, rgba(232, 197, 71, 0.28), rgba(10, 46, 28, 0.94));
+
+  --rm-border-color: rgba(232, 197, 71, 0.5);
+  --rm-border-hover-color: #f5d76e;
+
+  --rm-text-color: #faf8f0;
+  --rm-orbit-color: rgba(232, 197, 71, 0.22);
+
+  --rm-core-bg: linear-gradient(135deg, #e8c547 0%, #c9a227 50%, #b8860b 100%);
+
+  --rm-label-bg: linear-gradient(135deg, rgba(6, 20, 14, 0.96), rgba(10, 46, 28, 0.96));
+  --rm-label-border: rgba(232, 197, 71, 0.65);
 
   --rm-item-size: 56px;
-  --rm-elastic-ease: cubic-bezier(0.34, 1.75, 0.64, 1);
+  --rm-elastic-ease: cubic-bezier(0.34, 1.56, 0.64, 1);
   --rm-z-index: 9999999;
 }
 
@@ -28,7 +42,7 @@ body {
   font-family: var(--rm-font-family);
 }
 
-/* 🛡️ メニュー全体コンテナ */
+/* Wrapper */
 .radial-menu-wrapper {
   position: fixed;
   top: 0;
@@ -47,10 +61,9 @@ body {
   pointer-events: auto;
   visibility: visible;
   opacity: 1;
-  transition: visibility 0s linear 0s, opacity 0.10s ease-in;
+  transition: visibility 0s linear 0s, opacity 0.1s ease-in;
 }
 
-/* 描画Canvas */
 .rm-canvas-layer {
   position: absolute;
   top: 50%;
@@ -62,32 +75,35 @@ body {
   height: 600px;
 }
 
-/* ⚛️ 電子殻軌道 & パルス効果 */
+/* Orbits — soft gold dashed rings */
 .rm-shell-orbit {
   position: absolute;
   border-radius: 50%;
   border: 1px dashed var(--rm-orbit-color);
-  box-shadow: 0 0 15px rgba(34, 139, 34, 0.25);
+  box-shadow:
+    0 0 20px rgba(232, 197, 71, 0.08),
+    inset 0 0 20px rgba(232, 197, 71, 0.04);
   pointer-events: none;
   z-index: 2;
   transform: scale(0.2) rotate(-90deg);
   opacity: 0;
   will-change: transform, opacity;
-  transition: transform 0.5s var(--rm-elastic-ease), opacity 0.3s ease;
+  transition: transform 0.55s var(--rm-elastic-ease), opacity 0.3s ease;
 }
 
 .radial-menu-wrapper.active .rm-shell-orbit {
+  transform: scale(1) rotate(0deg);
   opacity: 1;
-  animation: orbitPulse 8s linear infinite;
+  animation: orbitPulse 12s linear infinite;
 }
 
 @keyframes orbitPulse {
-  0% { transform: scale(1) rotate(0deg); }
-  50% { transform: scale(1.02) rotate(180deg); }
+  0%   { transform: scale(1) rotate(0deg); }
+  50%  { transform: scale(1.012) rotate(180deg); }
   100% { transform: scale(1) rotate(360deg); }
 }
 
-/* 🎯 階層切替用 中央コアボタン */
+/* Core back button — solid gold medal */
 .rm-core-btn {
   position: absolute;
   width: 48px;
@@ -95,22 +111,26 @@ body {
   margin-top: -24px;
   margin-left: -24px;
   border-radius: 50%;
-  border: 2px solid #ffffff;
+  border: 2px solid rgba(255, 248, 220, 0.85);
   background: var(--rm-core-bg);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  color: #ffffff;
-  font-size: 18px;
-  font-weight: 900;
+  color: #1a1205;
+  font-size: 16px;
+  font-weight: 800;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 10;
-  box-shadow: 0 0 22px rgba(232, 185, 35, 0.75), inset 0 0 12px rgba(255, 255, 255, 0.6);
+  box-shadow:
+    0 0 28px rgba(232, 197, 71, 0.55),
+    0 4px 12px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.45),
+    inset 0 -2px 6px rgba(184, 134, 11, 0.5);
   opacity: 0;
   pointer-events: none;
-  transform: scale(0) rotate(-180deg);
+  transform: scale(0) rotate(-160deg);
   will-change: transform, opacity;
   transition: transform 0.4s var(--rm-elastic-ease), opacity 0.2s ease;
   -webkit-tap-highlight-color: transparent;
@@ -123,11 +143,14 @@ body {
 }
 
 .rm-core-btn:hover {
-  transform: scale(1.22) rotate(90deg) !important;
-  box-shadow: 0 0 35px rgba(232, 185, 35, 1), inset 0 0 18px rgba(255, 255, 255, 0.9);
+  transform: scale(1.18) rotate(90deg) !important;
+  box-shadow:
+    0 0 40px rgba(245, 215, 110, 0.75),
+    0 6px 16px rgba(0, 0, 0, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.55);
 }
 
-/* 🌀 メニューボタン */
+/* Items — glass forest */
 .rm-item {
   position: absolute;
   width: var(--rm-item-size);
@@ -137,25 +160,29 @@ body {
   border-radius: 50%;
   border: 1.5px solid var(--rm-border-color);
   background: var(--rm-item-bg);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
   color: var(--rm-text-color);
-  font-size: 22px;
+  font-size: 21px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 3;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.6), inset 0 0 10px rgba(0, 240, 255, 0.15);
+  box-shadow:
+    0 10px 28px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    inset 0 0 12px rgba(232, 197, 71, 0.06);
   opacity: 0;
   pointer-events: none;
-  transform: translate3d(0, 0, 0) scale(0) rotate(-180deg);
+  transform: translate3d(0, 0, 0) scale(0) rotate(-160deg);
   will-change: transform, opacity;
-  transition: 
-    transform 0.45s var(--rm-elastic-ease),
+  transition:
+    transform 0.48s var(--rm-elastic-ease),
     opacity 0.25s ease,
-    border-color 0.2s ease,
-    box-shadow 0.2s ease;
+    border-color 0.22s ease,
+    box-shadow 0.25s ease,
+    background 0.25s ease;
   -webkit-tap-highlight-color: transparent;
 }
 
@@ -165,44 +192,48 @@ body {
   transform: translate3d(var(--x), var(--y), 0) scale(1) rotate(0deg);
 }
 
-/* ⚡ ホバー/アクティブ時ネオンエフェクト */
-.rm-item:hover, .rm-item:active {
+.rm-item:hover,
+.rm-item:active {
   background: var(--rm-item-hover-bg) !important;
   border-color: var(--rm-border-hover-color);
-  color: #ffffff;
-  transform: translate3d(var(--x), var(--y), 0) scale(1.25) rotate(0deg) !important;
-  box-shadow: 
-    0 0 32px rgba(34, 139, 34, 0.85),
-    0 0 18px rgba(232, 185, 35, 0.75),
-    inset 0 0 16px rgba(255, 255, 255, 0.85);
+  color: #fffef5;
+  transform: translate3d(var(--x), var(--y), 0) scale(1.22) rotate(0deg) !important;
+  box-shadow:
+    0 0 32px rgba(232, 197, 71, 0.55),
+    0 0 16px rgba(26, 107, 60, 0.6),
+    inset 0 0 14px rgba(255, 255, 255, 0.2);
   z-index: 5;
 }
 
 .rm-item.has-sub {
   background: var(--rm-parent-bg);
-  border-color: rgba(255, 184, 0, 0.8);
-  box-shadow: 0 0 15px rgba(255, 184, 0, 0.35);
+  border-color: rgba(245, 215, 110, 0.7);
+  box-shadow:
+    0 0 18px rgba(232, 197, 71, 0.28),
+    inset 0 0 10px rgba(232, 197, 71, 0.1);
 }
 
-/* 🏷️ 文字ラベル */
+/* Labels — gold-rimmed plaques */
 .rm-item::after {
   content: attr(data-label);
   position: absolute;
-  bottom: -28px;
+  bottom: -32px;
   left: 50%;
-  transform: translateX(-50%) translateY(-8px) scale(0.7);
+  transform: translateX(-50%) translateY(-6px) scale(0.75);
   background: var(--rm-label-bg);
-  color: var(--rm-text-color);
-  padding: 3px 8px;
-  border-radius: 6px;
+  color: #faf8f0;
+  padding: 4px 11px;
+  border-radius: 8px;
   border: 1px solid var(--rm-label-border);
   font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.5px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
   white-space: nowrap;
   opacity: 0;
   pointer-events: none;
-  box-shadow: 0 0 12px rgba(0, 0, 0, 0.5);
+  box-shadow:
+    0 4px 16px rgba(0, 0, 0, 0.4),
+    0 0 12px rgba(232, 197, 71, 0.12);
   transition: transform 0.3s var(--rm-elastic-ease), opacity 0.2s ease;
   z-index: 6;
 }
@@ -212,15 +243,12 @@ body {
   transform: translateX(-50%) translateY(0) scale(1);
 }
 
-/* 📱 スマホサイズ調整 */
 @media (max-width: 600px) {
-  :root {
-    --rm-item-size: 46px;
-  }
+  :root { --rm-item-size: 46px; }
   .rm-item { font-size: 18px; }
   .rm-item::after {
     font-size: 10px;
-    padding: 2px 6px;
-    bottom: -24px;
+    padding: 2px 8px;
+    bottom: -26px;
   }
 }
