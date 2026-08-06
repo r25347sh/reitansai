@@ -1,5 +1,6 @@
 /**
- * MENU/MENU.js - 麗探祭 放射状メニュー（修整版）
+ * MENU/MENU.js - 麗探祭 放射状メニュー v3
+ * Scrim + premium gold particles
  */
 const RADIAL_MENU_DATA = [
   { label: 'ホーム', icon: '🏠', url: '/reitansai/index.html' },
@@ -44,6 +45,7 @@ const RADIAL_MENU_DATA = [
   const SHELL_RADII = [115, 185, 255];
 
   let menuEl = null;
+  let scrimEl = null;
   let itemsContainer = null;
   let orbitsContainer = null;
   let coreBtn = null;
@@ -66,38 +68,80 @@ const RADIAL_MENU_DATA = [
     canvas.width = 600;
     canvas.height = 600;
     const cX = 300, cY = 300;
-    let ring1Radius = 10, ring1Alpha = 1;
-    let ring2Radius = 5, ring2Alpha = 0.8;
-    const particles = Array.from({ length: 28 }, (_, idx) => {
-      const a = (idx / 28) * Math.PI * 2 + (Math.random() * 0.15);
-      const spd = Math.random() * 7 + 3.5;
-      const hue = 40 + Math.floor(Math.random() * 40);
-      return { x: cX, y: cY, vx: Math.cos(a) * spd, vy: Math.sin(a) * spd, size: Math.random() * 3 + 1.5, color: `hsl(${hue}, 90%, 60%)`, alpha: 1 };
+    let ring1Radius = 8, ring1Alpha = 1;
+    let ring2Radius = 4, ring2Alpha = 0.9;
+    let ring3Radius = 2, ring3Alpha = 0.7;
+
+    const particles = Array.from({ length: 42 }, (_, idx) => {
+      const a = (idx / 42) * Math.PI * 2 + Math.random() * 0.2;
+      const spd = Math.random() * 8 + 2.5;
+      const isGold = Math.random() > 0.35;
+      return {
+        x: cX, y: cY,
+        vx: Math.cos(a) * spd,
+        vy: Math.sin(a) * spd,
+        size: Math.random() * 2.8 + 1.2,
+        color: isGold
+          ? `hsla(${42 + Math.random() * 18}, 90%, ${55 + Math.random() * 25}%, 1)`
+          : `hsla(${140 + Math.random() * 30}, 70%, ${40 + Math.random() * 20}%, 1)`,
+        alpha: 1,
+        drag: 0.91 + Math.random() * 0.04
+      };
     });
+
     function draw() {
       ctx.clearRect(0, 0, 600, 600);
+
       if (ring1Alpha > 0) {
-        ctx.beginPath(); ctx.arc(cX, cY, ring1Radius, 0, Math.PI * 2);
-        ctx.strokeStyle = `rgba(34, 139, 34, ${ring1Alpha})`; ctx.lineWidth = 3.5; ctx.stroke();
-        ring1Radius += 8; ring1Alpha -= 0.048;
+        ctx.beginPath();
+        ctx.arc(cX, cY, ring1Radius, 0, Math.PI * 2);
+        ctx.strokeStyle = `rgba(232, 197, 71, ${ring1Alpha})`;
+        ctx.lineWidth = 3;
+        ctx.stroke();
+        ring1Radius += 9;
+        ring1Alpha -= 0.045;
       }
       if (ring2Alpha > 0) {
-        ctx.beginPath(); ctx.arc(cX, cY, ring2Radius, 0, Math.PI * 2);
-        ctx.strokeStyle = `rgba(232, 185, 35, ${ring2Alpha})`; ctx.lineWidth = 2.5; ctx.stroke();
-        ring2Radius += 6.5; ring2Alpha -= 0.038;
+        ctx.beginPath();
+        ctx.arc(cX, cY, ring2Radius, 0, Math.PI * 2);
+        ctx.strokeStyle = `rgba(248, 224, 138, ${ring2Alpha})`;
+        ctx.lineWidth = 2;
+        ctx.stroke();
+        ring2Radius += 7;
+        ring2Alpha -= 0.04;
       }
-      let isAlive = false;
+      if (ring3Alpha > 0) {
+        ctx.beginPath();
+        ctx.arc(cX, cY, ring3Radius, 0, Math.PI * 2);
+        ctx.strokeStyle = `rgba(26, 122, 69, ${ring3Alpha})`;
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+        ring3Radius += 5.5;
+        ring3Alpha -= 0.035;
+      }
+
+      let alive = false;
       particles.forEach(p => {
-        if (p.alpha > 0) {
-          isAlive = true;
-          p.x += p.vx; p.y += p.vy; p.vx *= 0.93; p.vy *= 0.93; p.alpha -= 0.033;
-          ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-          ctx.fillStyle = p.color; ctx.globalAlpha = Math.max(0, p.alpha); ctx.fill();
-        }
+        if (p.alpha <= 0) return;
+        alive = true;
+        p.x += p.vx;
+        p.y += p.vy;
+        p.vx *= p.drag;
+        p.vy *= p.drag;
+        p.alpha -= 0.028;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fillStyle = p.color;
+        ctx.globalAlpha = Math.max(0, p.alpha);
+        ctx.fill();
       });
       ctx.globalAlpha = 1;
-      if (ring1Alpha > 0 || ring2Alpha > 0 || isAlive) requestAnimationFrame(draw);
-      else ctx.clearRect(0, 0, 600, 600);
+
+      if (ring1Alpha > 0 || ring2Alpha > 0 || ring3Alpha > 0 || alive) {
+        requestAnimationFrame(draw);
+      } else {
+        ctx.clearRect(0, 0, 600, 600);
+      }
     }
     draw();
   }
@@ -111,7 +155,12 @@ const RADIAL_MENU_DATA = [
       const radius = SHELL_RADII[sIdx];
       for (let i = 0; i < countInShell; i++) {
         const angle = (i / countInShell) * 2 * Math.PI - (Math.PI / 2);
-        layout.push({ item: items[itemIdx], x: Math.round(Math.cos(angle) * radius), y: Math.round(Math.sin(angle) * radius), shellIndex: sIdx });
+        layout.push({
+          item: items[itemIdx],
+          x: Math.round(Math.cos(angle) * radius),
+          y: Math.round(Math.sin(angle) * radius),
+          shellIndex: sIdx
+        });
         itemIdx++;
       }
       remaining -= countInShell;
@@ -122,11 +171,12 @@ const RADIAL_MENU_DATA = [
   function renderMenuLevel(items) {
     itemsContainer.querySelectorAll('.rm-item').forEach(el => {
       el.classList.remove('rendered');
-      setTimeout(() => el.remove(), 200);
+      setTimeout(() => el.remove(), 220);
     });
     orbitsContainer.innerHTML = '';
     const layout = calculateShellLayout(items);
     const activeShells = new Set();
+
     layout.forEach((data, index) => {
       activeShells.add(data.shellIndex);
       const btn = document.createElement('button');
@@ -134,9 +184,9 @@ const RADIAL_MENU_DATA = [
       btn.type = 'button';
       btn.setAttribute('data-label', data.item.label);
       btn.innerHTML = data.item.icon || '•';
-      btn.style.setProperty('--x', `${data.x}px`);
-      btn.style.setProperty('--y', `${data.y}px`);
-      btn.style.transitionDelay = `${index * 0.025}s`;
+      btn.style.setProperty('--x', data.x + 'px');
+      btn.style.setProperty('--y', data.y + 'px');
+      btn.style.transitionDelay = (index * 0.028) + 's';
       btn.addEventListener('click', (e) => {
         e.stopPropagation();
         if (data.item.items && data.item.items.length > 0) {
@@ -148,37 +198,52 @@ const RADIAL_MENU_DATA = [
         }
       });
       itemsContainer.appendChild(btn);
-      requestAnimationFrame(() => setTimeout(() => btn.classList.add('rendered'), 15));
+      requestAnimationFrame(() => setTimeout(() => btn.classList.add('rendered'), 12));
     });
+
     activeShells.forEach(sIdx => {
       const orbit = document.createElement('div');
       orbit.className = 'rm-shell-orbit';
       const d = SHELL_RADII[sIdx] * 2;
-      orbit.style.width = `${d}px`; orbit.style.height = `${d}px`;
-      orbit.style.marginTop = `-${SHELL_RADII[sIdx]}px`;
-      orbit.style.marginLeft = `-${SHELL_RADII[sIdx]}px`;
+      orbit.style.width = d + 'px';
+      orbit.style.height = d + 'px';
+      orbit.style.marginTop = -SHELL_RADII[sIdx] + 'px';
+      orbit.style.marginLeft = -SHELL_RADII[sIdx] + 'px';
+      orbit.style.transitionDelay = (sIdx * 0.06) + 's';
       orbitsContainer.appendChild(orbit);
     });
+
     if (menuStack.length > 0) coreBtn.classList.add('visible');
     else coreBtn.classList.remove('visible');
   }
 
   function createMenuDOM() {
     if (document.querySelector('.radial-menu-wrapper')) return;
+
+    scrimEl = document.createElement('div');
+    scrimEl.className = 'rm-scrim';
+    scrimEl.addEventListener('click', () => closeMenu());
+    document.body.appendChild(scrimEl);
+
     menuEl = document.createElement('div');
     menuEl.className = 'radial-menu-wrapper';
     menuEl.setAttribute('role', 'navigation');
+
     canvas = document.createElement('canvas');
     canvas.className = 'rm-canvas-layer';
     ctx = canvas.getContext('2d');
     menuEl.appendChild(canvas);
+
     orbitsContainer = document.createElement('div');
     menuEl.appendChild(orbitsContainer);
+
     itemsContainer = document.createElement('div');
     menuEl.appendChild(itemsContainer);
+
     coreBtn = document.createElement('button');
     coreBtn.className = 'rm-core-btn';
     coreBtn.type = 'button';
+    coreBtn.setAttribute('aria-label', '戻る');
     coreBtn.innerHTML = '✕';
     coreBtn.addEventListener('click', (e) => {
       e.stopPropagation();
@@ -193,10 +258,11 @@ const RADIAL_MENU_DATA = [
 
   function openMenu(x, y) {
     if (!menuEl) createMenuDOM();
-    const margin = 180;
-    menuEl.style.left = `${Math.max(margin, Math.min(x, window.innerWidth - margin))}px`;
-    menuEl.style.top = `${Math.max(margin, Math.min(y, window.innerHeight - margin))}px`;
+    const margin = 190;
+    menuEl.style.left = Math.max(margin, Math.min(x, window.innerWidth - margin)) + 'px';
+    menuEl.style.top = Math.max(margin, Math.min(y, window.innerHeight - margin)) + 'px';
     menuEl.classList.add('active');
+    if (scrimEl) scrimEl.classList.add('active');
     isOpen = true;
     menuStack = [];
     renderMenuLevel(RADIAL_MENU_DATA);
@@ -206,6 +272,7 @@ const RADIAL_MENU_DATA = [
   function closeMenu() {
     if (!menuEl) return;
     menuEl.classList.remove('active');
+    if (scrimEl) scrimEl.classList.remove('active');
     itemsContainer.querySelectorAll('.rm-item').forEach(el => el.classList.remove('rendered'));
     coreBtn.classList.remove('visible');
     isOpen = false;
@@ -214,27 +281,48 @@ const RADIAL_MENU_DATA = [
   function initEvents() {
     document.addEventListener('pointerdown', (e) => {
       if (isOpen && menuEl && menuEl.contains(e.target)) return;
-      if (isOpen && menuEl && !menuEl.contains(e.target)) { closeMenu(); return; }
-      startX = e.clientX; startY = e.clientY;
+      if (isOpen && menuEl && !menuEl.contains(e.target) && !(scrimEl && scrimEl.contains(e.target))) {
+        closeMenu();
+        return;
+      }
+      if (isOpen) return;
+
+      startX = e.clientX;
+      startY = e.clientY;
       tapCount++;
       clearTimeout(tapTimer);
+
       if (tapCount === 3) {
-        clearTimeout(timer); timer = null; tapCount = 0;
-        openMenu(startX, startY); return;
+        clearTimeout(timer);
+        timer = null;
+        tapCount = 0;
+        openMenu(startX, startY);
+        return;
       }
+
       tapTimer = setTimeout(() => { tapCount = 0; }, TRIPLE_TAP_DELAY_MS);
       clearTimeout(timer);
-      timer = setTimeout(() => { tapCount = 0; openMenu(startX, startY); }, LONG_PRESS_MS);
+      timer = setTimeout(() => {
+        tapCount = 0;
+        openMenu(startX, startY);
+      }, LONG_PRESS_MS);
     });
+
     document.addEventListener('pointermove', (e) => {
       if (!timer || isOpen) return;
       if (Math.hypot(e.clientX - startX, e.clientY - startY) > MOVE_THRESHOLD) {
-        clearTimeout(timer); timer = null;
+        clearTimeout(timer);
+        timer = null;
       }
     });
+
     document.addEventListener('pointerup', () => {
-      if (timer && !isOpen) { clearTimeout(timer); timer = null; }
+      if (timer && !isOpen) {
+        clearTimeout(timer);
+        timer = null;
+      }
     });
+
     document.addEventListener('contextmenu', (e) => { if (isOpen) e.preventDefault(); });
     document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && isOpen) closeMenu(); });
   }

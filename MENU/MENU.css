@@ -1,38 +1,33 @@
 /* ==============================================
-   麗探祭 Radial Menu — Poster-matched theme
-   Deep forest green × Metallic gold (EXPO 2026)
+   麗探祭 Radial Menu v3 — Exhibition grade
+   Deep forest × metallic gold (poster matched)
    ============================================== */
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Cormorant+Garamond:wght@600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&display=swap');
 
 :root {
   --rm-font-family: 'Noto Sans JP', system-ui, sans-serif;
-
-  /* Poster palette */
-  --rm-forest-deep: #06140e;
-  --rm-forest: #0a2e1c;
-  --rm-forest-mid: #14532d;
   --rm-gold: #e8c547;
-  --rm-gold-bright: #f5d76e;
+  --rm-gold-bright: #f8e08a;
   --rm-gold-deep: #b8860b;
-  --rm-gold-muted: rgba(232, 197, 71, 0.45);
+  --rm-forest: #0a2e1c;
+  --rm-forest-deep: #04100b;
 
-  --rm-item-bg: linear-gradient(145deg, rgba(10, 46, 28, 0.92), rgba(6, 20, 14, 0.95));
-  --rm-item-hover-bg: linear-gradient(145deg, #1a6b3c, #0d4a28);
-  --rm-parent-bg: linear-gradient(145deg, rgba(232, 197, 71, 0.28), rgba(10, 46, 28, 0.94));
+  --rm-item-bg: linear-gradient(160deg, rgba(14, 52, 34, 0.94) 0%, rgba(4, 16, 11, 0.96) 100%);
+  --rm-item-hover-bg: linear-gradient(160deg, #1a7a45 0%, #0d4f2c 100%);
+  --rm-parent-bg: linear-gradient(160deg, rgba(232, 197, 71, 0.35) 0%, rgba(10, 46, 28, 0.95) 70%);
 
-  --rm-border-color: rgba(232, 197, 71, 0.5);
-  --rm-border-hover-color: #f5d76e;
-
+  --rm-border-color: rgba(232, 197, 71, 0.55);
+  --rm-border-hover-color: #f8e08a;
   --rm-text-color: #faf8f0;
-  --rm-orbit-color: rgba(232, 197, 71, 0.22);
+  --rm-orbit-color: rgba(232, 197, 71, 0.28);
 
-  --rm-core-bg: linear-gradient(135deg, #e8c547 0%, #c9a227 50%, #b8860b 100%);
+  --rm-core-bg: linear-gradient(145deg, #f8e08a 0%, #e8c547 35%, #c9a227 70%, #9a7209 100%);
 
-  --rm-label-bg: linear-gradient(135deg, rgba(6, 20, 14, 0.96), rgba(10, 46, 28, 0.96));
-  --rm-label-border: rgba(232, 197, 71, 0.65);
+  --rm-label-bg: linear-gradient(180deg, rgba(8, 28, 18, 0.97), rgba(4, 16, 11, 0.98));
+  --rm-label-border: rgba(232, 197, 71, 0.7);
 
-  --rm-item-size: 56px;
-  --rm-elastic-ease: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --rm-item-size: 58px;
+  --rm-elastic-ease: cubic-bezier(0.34, 1.45, 0.64, 1);
   --rm-z-index: 9999999;
 }
 
@@ -42,7 +37,29 @@ body {
   font-family: var(--rm-font-family);
 }
 
-/* Wrapper */
+/* ── Scrim (dim the page when menu is open) ── */
+.rm-scrim {
+  position: fixed;
+  inset: 0;
+  z-index: calc(var(--rm-z-index) - 1);
+  background:
+    radial-gradient(ellipse 60% 50% at 50% 45%, rgba(4, 16, 11, 0.55), rgba(0, 0, 0, 0.72));
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.28s ease, visibility 0s linear 0.28s;
+}
+
+.rm-scrim.active {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transition: opacity 0.22s ease, visibility 0s linear 0s;
+}
+
+/* ── Wrapper ── */
 .radial-menu-wrapper {
   position: fixed;
   top: 0;
@@ -54,14 +71,37 @@ body {
   visibility: hidden;
   opacity: 0;
   will-change: transform, opacity;
-  transition: visibility 0s linear 0.25s, opacity 0.15s ease-out;
+  transition: visibility 0s linear 0.28s, opacity 0.18s ease-out;
 }
 
 .radial-menu-wrapper.active {
   pointer-events: auto;
   visibility: visible;
   opacity: 1;
-  transition: visibility 0s linear 0s, opacity 0.1s ease-in;
+  transition: visibility 0s linear 0s, opacity 0.12s ease-in;
+}
+
+/* Ambient glow under the whole menu */
+.radial-menu-wrapper::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 320px;
+  height: 320px;
+  margin: -160px 0 0 -160px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(232, 197, 71, 0.14) 0%, rgba(26, 107, 60, 0.08) 40%, transparent 70%);
+  opacity: 0;
+  transform: scale(0.4);
+  pointer-events: none;
+  z-index: 0;
+  transition: opacity 0.4s ease, transform 0.5s var(--rm-elastic-ease);
+}
+
+.radial-menu-wrapper.active::before {
+  opacity: 1;
+  transform: scale(1);
 }
 
 .rm-canvas-layer {
@@ -75,48 +115,56 @@ body {
   height: 600px;
 }
 
-/* Orbits — soft gold dashed rings */
+/* ── Orbits ── */
 .rm-shell-orbit {
   position: absolute;
   border-radius: 50%;
   border: 1px dashed var(--rm-orbit-color);
   box-shadow:
-    0 0 20px rgba(232, 197, 71, 0.08),
-    inset 0 0 20px rgba(232, 197, 71, 0.04);
+    0 0 24px rgba(232, 197, 71, 0.1),
+    inset 0 0 24px rgba(232, 197, 71, 0.05);
   pointer-events: none;
   z-index: 2;
-  transform: scale(0.2) rotate(-90deg);
+  transform: scale(0.15) rotate(-120deg);
   opacity: 0;
   will-change: transform, opacity;
-  transition: transform 0.55s var(--rm-elastic-ease), opacity 0.3s ease;
+  transition: transform 0.6s var(--rm-elastic-ease), opacity 0.35s ease;
+}
+
+/* Secondary solid thin ring for depth */
+.rm-shell-orbit::after {
+  content: '';
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  border: 1px solid rgba(232, 197, 71, 0.08);
+  pointer-events: none;
 }
 
 .radial-menu-wrapper.active .rm-shell-orbit {
   transform: scale(1) rotate(0deg);
   opacity: 1;
-  animation: orbitPulse 12s linear infinite;
+  animation: orbitDrift 14s linear infinite;
 }
 
-@keyframes orbitPulse {
+@keyframes orbitDrift {
   0%   { transform: scale(1) rotate(0deg); }
-  50%  { transform: scale(1.012) rotate(180deg); }
+  50%  { transform: scale(1.018) rotate(180deg); }
   100% { transform: scale(1) rotate(360deg); }
 }
 
-/* Core back button — solid gold medal */
+/* ── Core (gold medal) ── */
 .rm-core-btn {
   position: absolute;
-  width: 48px;
-  height: 48px;
-  margin-top: -24px;
-  margin-left: -24px;
+  width: 50px;
+  height: 50px;
+  margin-top: -25px;
+  margin-left: -25px;
   border-radius: 50%;
-  border: 2px solid rgba(255, 248, 220, 0.85);
+  border: 2px solid rgba(255, 250, 230, 0.9);
   background: var(--rm-core-bg);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
   color: #1a1205;
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 800;
   cursor: pointer;
   display: flex;
@@ -124,16 +172,38 @@ body {
   justify-content: center;
   z-index: 10;
   box-shadow:
-    0 0 28px rgba(232, 197, 71, 0.55),
-    0 4px 12px rgba(0, 0, 0, 0.4),
-    inset 0 1px 0 rgba(255, 255, 255, 0.45),
-    inset 0 -2px 6px rgba(184, 134, 11, 0.5);
+    0 0 0 3px rgba(232, 197, 71, 0.25),
+    0 0 32px rgba(232, 197, 71, 0.55),
+    0 6px 16px rgba(0, 0, 0, 0.45),
+    inset 0 2px 4px rgba(255, 255, 255, 0.55),
+    inset 0 -3px 8px rgba(154, 114, 9, 0.55);
   opacity: 0;
   pointer-events: none;
-  transform: scale(0) rotate(-160deg);
+  transform: scale(0) rotate(-200deg);
   will-change: transform, opacity;
-  transition: transform 0.4s var(--rm-elastic-ease), opacity 0.2s ease;
+  transition: transform 0.45s var(--rm-elastic-ease), opacity 0.2s ease, box-shadow 0.25s ease;
   -webkit-tap-highlight-color: transparent;
+  overflow: hidden;
+}
+
+/* Shimmer sweep on core */
+.rm-core-btn::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -60%;
+  width: 40%;
+  height: 200%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.45), transparent);
+  transform: rotate(25deg);
+  animation: goldShimmer 2.8s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes goldShimmer {
+  0%, 40% { left: -60%; opacity: 0; }
+  50% { opacity: 1; }
+  70%, 100% { left: 120%; opacity: 0; }
 }
 
 .rm-core-btn.visible {
@@ -143,14 +213,15 @@ body {
 }
 
 .rm-core-btn:hover {
-  transform: scale(1.18) rotate(90deg) !important;
+  transform: scale(1.2) rotate(90deg) !important;
   box-shadow:
-    0 0 40px rgba(245, 215, 110, 0.75),
-    0 6px 16px rgba(0, 0, 0, 0.35),
-    inset 0 1px 0 rgba(255, 255, 255, 0.55);
+    0 0 0 4px rgba(248, 224, 138, 0.35),
+    0 0 44px rgba(248, 224, 138, 0.75),
+    0 8px 20px rgba(0, 0, 0, 0.4),
+    inset 0 2px 6px rgba(255, 255, 255, 0.65);
 }
 
-/* Items — glass forest */
+/* ── Items ── */
 .rm-item {
   position: absolute;
   width: var(--rm-item-size);
@@ -160,30 +231,43 @@ body {
   border-radius: 50%;
   border: 1.5px solid var(--rm-border-color);
   background: var(--rm-item-bg);
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
+  backdrop-filter: blur(20px) saturate(1.2);
+  -webkit-backdrop-filter: blur(20px) saturate(1.2);
   color: var(--rm-text-color);
-  font-size: 21px;
+  font-size: 22px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 3;
   box-shadow:
-    0 10px 28px rgba(0, 0, 0, 0.5),
-    inset 0 1px 0 rgba(255, 255, 255, 0.08),
-    inset 0 0 12px rgba(232, 197, 71, 0.06);
+    0 12px 32px rgba(0, 0, 0, 0.55),
+    0 0 0 1px rgba(232, 197, 71, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    inset 0 -1px 8px rgba(0, 0, 0, 0.25);
   opacity: 0;
   pointer-events: none;
-  transform: translate3d(0, 0, 0) scale(0) rotate(-160deg);
+  transform: translate3d(0, 0, 0) scale(0) rotate(-180deg);
   will-change: transform, opacity;
   transition:
-    transform 0.48s var(--rm-elastic-ease),
-    opacity 0.25s ease,
+    transform 0.52s var(--rm-elastic-ease),
+    opacity 0.28s ease,
     border-color 0.22s ease,
-    box-shadow 0.25s ease,
-    background 0.25s ease;
+    box-shadow 0.28s ease,
+    background 0.28s ease;
   -webkit-tap-highlight-color: transparent;
+}
+
+/* Soft ring outside each item */
+.rm-item::before {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  border: 1px solid rgba(232, 197, 71, 0.15);
+  opacity: 0;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+  pointer-events: none;
 }
 
 .radial-menu-wrapper.active .rm-item.rendered {
@@ -196,46 +280,61 @@ body {
 .rm-item:active {
   background: var(--rm-item-hover-bg) !important;
   border-color: var(--rm-border-hover-color);
-  color: #fffef5;
-  transform: translate3d(var(--x), var(--y), 0) scale(1.22) rotate(0deg) !important;
+  color: #fffef8;
+  transform: translate3d(var(--x), var(--y), 0) scale(1.24) rotate(0deg) !important;
   box-shadow:
-    0 0 32px rgba(232, 197, 71, 0.55),
-    0 0 16px rgba(26, 107, 60, 0.6),
-    inset 0 0 14px rgba(255, 255, 255, 0.2);
+    0 0 36px rgba(232, 197, 71, 0.5),
+    0 0 18px rgba(26, 122, 69, 0.55),
+    0 12px 28px rgba(0, 0, 0, 0.4),
+    inset 0 0 16px rgba(255, 255, 255, 0.18);
   z-index: 5;
+}
+
+.rm-item:hover::before {
+  opacity: 1;
+  transform: scale(1.08);
+  border-color: rgba(248, 224, 138, 0.4);
 }
 
 .rm-item.has-sub {
   background: var(--rm-parent-bg);
-  border-color: rgba(245, 215, 110, 0.7);
+  border-color: rgba(248, 224, 138, 0.75);
   box-shadow:
-    0 0 18px rgba(232, 197, 71, 0.28),
-    inset 0 0 10px rgba(232, 197, 71, 0.1);
+    0 0 22px rgba(232, 197, 71, 0.32),
+    0 10px 28px rgba(0, 0, 0, 0.45),
+    inset 0 0 12px rgba(232, 197, 71, 0.12);
 }
 
-/* Labels — gold-rimmed plaques */
+.rm-item.has-sub::after {
+  border-color: rgba(248, 224, 138, 0.8);
+}
+
+/* ── Labels ── */
 .rm-item::after {
   content: attr(data-label);
   position: absolute;
-  bottom: -32px;
+  bottom: -34px;
   left: 50%;
-  transform: translateX(-50%) translateY(-6px) scale(0.75);
+  transform: translateX(-50%) translateY(-8px) scale(0.7);
   background: var(--rm-label-bg);
   color: #faf8f0;
-  padding: 4px 11px;
-  border-radius: 8px;
+  padding: 5px 12px;
+  border-radius: 999px;
   border: 1px solid var(--rm-label-border);
   font-size: 11px;
   font-weight: 600;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.03em;
   white-space: nowrap;
   opacity: 0;
   pointer-events: none;
   box-shadow:
-    0 4px 16px rgba(0, 0, 0, 0.4),
-    0 0 12px rgba(232, 197, 71, 0.12);
-  transition: transform 0.3s var(--rm-elastic-ease), opacity 0.2s ease;
+    0 6px 20px rgba(0, 0, 0, 0.45),
+    0 0 14px rgba(232, 197, 71, 0.1);
+  transition: transform 0.35s var(--rm-elastic-ease), opacity 0.22s ease;
   z-index: 6;
+  max-width: 140px;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .radial-menu-wrapper.active .rm-item.rendered::after {
@@ -244,11 +343,17 @@ body {
 }
 
 @media (max-width: 600px) {
-  :root { --rm-item-size: 46px; }
+  :root { --rm-item-size: 48px; }
   .rm-item { font-size: 18px; }
   .rm-item::after {
     font-size: 10px;
-    padding: 2px 8px;
-    bottom: -26px;
+    padding: 3px 9px;
+    bottom: -28px;
+    max-width: 110px;
+  }
+  .radial-menu-wrapper::before {
+    width: 240px;
+    height: 240px;
+    margin: -120px 0 0 -120px;
   }
 }
