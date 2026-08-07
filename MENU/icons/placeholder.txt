@@ -1,0 +1,31 @@
+(function () {
+  const LONG_PRESS_MS = 360;
+  const TRIPLE_TAP_DELAY_MS = 300;
+  const MOVE_THRESHOLD = 8;
+  const SHELL_CAPACITIES = [6, 10, 14];
+  const SHELL_RADII = [115, 185, 255];
+
+  // Minimal fallback icon behavior if fetch failed
+  function fallbackIconSVG(emoji) {
+    return '<span aria-hidden="true">' + (emoji || '•') + '</span>';
+  }
+
+  // utility to read theme colors
+  function getThemeColors() {
+    const s = getComputedStyle(document.documentElement);
+    return {
+      main: (s.getPropertyValue('--main-color') || '#E8B923').trim(),
+      balance: (s.getPropertyValue('--balance-color') || '#22A06B').trim()
+    };
+  }
+
+  // inject icons into existing buttons (replace placeholder span) - used after loading
+  function injectIconHTML(rawSVG, theme) {
+    if (!rawSVG) return '';
+    return rawSVG.replace(/{{FILL}}/g, theme.main).replace(/{{STROKE}}/g, theme.balance);
+  }
+
+  // We keep MENU logic simple here: when page loads, preload icon files referenced in data-icon attribute
+  // and then render the menu when first opened.
+  // The actual heavy MENU logic is in MENU/MENU.js which handles open/close and positioning.
+})();
