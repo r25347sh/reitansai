@@ -26,12 +26,12 @@ body{font-family:var(--rm-font)}
 .rm-shell-orbit{position:absolute;border-radius:50%;pointer-events:none;opacity:0;transition:transform .6s cubic-bezier(.2,.9,.2,1),opacity .38s ease}
 .radial-menu-wrapper.active .rm-shell-orbit{opacity:1}
 
-.rm-core-btn{position:absolute;width:52px;height:52px;margin:-26px 0 0 -26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;cursor:pointer;border:none;background:linear-gradient(145deg,#f0d060 0%,#e8c547 40%,#c9a227 75%,#a67c00 100%);color:#1a1205;box-shadow:0 8px 26px rgba(0,0,0,0.45);opacity:0;transform:scale(0.92);pointer-events:none;transition:transform .32s cubic-bezier(.2,.9,.2,1),opacity .18s ease}
+.rm-core-btn{position:absolute;width:52px;height:52px;margin:-26px 0 0 -26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;cursor:pointer;border:none;bac[...]
 .rm-core-btn.visible{transform:scale(1);opacity:1;pointer-events:auto}
 
-.rm-item{position:absolute;width:56px;height:56px;margin-top:calc(-1 * 56px / 2);margin-left:calc(-1 * 56px / 2);border-radius:999px;display:grid;place-items:center;color:#fff;cursor:pointer;background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));box-shadow:0 8px 26px rgba(0,0,0,0.45);opacity:0;pointer-events:none;transform:translate3d(0,0,0) scale(.8);transition:transform 220ms cubic-bezier(.2,.9,.2,1),opacity 160ms ease,box-shadow 160ms ease}
+.rm-item{position:absolute;width:56px;height:56px;margin-top:calc(-1 * 56px / 2);margin-left:calc(-1 * 56px / 2);border-radius:999px;display:grid;place-items:center;color:#fff;cursor:pointer;backg[...]
 
-.rm-item::after{content:attr(data-label);position:absolute;bottom:-36px;left:50%;transform:translateX(-50%) translateY(-6px) scale(.85);background:rgba(6,8,10,0.8);padding:6px 12px;border-radius:999px;font-size:12px;opacity:0;pointer-events:none;transition:transform 260ms cubic-bezier(.2,.9,.2,1),opacity 180ms ease}
+.rm-item::after{content:attr(data-label);position:absolute;bottom:-36px;left:50%;transform:translateX(-50%) translateY(-6px) scale(.85);background:rgba(6,8,10,0.8);padding:6px 12px;border-radius:9[...]
 .radial-menu-wrapper.active .rm-item.rendered{opacity:1;pointer-events:auto}
 .radial-menu-wrapper.active .rm-item.rendered::after{opacity:1;transform:translateX(-50%) translateY(0) scale(1)}
 
