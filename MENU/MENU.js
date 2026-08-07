@@ -1,5 +1,9 @@
 /**
- * MENU/MENU.js - 麗探祭 放射状メニュー v3 (restored)
+ * MENU/MENU.js - 麗探祭 放射状メニュー v3 — 改良版
+ * - Canvas: devicePixelRatio 対応、解像度の安定化
+ * - アクセシビリティ: aria-expanded, aria-label、フォーカス管理
+ * - キーボード: 矢印キーで簡易ナビゲーション
+ * - バグ修正: DOM 作成、イベントハンドリングの堅牢化
  */
 const RADIAL_MENU_DATA = [
   { label: 'ホーム', icon: '🏠', url: '/reitansai/index.html' },
@@ -47,17 +51,32 @@ const RADIAL_MENU_DATA = [
   let menuStack = [];
   let tapCount = 0;
   let tapTimer = null;
+  let lastRenderedButtons = [];
 
   function navigateWithDelay(url) {
     closeMenu();
     setTimeout(() => { location.href = url; }, 180);
   }
 
+  function ensureCanvasStyling() {
+    // 固定サイズのキャンバスを用意し、devicePixelRatio を考慮して描画解像度を高める
+    const CSS_SIZE = 600; // 見かけ上のピクセルサイズ
+    const dpr = window.devicePixelRatio || 1;
+    if (!canvas) return;
+    canvas.style.width = CSS_SIZE + 'px';
+    canvas.style.height = CSS_SIZE + 'px';
+    canvas.width = Math.floor(CSS_SIZE * dpr);
+    canvas.height = Math.floor(CSS_SIZE * dpr);
+    // 高 DPI に対応してスケールをリセット
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+
   function triggerParticleBurst() {
     if (!canvas || !ctx) return;
-    canvas.width = 600;
-    canvas.height = 600;
-    const cX = 300, cY = 300;
+    ensureCanvasStyling();
+
+    const CSS_SIZE = 600;
+    const cX = CSS_SIZE / 2, cY = CSS_SIZE / 2;
     let ring1Radius = 8, ring1Alpha = 1;
     let ring2Radius = 4, ring2Alpha = 0.9;
     let ring3Radius = 2, ring3Alpha = 0.7;
@@ -80,7 +99,8 @@ const RADIAL_MENU_DATA = [
     });
 
     function draw() {
-      ctx.clearRect(0, 0, 600, 600);
+      // まずは表示サイズベースでクリア
+      ctx.clearRect(0, 0, CSS_SIZE, CSS_SIZE);
 
       if (ring1Alpha > 0) {
         ctx.beginPath();
@@ -130,7 +150,7 @@ const RADIAL_MENU_DATA = [
       if (ring1Alpha > 0 || ring2Alpha > 0 || ring3Alpha > 0 || alive) {
         requestAnimationFrame(draw);
       } else {
-        ctx.clearRect(0, 0, 600, 600);
+        ctx.clearRect(0, 0, CSS_SIZE, CSS_SIZE);
       }
     }
     draw();
@@ -159,11 +179,15 @@ const RADIAL_MENU_DATA = [
   }
 
   function renderMenuLevel(items) {
-    itemsContainer.querySelectorAll('.rm-item').forEach(el => {
-      el.classList.remove('rendered');
-      setTimeout(() => el.remove(), 220);
-    });
-    orbitsContainer.innerHTML = '';
+    lastRenderedButtons = [];
+    // アニメーションで前のボタンを消す
+    if (itemsContainer) {
+      itemsContainer.querySelectorAll('.rm-item').forEach(el => {
+        el.classList.remove('rendered');
+        setTimeout(() => el.remove(), 220);
+      });
+    }
+    if (orbitsContainer) orbitsContainer.innerHTML = '';
     const layout = calculateShellLayout(items);
     const activeShells = new Set();
 
@@ -173,10 +197,12 @@ const RADIAL_MENU_DATA = [
       btn.className = 'rm-item' + (data.item.items ? ' has-sub' : '');
       btn.type = 'button';
       btn.setAttribute('data-label', data.item.label);
+      btn.setAttribute('aria-label', data.item.label + (data.item.items ? ' サブメニューあり' : ''));
       btn.innerHTML = data.item.icon || '•';
       btn.style.setProperty('--x', data.x + 'px');
       btn.style.setProperty('--y', data.y + 'px');
       btn.style.transitionDelay = (index * 0.028) + 's';
+      btn.tabIndex = 0;
       btn.addEventListener('click', (e) => {
         e.stopPropagation();
         if (data.item.items && data.item.items.length > 0) {
@@ -188,6 +214,8 @@ const RADIAL_MENU_DATA = [
         }
       });
       itemsContainer.appendChild(btn);
+      lastRenderedButtons.push(btn);
+      // アニメーション開始
       requestAnimationFrame(() => setTimeout(() => btn.classList.add('rendered'), 12));
     });
 
@@ -205,11 +233,26 @@ const RADIAL_MENU_DATA = [
 
     if (menuStack.length > 0) coreBtn.classList.add('visible');
     else coreBtn.classList.remove('visible');
+
+    // フォーカス管理: 最初のボタンにフォーカス
+    setTimeout(() => {
+      if (lastRenderedButtons.length > 0) {
+        lastRenderedButtons[0].focus();
+      } else {
+        coreBtn.focus();
+      }
+    }, 260);
   }
 
   function createMenuDOM() {
-    if (document.querySelector('.radial-menu-wrapper')) return;
+    if (document.querySelector('.radial-menu-wrapper')) {
+      menuEl = document.querySelector('.radial-menu-wrapper');
+      scrimEl = document.querySelector('.rm-scrim');
+      itemsContainer = menuEl.querySelector('div.items') || menuEl.querySelector('.rm-items');
+      return;
+    }
 
+    // スクリーン全体のスクリーン
     scrimEl = document.createElement('div');
     scrimEl.className = 'rm-scrim';
     scrimEl.addEventListener('click', () => closeMenu());
@@ -218,6 +261,7 @@ const RADIAL_MENU_DATA = [
     menuEl = document.createElement('div');
     menuEl.className = 'radial-menu-wrapper';
     menuEl.setAttribute('role', 'navigation');
+    menuEl.setAttribute('aria-hidden', 'true');
 
     canvas = document.createElement('canvas');
     canvas.className = 'rm-canvas-layer';
@@ -225,9 +269,11 @@ const RADIAL_MENU_DATA = [
     menuEl.appendChild(canvas);
 
     orbitsContainer = document.createElement('div');
+    orbitsContainer.className = 'rm-orbits';
     menuEl.appendChild(orbitsContainer);
 
     itemsContainer = document.createElement('div');
+    itemsContainer.className = 'rm-items';
     menuEl.appendChild(itemsContainer);
 
     coreBtn = document.createElement('button');
@@ -243,6 +289,7 @@ const RADIAL_MENU_DATA = [
       } else closeMenu();
     });
     menuEl.appendChild(coreBtn);
+
     document.body.appendChild(menuEl);
   }
 
@@ -252,6 +299,7 @@ const RADIAL_MENU_DATA = [
     menuEl.style.left = Math.max(margin, Math.min(x, window.innerWidth - margin)) + 'px';
     menuEl.style.top = Math.max(margin, Math.min(y, window.innerHeight - margin)) + 'px';
     menuEl.classList.add('active');
+    menuEl.setAttribute('aria-hidden', 'false');
     if (scrimEl) scrimEl.classList.add('active');
     isOpen = true;
     menuStack = [];
@@ -262,10 +310,20 @@ const RADIAL_MENU_DATA = [
   function closeMenu() {
     if (!menuEl) return;
     menuEl.classList.remove('active');
+    menuEl.setAttribute('aria-hidden', 'true');
     if (scrimEl) scrimEl.classList.remove('active');
     itemsContainer.querySelectorAll('.rm-item').forEach(el => el.classList.remove('rendered'));
     coreBtn.classList.remove('visible');
     isOpen = false;
+  }
+
+  function focusMove(delta) {
+    if (!lastRenderedButtons || lastRenderedButtons.length === 0) return;
+    const active = document.activeElement;
+    let idx = lastRenderedButtons.indexOf(active);
+    if (idx === -1) idx = 0;
+    idx = (idx + delta + lastRenderedButtons.length) % lastRenderedButtons.length;
+    lastRenderedButtons[idx].focus();
   }
 
   function initEvents() {
@@ -314,7 +372,26 @@ const RADIAL_MENU_DATA = [
     });
 
     document.addEventListener('contextmenu', (e) => { if (isOpen) e.preventDefault(); });
-    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && isOpen) closeMenu(); });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && isOpen) closeMenu();
+      if (!isOpen) return;
+      // 簡易キーボード操作
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+        e.preventDefault();
+        focusMove(1);
+      } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+        e.preventDefault();
+        focusMove(-1);
+      } else if (e.key === 'Enter' || e.key === ' ') {
+        // Enter/Space はフォーカス中のボタンを発火
+        const el = document.activeElement;
+        if (el && el.classList && el.classList.contains('rm-item')) el.click();
+      }
+    });
+
+    // リサイズでキャンバス再設定
+    window.addEventListener('resize', () => { if (canvas && ctx) ensureCanvasStyling(); });
   }
 
   function boot() { createMenuDOM(); initEvents(); }
