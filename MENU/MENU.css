@@ -1,75 +1,256 @@
-/* MENU/MENU.css
-   Fluid Fibonacci Arc — mobile-first upgrade for radial menu
-   Replaces previous radial styles with fluid arc + fibonacci spiral layout
-*/
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
-:root{
-  --ffa-accent: #00d4ff;
-  --ffa-bg: rgba(6,8,10,0.46);
-  --ffa-glass: rgba(255,255,255,0.04);
-  --ffa-size: 320px;
-  --ffa-item-min: 40px;
-  --ffa-item-max: 84px;
-  --ffa-blur: 10px;
-  --ffa-z: 9999999;
-  --ffa-ease: cubic-bezier(.2,.9,.2,1);
+/* ==============================================
+   麗探祭 Radial Menu v3 — Exhibition grade
+   Deep forest × metallic gold (poster matched)
+   ============================================== */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&display=swap');
+
+:root {
+  --rm-font-family: 'Noto Sans JP', system-ui, sans-serif;
+  --rm-gold: #e8c547;
+  --rm-gold-bright: #f8e08a;
+  --rm-gold-deep: #b8860b;
+  --rm-forest: #0a2e1c;
+  --rm-forest-deep: #04100b;
+
+  --rm-item-bg: linear-gradient(160deg, rgba(14, 52, 34, 0.94) 0%, rgba(4, 16, 11, 0.96) 100%);
+  --rm-item-hover-bg: linear-gradient(160deg, #1a7a45 0%, #0d4f2c 100%);
+  --rm-parent-bg: linear-gradient(160deg, rgba(232, 197, 71, 0.35) 0%, rgba(10, 46, 28, 0.95) 70%);
+
+  --rm-border-color: rgba(232, 197, 71, 0.55);
+  --rm-border-hover-color: #f8e08a;
+  --rm-text-color: #faf8f0;
+  --rm-orbit-color: rgba(232, 197, 71, 0.28);
+
+  --rm-core-bg: linear-gradient(145deg, #f8e08a 0%, #e8c547 35%, #c9a227 70%, #9a7209 100%);
+
+  --rm-label-bg: linear-gradient(180deg, rgba(8, 28, 18, 0.97), rgba(4, 16, 11, 0.98));
+  --rm-label-border: rgba(232, 197, 71, 0.7);
+
+  --rm-item-size: 58px;
+  --rm-elastic-ease: cubic-bezier(0.34, 1.45, 0.64, 1);
+  --rm-z-index: 9999999;
 }
 
-*{box-sizing:border-box}
-body{font-family:Inter, system-ui, -apple-system, 'Noto Sans JP', sans-serif}
-
-/* main wrapper - keeps using old classname for compatibility */
-.radial-menu-wrapper, .fib-menu {
-  position: fixed; left: 0; top: 0; width: 0; height: 0; z-index: var(--ffa-z);
-  pointer-events: none; visibility: hidden; opacity: 0; transition: opacity .12s ease, visibility 0s linear .18s;
+body {
+  user-select: none;
+  -webkit-user-select: none;
+  font-family: var(--rm-font-family);
 }
-.radial-menu-wrapper.active, .fib-menu.open{ pointer-events: auto; visibility: visible; opacity: 1; }
 
-/* backdrop / scrim */
-.rm-scrim, .fib-scrim{ position: fixed; inset: 0; background: rgba(4,6,8,0.32); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); opacity:0; visibility:hidden; transition:opacity .2s ease; }
-.rm-scrim.active, .fib-scrim.active{ opacity:1; visibility:visible }
+/* ── Scrim (dim the page when menu is open) ── */
+.rm-scrim {
+  position: fixed;
+  inset: 0;
+  z-index: calc(var(--rm-z-index) - 1);
+  background:
+    radial-gradient(ellipse 60% 50% at 50% 45%, rgba(4, 16, 11, 0.55), rgba(0, 0, 0, 0.72));
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.28s ease, visibility 0s linear 0.28s;
+}
 
-/* canvas for particle effects */
-.rm-canvas-layer, .fib-canvas{ position: absolute; width: 600px; height:600px; left:50%; top:50%; transform:translate(-50%,-50%); pointer-events:none }
+.rm-scrim.active {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transition: opacity 0.22s ease, visibility 0s linear 0s;
+}
 
-/* orbit decoration */
-.rm-shell-orbit{ position:absolute; border-radius:50%; pointer-events:none; opacity:0; transition:transform .6s var(--ffa-ease), opacity .38s ease }
-.radial-menu-wrapper.active .rm-shell-orbit{ opacity:1 }
-
-/* core button */
-.rm-core-btn, .fib-core{ position:absolute; width:52px; height:52px; margin:-26px 0 0 -26px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:700; cursor:pointer; z-index:30; transform:scale(0) rotate(-160deg); transition:transform .45s var(--ffa-ease), opacity .2s ease; }
-.rm-core-btn.visible, .fib-core.visible{ transform:scale(1) rotate(0deg); opacity:1 }
-
-/* items - modernized */
-.rm-item, .fib-item{
-  position: absolute; width: var(--rm-item-size, 58px); height: var(--rm-item-size, 58px);
-  margin-top: calc(-1 * var(--rm-item-size, 58px) / 2);
-  margin-left: calc(-1 * var(--rm-item-size, 58px) / 2);
-  border-radius: 999px; display:grid; place-items:center; color:#fff; cursor:pointer;
-  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-  box-shadow: 0 8px 26px rgba(0,0,0,0.45); opacity:0; pointer-events:none; transform:translate3d(0,0,0) scale(.8);
-  transition: transform 220ms var(--ffa-ease), opacity 160ms ease, box-shadow 160ms ease;
+/* ── Wrapper ── */
+.radial-menu-wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+  z-index: var(--rm-z-index);
+  pointer-events: none;
+  visibility: hidden;
+  opacity: 0;
   will-change: transform, opacity;
+  transition: visibility 0s linear 0.28s, opacity 0.18s ease-out;
 }
 
-/* label */
-.rm-item::after, .fib-item::after{ content: attr(data-label); position:absolute; bottom:-36px; left:50%; transform:translateX(-50%) translateY(-6px) scale(.85); background: rgba(6,8,10,0.8); padding:6px 10px; border-radius:999px; font-size:12px; opacity:0; pointer-events:none; transition:transform .24s var(--ffa-ease), opacity .18s ease }
-.radial-menu-wrapper.active .rm-item.rendered, .fib-menu.open .fib-item.rendered{ opacity:1; pointer-events:auto; }
-.radial-menu-wrapper.active .rm-item.rendered::after, .fib-menu.open .fib-item.rendered::after{ opacity:1; transform:translateX(-50%) translateY(0) scale(1) }
+.radial-menu-wrapper.active {
+  pointer-events: auto;
+  visibility: visible;
+  opacity: 1;
+  transition: visibility 0s linear 0s, opacity 0.12s ease-in;
+}
 
-/* active highlight */
-.rm-item:hover, .fib-item--active{ transform: translate3d(var(--x,0),var(--y,0),0) scale(1.12) !important; box-shadow:0 20px 50px rgba(0,0,0,0.6) }
+/* Ambient glow under the whole menu */
+.radial-menu-wrapper::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 320px;
+  height: 320px;
+  margin: -160px 0 0 -160px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(232, 197, 71, 0.14) 0%, rgba(26, 107, 60, 0.08) 40%, transparent 70%);
+  opacity: 0;
+  transform: scale(0.4);
+  pointer-events: none;
+  z-index: 0;
+  transition: opacity 0.4s ease, transform 0.5s var(--rm-elastic-ease);
+}
 
-/* size helpers via inline style --size */
-.fib-item__svg{ width:70%; height:70%; display:block }
+.radial-menu-wrapper.active::before {
+  opacity: 1;
+  transform: scale(1);
+}
 
-/* hamburger mode (small modern) */
-.fib-hamburger{ display:inline-block }
-.fib-hamburger__btn{ --size:48px; width:var(--size); height:var(--size); border-radius:10px; display:inline-grid; place-items:center; background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01)); color:#fff; box-shadow:0 8px 22px rgba(0,0,0,0.4); cursor:pointer }
+.rm-canvas-layer {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 1;
+  width: 600px;
+  height: 600px;
+}
 
-/* responsive tweaks */
-@media (max-width:900px){ :root{ --ffa-size:260px; } .rm-item, .fib-item{ transition-duration:200ms } }
-@media (max-width:600px){ :root{ --ffa-size:220px } .rm-item::after, .fib-item::after{ bottom:-28px; font-size:11px } }
+/* ── Orbits ── */
+.rm-shell-orbit {
+  position: absolute;
+  border-radius: 50%;
+  border: 1px dashed var(--rm-orbit-color);
+  box-shadow:
+    0 0 24px rgba(232, 197, 71, 0.1),
+    inset 0 0 24px rgba(232, 197, 71, 0.05);
+  pointer-events: none;
+  z-index: 2;
+  transform: scale(0.15) rotate(-120deg);
+  opacity: 0;
+  will-change: transform, opacity;
+  transition: transform 0.6s var(--rm-elastic-ease), opacity 0.35s ease;
+}
 
-/* visual arc glow */
-.fib-arc-visual{ position:absolute; pointer-events:none; border-radius:50%; filter:blur(18px); opacity:.18; mix-blend-mode:screen }
+/* Secondary solid thin ring for depth */
+.rm-shell-orbit::after {
+  content: '';
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  border: 1px solid rgba(232, 197, 71, 0.08);
+  pointer-events: none;
+}
+
+.radial-menu-wrapper.active .rm-shell-orbit {
+  transform: scale(1) rotate(0deg);
+  opacity: 1;
+  animation: orbitDrift 14s linear infinite;
+}
+
+@keyframes orbitDrift {
+  0%   { transform: scale(1) rotate(0deg); }
+  50%  { transform: scale(1.018) rotate(180deg); }
+  100% { transform: scale(1) rotate(360deg); }
+}
+
+/* ── Core (gold medal) ── */
+.rm-core-btn {
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  margin-top: -25px;
+  margin-left: -25px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 250, 230, 0.9);
+  background: var(--rm-core-bg);
+  color: #1a1205;
+  font-size: 15px;
+  font-weight: 800;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  box-shadow:
+    0 0 0 3px rgba(232, 197, 71, 0.25),
+    0 0 32px rgba(232, 197, 71, 0.55),
+    0 6px 16px rgba(0, 0, 0, 0.45),
+    inset 0 2px 4px rgba(255, 255, 255, 0.55),
+    inset 0 -3px 8px rgba(154, 114, 9, 0.55);
+  opacity: 0;
+  pointer-events: none;
+  transform: scale(0) rotate(-200deg);
+  will-change: transform, opacity;
+  transition: transform 0.45s var(--rm-elastic-ease), opacity 0.2s ease, box-shadow 0.25s ease;
+  -webkit-tap-highlight-color: transparent;
+  overflow: hidden;
+}
+
+/* Shimmer sweep on core */
+.rm-core-btn::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -60%;
+  width: 40%;
+  height: 200%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.45), transparent);
+  transform: rotate(25deg);
+  animation: goldShimmer 2.8s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes goldShimmer {
+  0%, 40% { left: -60%; opacity: 0; }
+  50% { opacity: 1; }
+  70%, 100% { left: 120%; opacity: 0; }
+}
+
+.rm-core-btn.visible {
+  opacity: 1;
+  pointer-events: auto;
+  transform: scale(1) rotate(0deg);
+}
+
+/* ── Items (kept mostly from original but polished) ── */
+.rm-item {
+  position: absolute;
+  width: var(--rm-item-size);
+  height: var(--rm-item-size);
+  margin-top: calc(-1 * var(--rm-item-size) / 2);
+  margin-left: calc(-1 * var(--rm-item-size) / 2);
+  border-radius: 50%;
+  border: 2px solid var(--rm-border-color);
+  background: linear-gradient(160deg, rgba(14,52,34,0.95), rgba(4,16,11,0.97));
+  color: var(--rm-text-color);
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 3;
+  box-shadow: 0 14px 36px rgba(0,0,0,0.55);
+  opacity: 0;
+  pointer-events: none;
+  transform: translate3d(0, 0, 0) scale(0.85) rotate(-140deg);
+  will-change: transform, opacity;
+  transition: transform 0.48s var(--rm-elastic-ease), opacity 0.26s ease, box-shadow 0.28s ease;
+}
+
+.rm-item::before{ content:''; position:absolute; inset:-6px; border-radius:50%; border:1px solid rgba(232,197,71,0.08); opacity:0; transition:opacity .24s ease }
+
+.radial-menu-wrapper.active .rm-item.rendered{ opacity:1; pointer-events:auto; transform: translate3d(var(--x), var(--y), 0) scale(1) rotate(0deg) }
+
+.rm-item:hover, .rm-item:active{ transform: translate3d(var(--x), var(--y), 0) scale(1.18) rotate(0deg) !important; box-shadow: 0 30px 70px rgba(0,0,0,0.6) }
+
+.rm-item.has-sub{ background: linear-gradient(160deg, rgba(232,197,71,0.35), rgba(10,46,28,0.92)); border-color: rgba(240,208,96,0.7) }
+
+.rm-item::after{ content: attr(data-label); position:absolute; bottom:-34px; left:50%; transform:translateX(-50%) translateY(-8px) scale(0.86); background: linear-gradient(180deg, rgba(8,28,18,0.98), rgba(4,16,11,0.99)); color:var(--rm-text-color); padding:6px 14px; border-radius:999px; border:1px solid rgba(232,197,71,0.6); font-size:12px; font-weight:600; letter-spacing:.02em; opacity:0; pointer-events:none; transition: transform .35s var(--rm-elastic-ease), opacity .22s ease }
+
+.radial-menu-wrapper.active .rm-item.rendered::after{ opacity:1; transform:translateX(-50%) translateY(0) scale(1) }
+
+/* ── Visual arc element (for fib arc glow) ── */
+.fib-arc-visual{ position:absolute; width:420px; height:420px; left:50%; top:50%; transform:translate(-50%,-50%); border-radius:50%; pointer-events:none; filter: blur(20px); opacity:0.16; mix-blend-mode:screen }
+
+/* ── Responsive tweaks ── */
+@media (max-width: 600px){ :root { --rm-item-size: 48px } .rm-item{ font-size:16px } .rm-item::after{ bottom:-28px; font-size:11px; padding:4px 10px } }
