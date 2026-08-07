@@ -1,6 +1,7 @@
-/* Reitansai Radial Menu — 改良デザイン v3.1
-   - より高級感のあるグラデ、glass-morphism、フォーカス/hover の演出
-*/
+/*
+ * Reitansai Radial Menu — 改良デザイン v3.1 (位置修正)
+ * ・.rm-item の基準を左上基準から中心基準へ変更し、JS の --x/--y と整合させました。
+ */
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&display=swap');
 
 :root{
@@ -102,7 +103,10 @@ body{font-family:var(--rm-font)}
 .rm-items { position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); pointer-events:none; }
 .rm-item{
   position:absolute;
-  width:var(--rm-item-size); height:var(--rm-item-size);
+  left:50%;
+  top:50%;
+  width:var(--rm-item-size);
+  height:var(--rm-item-size);
   margin-top:calc(-1 * var(--rm-item-size) / 2);
   margin-left:calc(-1 * var(--rm-item-size) / 2);
   border-radius:999px;
@@ -111,7 +115,8 @@ body{font-family:var(--rm-font)}
   background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
   border: 1px solid rgba(255,255,255,0.06);
   box-shadow: 0 8px 20px rgba(4,6,10,0.45), 0 1px 2px rgba(255,255,255,0.02) inset;
-  transform: translate(var(--x,0), var(--y,0)) scale(.94);
+  /* center-based positioning + JS-provided offsets */
+  transform: translate(calc(-50% + var(--x, 0)), calc(-50% + var(--y, 0))) scale(.96);
   opacity:0; pointer-events:none;
   transition: transform var(--rm-transition), opacity var(--rm-transition), box-shadow .18s;
   font-size:20px; line-height:1;
@@ -121,12 +126,12 @@ body{font-family:var(--rm-font)}
 /* visible / rendered state */
 .radial-menu-wrapper.active .rm-item.rendered{
   opacity:1; pointer-events:auto;
-  transform: translate(var(--x,0), var(--y,0)) scale(1);
+  transform: translate(calc(-50% + var(--x, 0)), calc(-50% + var(--y, 0))) scale(1);
 }
 
 /* hover / focus */
 .rm-item:hover, .rm-item:focus{
-  transform: translate(var(--x,0), var(--y,0)) scale(1.06);
+  transform: translate(calc(-50% + var(--x, 0)), calc(-50% + var(--y, 0))) scale(1.06);
   box-shadow: 0 18px 36px rgba(0,0,0,0.5), 0 0 18px rgba(240,208,96,0.08);
   outline: none;
 }
