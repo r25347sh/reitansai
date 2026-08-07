@@ -184,10 +184,9 @@ const RADIAL_MENU_DATA = [
       btn.setAttribute('aria-label', d.item.label + (d.item.items ? ' サブメニュー' : ''));
       btn.innerHTML = d.item.icon || '•';
 
-      // position relative to center: use transform translate
-      btn.style.left = '50%';
-      btn.style.top = '50%';
-      btn.style.transform = `translate(calc(-50% + ${d.x}px), calc(-50% + ${d.y}px)) scale(.96)`;
+      // position via CSS variables to avoid transform conflicts
+      btn.style.setProperty('--x', d.x + 'px');
+      btn.style.setProperty('--y', d.y + 'px');
       btn.style.transitionDelay = (i * 24) + 'ms';
 
       btn.addEventListener('click', (e) => {
