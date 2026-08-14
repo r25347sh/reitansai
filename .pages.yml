@@ -32,7 +32,7 @@ content:
         label: 一言概要（必須）
         type: string
         required: true
-      - name: body
+      - name: body_p
         label: 詳細内容（必須）
         type: rich-text
         required: true
