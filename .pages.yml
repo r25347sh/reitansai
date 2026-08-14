@@ -8,7 +8,6 @@ collections:
     type: folder
     path: content/seminars
     extension: md
-    format: frontmatter
     slug: "{{title}}"
     fields:
       - name: title
