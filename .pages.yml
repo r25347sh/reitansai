@@ -10,26 +10,9 @@ collections:
     extension: md
     format: frontmatter
     slug: "{{title}}"
-    
     fields:
-      - name: title
-        label: ゼミ名（例：〇〇研究室）
-        type: string
-        required: true
-
-      - name: teacher
-        label: 担当教員名
-        type: string
-        required: true
-
-      - name: image
-        label: ゼミのメイン画像
-        type: image
-
-      - name: description
-        label: ゼミの一言概要
-        type: string
-
-      - name: body
-        label: ゼミの詳細内容・紹介文
-        type: rich-text
+      - { name: title, label: ゼミ名, type: string, required: true }
+      - { name: teacher, label: 担当教員名, type: string, required: true }
+      - { name: image, label: ゼミ画像, type: image }
+      - { name: description, label: 一言概要, type: string }
+      - { name: body, label: 詳細内容, type: rich-text }
