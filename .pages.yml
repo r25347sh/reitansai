@@ -15,26 +15,30 @@ content:
       delete: false   # 削除を禁止
     fields:
       - name: title
-        label: ゼミ名
+        label: ゼミ名（必須）
         type: string
         required: true ##必須要素指定
       - name: icon
-        label: ゼミアイコン
+        label: ゼミアイコン（任意）
+        description: "svg,ico,pngのいずれかの形式でお願いします。縦横1:1の比率。"
         type: image
       - name: teacher
-        label: 担当教員名
+        label: 担当顧問
         type: string
       - name: image
-        label: ゼミ画像
+        label: ゼミ画像（任意）
         type: image
       - name: description
-        label: 一言概要
+        label: 一言概要（必須）
         type: string
+        required: true
       - name: body
-        label: 詳細内容
+        label: 詳細内容（必須）
         type: rich-text
+        required: true
       - name: sections
-        label: セクション一覧
+        label: セクション一覧（任意）
+        description: "自由にセクションを増やしていただけます。"
         type: block
         list: true          # ← ★【修正】blockのすぐ下に移動
         blockKey: type      # ← ★【修正】blockを複数扱うために必須の設定です
