@@ -1,0 +1,35 @@
+media:
+  input: public/images/seminars
+  output: /images/seminars
+
+collections:
+  - name: seminars
+    label: ゼミ紹介
+    type: folder
+    path: content/seminars
+    extension: md
+    format: frontmatter
+    slug: "{{title}}"
+    
+    fields:
+      - name: title
+        label: ゼミ名（例：〇〇研究室）
+        type: string
+        required: true
+
+      - name: teacher
+        label: 担当教員名
+        type: string
+        required: true
+
+      - name: image
+        label: ゼミのメイン画像
+        type: image
+
+      - name: description
+        label: ゼミの一言概要
+        type: string
+
+      - name: body
+        label: ゼミの詳細内容・紹介文
+        type: rich-text
