@@ -39,6 +39,7 @@ content:
         blocks:
           - name: text_block
             label: 見出しと段落
+            list: true
             fields:
               - name: heading
                 type: string
