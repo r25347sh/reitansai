@@ -2,7 +2,7 @@ media:
   input: public/images/seminars
   output: /images/seminars
 
-collections:
+content:
   - name: seminars
     label: ゼミ紹介
     type: folder
