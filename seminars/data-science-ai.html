@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>データサイエンス探求AIゼミ</title>
+    <title>データサイエンス探究AIゼミ</title>
     <link rel="stylesheet" href="../style.css">
-    <!-- [marked.js](https://js.org) を読み込み -->
-    <script src="https://jsdelivr.net"></script>
+    <!-- marked.js -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
 <body>
 
@@ -32,28 +32,33 @@
     </main>
 
     <script>
-        // ★ここをこのページ専用のファイル名（拡張子なし）に書き換える
+        // 実際のMDファイル名（拡張子なし）に合わせる ※ファイル名は現状「探求」のまま
         const targetFile = 'データサイエンス探求AIゼミ';
 
         fetch(`../content/seminars/${targetFile}.md`)
-            .then(res => res.text())
+            .then(res => {
+                if (!res.ok) throw new Error('HTTP ' + res.status);
+                return res.text();
+            })
             .then(text => {
                 const parts = text.split('---');
-                const yamlText = parts;
-                const markdownBody = parts.slice(2).join('---');
+                const yamlText = parts[1] || '';
+                const markdownBody = parts.slice(2).join('---').trim();
 
                 const data = {};
                 yamlText.split('\n').forEach(line => {
                     const match = line.match(/^([^:]+):\s*(.*)$/);
                     if (match) {
-                        const key = match.trim();
-                        let value = match.trim();
-                        if (value.startsWith('"') && value.endsWith('"')) value = value.slice(1, -1);
+                        const key = match[1].trim();
+                        let value = match[2].trim();
+                        if ((value.startsWith('"') && value.endsWith('"')) || (value.startsWith("'") && value.endsWith("'"))) {
+                            value = value.slice(1, -1);
+                        }
                         data[key] = value;
                     }
                 });
 
-                document.getElementById('seminar-title').textContent = data.title || targetFile;
+                document.getElementById('seminar-title').textContent = data.title || 'データサイエンス探究AIゼミ';
                 document.getElementById('seminar-teacher').textContent = data.teacher || '-';
                 document.getElementById('seminar-description').textContent = data.description || '';
 
@@ -68,11 +73,14 @@
                     imgEl.style.display = 'block';
                 }
 
-                document.getElementById('seminar-body').innerHTML = marked.parse(markdownBody);
-                document.title = `${data.title} - ゼミ紹介`;
+                // body_p があれば優先、なければ markdownBody
+                const bodyContent = data.body_p || markdownBody || '';
+                document.getElementById('seminar-body').innerHTML = bodyContent ? marked.parse(bodyContent) : '';
+                document.title = `${data.title || 'データサイエンス探究AIゼミ'} - ゼミ紹介`;
             })
             .catch(err => {
-                document.getElementById('seminar-title').textContent = "データの読み込みに失敗しました";
+                console.error(err);
+                document.getElementById('seminar-title').textContent = 'データの読み込みに失敗しました';
             });
     </script>
 </body>
