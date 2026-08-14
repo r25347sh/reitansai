@@ -16,7 +16,6 @@ content:
       - name: icon
         label: ゼミアイコン
         type: image
-        required: true
       - name: teacher
         label: 担当教員名
         type: string
