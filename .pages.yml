@@ -36,10 +36,12 @@ content:
       - name: sections
         label: セクション一覧
         type: block
+        list: true          # ← ★【修正】blockのすぐ下に移動
+        blockKey: type      # ← ★【修正】blockを複数扱うために必須の設定です
         blocks:
           - name: text_block
             label: 見出しと段落
-            list: true
+            # list: true    # ← ★【修正】ここからは削除します
             fields:
               - name: heading
                 type: string
