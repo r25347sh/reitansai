@@ -9,6 +9,10 @@ content:
     path: content/seminars
     format: yaml-frontmatter    # ← markdown等の形式を指定
     filename: "{slug}.md"       # ← extension/slugの代わりにfilenameでテンプレートを指定
+    operations:
+      create: true    # 新規作成は許可（不要なら false）
+      rename: false   # 名前の変更を禁止
+      delete: false   # 削除を禁止
     fields:
       - name: title
         label: ゼミ名
