@@ -13,13 +13,13 @@ content:
       - name: title
         label: ゼミ名
         type: string
+        required: true ##必須要素指定
       - name: icon
         label: ゼミアイコン
         type: image
       - name: teacher
         label: 担当教員名
         type: string
-        required: true
       - name: image
         label: ゼミ画像
         type: image
