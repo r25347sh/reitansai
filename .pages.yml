@@ -7,8 +7,8 @@ content:
     label: ゼミ紹介
     type: collection
     path: content/seminars
-    extension: md
-    slug: "{{title}}"
+    format: yaml-frontmatter    # ← markdown等の形式を指定
+    filename: "{slug}.md"       # ← extension/slugの代わりにfilenameでテンプレートを指定
     fields:
       - name: title
         label: ゼミ名
