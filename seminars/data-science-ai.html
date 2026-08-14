@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>データサイエンス探求AIゼミ</title>
+    <link rel="stylesheet" href="../style.css">
+    <!-- [marked.js](https://js.org) を読み込み -->
+    <script src="https://jsdelivr.net"></script>
+</head>
+<body>
+
+    <header>
+        <a href="../index.html">← ゼミ一覧に戻る</a>
+    </header>
+
+    <main class="seminar-detail">
+        <div class="icon-wrapper">
+            <img id="seminar-icon" src="" alt="ゼミアイコン" style="display:none; width:80px; height:80px;">
+        </div>
+
+        <h1 id="seminar-title">読み込み中...</h1>
+        <p class="teacher-name">担当：<span id="seminar-teacher">-</span> 先生</p>
+
+        <div class="image-wrapper">
+            <img id="seminar-image" src="" alt="ゼミ画像" style="display:none; max-width:100%;">
+        </div>
+
+        <p id="seminar-description" class="lead-text"></p>
+        <hr>
+        <article id="seminar-body" class="content-body"></article>
+    </main>
+
+    <script>
+        // ★ここをこのページ専用のファイル名（拡張子なし）に書き換える
+        const targetFile = 'データサイエンス探求AIゼミ';
+
+        fetch(`../content/seminars/${targetFile}.md`)
+            .then(res => res.text())
+            .then(text => {
+                const parts = text.split('---');
+                const yamlText = parts;
+                const markdownBody = parts.slice(2).join('---');
+
+                const data = {};
+                yamlText.split('\n').forEach(line => {
+                    const match = line.match(/^([^:]+):\s*(.*)$/);
+                    if (match) {
+                        const key = match.trim();
+                        let value = match.trim();
+                        if (value.startsWith('"') && value.endsWith('"')) value = value.slice(1, -1);
+                        data[key] = value;
+                    }
+                });
+
+                document.getElementById('seminar-title').textContent = data.title || targetFile;
+                document.getElementById('seminar-teacher').textContent = data.teacher || '-';
+                document.getElementById('seminar-description').textContent = data.description || '';
+
+                if (data.icon) {
+                    const iconEl = document.getElementById('seminar-icon');
+                    iconEl.src = `..${data.icon}`;
+                    iconEl.style.display = 'block';
+                }
+                if (data.image) {
+                    const imgEl = document.getElementById('seminar-image');
+                    imgEl.src = `..${data.image}`;
+                    imgEl.style.display = 'block';
+                }
+
+                document.getElementById('seminar-body').innerHTML = marked.parse(markdownBody);
+                document.title = `${data.title} - ゼミ紹介`;
+            })
+            .catch(err => {
+                document.getElementById('seminar-title').textContent = "データの読み込みに失敗しました";
+            });
+    </script>
+</body>
+</html>
