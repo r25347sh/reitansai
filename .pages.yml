@@ -6,7 +6,7 @@ collections:
   - name: seminars
     label: ゼミ紹介
     type: folder
-    path: content/seminars/
+    path: content/seminars
     extension: md
     format: frontmatter
     slug: "{{title}}"
