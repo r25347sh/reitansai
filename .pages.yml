@@ -62,29 +62,29 @@ content:
               - name: caption
                 type: string
                 label: キャプション
-              - name: sections ## ここから
-                label: いれこしき（任意）
-                description: "自由にセクションを増やしていただけます。"
-                type: block
-                list: true          # ← ★【修正】blockのすぐ下に移動
-                blockKey: type      # ← ★【修正】blockを複数扱うために必須の設定です
-                blocks:
-                  - name: text_block
-                    label: 見出しと段落
-                    # list: true    # ← ★【修正】ここからは削除します
-                    fields:
-                      - name: heading
-                        type: string
-                        label: 見出し (H2)
-                      - name: body
-                        type: text
-                        label: 本文 (P)
-                  - name: image_text_block
-                    label: 画像付きテキスト
-                    fields:
-                      - name: image
-                        type: image
-                        label: 画像
-                      - name: caption
-                        type: string
-                        label: キャプション
+          - name: sections ##ここから
+            label: セクション一覧（任意）
+            description: "自由にセクションを増やしていただけます。"
+            type: block
+            list: true          # ← ★【修正】blockのすぐ下に移動
+            blockKey: type      # ← ★【修正】blockを複数扱うために必須の設定です
+            blocks:
+              - name: text_block
+                label: 見出しと段落
+                # list: true    # ← ★【修正】ここからは削除します
+                fields:
+                  - name: heading
+                    type: string
+                    label: 見出し (H2)
+                  - name: body
+                    type: text
+                    label: 本文 (P)
+              - name: image_text_block
+                label: 画像付きテキスト
+                fields:
+                  - name: image
+                    type: image
+                    label: 画像
+                  - name: caption
+                    type: string
+                    label: キャプション
