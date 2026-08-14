@@ -33,3 +33,25 @@ content:
       - name: body
         label: 詳細内容
         type: rich-text
+      - name: sections
+        label: セクション一覧
+        type: block
+        blocks:
+          - name: text_block
+            label: 見出しと段落
+            fields:
+              - name: heading
+                type: string
+                label: 見出し (H2)
+              - name: body
+                type: text
+                label: 本文 (P)
+          - name: image_text_block
+            label: 画像付きテキスト
+            fields:
+              - name: image
+                type: image
+                label: 画像
+              - name: caption
+                type: string
+                label: キャプション
