@@ -62,7 +62,7 @@ content:
               - name: caption
                 type: string
                 label: キャプション
-              - name: sections
+              - name: sections ## ここから
                 label: いれこしき（任意）
                 description: "自由にセクションを増やしていただけます。"
                 type: block
