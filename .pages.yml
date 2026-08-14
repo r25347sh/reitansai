@@ -13,6 +13,9 @@ content:
       - name: title
         label: ゼミ名
         type: string
+      - name: icon
+        label: ゼミアイコン
+        type: image
         required: true
       - name: teacher
         label: 担当教員名
