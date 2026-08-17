@@ -7,32 +7,35 @@ content:
     label: ゼミ紹介
     type: collection
     path: content/seminars
-    format: yaml-frontmatter    # ← markdown等の形式を指定
-    filename: "{slug}.md"       # ← extension/slugの代わりにfilenameでテンプレートを指定
+    format: yaml-frontmatter
+    filename: "{slug}.md"
     operations:
-      create: true    # 新規作成は許可（不要なら false）
-      rename: false   # 名前の変更を禁止
-      delete: false   # 削除を禁止
+      create: true
+      rename: false
+      delete: false
     fields:
       - name: title
         label: ゼミ名（必須）
         type: string
-        required: true ##必須要素指定
+        required: true
       - name: icon
         label: ゼミアイコン（任意）
         description: "svg,ico,pngのいずれかの形式でお願いします。縦横1:1の比率。"
         type: image
+        required: false
       - name: teacher
         label: 担当顧問
         type: string
+        required: false
       - name: image
         label: ゼミ画像（任意）
         type: image
+        required: false
       - name: description
         label: 一言概要（必須）
         type: string
         required: true
-      - name: body_p
+      - name: body
         label: 詳細内容（必須）
         type: rich-text
         required: true
@@ -40,12 +43,12 @@ content:
         label: セクション一覧（任意）
         description: "自由にセクションを増やしていただけます。"
         type: block
-        list: true          # ← ★【修正】blockのすぐ下に移動
-        blockKey: type      # ← ★【修正】blockを複数扱うために必須の設定です
+        list: true
+        blockKey: type
+        required: false
         blocks:
           - name: text_block
             label: 見出しと段落
-            # list: true    # ← ★【修正】ここからは削除します
             fields:
               - name: heading
                 type: string
