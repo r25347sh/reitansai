@@ -1,36 +1,31 @@
+/* 化学 — lab glass */
 body.theme-chemistry {
-  --theme-accent: #0d8a78; --theme-deep: #044038; --accent: #0d8a78; --text-link: #0d8a78;
-  background: #d4ece6 !important;
-  background-image: radial-gradient(circle at 70% 20%, rgba(13,138,120,0.15), transparent 40%), radial-gradient(circle at 20% 70%, rgba(196,163,90,0.1), transparent 35%), linear-gradient(180deg, #e0f4ee, #c8e4dc) !important;
+  --theme-accent: #0d8a78;
+  --theme-deep: #044038;
+  --accent: #0d8a78;
+  --accent-soft: #40c0a8;
+  --accent-deep: #044038;
+  --text-link: #0d8a78;
+  --bg-card: rgba(240, 252, 250, 0.9);
+  background: #e8f4f2 !important;
+  background-image:
+    radial-gradient(circle at 30% 20%, rgba(13,138,120,0.08) 0 80px, transparent 81px),
+    linear-gradient(180deg, #f0faf8, #d8ece8) !important;
 }
-.theme-chemistry .seminar-detail {
-  max-width: 660px; background: rgba(255,255,255,0.55);
-  border: 2px solid rgba(13,138,120,0.35); border-radius: 16px 16px 40% 16px;
-  backdrop-filter: blur(8px); box-shadow: inset 0 0 40px rgba(13,138,120,0.06);
-}
-.theme-chemistry .seminar-detail h1 { color: #044038; letter-spacing: 0.04em; }
 .theme-chemistry .icon-wrapper img {
-  border-radius: 50% 50% 50% 10% !important; border: 3px solid #0d8a78 !important;
-  background: rgba(255,255,255,0.8) !important; animation: chem-bubble 2.2s ease-in-out infinite;
+  border-radius: 50% 50% 45% 45% !important;
+  border: 3px solid #0d8a78 !important;
+  background: rgba(255,255,255,0.8) !important;
 }
 @keyframes chem-bubble {
-  0%,100%{ transform: translateY(0) scale(1); }
-  35%{ transform: translateY(-8px) scale(1.05); }
-  65%{ transform: translateY(-2px) scale(0.96); }
+  0%,100%{ transform: translateY(0); }
+  50%{ transform: translateY(-6px); }
 }
-.theme-chemistry .content-body h2 {
-  color: #044038; border-left: 4px solid #0d8a78;
-  background: rgba(13,138,120,0.08); padding: 6px 14px;
-}
+.theme-chemistry .seminar-detail h1 { color: #044038; }
+.theme-chemistry .content-body h2 { border-left-color: #0d8a78; color: #044038; }
 .theme-chemistry .content-section {
-  background: rgba(255,255,255,0.7); border: 1px solid rgba(13,138,120,0.25);
-  border-radius: 12px 12px 24px 12px; position: relative;
+  border-color: rgba(13,138,120,0.3);
+  background: rgba(255,255,255,0.9);
 }
-.theme-chemistry .content-section::after {
-  content: 'H₂O'; position: absolute; bottom: 8px; right: 12px;
-  font-size: 0.7rem; opacity: 0.2; font-family: monospace;
-}
-.theme-chemistry .seminar-detail hr {
-  height: 3px; background: linear-gradient(90deg, transparent, #0d8a78, #c4a35a, #0d8a78, transparent);
-}
+.theme-chemistry .back-link { border-color: #0d8a78; color: #044038; }
 @media (prefers-reduced-motion: reduce) { .theme-chemistry .icon-wrapper img { animation: none !important; } }
