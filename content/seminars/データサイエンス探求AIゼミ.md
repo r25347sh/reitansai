@@ -1,5 +1,6 @@
 ---
-title: データサイエンス探究AIゼミ
+title: データサイエンス探求AIゼミ
+icon: /images/seminars/data-science-ai.svg
 teacher: 
 description: データとAIを活用した探究活動を行います。
 ---
