@@ -1,32 +1,51 @@
-/* Theme: 遊びの探究 (asobi-tankyu) */
+/* Theme: asobi-tankyu — strong identity */
 body.theme-asobi-tankyu {
-  --theme-accent: #e07a3d;
+  --theme-accent: #d4652a;
   --theme-accent2: #f0a060;
-  --theme-deep: #8b4518;
-  --accent: #e07a3d;
+  --theme-deep: #6b2e0e;
+  --accent: #d4652a;
   --accent-soft: #f0a060;
-  --accent-deep: #8b4518;
-  --text-link: #e07a3d;
+  --accent-deep: #6b2e0e;
+  --text-link: #d4652a;
+  --text-link-hover: #6b2e0e;
+  background-image:
+    radial-gradient(ellipse 70% 40% at 10% -5%, rgba(212,101,42,0.07), transparent 50%),
+    linear-gradient(180deg, #f5e8dc 0%, #ebe0d2 100%) !important;
 }
 body.theme-asobi-tankyu::after {
   content: '';
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 0;
-  background: rgba(224, 122, 61, 0.06);
+  position: fixed; inset: 0; pointer-events: none; z-index: 0;
+  background: rgba(212,101,42,0.07);
 }
-.theme-asobi-tankyu .icon-wrapper img {
-  animation: asobi-bounce 2.8s ease-in-out infinite;
-}
-@keyframes asobi-bounce {
-  0%, 100% { transform: translateY(0) rotate(0deg); }
-  40% { transform: translateY(-6px) rotate(-3deg); }
-  70% { transform: translateY(-2px) rotate(2deg); }
+.theme-asobi-tankyu .back-link:hover {
+  border-color: var(--theme-accent);
+  color: var(--theme-deep);
 }
 .theme-asobi-tankyu .seminar-detail h1 { color: var(--theme-deep); }
-.theme-asobi-tankyu .content-body h2 { border-left-color: var(--theme-accent); }
-.theme-asobi-tankyu .back-link:hover { border-color: var(--theme-accent); color: var(--theme-deep); }
+.theme-asobi-tankyu .content-body h2 {
+  border-left-color: var(--theme-accent);
+  color: var(--theme-deep);
+}
+.theme-asobi-tankyu .teacher-name span { color: var(--theme-accent); }
+.theme-asobi-tankyu .seminar-detail::before {
+  content: '◆  ◇  ◆';
+  display: block; text-align: center; letter-spacing: 0.6em;
+  color: var(--theme-accent); opacity: 0.35; font-size: 0.7rem; margin-bottom: 12px;
+}
+.theme-asobi-tankyu .icon-wrapper img {
+  border-radius: 28% !important;
+  animation: asobi-bounce 2.6s ease-in-out infinite;
+  box-shadow: 0 8px 24px rgba(212,101,42,0.25), 0 0 0 4px rgba(212,101,42,0.15) !important;
+}
+@keyframes asobi-bounce {
+  0%,100%{transform:translateY(0) rotate(0)}
+  40%{transform:translateY(-8px) rotate(-4deg)}
+  70%{transform:translateY(-2px) rotate(3deg)}
+}
+.theme-asobi-tankyu .content-section {
+  border-left: 4px solid var(--theme-accent);
+  background: rgba(255,248,240,0.85);
+}
 @media (prefers-reduced-motion: reduce) {
   .theme-asobi-tankyu .icon-wrapper img { animation: none !important; }
 }
