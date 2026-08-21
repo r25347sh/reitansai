@@ -1,14 +1,64 @@
 <!DOCTYPE html>
 <html lang="ja">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1.0">
-    <title>ホーム｜Reitansai</title>
-  </head>
-  <body>
-    <header>
-      <h1>ホーム</h1>
-      <p>Reitansai - 麗探祭サイト</p>
-    </header>
-  </body>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="麗澤中学・高等学校 探究ゼミ紹介サイト｜麗探祭（Reitansai）">
+  <title>ホーム｜麗探祭 Reitansai</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <h1 class="site-title">
+        <a href="index.html">麗探祭</a>
+      </h1>
+      <p class="site-tagline">Reitansai — 探究ゼミ紹介</p>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <section class="hero">
+      <h2>探究ゼミ一覧</h2>
+      <p class="hero-lead">
+        麗澤中学・高等学校の「探究ゼミ」を紹介するサイトです。<br>
+        興味のあるゼミを選んで、詳細をチェックしてください。
+      </p>
+    </section>
+
+    <section class="seminar-list" aria-label="ゼミ一覧">
+      <div class="seminar-grid" id="seminar-grid">
+        <!-- カードは JS で生成（フォールバック用に静的リンクも用意） -->
+        <noscript>
+          <ul class="seminar-fallback">
+            <li><a href="seminars/asobi-tankyu.html">遊びの探究ゼミ</a></li>
+            <li><a href="seminars/data-science-ai.html">データサイエンス探究AIゼミ</a></li>
+            <li><a href="seminars/digital-content.html">デジタルコンテンツ制作ゼミ</a></li>
+            <li><a href="seminars/event-planning.html">イベント企画ゼミ</a></li>
+            <li><a href="seminars/creative-writing.html">文芸小説創作ゼミ</a></li>
+            <li><a href="seminars/video-editing.html">映像編集ゼミ</a></li>
+            <li><a href="seminars/media.html">メディアゼミ</a></li>
+            <li><a href="seminars/chemistry.html">化学ゼミ</a></li>
+            <li><a href="seminars/international-area.html">国際地域研究ゼミ</a></li>
+            <li><a href="seminars/education.html">教育ゼミ</a></li>
+            <li><a href="seminars/literature.html">文学ゼミ</a></li>
+            <li><a href="seminars/sociology.html">社会ゼミ</a></li>
+            <li><a href="seminars/tourism.html">観光ゼミ</a></li>
+            <li><a href="seminars/language.html">語学ゼミ</a></li>
+            <li><a href="seminars/agriculture.html">農業ゼミ</a></li>
+          </ul>
+        </noscript>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p><strong>麗探祭 Reitansai</strong></p>
+    <p>麗澤中学・高等学校 探究ゼミ紹介サイト</p>
+  </footer>
+
+  <script src="js/seminars-data.js"></script>
+  <script src="js/index.js"></script>
+</body>
 </html>
