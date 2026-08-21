@@ -1,0 +1,17 @@
+body.theme-education {
+  --theme-accent: #5a7a4a; --theme-accent2: #7a9a6a; --theme-deep: #2e4a28;
+  --accent: #5a7a4a; --accent-soft: #7a9a6a; --accent-deep: #2e4a28; --text-link: #5a7a4a;
+}
+body.theme-education::after {
+  content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 0;
+  background: rgba(90, 122, 74, 0.05);
+}
+.theme-education .icon-wrapper img { animation: edu-breathe 3.5s ease-in-out infinite; }
+@keyframes edu-breathe {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+.theme-education .content-body h2 { border-left-color: var(--theme-accent); }
+@media (prefers-reduced-motion: reduce) {
+  .theme-education .icon-wrapper img { animation: none !important; }
+}

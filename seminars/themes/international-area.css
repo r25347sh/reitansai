@@ -1,0 +1,17 @@
+body.theme-international-area {
+  --theme-accent: #3d6ea8; --theme-accent2: #6a94c4; --theme-deep: #1e3d66;
+  --accent: #3d6ea8; --accent-soft: #6a94c4; --accent-deep: #1e3d66; --text-link: #3d6ea8;
+}
+body.theme-international-area::after {
+  content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 0;
+  background: rgba(61, 110, 168, 0.05);
+}
+.theme-international-area .icon-wrapper img { animation: globe-tilt 6s ease-in-out infinite; }
+@keyframes globe-tilt {
+  0%, 100% { transform: rotate(-4deg); }
+  50% { transform: rotate(4deg); }
+}
+.theme-international-area .content-body h2 { border-left-color: var(--theme-accent); }
+@media (prefers-reduced-motion: reduce) {
+  .theme-international-area .icon-wrapper img { animation: none !important; }
+}

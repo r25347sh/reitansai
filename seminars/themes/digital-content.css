@@ -1,0 +1,17 @@
+body.theme-digital-content {
+  --theme-accent: #7b5ea7; --theme-accent2: #9b7ec8; --theme-deep: #4a3570;
+  --accent: #7b5ea7; --accent-soft: #9b7ec8; --accent-deep: #4a3570; --text-link: #7b5ea7;
+}
+body.theme-digital-content::after {
+  content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 0;
+  background: rgba(123, 94, 167, 0.05);
+}
+.theme-digital-content .icon-wrapper img { animation: digi-glow 2.5s ease-in-out infinite alternate; }
+@keyframes digi-glow {
+  from { filter: drop-shadow(0 0 2px rgba(123, 94, 167, 0.2)); }
+  to { filter: drop-shadow(0 0 10px rgba(155, 126, 200, 0.45)); }
+}
+.theme-digital-content .content-body h2 { border-left-color: var(--theme-accent); }
+@media (prefers-reduced-motion: reduce) {
+  .theme-digital-content .icon-wrapper img { animation: none !important; }
+}

@@ -1,0 +1,17 @@
+body.theme-event-planning {
+  --theme-accent: #c45c5c; --theme-accent2: #e08080; --theme-deep: #8b3030;
+  --accent: #c45c5c; --accent-soft: #e08080; --accent-deep: #8b3030; --text-link: #c45c5c;
+}
+body.theme-event-planning::after {
+  content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 0;
+  background: rgba(196, 92, 92, 0.05);
+}
+.theme-event-planning .icon-wrapper img { animation: event-spin-soft 8s linear infinite; }
+@keyframes event-spin-soft {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+.theme-event-planning .content-body h2 { border-left-color: var(--theme-accent); }
+@media (prefers-reduced-motion: reduce) {
+  .theme-event-planning .icon-wrapper img { animation: none !important; }
+}

@@ -1,0 +1,17 @@
+body.theme-tourism {
+  --theme-accent: #4a8aaa; --theme-accent2: #70b0cc; --theme-deep: #285a70;
+  --accent: #4a8aaa; --accent-soft: #70b0cc; --accent-deep: #285a70; --text-link: #4a8aaa;
+}
+body.theme-tourism::after {
+  content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 0;
+  background: rgba(74, 138, 170, 0.05);
+}
+.theme-tourism .icon-wrapper img { animation: tour-bob 3s ease-in-out infinite; }
+@keyframes tour-bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-7px); }
+}
+.theme-tourism .content-body h2 { border-left-color: var(--theme-accent); }
+@media (prefers-reduced-motion: reduce) {
+  .theme-tourism .icon-wrapper img { animation: none !important; }
+}

@@ -1,0 +1,17 @@
+body.theme-media {
+  --theme-accent: #3a7a8c; --theme-accent2: #5a9aac; --theme-deep: #1e4a56;
+  --accent: #3a7a8c; --accent-soft: #5a9aac; --accent-deep: #1e4a56; --text-link: #3a7a8c;
+}
+body.theme-media::after {
+  content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 0;
+  background: rgba(58, 122, 140, 0.05);
+}
+.theme-media .icon-wrapper img { animation: media-wave 2.2s ease-in-out infinite; }
+@keyframes media-wave {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.04); }
+}
+.theme-media .content-body h2 { border-left-color: var(--theme-accent); }
+@media (prefers-reduced-motion: reduce) {
+  .theme-media .icon-wrapper img { animation: none !important; }
+}

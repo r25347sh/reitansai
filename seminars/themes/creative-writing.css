@@ -1,0 +1,21 @@
+body.theme-creative-writing {
+  --theme-accent: #5c6b8a; --theme-accent2: #8494b0; --theme-deep: #2e3a52;
+  --accent: #5c6b8a; --accent-soft: #8494b0; --accent-deep: #2e3a52; --text-link: #5c6b8a;
+}
+body.theme-creative-writing::after {
+  content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 0;
+  background: rgba(92, 107, 138, 0.05);
+}
+.theme-creative-writing .icon-wrapper img { animation: write-float 4s ease-in-out infinite; }
+@keyframes write-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+.theme-creative-writing .content-body h2 { border-left-color: var(--theme-accent); }
+.theme-creative-writing .content-body blockquote {
+  border-left-color: var(--theme-accent2);
+  background: rgba(92, 107, 138, 0.08);
+}
+@media (prefers-reduced-motion: reduce) {
+  .theme-creative-writing .icon-wrapper img { animation: none !important; }
+}

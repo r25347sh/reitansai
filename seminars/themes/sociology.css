@@ -1,0 +1,17 @@
+body.theme-sociology {
+  --theme-accent: #6a5a8a; --theme-accent2: #8a7aaa; --theme-deep: #3a2e55;
+  --accent: #6a5a8a; --accent-soft: #8a7aaa; --accent-deep: #3a2e55; --text-link: #6a5a8a;
+}
+body.theme-sociology::after {
+  content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 0;
+  background: rgba(106, 90, 138, 0.05);
+}
+.theme-sociology .icon-wrapper img { animation: soc-net 4s ease-in-out infinite; }
+@keyframes soc-net {
+  0%, 100% { filter: drop-shadow(0 0 0 transparent); }
+  50% { filter: drop-shadow(0 2px 8px rgba(106, 90, 138, 0.3)); }
+}
+.theme-sociology .content-body h2 { border-left-color: var(--theme-accent); }
+@media (prefers-reduced-motion: reduce) {
+  .theme-sociology .icon-wrapper img { animation: none !important; }
+}
