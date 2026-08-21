@@ -1,30 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 704 704" width="512" height="512" role="img" aria-label="Lang">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 704 704" width="512" height="512" role="img">
   <defs>
     <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#1e1b4b"/>
-      <stop offset="50%" stop-color="#0f172a"/>
-      <stop offset="100%" stop-color="#1e1b4b"/>
+      <stop offset="0%" stop-color="#f7f4ec"/><stop offset="100%" stop-color="#e8dfc8"/>
     </linearGradient>
     <linearGradient id="g1" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#818cf8"/>
-      <stop offset="100%" stop-color="#c084fc"/>
+      <stop offset="0%" stop-color="#3d7a55"/><stop offset="100%" stop-color="#2d5a3d"/>
     </linearGradient>
     <linearGradient id="g2" x1="100%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" stop-color="#38bdf8"/>
-      <stop offset="100%" stop-color="#a78bfa"/>
+      <stop offset="0%" stop-color="#c4a35a"/><stop offset="100%" stop-color="#5a9b6e"/>
     </linearGradient>
   </defs>
   <rect x="32" y="32" width="640" height="640" rx="96" fill="url(#bg)"/>
-  <rect x="32" y="32" width="640" height="640" rx="96" fill="none" stroke="rgba(165,180,252,0.35)" stroke-width="3"/>
+  <rect x="32" y="32" width="640" height="640" rx="96" fill="none" stroke="rgba(45,90,61,0.22)" stroke-width="3"/>
   <g>
-      <path d="M160 180 H360 Q400 180 400 220 V320 Q400 360 360 360 H280 L220 420 L240 360 H160 Q120 360 120 320 V220 Q120 180 160 180 Z" fill="url(#g1)"/>
-      <path d="M340 280 H540 Q580 280 580 320 V420 Q580 460 540 460 H460 L400 520 L420 460 H340 Q300 460 300 420 V320 Q300 280 340 280 Z" fill="url(#g2)" opacity="0.9"/>
-      <circle cx="220" cy="270" r="14" fill="#e0e7ff"/>
-      <circle cx="280" cy="270" r="14" fill="#e0e7ff"/>
-      <circle cx="340" cy="270" r="14" fill="#e0e7ff"/>
-      <circle cx="400" cy="370" r="12" fill="#1e1b4b"/>
-      <circle cx="450" cy="370" r="12" fill="#1e1b4b"/>
-      <circle cx="500" cy="370" r="12" fill="#1e1b4b"/>
+    <path d="M160 180 H360 Q400 180 400 220 V320 Q400 360 360 360 H280 L220 420 L240 360 H160 Q120 360 120 320 V220 Q120 180 160 180 Z" fill="url(#g1)"/>
+    <path d="M340 280 H540 Q580 280 580 320 V420 Q580 460 540 460 H460 L400 520 L420 460 H340 Q300 460 300 420 V320 Q300 280 340 280 Z" fill="url(#g2)" opacity="0.9"/>
+    <circle cx="220" cy="270" r="14" fill="#f7f4ec"/><circle cx="280" cy="270" r="14" fill="#f7f4ec"/><circle cx="340" cy="270" r="14" fill="#f7f4ec"/>
   </g>
 </svg>

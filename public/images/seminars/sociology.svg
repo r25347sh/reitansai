@@ -1,28 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 704 704" width="512" height="512" role="img" aria-label="Soc">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 704 704" width="512" height="512" role="img">
   <defs>
     <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#1e1b4b"/>
-      <stop offset="50%" stop-color="#0f172a"/>
-      <stop offset="100%" stop-color="#1e1b4b"/>
+      <stop offset="0%" stop-color="#f7f4ec"/><stop offset="100%" stop-color="#e8dfc8"/>
     </linearGradient>
     <linearGradient id="g1" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#818cf8"/>
-      <stop offset="100%" stop-color="#c084fc"/>
+      <stop offset="0%" stop-color="#3d7a55"/><stop offset="100%" stop-color="#2d5a3d"/>
     </linearGradient>
     <linearGradient id="g2" x1="100%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" stop-color="#38bdf8"/>
-      <stop offset="100%" stop-color="#a78bfa"/>
+      <stop offset="0%" stop-color="#c4a35a"/><stop offset="100%" stop-color="#5a9b6e"/>
     </linearGradient>
   </defs>
   <rect x="32" y="32" width="640" height="640" rx="96" fill="url(#bg)"/>
-  <rect x="32" y="32" width="640" height="640" rx="96" fill="none" stroke="rgba(165,180,252,0.35)" stroke-width="3"/>
+  <rect x="32" y="32" width="640" height="640" rx="96" fill="none" stroke="rgba(45,90,61,0.22)" stroke-width="3"/>
   <g>
-      <circle cx="240" cy="220" r="48" fill="url(#g1)"/>
-      <path d="M180 360 Q180 300 240 300 Q300 300 300 360 L300 420 L180 420 Z" fill="url(#g1)"/>
-      <circle cx="400" cy="200" r="56" fill="url(#g2)"/>
-      <path d="M330 380 Q330 300 400 300 Q470 300 470 380 L470 440 L330 440 Z" fill="url(#g2)"/>
-      <circle cx="520" cy="240" r="40" fill="#818cf8"/>
-      <path d="M470 380 Q470 320 520 320 Q570 320 570 380 L570 420 L470 420 Z" fill="#818cf8"/>
+    <circle cx="240" cy="220" r="48" fill="url(#g1)"/>
+    <path d="M180 360 Q180 300 240 300 Q300 300 300 360 L300 420 L180 420 Z" fill="url(#g1)"/>
+    <circle cx="400" cy="200" r="56" fill="url(#g2)"/>
+    <path d="M330 380 Q330 300 400 300 Q470 300 470 380 L470 440 L330 440 Z" fill="url(#g2)"/>
+    <circle cx="520" cy="240" r="40" fill="#3d7a55"/>
+    <path d="M470 380 Q470 320 520 320 Q570 320 570 380 L570 420 L470 420 Z" fill="#3d7a55"/>
   </g>
 </svg>
