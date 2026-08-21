@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 704 704" width="512" height="512" role="img" aria-label="Agri">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e1b4b"/>
+      <stop offset="50%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#1e1b4b"/>
+    </linearGradient>
+    <linearGradient id="g1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#818cf8"/>
+      <stop offset="100%" stop-color="#c084fc"/>
+    </linearGradient>
+    <linearGradient id="g2" x1="100%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#a78bfa"/>
+    </linearGradient>
+    <filter id="soft" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="0.5"/>
+    </filter>
+  </defs>
+  <!-- rounded glass card -->
+  <rect x="32" y="32" width="640" height="640" rx="96" fill="url(#bg)"/>
+  <rect x="32" y="32" width="640" height="640" rx="96" fill="none" stroke="rgba(165,180,252,0.35)" stroke-width="3"/>
+  <rect x="48" y="48" width="608" height="608" rx="84" fill="none" stroke="rgba(129,140,248,0.12)" stroke-width="1"/>
+  <g transform="translate(0,0)">
+    <!-- leaf / plant -->
+      <path d="M352 480 L352 280" stroke="url(#g1)" stroke-width="22" stroke-linecap="round"/>
+      <path d="M352 320 Q240 280 200 180 Q300 200 352 280" fill="url(#g2)"/>
+      <path d="M352 360 Q460 300 500 200 Q400 240 352 320" fill="url(#g1)"/>
+      <path d="M352 220 Q300 160 280 100 Q340 130 352 180" fill="#c4b5fd"/>
+      <circle cx="352" cy="500" r="24" fill="#818cf8"/>
+  </g>
+</svg>
