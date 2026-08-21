@@ -1,84 +1,34 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>メディアゼミ</title>
-    <link rel="stylesheet" href="../style.css">
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>メディアゼミ｜麗探祭</title>
+  <link rel="stylesheet" href="../style.css">
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
 <body>
-
-    <header>
-        <a href="../index.html">← ゼミ一覧に戻る</a>
-    </header>
-
-    <main class="seminar-detail">
-        <div class="icon-wrapper">
-            <img id="seminar-icon" src="" alt="ゼミアイコン" style="display:none; width:80px; height:80px;">
-        </div>
-
-        <h1 id="seminar-title">読み込み中...</h1>
-        <p class="teacher-name">担当：<span id="seminar-teacher">-</span> 先生</p>
-
-        <div class="image-wrapper">
-            <img id="seminar-image" src="" alt="ゼミ画像" style="display:none; max-width:100%;">
-        </div>
-
-        <p id="seminar-description" class="lead-text"></p>
-        <hr>
-        <article id="seminar-body" class="content-body"></article>
-    </main>
-
-    <script>
-        const targetFile = 'メディアゼミ';
-
-        fetch(`../content/seminars/${targetFile}.md`)
-            .then(res => {
-                if (!res.ok) throw new Error('HTTP ' + res.status);
-                return res.text();
-            })
-            .then(text => {
-                const parts = text.split('---');
-                const yamlText = parts[1] || '';
-                const markdownBody = parts.slice(2).join('---').trim();
-
-                const data = {};
-                yamlText.split('\n').forEach(line => {
-                    const match = line.match(/^([^:]+):\s*(.*)$/);
-                    if (match) {
-                        const key = match[1].trim();
-                        let value = match[2].trim();
-                        if ((value.startsWith('"') && value.endsWith('"')) || (value.startsWith("'") && value.endsWith("'"))) {
-                            value = value.slice(1, -1);
-                        }
-                        data[key] = value;
-                    }
-                });
-
-                document.getElementById('seminar-title').textContent = data.title || targetFile;
-                document.getElementById('seminar-teacher').textContent = data.teacher || '-';
-                document.getElementById('seminar-description').textContent = data.description || '';
-
-                if (data.icon) {
-                    const iconEl = document.getElementById('seminar-icon');
-                    iconEl.src = `..${data.icon}`;
-                    iconEl.style.display = 'block';
-                }
-                if (data.image) {
-                    const imgEl = document.getElementById('seminar-image');
-                    imgEl.src = `..${data.image}`;
-                    imgEl.style.display = 'block';
-                }
-
-                const bodyContent = data.body_p || markdownBody || '';
-                document.getElementById('seminar-body').innerHTML = bodyContent ? marked.parse(bodyContent) : '';
-                document.title = `${data.title || targetFile} - ゼミ紹介`;
-            })
-            .catch(err => {
-                console.error(err);
-                document.getElementById('seminar-title').textContent = 'データの読み込みに失敗しました';
-            });
-    </script>
+  <header class="page-header">
+    <a href="../index.html" class="back-link">← ゼミ一覧に戻る</a>
+  </header>
+  <main class="seminar-detail">
+    <div class="icon-wrapper">
+      <img id="seminar-icon" src="" alt="ゼミアイコン" style="display:none; width:80px; height:80px;">
+    </div>
+    <h1 id="seminar-title">読み込み中...</h1>
+    <p class="teacher-name">担当：<span id="seminar-teacher">-</span> 先生</p>
+    <div class="image-wrapper">
+      <img id="seminar-image" src="" alt="ゼミ画像" style="display:none; max-width:100%;">
+    </div>
+    <p id="seminar-description" class="lead-text"></p>
+    <hr>
+    <article id="seminar-body" class="content-body"></article>
+    <div id="seminar-sections" class="content-sections"></div>
+  </main>
+  <footer class="site-footer">
+    <p><a href="../index.html">麗探祭 トップへ</a></p>
+  </footer>
+  <script src="../js/seminar-loader.js"></script>
+  <script>loadSeminar("メディアゼミ", "メディアゼミ");</script>
 </body>
 </html>
