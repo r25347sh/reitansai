@@ -7,24 +7,30 @@
   <link rel="icon" type="image/svg+xml" href="../public/images/favicon.svg">
   <link rel="stylesheet" href="../style.css">
   <link rel="stylesheet" href="seminar.css">
+  <link rel="stylesheet" href="layouts-extra.css">
   <link rel="stylesheet" href="themes/international-area.css">
   <link rel="stylesheet" href="../MENU/MENU.css">
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
-<body class="theme-international-area">
-  <header class="page-header"><a href="../index.html" class="back-link">← ゼミ一覧に戻る</a></header>
-  <main class="seminar-detail">
-    <div class="icon-wrapper"><img id="seminar-icon" src="" alt="" style="display:none;width:96px;height:96px;"></div>
-    <h1 id="seminar-title">読み込み中...</h1>
-    <p class="teacher-name">担当：<span id="seminar-teacher">-</span> 先生</p>
-    <div class="image-wrapper"><img id="seminar-image" src="" alt="" style="display:none;max-width:100%;"></div>
-    <p id="seminar-description" class="lead-text"></p><hr>
-    <article id="seminar-body" class="content-body"></article>
-    <div id="seminar-sections" class="content-sections"></div>
-  </main>
-  <footer class="site-footer"><p><a href="../index.html">麗探祭 トップへ</a></p></footer>
+<body class="theme-international-area layout-international-area">
+  <div class="int-map">
+    <aside class="int-compass" id="int-compass">
+      <div class="int-needle" id="int-needle">N</div>
+      <a href="../index.html" class="back-link">← Home</a>
+    </aside>
+    <main class="int-content">
+      <img id="seminar-icon" src="" alt="" style="display:none" class="int-globe">
+      <h1 id="seminar-title">読み込み中...</h1>
+      <p class="teacher-name">Guide <span id="seminar-teacher">-</span></p>
+      <p id="seminar-description" class="lead-text"></p>
+      <div class="image-wrapper"><img id="seminar-image" src="" alt="" style="display:none"></div>
+      <article id="seminar-body" class="content-body"></article>
+      <div id="seminar-sections" class="content-sections"></div>
+    </main>
+  </div>
   <script src="../js/seminar-loader.js"></script>
   <script src="../MENU/MENU.js"></script>
+  <script src="js/international-area.js"></script>
   <script>loadSeminar("国際地域研究ゼミ", "国際地域研究ゼミ");</script>
 </body>
 </html>
