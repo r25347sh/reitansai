@@ -1,17 +1,14 @@
 body.theme-international-area {
-  --theme-accent: #3d6ea8; --theme-accent2: #6a94c4; --theme-deep: #1e3d66;
-  --accent: #3d6ea8; --accent-soft: #6a94c4; --accent-deep: #1e3d66; --text-link: #3d6ea8;
+  --theme-accent: #2a5a90; --theme-accent2: #6a94c4; --theme-deep: #0e2e55;
+  --accent: #2a5a90; --accent-soft: #6a94c4; --accent-deep: #0e2e55;
+  --text-link: #2a5a90; --text-link-hover: #0e2e55;
+  background-image: radial-gradient(ellipse 70% 40% at 10% -5%, rgba(42,90,144,0.05), transparent 50%), linear-gradient(180deg, #e4ebf4 0%, #dce4f0 100%) !important;
 }
-body.theme-international-area::after {
-  content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 0;
-  background: rgba(61, 110, 168, 0.05);
-}
-.theme-international-area .icon-wrapper img { animation: globe-tilt 6s ease-in-out infinite; }
-@keyframes globe-tilt {
-  0%, 100% { transform: rotate(-4deg); }
-  50% { transform: rotate(4deg); }
-}
-.theme-international-area .content-body h2 { border-left-color: var(--theme-accent); }
-@media (prefers-reduced-motion: reduce) {
-  .theme-international-area .icon-wrapper img { animation: none !important; }
-}
+body.theme-international-area::after { content:''; position:fixed; inset:0; pointer-events:none; z-index:0; background:rgba(42,90,144,0.05); }
+.theme-international-area .seminar-detail h1 { color: var(--theme-deep); }
+.theme-international-area .seminar-detail::before { content: '—  World  ·  Local  —'; display: block; text-align: center; font-size: 0.72rem; letter-spacing: 0.2em; color: var(--theme-accent); opacity: 0.5; margin-bottom: 14px; }
+.theme-international-area .teacher-name span { color: var(--theme-accent); }
+.theme-international-area .icon-wrapper img { animation: globe-tilt 5s ease-in-out infinite; border-radius: 50% !important; box-shadow: 0 0 0 3px rgba(42,90,144,0.15), 0 8px 24px rgba(42,90,144,0.2) !important; }
+@keyframes globe-tilt { 0%,100%{transform:rotate(-5deg)} 50%{transform:rotate(5deg)} }
+.theme-international-area .content-section { border-top: 3px solid var(--theme-accent); }
+@media (prefers-reduced-motion: reduce) { .theme-international-area .icon-wrapper img { animation: none !important; } }

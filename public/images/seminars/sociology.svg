@@ -1,24 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 704 704" width="512" height="512" role="img">
-  <defs>
-    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#f7f4ec"/><stop offset="100%" stop-color="#e8dfc8"/>
-    </linearGradient>
-    <linearGradient id="g1" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#3d7a55"/><stop offset="100%" stop-color="#2d5a3d"/>
-    </linearGradient>
-    <linearGradient id="g2" x1="100%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" stop-color="#c4a35a"/><stop offset="100%" stop-color="#5a9b6e"/>
-    </linearGradient>
-  </defs>
-  <rect x="32" y="32" width="640" height="640" rx="96" fill="url(#bg)"/>
-  <rect x="32" y="32" width="640" height="640" rx="96" fill="none" stroke="rgba(45,90,61,0.22)" stroke-width="3"/>
-  <g>
-    <circle cx="240" cy="220" r="48" fill="url(#g1)"/>
-    <path d="M180 360 Q180 300 240 300 Q300 300 300 360 L300 420 L180 420 Z" fill="url(#g1)"/>
-    <circle cx="400" cy="200" r="56" fill="url(#g2)"/>
-    <path d="M330 380 Q330 300 400 300 Q470 300 470 380 L470 440 L330 440 Z" fill="url(#g2)"/>
-    <circle cx="520" cy="240" r="40" fill="#3d7a55"/>
-    <path d="M470 380 Q470 320 520 320 Q570 320 570 380 L570 420 L470 420 Z" fill="#3d7a55"/>
-  </g>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 704 704" width="512" height="512">
+  <rect x="24" y="24" width="656" height="656" rx="96" fill="#f5f1e8"/>
+  <circle cx="200" cy="200" r="48" fill="#5a4a78"/>
+  <path d="M140 350 Q140 280 200 280 Q260 280 260 350 L260 430 L140 430 Z" fill="#5a4a78"/>
+  <circle cx="380" cy="160" r="56" fill="#8a7aaa"/>
+  <path d="M300 350 Q300 260 380 260 Q460 260 460 350 L460 450 L300 450 Z" fill="#8a7aaa"/>
+  <circle cx="530" cy="240" r="40" fill="#2e2048"/>
+  <path d="M475 390 Q475 320 530 320 Q585 320 585 390 L585 450 L475 450 Z" fill="#2e2048"/>
+  <line x1="248" y1="200" x2="330" y2="170" stroke="#c4a35a" stroke-width="7" opacity="0.7"/>
+  <line x1="430" y1="190" x2="500" y2="230" stroke="#c4a35a" stroke-width="7" opacity="0.7"/>
 </svg>

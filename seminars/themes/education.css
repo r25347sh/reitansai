@@ -1,17 +1,14 @@
 body.theme-education {
-  --theme-accent: #5a7a4a; --theme-accent2: #7a9a6a; --theme-deep: #2e4a28;
-  --accent: #5a7a4a; --accent-soft: #7a9a6a; --accent-deep: #2e4a28; --text-link: #5a7a4a;
+  --theme-accent: #4a6a38; --theme-accent2: #7a9a6a; --theme-deep: #243a18;
+  --accent: #4a6a38; --accent-soft: #7a9a6a; --accent-deep: #243a18;
+  --text-link: #4a6a38; --text-link-hover: #243a18;
+  background-image: radial-gradient(ellipse 70% 40% at 10% -5%, rgba(74,106,56,0.05), transparent 50%), linear-gradient(180deg, #e8efe2 0%, #e0e8d8 100%) !important;
 }
-body.theme-education::after {
-  content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 0;
-  background: rgba(90, 122, 74, 0.05);
-}
-.theme-education .icon-wrapper img { animation: edu-breathe 3.5s ease-in-out infinite; }
-@keyframes edu-breathe {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.05); }
-}
-.theme-education .content-body h2 { border-left-color: var(--theme-accent); }
-@media (prefers-reduced-motion: reduce) {
-  .theme-education .icon-wrapper img { animation: none !important; }
-}
+body.theme-education::after { content:''; position:fixed; inset:0; pointer-events:none; z-index:0; background:rgba(74,106,56,0.05); }
+.theme-education .seminar-detail h1 { color: var(--theme-deep); border-bottom: 3px double var(--theme-accent); padding-bottom: 8px; display: inline-block; }
+.theme-education .teacher-name span { color: var(--theme-accent); }
+.theme-education .icon-wrapper img { animation: edu-breathe 3.2s ease-in-out infinite; }
+@keyframes edu-breathe { 0%,100%{transform:scale(1)} 50%{transform:scale(1.06)} }
+.theme-education .content-body h2 { background: rgba(74,106,56,0.08); border-left: 4px solid var(--theme-accent); padding: 8px 12px; }
+.theme-education .content-section { box-shadow: inset 0 0 0 1px rgba(74,106,56,0.12); }
+@media (prefers-reduced-motion: reduce) { .theme-education .icon-wrapper img { animation: none !important; } }

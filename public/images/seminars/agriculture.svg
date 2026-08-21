@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 704 704" width="512" height="512">
-  <rect x="32" y="32" width="640" height="640" rx="88" fill="#f3efe6"/>
-  <rect x="32" y="32" width="640" height="640" rx="88" fill="none" stroke="rgba(26,48,36,0.14)" stroke-width="2.5"/>
-  <ellipse cx="352" cy="520" rx="160" ry="40" fill="#8b7355" opacity="0.5"/>
-  <path d="M352 480 L352 260" stroke="#6a8a3a" stroke-width="20" stroke-linecap="round"/>
-  <path d="M352 300 Q220 250 180 140 Q280 180 352 260" fill="#8aaa5a"/>
-  <path d="M352 340 Q480 280 530 160 Q430 210 352 300" fill="#6a8a3a"/>
-  <path d="M352 200 Q290 140 270 80 Q330 110 352 160" fill="#c4a35a"/>
-  <circle cx="520" cy="120" r="36" fill="#c4a35a" opacity="0.7"/>
+  <rect x="24" y="24" width="656" height="656" rx="96" fill="#f5f1e8"/>
+  <ellipse cx="352" cy="540" rx="180" ry="45" fill="#8b7355" opacity="0.55"/>
+  <path d="M352 500 L352 250" stroke="#5a7a28" stroke-width="22" stroke-linecap="round"/>
+  <path d="M352 290 Q210 230 160 110 Q280 170 352 250" fill="#8aaa5a"/>
+  <path d="M352 330 Q490 260 550 130 Q430 190 352 290" fill="#5a7a28"/>
+  <path d="M352 190 Q280 120 255 55 Q330 95 352 150" fill="#c4a35a"/>
+  <circle cx="530" cy="100" r="40" fill="#c4a35a" opacity="0.75"/>
 </svg>

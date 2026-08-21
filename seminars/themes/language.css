@@ -1,18 +1,16 @@
 body.theme-language {
-  --theme-accent: #5a7a9a; --theme-accent2: #7a9aba; --theme-deep: #2e4a66;
-  --accent: #5a7a9a; --accent-soft: #7a9aba; --accent-deep: #2e4a66; --text-link: #5a7a9a;
+  --theme-accent: #3a5a88; --theme-accent2: #7a9aba; --theme-deep: #1a3055;
+  --accent: #3a5a88; --accent-soft: #7a9aba; --accent-deep: #1a3055;
+  --text-link: #3a5a88; --text-link-hover: #1a3055;
+  background-image: radial-gradient(ellipse 70% 40% at 10% -5%, rgba(58,90,136,0.05), transparent 50%), linear-gradient(180deg, #e6ebf2 0%, #dce3ec 100%) !important;
 }
-body.theme-language::after {
-  content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 0;
-  background: rgba(90, 122, 154, 0.05);
-}
-.theme-language .icon-wrapper img { animation: lang-speak 2.8s ease-in-out infinite; }
-@keyframes lang-speak {
-  0%, 100% { transform: scale(1); }
-  25% { transform: scale(1.03) translateX(1px); }
-  75% { transform: scale(1.03) translateX(-1px); }
-}
-.theme-language .content-body h2 { border-left-color: var(--theme-accent); }
-@media (prefers-reduced-motion: reduce) {
-  .theme-language .icon-wrapper img { animation: none !important; }
-}
+body.theme-language::after { content:''; position:fixed; inset:0; pointer-events:none; z-index:0; background:rgba(58,90,136,0.05); }
+.theme-language .seminar-detail h1 { color: var(--theme-deep); }
+.theme-language .seminar-detail h1::before { content: '「'; color: var(--theme-accent); opacity: 0.4; }
+.theme-language .seminar-detail h1::after { content: '」'; color: var(--theme-accent); opacity: 0.4; }
+.theme-language .teacher-name span { color: var(--theme-accent); }
+.theme-language .icon-wrapper img { animation: lang-speak 2.6s ease-in-out infinite; }
+@keyframes lang-speak { 0%,100%{transform:scale(1)} 25%{transform:scale(1.04) translateX(2px)} 75%{transform:scale(1.04) translateX(-2px)} }
+.theme-language .content-body h2 { border-left: none; border-bottom: 2px dotted var(--theme-accent); padding-bottom: 4px; }
+.theme-language .content-section { background: linear-gradient(180deg, rgba(58,90,136,0.04), transparent); }
+@media (prefers-reduced-motion: reduce) { .theme-language .icon-wrapper img { animation: none !important; } }

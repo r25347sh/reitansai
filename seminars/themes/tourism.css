@@ -1,17 +1,14 @@
 body.theme-tourism {
-  --theme-accent: #4a8aaa; --theme-accent2: #70b0cc; --theme-deep: #285a70;
-  --accent: #4a8aaa; --accent-soft: #70b0cc; --accent-deep: #285a70; --text-link: #4a8aaa;
+  --theme-accent: #2a7a9a; --theme-accent2: #70b0cc; --theme-deep: #0e4558;
+  --accent: #2a7a9a; --accent-soft: #70b0cc; --accent-deep: #0e4558;
+  --text-link: #2a7a9a; --text-link-hover: #0e4558;
+  background-image: radial-gradient(ellipse 70% 40% at 10% -5%, rgba(42,122,154,0.05), transparent 50%), linear-gradient(180deg, #e2f0f5 0%, #d8eaf0 100%) !important;
 }
-body.theme-tourism::after {
-  content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 0;
-  background: rgba(74, 138, 170, 0.05);
-}
-.theme-tourism .icon-wrapper img { animation: tour-bob 3s ease-in-out infinite; }
-@keyframes tour-bob {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-7px); }
-}
-.theme-tourism .content-body h2 { border-left-color: var(--theme-accent); }
-@media (prefers-reduced-motion: reduce) {
-  .theme-tourism .icon-wrapper img { animation: none !important; }
-}
+body.theme-tourism::after { content:''; position:fixed; inset:0; pointer-events:none; z-index:0; background:rgba(42,122,154,0.05); }
+.theme-tourism .seminar-detail h1 { color: var(--theme-deep); }
+.theme-tourism .seminar-detail::before { content: '✈  ·  ·  ·'; display: block; letter-spacing: 0.4em; color: var(--theme-accent); opacity: 0.4; margin-bottom: 10px; font-size: 0.85rem; }
+.theme-tourism .teacher-name span { color: var(--theme-accent); }
+.theme-tourism .icon-wrapper img { animation: tour-bob 2.8s ease-in-out infinite; border-radius: 50% 50% 50% 0 !important; }
+@keyframes tour-bob { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-9px)} }
+.theme-tourism .content-section { border-left: 4px solid var(--theme-accent2); background: rgba(255,255,255,0.6); }
+@media (prefers-reduced-motion: reduce) { .theme-tourism .icon-wrapper img { animation: none !important; } }
