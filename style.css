@@ -1,0 +1,288 @@
+/* ==============================================
+   Reitansai — Global styles (index + shared)
+   Glass + Aurora palette (aligned with sample MENU)
+   ============================================== */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Outfit:wght@500;600;700&display=swap');
+
+:root {
+  --bg-deep: #070b14;
+  --bg-card: rgba(255, 255, 255, 0.045);
+  --bg-card-hover: rgba(255, 255, 255, 0.08);
+  --border-subtle: rgba(255, 255, 255, 0.09);
+  --text-primary: #f1f5f9;
+  --text-secondary: #94a3b8;
+  --accent: #818cf8;
+  --accent-2: #c084fc;
+  --accent-3: #38bdf8;
+  --accent-glow: rgba(129, 140, 248, 0.4);
+  --radius: 18px;
+  --radius-sm: 12px;
+  --shadow: 0 24px 56px rgba(0, 0, 0, 0.45);
+  --font: 'Noto Sans JP', 'Outfit', system-ui, sans-serif;
+  --max-w: 960px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  min-height: 100dvh;
+  font-family: var(--font);
+  background: var(--bg-deep);
+  color: var(--text-primary);
+  line-height: 1.75;
+  overflow-x: hidden;
+  background-image:
+    radial-gradient(ellipse 90% 55% at 15% -15%, rgba(99, 102, 241, 0.22), transparent 55%),
+    radial-gradient(ellipse 70% 45% at 95% 5%, rgba(168, 85, 247, 0.16), transparent 50%),
+    radial-gradient(ellipse 55% 35% at 50% 105%, rgba(56, 189, 248, 0.08), transparent 45%);
+  background-attachment: fixed;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(circle at 30% 70%, rgba(129, 140, 248, 0.04), transparent 40%),
+    radial-gradient(circle at 80% 40%, rgba(192, 132, 252, 0.03), transparent 35%);
+}
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+  transition: color 0.2s ease, opacity 0.2s ease;
+}
+
+a:hover {
+  color: var(--accent-2);
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+button {
+  font-family: inherit;
+}
+
+::selection {
+  background: rgba(129, 140, 248, 0.35);
+  color: #fff;
+}
+
+/* ---------- Site header ---------- */
+.site-header {
+  position: relative;
+  z-index: 1;
+  padding: 28px 24px 12px;
+  text-align: center;
+}
+
+.header-inner {
+  max-width: var(--max-w);
+  margin: 0 auto;
+}
+
+.site-title {
+  font-size: clamp(1.6rem, 4vw, 2.2rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.site-title a {
+  background: linear-gradient(135deg, #eef2ff 0%, #c4b5fd 45%, #a5b4fc 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.site-tagline {
+  margin-top: 6px;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  letter-spacing: 0.04em;
+}
+
+/* ---------- Main / Hero ---------- */
+.main-content {
+  position: relative;
+  z-index: 1;
+  max-width: var(--max-w);
+  margin: 0 auto;
+  padding: 24px 24px 88px;
+}
+
+.hero {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.hero h2 {
+  font-size: clamp(1.5rem, 4vw, 2rem);
+  font-weight: 700;
+  margin-bottom: 12px;
+  background: linear-gradient(135deg, #eef2ff 0%, #c4b5fd 50%, #a5b4fc 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.hero-lead {
+  color: var(--text-secondary);
+  font-size: 1rem;
+  max-width: 36em;
+  margin: 0 auto;
+}
+
+.hero-hint {
+  margin-top: 14px;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  opacity: 0.65;
+}
+
+/* ---------- Seminar grid (index) ---------- */
+.seminar-list {
+  margin-top: 8px;
+}
+
+.seminar-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;
+}
+
+.seminar-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: var(--shadow);
+  transition:
+    background 0.28s ease,
+    border-color 0.28s ease,
+    transform 0.28s ease,
+    box-shadow 0.28s ease;
+  overflow: hidden;
+}
+
+.seminar-card:hover {
+  background: var(--bg-card-hover);
+  border-color: rgba(129, 140, 248, 0.28);
+  transform: translateY(-3px);
+  box-shadow: 0 28px 60px rgba(0, 0, 0, 0.5), 0 0 40px rgba(99, 102, 241, 0.08);
+}
+
+.seminar-card-link {
+  display: block;
+  padding: 24px 22px;
+  color: inherit;
+  height: 100%;
+}
+
+.seminar-card-title {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #e2e8f0;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.seminar-card-title::before {
+  content: '';
+  width: 4px;
+  height: 1.1em;
+  border-radius: 2px;
+  background: linear-gradient(180deg, var(--accent), var(--accent-2));
+  flex-shrink: 0;
+  box-shadow: 0 0 10px rgba(129, 140, 248, 0.5);
+}
+
+.seminar-card-desc {
+  color: var(--text-secondary);
+  font-size: 0.88rem;
+  margin-bottom: 14px;
+  line-height: 1.6;
+}
+
+.seminar-card-more {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--accent);
+  letter-spacing: 0.02em;
+}
+
+.seminar-card:hover .seminar-card-more {
+  color: var(--accent-2);
+}
+
+.seminar-fallback {
+  list-style: none;
+  display: grid;
+  gap: 8px;
+}
+
+.seminar-fallback a {
+  display: block;
+  padding: 12px 16px;
+  background: var(--bg-card);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-subtle);
+}
+
+/* ---------- Footer ---------- */
+.site-footer {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  padding: 32px 24px 48px;
+  border-top: 1px solid var(--border-subtle);
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  opacity: 0.75;
+  letter-spacing: 0.02em;
+}
+
+.site-footer p + p {
+  margin-top: 6px;
+}
+
+.site-footer a {
+  color: var(--text-secondary);
+}
+
+.site-footer a:hover {
+  color: var(--accent);
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 560px) {
+  .main-content {
+    padding: 16px 16px 72px;
+  }
+
+  .seminar-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .seminar-card-link {
+    padding: 20px 18px;
+  }
+}

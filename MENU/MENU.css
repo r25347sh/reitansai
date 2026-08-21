@@ -1,0 +1,226 @@
+/* ==============================================
+   Radial Menu - Refined Glass / Aurora Theme
+   (from sample repo, adapted for reitansai)
+   ============================================== */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&family=Outfit:wght@500;600;700&display=swap');
+
+:root {
+  --rm-font-family: 'Noto Sans JP', 'Outfit', system-ui, sans-serif;
+
+  --rm-item-bg: linear-gradient(145deg, rgba(30, 27, 75, 0.85), rgba(15, 23, 42, 0.9));
+  --rm-item-hover-bg: linear-gradient(145deg, #6366f1, #a855f7);
+  --rm-parent-bg: linear-gradient(145deg, rgba(99, 102, 241, 0.35), rgba(15, 23, 42, 0.92));
+
+  --rm-border-color: rgba(165, 180, 252, 0.45);
+  --rm-border-hover-color: #c4b5fd;
+
+  --rm-text-color: #f8fafc;
+  --rm-orbit-color: rgba(129, 140, 248, 0.28);
+
+  --rm-core-bg: linear-gradient(135deg, #818cf8, #c084fc);
+
+  --rm-label-bg: linear-gradient(135deg, rgba(15, 23, 42, 0.94), rgba(30, 27, 75, 0.96));
+  --rm-label-border: rgba(165, 180, 252, 0.55);
+
+  --rm-item-size: 56px;
+  --rm-elastic-ease: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --rm-z-index: 9999999;
+}
+
+body {
+  user-select: none;
+  -webkit-user-select: none;
+  font-family: var(--rm-font-family);
+}
+
+/* Allow text selection in content areas */
+.main-content,
+.seminar-detail,
+.content-body,
+.lead-text {
+  user-select: text;
+  -webkit-user-select: text;
+}
+
+.radial-menu-wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+  z-index: var(--rm-z-index);
+  pointer-events: none;
+  visibility: hidden;
+  opacity: 0;
+  will-change: transform, opacity;
+  transition: visibility 0s linear 0.25s, opacity 0.15s ease-out;
+}
+
+.radial-menu-wrapper.active {
+  pointer-events: auto;
+  visibility: visible;
+  opacity: 1;
+  transition: visibility 0s linear 0s, opacity 0.1s ease-in;
+}
+
+.rm-canvas-layer {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.rm-shell-orbit {
+  position: absolute;
+  border-radius: 50%;
+  border: 1px dashed var(--rm-orbit-color);
+  box-shadow: 0 0 20px rgba(99, 102, 241, 0.12);
+  pointer-events: none;
+  z-index: 2;
+  transform: scale(0.2) rotate(-90deg);
+  opacity: 0;
+  will-change: transform, opacity;
+  transition: transform 0.55s var(--rm-elastic-ease), opacity 0.3s ease;
+}
+
+.radial-menu-wrapper.active .rm-shell-orbit {
+  transform: scale(1) rotate(0deg);
+  opacity: 1;
+  animation: orbitPulse 10s linear infinite;
+}
+
+@keyframes orbitPulse {
+  0%   { transform: scale(1) rotate(0deg); }
+  50%  { transform: scale(1.015) rotate(180deg); }
+  100% { transform: scale(1) rotate(360deg); }
+}
+
+.rm-core-btn {
+  position: absolute;
+  width: 48px;
+  height: 48px;
+  margin-top: -24px;
+  margin-left: -24px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255, 255, 255, 0.35);
+  background: var(--rm-core-bg);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  color: #fff;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  box-shadow:
+    0 0 24px rgba(129, 140, 248, 0.55),
+    inset 0 0 12px rgba(255, 255, 255, 0.25);
+
+  opacity: 0;
+  pointer-events: none;
+  transform: scale(0) rotate(-160deg);
+  will-change: transform, opacity;
+  transition: transform 0.4s var(--rm-elastic-ease), opacity 0.2s ease;
+}
+
+.rm-core-btn.visible {
+  opacity: 1;
+  pointer-events: auto;
+  transform: scale(1) rotate(0deg);
+}
+
+.rm-core-btn:hover {
+  transform: scale(1.18) rotate(90deg) !important;
+  box-shadow:
+    0 0 32px rgba(168, 85, 247, 0.75),
+    inset 0 0 16px rgba(255, 255, 255, 0.4);
+}
+
+.rm-item {
+  position: absolute;
+  width: var(--rm-item-size);
+  height: var(--rm-item-size);
+  margin-top: calc(-1 * var(--rm-item-size) / 2);
+  margin-left: calc(-1 * var(--rm-item-size) / 2);
+  border-radius: 50%;
+  border: 1.5px solid var(--rm-border-color);
+  background: var(--rm-item-bg);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  color: var(--rm-text-color);
+  font-size: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 3;
+  box-shadow:
+    0 10px 28px rgba(0, 0, 0, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+
+  opacity: 0;
+  pointer-events: none;
+  transform: translate3d(0, 0, 0) scale(0) rotate(-160deg);
+  will-change: transform, opacity;
+  transition:
+    transform 0.48s var(--rm-elastic-ease),
+    opacity 0.25s ease,
+    border-color 0.2s ease,
+    box-shadow 0.25s ease,
+    background 0.25s ease;
+}
+
+.radial-menu-wrapper.active .rm-item.rendered {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translate3d(var(--x), var(--y), 0) scale(1) rotate(0deg);
+}
+
+.rm-item:hover,
+.rm-item:active {
+  background: var(--rm-item-hover-bg) !important;
+  border-color: var(--rm-border-hover-color);
+  color: #fff;
+  transform: translate3d(var(--x), var(--y), 0) scale(1.22) rotate(0deg) !important;
+  box-shadow:
+    0 0 28px rgba(99, 102, 241, 0.7),
+    0 0 14px rgba(168, 85, 247, 0.5),
+    inset 0 0 14px rgba(255, 255, 255, 0.35);
+  z-index: 5;
+}
+
+.rm-item.has-sub {
+  background: var(--rm-parent-bg);
+  border-color: rgba(196, 181, 253, 0.65);
+  box-shadow: 0 0 16px rgba(129, 140, 248, 0.25);
+}
+
+.rm-item::after {
+  content: attr(data-label);
+  position: absolute;
+  bottom: -32px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-6px) scale(0.75);
+  background: var(--rm-label-bg);
+  color: var(--rm-text-color);
+  padding: 4px 11px;
+  border-radius: 8px;
+  border: 1px solid var(--rm-label-border);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+  transition: transform 0.3s var(--rm-elastic-ease), opacity 0.2s ease;
+}
+
+.radial-menu-wrapper.active .rm-item.rendered::after {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0) scale(1);
+}
