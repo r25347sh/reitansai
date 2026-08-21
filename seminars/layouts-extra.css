@@ -8,7 +8,6 @@
 .asobi-toys { display: flex; gap: 12px; margin: 16px 0; }
 .toy { font-size: 1.8rem; background: #fff8f0; border: 2px dashed #e06020; border-radius: 16px; width: 56px; height: 56px; cursor: pointer; transition: transform 0.3s; }
 .toy-bounce { animation: asobi-bounce 0.5s ease; }
-.asobi-party { filter: hue-rotate(40deg); }
 
 /* Data science split */
 .ds-shell { display: flex; min-height: 100vh; }
@@ -26,7 +25,6 @@
 .ds-log .ds-muted { color: #7090a0; }
 .ds-input-row { display: flex; gap: 8px; align-items: center; color: #4ab0d8; }
 .ds-input-row input { flex: 1; background: transparent; border: none; color: #d8eef8; font-family: inherit; outline: none; }
-.ds-matrix .ds-main { animation: ds-pulse 0.3s steps(2) infinite; }
 @media (max-width: 640px) { .ds-shell { flex-direction: column; } .ds-sidebar { width: 100%; border-right: none; border-bottom: 1px solid rgba(74,176,216,0.2); } }
 
 /* Video */
@@ -42,7 +40,6 @@
 .vid-clip.c2 { background: #c07040; }
 .vid-clip.c3 { background: #805030; }
 .vid-playhead { position: absolute; top: 0; bottom: 0; width: 2px; background: #fff; left: 8%; }
-.vid-cut { filter: brightness(2) contrast(0.5); }
 
 /* Literature book */
 .lit-book { max-width: 800px; margin: 0 auto; padding: 24px 16px 80px; }
@@ -54,8 +51,6 @@
 .lit-controls { display: flex; gap: 12px; justify-content: center; margin-bottom: 24px; }
 .lit-controls button { background: #8b3048; color: #fff; border: none; padding: 8px 16px; border-radius: 2px; cursor: pointer; font-family: inherit; }
 .lit-flip { transform: perspective(600px) rotateY(4deg); transition: transform 0.4s; }
-.lit-night { background: #1a1018 !important; }
-.lit-night .lit-spread { background: #2a1820; color: #e8d8d0; border-color: #4a2830; }
 @media (max-width: 600px) { .lit-spread { grid-template-columns: 1fr; } .lit-left { border-right: none; border-bottom: 1px solid #e0d4c0; } }
 
 /* Chemistry lab */
@@ -69,7 +64,6 @@
 .chem-formula-label { display: block; font-size: 0.8rem; margin-top: 12px; opacity: 0.7; }
 #chem-formula { width: 100%; max-width: 240px; padding: 8px 12px; border: 2px solid #0d8a78; border-radius: 8px; font-family: monospace; margin-top: 4px; }
 .chem-result { margin-top: 8px; color: #044038; font-weight: 600; }
-.chem-react { animation: chem-bubble 0.4s ease infinite; }
 
 /* Media studio */
 .media-vu { display: flex; gap: 4px; align-items: flex-end; height: 32px; padding: 8px 16px; }
@@ -91,8 +85,6 @@
 .evt-stamp { display: block; margin: 0 auto 24px; padding: 10px 24px; background: #e03030; color: #fff; border: none; border-radius: 999px; font-size: 1rem; cursor: pointer; font-family: inherit; }
 .evt-stamped { position: relative; }
 .evt-stamped::after { content: '済'; position: absolute; right: 24px; top: 50%; transform: translateY(-50%) rotate(-12deg); font-size: 3rem; color: rgba(224,48,48,0.35); border: 4px solid rgba(224,48,48,0.35); border-radius: 50%; width: 72px; height: 72px; display: flex; align-items: center; justify-content: center; pointer-events: none; }
-.evt-confetti { position: fixed; top: -10px; width: 8px; height: 8px; z-index: 9999; animation: evt-fall 2s linear forwards; pointer-events: none; }
-@keyframes evt-fall { to { transform: translateY(100vh) rotate(360deg); opacity: 0; } }
 
 /* Creative writing */
 .cw-manuscript { max-width: 560px; margin: 0 auto; padding: 40px 28px 80px; }
@@ -113,7 +105,6 @@
 .dig-codepane { padding: 20px; background: #0e0818; font-family: monospace; }
 .dig-code { color: #b88cff; font-size: 0.85rem; margin-bottom: 16px; min-height: 4em; }
 .dig-flash { opacity: 0.5; }
-.dig-glitch { animation: digi-glow 0.15s steps(2) infinite; }
 @media (max-width: 600px) { .dig-split { grid-template-columns: 1fr; } }
 
 /* Education board */
