@@ -1,14 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 704 704" width="512" height="512">
-  <rect x="32" y="32" width="640" height="640" rx="88" fill="#f3efe6"/>
-  <rect x="32" y="32" width="640" height="640" rx="88" fill="none" stroke="rgba(26,48,36,0.14)" stroke-width="2.5"/>
-  <path d="M270 130 L270 260 L160 480 L540 480 L430 260 L430 130 Z" fill="none" stroke="#2d8a7a" stroke-width="16" stroke-linejoin="round"/>
-  <path d="M190 420 L510 420 L460 340 L240 340 Z" fill="#4aac9a" opacity="0.45"/>
-  <line x1="250" y1="130" x2="450" y2="130" stroke="#c4a35a" stroke-width="12" stroke-linecap="round"/>
-  <circle cx="280" cy="380" r="18" fill="#e8dfc8"/>
-  <circle cx="340" cy="390" r="12" fill="#faf6ee"/>
-  <circle cx="400" cy="370" r="15" fill="#e8dfc8"/>
-  <circle cx="520" cy="160" r="20" fill="#2d8a7a"/>
-  <circle cx="560" cy="200" r="14" fill="#4aac9a"/>
-  <line x1="520" y1="160" x2="560" y2="200" stroke="#1a5a4e" stroke-width="6"/>
+  <rect x="24" y="24" width="656" height="656" rx="96" fill="#f5f1e8"/>
+  <path d="M260 110 L260 250 L140 490 L560 490 L440 250 L440 110 Z" fill="none" stroke="#1a7a6a" stroke-width="14" stroke-linejoin="round"/>
+  <path d="M175 420 L525 420 L470 330 L230 330 Z" fill="#4aac9a" opacity="0.5"/>
+  <line x1="240" y1="110" x2="460" y2="110" stroke="#c4a35a" stroke-width="12" stroke-linecap="round"/>
+  <circle cx="270" cy="375" r="20" fill="#e8dfc8"/><circle cx="340" cy="390" r="14" fill="#faf6ee"/><circle cx="410" cy="365" r="17" fill="#e8dfc8"/>
+  <circle cx="530" cy="140" r="22" fill="#1a7a6a"/><circle cx="580" cy="190" r="14" fill="#4aac9a"/><circle cx="500" cy="190" r="12" fill="#0a4a40"/>
+  <line x1="530" y1="140" x2="580" y2="190" stroke="#0a4a40" stroke-width="5"/>
+  <line x1="530" y1="140" x2="500" y2="190" stroke="#0a4a40" stroke-width="5"/>
 </svg>

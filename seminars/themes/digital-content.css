@@ -1,17 +1,13 @@
 body.theme-digital-content {
-  --theme-accent: #7b5ea7; --theme-accent2: #9b7ec8; --theme-deep: #4a3570;
-  --accent: #7b5ea7; --accent-soft: #9b7ec8; --accent-deep: #4a3570; --text-link: #7b5ea7;
+  --theme-accent: #6b4a9a; --theme-accent2: #9b7ec8; --theme-deep: #3a2060;
+  --accent: #6b4a9a; --accent-soft: #9b7ec8; --accent-deep: #3a2060;
+  --text-link: #6b4a9a; --text-link-hover: #3a2060;
+  background-image: radial-gradient(ellipse 70% 40% at 10% -5%, rgba(107,74,154,0.06), transparent 50%), linear-gradient(180deg, #ebe4f2 0%, #e4dcec 100%) !important;
 }
-body.theme-digital-content::after {
-  content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 0;
-  background: rgba(123, 94, 167, 0.05);
-}
-.theme-digital-content .icon-wrapper img { animation: digi-glow 2.5s ease-in-out infinite alternate; }
-@keyframes digi-glow {
-  from { filter: drop-shadow(0 0 2px rgba(123, 94, 167, 0.2)); }
-  to { filter: drop-shadow(0 0 10px rgba(155, 126, 200, 0.45)); }
-}
-.theme-digital-content .content-body h2 { border-left-color: var(--theme-accent); }
-@media (prefers-reduced-motion: reduce) {
-  .theme-digital-content .icon-wrapper img { animation: none !important; }
-}
+body.theme-digital-content::after { content:''; position:fixed; inset:0; pointer-events:none; z-index:0; background:rgba(107,74,154,0.06); }
+.theme-digital-content .seminar-detail h1 { background:linear-gradient(135deg,#6b4a9a,#9b7ec8); -webkit-background-clip:text; background-clip:text; color:transparent; }
+.theme-digital-content .teacher-name span { color: var(--theme-accent); }
+.theme-digital-content .icon-wrapper img { border-radius:16px !important; animation: digi-glow 2.4s ease-in-out infinite alternate; }
+@keyframes digi-glow { from{filter:drop-shadow(0 0 2px rgba(107,74,154,0.25))} to{filter:drop-shadow(0 0 14px rgba(155,126,200,0.55))} }
+.theme-digital-content .content-section { background:linear-gradient(135deg,rgba(107,74,154,0.06),rgba(255,255,255,0.5)); border-color:rgba(107,74,154,0.25); }
+@media (prefers-reduced-motion: reduce) { .theme-digital-content .icon-wrapper img { animation: none !important; } }

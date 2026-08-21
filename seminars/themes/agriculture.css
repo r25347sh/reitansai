@@ -1,23 +1,15 @@
-/* Theme: 農業 */
 body.theme-agriculture {
-  --theme-accent: #6a8a3a;
-  --theme-accent2: #8aaa5a;
-  --theme-deep: #3a5a1e;
-  --accent: #6a8a3a;
-  --accent-soft: #8aaa5a;
-  --accent-deep: #3a5a1e;
-  --text-link: #6a8a3a;
+  --theme-accent: #5a7a28; --theme-accent2: #8aaa5a; --theme-deep: #2e4a10;
+  --accent: #5a7a28; --accent-soft: #8aaa5a; --accent-deep: #2e4a10;
+  --text-link: #5a7a28; --text-link-hover: #2e4a10;
+  background-image: radial-gradient(ellipse 70% 40% at 10% -5%, rgba(90,122,40,0.05), transparent 50%), linear-gradient(180deg, #e8efd8 0%, #e0e8d0 100%) !important;
 }
-body.theme-agriculture::after {
-  content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 0;
-  background: rgba(106, 138, 58, 0.05);
-}
-.theme-agriculture .icon-wrapper img { animation: agri-grow 4s ease-in-out infinite; }
-@keyframes agri-grow {
-  0%, 100% { transform: scale(1) translateY(0); }
-  50% { transform: scale(1.04) translateY(-3px); }
-}
-.theme-agriculture .content-body h2 { border-left-color: var(--theme-accent); }
-@media (prefers-reduced-motion: reduce) {
-  .theme-agriculture .icon-wrapper img { animation: none !important; }
-}
+body.theme-agriculture::after { content:''; position:fixed; inset:0; pointer-events:none; z-index:0; background:rgba(90,122,40,0.05); }
+.theme-agriculture .seminar-detail h1 { color: var(--theme-deep); }
+.theme-agriculture .teacher-name span { color: var(--theme-accent); }
+.theme-agriculture .icon-wrapper img { animation: agri-grow 3.5s ease-in-out infinite; border-radius: 40% 40% 20% 20% !important; }
+@keyframes agri-grow { 0%,100%{transform:scale(1) translateY(0)} 50%{transform:scale(1.05) translateY(-4px)} }
+.theme-agriculture .seminar-detail::before { content:''; display:block; height:4px; margin-bottom:16px; border-radius:2px; background:linear-gradient(90deg,#5a7a28,#c4a35a,#8aaa5a); }
+.theme-agriculture .content-section { border-bottom:3px solid rgba(90,122,40,0.2); background:rgba(255,252,245,0.7); }
+.theme-agriculture .content-body h2 { color:var(--theme-deep); border-left:4px solid #8aaa5a; }
+@media (prefers-reduced-motion: reduce) { .theme-agriculture .icon-wrapper img { animation: none !important; } }
