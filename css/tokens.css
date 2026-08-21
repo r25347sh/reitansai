@@ -1,0 +1,65 @@
+/* ==============================================
+   Reitansai Design Tokens
+   Theme: Sacred Forest University — bright, serene, academic grove
+   ============================================== */
+:root {
+  /* Surfaces */
+  --bg-page: #f4f1e8;
+  --bg-page-soft: #faf8f2;
+  --bg-card: rgba(255, 252, 245, 0.78);
+  --bg-card-solid: #fffdf8;
+  --bg-card-hover: rgba(255, 253, 248, 0.95);
+  --bg-elevated: #ffffff;
+  --bg-muted: #ebe6d9;
+  --bg-forest-deep: #1e3a2a;
+  --bg-forest-mid: #2d5a3d;
+
+  /* Text */
+  --text-primary: #1a2e22;
+  --text-secondary: #4a5e52;
+  --text-muted: #6b7c72;
+  --text-on-dark: #f4f1e8;
+  --text-link: #2d6a4f;
+  --text-link-hover: #1b4332;
+
+  /* Accents — living forest + soft gold */
+  --accent: #3d7a55;
+  --accent-soft: #5a9b6e;
+  --accent-deep: #1b4332;
+  --accent-gold: #c4a35a;
+  --accent-gold-soft: #e0c878;
+  --accent-mist: #a8c5b0;
+  --accent-leaf: #74a37c;
+  --accent-sky: #7ba3a8;
+
+  /* Borders & shadows */
+  --border-subtle: rgba(45, 90, 61, 0.12);
+  --border-strong: rgba(45, 90, 61, 0.22);
+  --border-gold: rgba(196, 163, 90, 0.45);
+  --shadow-sm: 0 2px 8px rgba(30, 58, 42, 0.06);
+  --shadow-md: 0 8px 28px rgba(30, 58, 42, 0.1);
+  --shadow-lg: 0 20px 48px rgba(30, 58, 42, 0.12);
+  --shadow-glow: 0 0 32px rgba(90, 155, 110, 0.18);
+
+  /* Radii */
+  --radius: 18px;
+  --radius-sm: 12px;
+  --radius-lg: 24px;
+  --radius-pill: 999px;
+
+  /* Typography */
+  --font-sans: 'Noto Sans JP', 'Hiragino Sans', 'Yu Gothic', system-ui, sans-serif;
+  --font-display: 'Cormorant Garamond', 'Noto Serif JP', 'Times New Roman', serif;
+  --font-mono: ui-monospace, 'SF Mono', Menlo, monospace;
+
+  /* Layout */
+  --max-w: 1080px;
+  --header-h: 72px;
+
+  /* Motion */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-spring: cubic-bezier(0.34, 1.4, 0.64, 1);
+  --dur-fast: 0.18s;
+  --dur: 0.28s;
+  --dur-slow: 0.45s;
+}
