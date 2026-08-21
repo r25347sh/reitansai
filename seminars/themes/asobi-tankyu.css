@@ -1,0 +1,32 @@
+/* Theme: 遊びの探究 (asobi-tankyu) */
+body.theme-asobi-tankyu {
+  --theme-accent: #e07a3d;
+  --theme-accent2: #f0a060;
+  --theme-deep: #8b4518;
+  --accent: #e07a3d;
+  --accent-soft: #f0a060;
+  --accent-deep: #8b4518;
+  --text-link: #e07a3d;
+}
+body.theme-asobi-tankyu::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background: rgba(224, 122, 61, 0.06);
+}
+.theme-asobi-tankyu .icon-wrapper img {
+  animation: asobi-bounce 2.8s ease-in-out infinite;
+}
+@keyframes asobi-bounce {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  40% { transform: translateY(-6px) rotate(-3deg); }
+  70% { transform: translateY(-2px) rotate(2deg); }
+}
+.theme-asobi-tankyu .seminar-detail h1 { color: var(--theme-deep); }
+.theme-asobi-tankyu .content-body h2 { border-left-color: var(--theme-accent); }
+.theme-asobi-tankyu .back-link:hover { border-color: var(--theme-accent); color: var(--theme-deep); }
+@media (prefers-reduced-motion: reduce) {
+  .theme-asobi-tankyu .icon-wrapper img { animation: none !important; }
+}

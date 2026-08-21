@@ -1,0 +1,27 @@
+/* Theme: 文学 */
+body.theme-literature {
+  --theme-accent: #8b4a5a;
+  --theme-accent2: #b07080;
+  --theme-deep: #5a2838;
+  --accent: #8b4a5a;
+  --accent-soft: #b07080;
+  --accent-deep: #5a2838;
+  --text-link: #8b4a5a;
+}
+body.theme-literature::after {
+  content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 0;
+  background: rgba(139, 74, 90, 0.05);
+}
+.theme-literature .icon-wrapper img { animation: lit-page 5s ease-in-out infinite; }
+@keyframes lit-page {
+  0%, 100% { transform: perspective(200px) rotateY(0deg); }
+  50% { transform: perspective(200px) rotateY(-6deg); }
+}
+.theme-literature .content-body h2 { border-left-color: var(--theme-accent); }
+.theme-literature .content-body blockquote {
+  border-left-color: var(--theme-accent);
+  background: rgba(139, 74, 90, 0.07);
+}
+@media (prefers-reduced-motion: reduce) {
+  .theme-literature .icon-wrapper img { animation: none !important; }
+}

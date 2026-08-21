@@ -1,0 +1,23 @@
+/* Theme: 映像 */
+body.theme-video-editing {
+  --theme-accent: #b84a3c;
+  --theme-accent2: #d46a5c;
+  --theme-deep: #6b2820;
+  --accent: #b84a3c;
+  --accent-soft: #d46a5c;
+  --accent-deep: #6b2820;
+  --text-link: #b84a3c;
+}
+body.theme-video-editing::after {
+  content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 0;
+  background: rgba(184, 74, 60, 0.05);
+}
+.theme-video-editing .icon-wrapper img { animation: film-flicker 3.5s steps(2) infinite; }
+@keyframes film-flicker {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.88; }
+}
+.theme-video-editing .content-body h2 { border-left-color: var(--theme-accent); }
+@media (prefers-reduced-motion: reduce) {
+  .theme-video-editing .icon-wrapper img { animation: none !important; }
+}

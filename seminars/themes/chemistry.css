@@ -1,0 +1,24 @@
+/* Theme: 化学 */
+body.theme-chemistry {
+  --theme-accent: #2d8a7a;
+  --theme-accent2: #4aac9a;
+  --theme-deep: #1a5a4e;
+  --accent: #2d8a7a;
+  --accent-soft: #4aac9a;
+  --accent-deep: #1a5a4e;
+  --text-link: #2d8a7a;
+}
+body.theme-chemistry::after {
+  content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 0;
+  background: rgba(45, 138, 122, 0.05);
+}
+.theme-chemistry .icon-wrapper img { animation: chem-bubble 2.6s ease-in-out infinite; }
+@keyframes chem-bubble {
+  0%, 100% { transform: translateY(0) scale(1); }
+  30% { transform: translateY(-4px) scale(1.03); }
+  60% { transform: translateY(-1px) scale(0.98); }
+}
+.theme-chemistry .content-body h2 { border-left-color: var(--theme-accent); }
+@media (prefers-reduced-motion: reduce) {
+  .theme-chemistry .icon-wrapper img { animation: none !important; }
+}

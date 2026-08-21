@@ -1,0 +1,23 @@
+/* Theme: 農業 */
+body.theme-agriculture {
+  --theme-accent: #6a8a3a;
+  --theme-accent2: #8aaa5a;
+  --theme-deep: #3a5a1e;
+  --accent: #6a8a3a;
+  --accent-soft: #8aaa5a;
+  --accent-deep: #3a5a1e;
+  --text-link: #6a8a3a;
+}
+body.theme-agriculture::after {
+  content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 0;
+  background: rgba(106, 138, 58, 0.05);
+}
+.theme-agriculture .icon-wrapper img { animation: agri-grow 4s ease-in-out infinite; }
+@keyframes agri-grow {
+  0%, 100% { transform: scale(1) translateY(0); }
+  50% { transform: scale(1.04) translateY(-3px); }
+}
+.theme-agriculture .content-body h2 { border-left-color: var(--theme-accent); }
+@media (prefers-reduced-motion: reduce) {
+  .theme-agriculture .icon-wrapper img { animation: none !important; }
+}
