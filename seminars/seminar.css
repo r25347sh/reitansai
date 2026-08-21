@@ -1,5 +1,6 @@
 /* ==============================================
    Reitansai — Seminar detail pages
+   Direction: icon-forward, clean glass content
    ============================================== */
 
 .page-header {
@@ -14,14 +15,14 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  font-size: 0.88rem;
+  font-size: 0.86rem;
   font-weight: 500;
   color: var(--text-secondary);
   padding: 8px 14px;
   border-radius: 999px;
   border: 1px solid var(--border-subtle);
   background: var(--bg-card);
-  transition: all 0.22s ease;
+  transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease;
 }
 
 .back-link:hover {
@@ -30,45 +31,45 @@
   background: rgba(129, 140, 248, 0.1);
 }
 
-/* Detail main */
 .seminar-detail {
   position: relative;
   z-index: 1;
   max-width: 720px;
   margin: 0 auto;
-  padding: 28px 24px 64px;
+  padding: 28px 24px 72px;
 }
 
 .icon-wrapper {
-  margin-bottom: 16px;
+  margin-bottom: 18px;
 }
 
 .icon-wrapper img {
-  width: 80px;
-  height: 80px;
+  width: 88px;
+  height: 88px;
   object-fit: contain;
-  border-radius: 18px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid var(--border-subtle);
-  padding: 8px;
+  border-radius: 20px;
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(165, 180, 252, 0.25);
+  padding: 10px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35), 0 0 24px rgba(129, 140, 248, 0.12);
 }
 
 .seminar-detail h1 {
-  font-size: clamp(1.55rem, 4.2vw, 2.1rem);
+  font-size: clamp(1.5rem, 4vw, 2rem);
   font-weight: 700;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.025em;
   line-height: 1.3;
   background: linear-gradient(135deg, #eef2ff 0%, #c4b5fd 45%, #a5b4fc 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
 }
 
 .teacher-name {
-  font-size: 0.95rem;
+  font-size: 0.92rem;
   color: var(--text-secondary);
-  margin-bottom: 20px;
+  margin-bottom: 18px;
 }
 
 .teacher-name span {
@@ -91,9 +92,9 @@
 }
 
 .lead-text {
-  font-size: 1.05rem;
+  font-size: 1.02rem;
   color: #cbd5e1;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
   line-height: 1.7;
 }
 
@@ -103,15 +104,14 @@
   background: linear-gradient(
     90deg,
     transparent,
-    rgba(129, 140, 248, 0.35),
+    rgba(129, 140, 248, 0.3),
     transparent
   );
-  margin: 28px 0;
+  margin: 26px 0;
 }
 
-/* Body content (Markdown rendered) */
 .content-body {
-  font-size: 0.98rem;
+  font-size: 0.96rem;
   color: var(--text-secondary);
   line-height: 1.85;
 }
@@ -121,18 +121,18 @@
 .content-body h3 {
   color: #e2e8f0;
   font-weight: 600;
-  margin: 1.6em 0 0.6em;
+  margin: 1.5em 0 0.55em;
   line-height: 1.35;
 }
 
 .content-body h2 {
-  font-size: 1.2rem;
+  font-size: 1.15rem;
   padding-left: 12px;
   border-left: 3px solid var(--accent);
 }
 
 .content-body h3 {
-  font-size: 1.05rem;
+  font-size: 1.02rem;
 }
 
 .content-body p {
@@ -141,11 +141,11 @@
 
 .content-body ul,
 .content-body ol {
-  margin: 0.8em 0 1.2em 1.4em;
+  margin: 0.75em 0 1.1em 1.35em;
 }
 
 .content-body li {
-  margin-bottom: 0.35em;
+  margin-bottom: 0.3em;
 }
 
 .content-body a {
@@ -155,15 +155,15 @@
 
 .content-body img {
   border-radius: var(--radius-sm);
-  margin: 1.2em 0;
+  margin: 1.1em 0;
   border: 1px solid var(--border-subtle);
 }
 
 .content-body blockquote {
-  margin: 1.2em 0;
-  padding: 12px 18px;
+  margin: 1.1em 0;
+  padding: 12px 16px;
   border-left: 3px solid var(--accent-2);
-  background: rgba(168, 85, 247, 0.08);
+  background: rgba(168, 85, 247, 0.07);
   border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
   color: #c4b5fd;
 }
@@ -178,11 +178,11 @@
 }
 
 .content-body pre {
-  padding: 16px;
+  padding: 14px;
   border-radius: var(--radius-sm);
   background: rgba(0, 0, 0, 0.35);
   overflow-x: auto;
-  margin: 1.2em 0;
+  margin: 1.1em 0;
   border: 1px solid var(--border-subtle);
 }
 
@@ -191,61 +191,60 @@
   background: none;
 }
 
-/* Sections from frontmatter */
 .content-sections {
-  margin-top: 32px;
+  margin-top: 28px;
 }
 
 .content-section {
   background: var(--bg-card);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius);
-  padding: 24px 22px;
-  margin-bottom: 16px;
+  padding: 22px 20px;
+  margin-bottom: 14px;
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
 }
 
 .content-section h2 {
-  font-size: 1.1rem;
+  font-size: 1.08rem;
   font-weight: 600;
   color: #e2e8f0;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
 }
 
 .content-section p {
   color: var(--text-secondary);
-  font-size: 0.95rem;
+  font-size: 0.94rem;
 }
 
 .section-image {
   width: 100%;
   border-radius: var(--radius-sm);
-  margin-bottom: 10px;
+  margin-bottom: 8px;
   border: 1px solid var(--border-subtle);
 }
 
 .image-caption {
-  font-size: 0.82rem;
+  font-size: 0.8rem;
   color: var(--text-secondary);
   opacity: 0.8;
   text-align: center;
 }
 
-/* Loading / error state */
-#seminar-title:empty::after,
-#seminar-title:is(:contains('読み込み')) {
-  /* fallback handled by JS text */
-}
-
 @media (max-width: 560px) {
   .page-header,
   .seminar-detail {
-    padding-left: 16px;
-    padding-right: 16px;
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+
+  .icon-wrapper img {
+    width: 72px;
+    height: 72px;
+    border-radius: 16px;
   }
 
   .content-section {
-    padding: 18px 16px;
+    padding: 16px 14px;
   }
 }
