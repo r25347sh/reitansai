@@ -33,7 +33,6 @@ body.theme-asobi-tankyu {
   width: 110px !important; height: 110px !important;
   border-radius: 30% !important;
   border: 4px solid #e06020 !important;
-  animation: asobi-bounce 2.4s ease-in-out infinite;
   box-shadow: 0 10px 0 rgba(224,96,32,0.3) !important;
 }
 @keyframes asobi-bounce {
