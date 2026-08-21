@@ -1,14 +1,31 @@
 body.theme-media {
-  --theme-accent: #2a6a7a; --theme-accent2: #5a9aac; --theme-deep: #0e3a48;
-  --accent: #2a6a7a; --accent-soft: #5a9aac; --accent-deep: #0e3a48;
-  --text-link: #2a6a7a; --text-link-hover: #0e3a48;
-  background-image: radial-gradient(ellipse 70% 40% at 10% -5%, rgba(42,106,122,0.05), transparent 50%), linear-gradient(180deg, #e2eef0 0%, #dae8ea 100%) !important;
+  --theme-accent: #1080a0; --theme-deep: #f0f8fa; --accent: #1080a0;
+  --text-primary: #e8f4f8; --text-secondary: #a8c8d0; --text-muted: #688890; --text-link: #40b0c8;
+  background: #0a181c !important;
+  background-image: linear-gradient(180deg, #0e2028, #0a181c) !important;
+  color: #e8f4f8;
 }
-body.theme-media::after { content:''; position:fixed; inset:0; pointer-events:none; z-index:0; background:rgba(42,106,122,0.05); }
-.theme-media .seminar-detail h1 { color: var(--theme-deep); }
-.theme-media .seminar-detail h1::after { content: ' ● LIVE'; font-size: 0.55em; color: #c04040; vertical-align: middle; letter-spacing: 0.08em; opacity: 0.7; }
-.theme-media .teacher-name span { color: var(--theme-accent); }
-.theme-media .icon-wrapper img { animation: media-wave 2s ease-in-out infinite; border-radius: 50% !important; }
-@keyframes media-wave { 0%,100%{transform:scale(1)} 50%{transform:scale(1.06)} }
-.theme-media .content-body h2 { text-transform: uppercase; letter-spacing: 0.08em; font-size: 0.95rem; border-bottom: 2px solid var(--theme-accent); border-left: none; padding-left: 0; }
+.theme-media .page-header .back-link {
+  background: #122428; color: #40b0c8; border-color: #1080a0;
+}
+.theme-media .seminar-detail h1 { color: #e8f4f8; font-weight: 700; letter-spacing: 0.04em; }
+.theme-media .seminar-detail h1::after {
+  content: ' ON AIR'; font-size: 0.5em; color: #e03030; vertical-align: middle;
+  letter-spacing: 0.15em; animation: onair 1.5s steps(2) infinite;
+}
+@keyframes onair { 0%,100%{ opacity:1; } 50%{ opacity:0.3; } }
+.theme-media .icon-wrapper img {
+  border-radius: 50% !important; border: 3px solid #1080a0 !important;
+  animation: media-wave 1.8s ease-in-out infinite;
+}
+@keyframes media-wave { 0%,100%{ transform: scale(1); } 50%{ transform: scale(1.08); } }
+.theme-media .teacher-name span { color: #40b0c8; }
+.theme-media .content-body h2 {
+  text-transform: uppercase; letter-spacing: 0.1em; font-size: 0.9rem;
+  border-left: none; border-bottom: 2px solid #1080a0; color: #40b0c8; padding-left: 0;
+}
+.theme-media .content-section {
+  background: #122428; border-left: 4px solid #1080a0; border-radius: 0 8px 8px 0; color: #a8c8d0;
+}
+.theme-media .site-footer, .theme-media .site-footer a { color: #688890; }
 @media (prefers-reduced-motion: reduce) { .theme-media .icon-wrapper img { animation: none !important; } }

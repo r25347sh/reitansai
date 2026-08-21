@@ -1,16 +1,26 @@
 body.theme-language {
-  --theme-accent: #3a5a88; --theme-accent2: #7a9aba; --theme-deep: #1a3055;
-  --accent: #3a5a88; --accent-soft: #7a9aba; --accent-deep: #1a3055;
-  --text-link: #3a5a88; --text-link-hover: #1a3055;
-  background-image: radial-gradient(ellipse 70% 40% at 10% -5%, rgba(58,90,136,0.05), transparent 50%), linear-gradient(180deg, #e6ebf2 0%, #dce3ec 100%) !important;
+  --theme-accent: #3060a0; --theme-deep: #102848; --accent: #3060a0; --text-link: #3060a0;
+  background: #e0e8f0 !important;
+  background-image: linear-gradient(180deg, #e8eef6, #d8e0ec) !important;
 }
-body.theme-language::after { content:''; position:fixed; inset:0; pointer-events:none; z-index:0; background:rgba(58,90,136,0.05); }
-.theme-language .seminar-detail h1 { color: var(--theme-deep); }
-.theme-language .seminar-detail h1::before { content: '「'; color: var(--theme-accent); opacity: 0.4; }
-.theme-language .seminar-detail h1::after { content: '」'; color: var(--theme-accent); opacity: 0.4; }
-.theme-language .teacher-name span { color: var(--theme-accent); }
-.theme-language .icon-wrapper img { animation: lang-speak 2.6s ease-in-out infinite; }
-@keyframes lang-speak { 0%,100%{transform:scale(1)} 25%{transform:scale(1.04) translateX(2px)} 75%{transform:scale(1.04) translateX(-2px)} }
-.theme-language .content-body h2 { border-left: none; border-bottom: 2px dotted var(--theme-accent); padding-bottom: 4px; }
-.theme-language .content-section { background: linear-gradient(180deg, rgba(58,90,136,0.04), transparent); }
+.theme-language .seminar-detail { max-width: 620px; }
+.theme-language .seminar-detail h1 { color: #102848; }
+.theme-language .seminar-detail h1::before { content: '「'; color: #3060a0; opacity: 0.45; margin-right: 4px; }
+.theme-language .seminar-detail h1::after { content: '」'; color: #3060a0; opacity: 0.45; margin-left: 4px; }
+.theme-language .icon-wrapper img {
+  animation: lang-speak 2.4s ease-in-out infinite; border: 3px solid #3060a0 !important;
+  border-radius: 20px 20px 20px 4px !important;
+}
+@keyframes lang-speak {
+  0%,100%{ transform: scale(1); }
+  25%{ transform: scale(1.05) translateX(2px); }
+  75%{ transform: scale(1.05) translateX(-2px); }
+}
+.theme-language .content-body h2 {
+  border-left: none; border-bottom: 2px dotted #3060a0; padding-left: 0; color: #102848;
+}
+.theme-language .content-section {
+  background: linear-gradient(135deg, rgba(48,96,160,0.06), transparent);
+  border-radius: 16px 16px 16px 4px; border-color: rgba(48,96,160,0.25);
+}
 @media (prefers-reduced-motion: reduce) { .theme-language .icon-wrapper img { animation: none !important; } }

@@ -1,14 +1,28 @@
 body.theme-event-planning {
-  --theme-accent: #c04040; --theme-accent2: #e08080; --theme-deep: #7a2020;
-  --accent: #c04040; --accent-soft: #e08080; --accent-deep: #7a2020;
-  --text-link: #c04040; --text-link-hover: #7a2020;
-  background-image: radial-gradient(ellipse 70% 40% at 10% -5%, rgba(192,64,64,0.06), transparent 50%), linear-gradient(180deg, #f5e4e4 0%, #eddada 100%) !important;
+  --theme-accent: #e03030; --theme-deep: #6a1010; --accent: #e03030; --text-link: #c02020;
+  background: #fce8e8 !important;
+  background-image: repeating-linear-gradient(45deg, transparent, transparent 20px, rgba(224,48,48,0.04) 20px 40px), linear-gradient(180deg, #fff0f0, #f8d8d8) !important;
 }
-body.theme-event-planning::after { content:''; position:fixed; inset:0; pointer-events:none; z-index:0; background:rgba(192,64,64,0.06); }
-.theme-event-planning .seminar-detail h1 { color: var(--theme-deep); }
-.theme-event-planning .teacher-name span { color: var(--theme-accent); }
-.theme-event-planning .icon-wrapper img { animation: event-spin 10s linear infinite; box-shadow: 0 0 0 3px rgba(192,64,64,0.2), 0 8px 20px rgba(192,64,64,0.2) !important; }
+.theme-event-planning .seminar-detail {
+  max-width: 680px; background: #fff; border: 4px solid #e03030; border-radius: 8px;
+  box-shadow: 0 0 0 4px #fff, 0 0 0 8px #f0c040;
+}
+.theme-event-planning .seminar-detail::before {
+  content: ''; display: block; height: 10px; margin: -4px -4px 20px;
+  background: repeating-linear-gradient(90deg, #e03030 0 16px, #f0c040 16px 32px, #2080e0 32px 48px, #20a040 48px 64px);
+}
+.theme-event-planning .seminar-detail h1 { color: #6a1010; text-align: center; }
+.theme-event-planning .icon-wrapper { text-align: center; }
+.theme-event-planning .icon-wrapper img {
+  animation: event-spin 8s linear infinite; border: 4px solid #f0c040 !important;
+  box-shadow: 0 0 0 3px #e03030 !important;
+}
 @keyframes event-spin { to { transform: rotate(360deg); } }
-.theme-event-planning .seminar-detail::before { content:''; display:block; height:6px; border-radius:3px; margin-bottom:16px; background:repeating-linear-gradient(90deg, #c04040 0 12px, #e08080 12px 24px, #c4a35a 24px 36px, transparent 36px 48px); }
-.theme-event-planning .content-section { border-radius: 4px 20px 4px 20px; border-color: rgba(192,64,64,0.3); }
+.theme-event-planning .content-body h2 {
+  background: #e03030; color: #fff !important; border-left: none !important;
+  padding: 6px 14px; border-radius: 4px; display: inline-block;
+}
+.theme-event-planning .content-section {
+  border-radius: 4px 24px; border: 2px solid rgba(224,48,48,0.3); background: #fff8f8;
+}
 @media (prefers-reduced-motion: reduce) { .theme-event-planning .icon-wrapper img { animation: none !important; } }

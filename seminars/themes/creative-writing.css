@@ -1,16 +1,33 @@
 body.theme-creative-writing {
-  --theme-accent: #4a5a78; --theme-accent2: #8494b0; --theme-deep: #1e2a40;
-  --accent: #4a5a78; --accent-soft: #8494b0; --accent-deep: #1e2a40;
-  --text-link: #4a5a78; --text-link-hover: #1e2a40;
-  --font-display: 'Noto Serif JP', Georgia, serif;
-  background-image: radial-gradient(ellipse 70% 40% at 10% -5%, rgba(74,90,120,0.05), transparent 50%), linear-gradient(180deg, #e8e6e0 0%, #e0ddd6 100%) !important;
+  --theme-accent: #3a4a68; --theme-deep: #1a2030; --accent: #3a4a68; --text-link: #3a4a68;
+  background: #e4e0d8 !important;
+  background-image: linear-gradient(180deg, #ece8e0, #dcd8d0) !important;
 }
-body.theme-creative-writing::after { content:''; position:fixed; inset:0; pointer-events:none; z-index:0; background:rgba(74,90,120,0.05); }
-.theme-creative-writing .seminar-detail h1 { color: var(--theme-deep); font-style: italic; font-weight: 500; }
-.theme-creative-writing .teacher-name span { color: var(--theme-accent); }
-.theme-creative-writing .icon-wrapper img { animation: write-float 4s ease-in-out infinite; border-radius: 8px !important; }
-@keyframes write-float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
-.theme-creative-writing .content-body { font-family: 'Noto Serif JP', Georgia, serif; line-height: 2; }
-.theme-creative-writing .content-body blockquote { border-left-color: var(--theme-accent); font-style: italic; background: rgba(74,90,120,0.06); }
-.theme-creative-writing .lead-text { border-bottom: 1px solid rgba(74,90,120,0.2); padding-bottom: 1em; }
+.theme-creative-writing .seminar-detail {
+  max-width: 560px; background: #f8f6f0; border-left: 1px solid #c0b8a8; border-right: 1px solid #c0b8a8;
+  box-shadow: 0 0 60px rgba(0,0,0,0.04); padding: 48px 40px 80px;
+}
+.theme-creative-writing .seminar-detail h1 {
+  font-style: italic; font-weight: 500; color: #1a2030; font-size: 1.9rem;
+}
+.theme-creative-writing .icon-wrapper img {
+  border-radius: 6px !important; border: 1px solid #3a4a68 !important;
+  animation: write-float 4s ease-in-out infinite;
+}
+@keyframes write-float { 0%,100%{ transform: translateY(0); } 50%{ transform: translateY(-7px); } }
+.theme-creative-writing .content-body {
+  font-family: 'Noto Serif JP', Georgia, serif; line-height: 2.2; color: #2a2830;
+}
+.theme-creative-writing .content-body h2 {
+  font-family: 'Noto Serif JP', Georgia, serif; font-weight: 500;
+  border-left: none; border-bottom: 1px solid #3a4a68; padding-left: 0; font-style: italic;
+}
+.theme-creative-writing .content-body blockquote {
+  border-left: 2px solid #3a4a68; font-style: italic; color: #4a4860;
+}
+.theme-creative-writing .content-section {
+  background: transparent; border: none; border-top: 1px dotted #a8a098;
+  border-radius: 0; padding-left: 0; padding-right: 0;
+}
+.theme-creative-writing .back-link { border-radius: 2px; border-color: #3a4a68; }
 @media (prefers-reduced-motion: reduce) { .theme-creative-writing .icon-wrapper img { animation: none !important; } }
