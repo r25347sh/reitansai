@@ -7,24 +7,33 @@
   <link rel="icon" type="image/svg+xml" href="../public/images/favicon.svg">
   <link rel="stylesheet" href="../style.css">
   <link rel="stylesheet" href="seminar.css">
+  <link rel="stylesheet" href="layouts-extra.css">
   <link rel="stylesheet" href="themes/media.css">
   <link rel="stylesheet" href="../MENU/MENU.css">
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
-<body class="theme-media">
-  <header class="page-header"><a href="../index.html" class="back-link">← ゼミ一覧に戻る</a></header>
-  <main class="seminar-detail">
-    <div class="icon-wrapper"><img id="seminar-icon" src="" alt="" style="display:none;width:96px;height:96px;"></div>
-    <h1 id="seminar-title">読み込み中...</h1>
-    <p class="teacher-name">担当：<span id="seminar-teacher">-</span> 先生</p>
-    <div class="image-wrapper"><img id="seminar-image" src="" alt="" style="display:none;max-width:100%;"></div>
-    <p id="seminar-description" class="lead-text"></p><hr>
+<body class="theme-media layout-media">
+  <div class="media-studio">
+    <div class="media-vu" id="media-vu"><span></span><span></span><span></span><span></span><span></span></div>
+    <header class="page-header"><a href="../index.html" class="back-link">← OFF AIR</a></header>
+    <div class="media-deck">
+      <img id="seminar-icon" src="" alt="" style="display:none" class="media-mic">
+      <div>
+        <p class="media-freq" id="media-freq">88.0 FM</p>
+        <h1 id="seminar-title">読み込み中...</h1>
+        <p class="teacher-name">HOST <span id="seminar-teacher">-</span></p>
+        <input type="range" id="media-dial" min="80" max="108" step="0.1" value="88">
+      </div>
+    </div>
+    <p id="seminar-description" class="lead-text"></p>
+    <div class="image-wrapper"><img id="seminar-image" src="" alt="" style="display:none"></div>
     <article id="seminar-body" class="content-body"></article>
     <div id="seminar-sections" class="content-sections"></div>
-  </main>
-  <footer class="site-footer"><p><a href="../index.html">麗探祭 トップへ</a></p></footer>
+    <footer class="site-footer"><a href="../index.html">トップ</a></footer>
+  </div>
   <script src="../js/seminar-loader.js"></script>
   <script src="../MENU/MENU.js"></script>
+  <script src="js/media.js"></script>
   <script>loadSeminar("メディアゼミ", "メディアゼミ");</script>
 </body>
 </html>

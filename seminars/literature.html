@@ -7,24 +7,37 @@
   <link rel="icon" type="image/svg+xml" href="../public/images/favicon.svg">
   <link rel="stylesheet" href="../style.css">
   <link rel="stylesheet" href="seminar.css">
+  <link rel="stylesheet" href="layouts-extra.css">
   <link rel="stylesheet" href="themes/literature.css">
   <link rel="stylesheet" href="../MENU/MENU.css">
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
-<body class="theme-literature">
-  <header class="page-header"><a href="../index.html" class="back-link">← ゼミ一覧に戻る</a></header>
-  <main class="seminar-detail">
-    <div class="icon-wrapper"><img id="seminar-icon" src="" alt="" style="display:none;width:96px;height:96px;"></div>
-    <h1 id="seminar-title">読み込み中...</h1>
-    <p class="teacher-name">担当：<span id="seminar-teacher">-</span> 先生</p>
-    <div class="image-wrapper"><img id="seminar-image" src="" alt="" style="display:none;max-width:100%;"></div>
-    <p id="seminar-description" class="lead-text"></p><hr>
-    <article id="seminar-body" class="content-body"></article>
+<body class="theme-literature layout-literature">
+  <div class="lit-book">
+    <a href="../index.html" class="back-link lit-back">← 書架へ</a>
+    <div class="lit-spread">
+      <div class="lit-page lit-left">
+        <img id="seminar-icon" src="" alt="" style="display:none" class="lit-emblem">
+        <p class="lit-epigraph" id="lit-epigraph">「……」</p>
+      </div>
+      <div class="lit-page lit-right">
+        <h1 id="seminar-title">読み込み中...</h1>
+        <p class="teacher-name">担当 <span id="seminar-teacher">-</span></p>
+        <p id="seminar-description" class="lead-text"></p>
+      </div>
+    </div>
+    <div class="lit-controls">
+      <button type="button" id="lit-prev">‹ 前頁</button>
+      <button type="button" id="lit-next">次頁 ›</button>
+    </div>
+    <div class="image-wrapper"><img id="seminar-image" src="" alt="" style="display:none"></div>
+    <article id="seminar-body" class="content-body lit-body"></article>
     <div id="seminar-sections" class="content-sections"></div>
-  </main>
-  <footer class="site-footer"><p><a href="../index.html">麗探祭 トップへ</a></p></footer>
+    <footer class="site-footer"><a href="../index.html">トップ</a></footer>
+  </div>
   <script src="../js/seminar-loader.js"></script>
   <script src="../MENU/MENU.js"></script>
+  <script src="js/literature.js"></script>
   <script>loadSeminar("文学ゼミ", "文学ゼミ");</script>
 </body>
 </html>
