@@ -3,6 +3,7 @@
  * - YAML frontmatter（簡易パーサ）を解析
  * - marked.js で Markdown 本文を HTML 化
  * - sections（text_block / image_text_block）に対応
+ * - icon をファビコンに設定
  *
  * 使い方:
  *   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
@@ -43,10 +44,16 @@ function loadSeminar(mdFileName, fallbackTitle) {
         descEl.textContent = frontmatter.description || "";
       }
 
-      if (iconEl && frontmatter.icon) {
-        iconEl.src = resolveAssetPath(frontmatter.icon);
-        iconEl.style.display = "block";
+      // ゼミアイコン → ファビコン（＆ページ内表示）
+      if (frontmatter.icon) {
+        var iconSrc = resolveAssetPath(frontmatter.icon);
+        setFavicon(iconSrc);
+        if (iconEl) {
+          iconEl.src = iconSrc;
+          iconEl.style.display = "block";
+        }
       }
+
       if (imageEl && frontmatter.image) {
         imageEl.src = resolveAssetPath(frontmatter.image);
         imageEl.style.display = "block";
@@ -114,6 +121,43 @@ function loadSeminar(mdFileName, fallbackTitle) {
           "</code></p>";
       }
     });
+}
+
+/**
+ * ファビコンを差し替え（既存 link[rel=icon] を更新 or 新規作成）
+ */
+function setFavicon(href) {
+  if (!href) return;
+
+  var type = "image/png";
+  if (/\.svg(\?|$)/i.test(href)) type = "image/svg+xml";
+  else if (/\.ico(\?|$)/i.test(href)) type = "image/x-icon";
+  else if (/\.jpe?g(\?|$)/i.test(href)) type = "image/jpeg";
+  else if (/\.webp(\?|$)/i.test(href)) type = "image/webp";
+
+  var links = document.querySelectorAll("link[rel~='icon']");
+  if (links.length > 0) {
+    links.forEach(function (link) {
+      link.href = href;
+      link.type = type;
+    });
+    return;
+  }
+
+  var link = document.createElement("link");
+  link.rel = "icon";
+  link.type = type;
+  link.href = href;
+  document.head.appendChild(link);
+
+  // Apple touch 用も合わせて設定
+  var apple = document.querySelector("link[rel='apple-touch-icon']");
+  if (!apple) {
+    apple = document.createElement("link");
+    apple.rel = "apple-touch-icon";
+    document.head.appendChild(apple);
+  }
+  apple.href = href;
 }
 
 function parseFrontmatter(text) {
