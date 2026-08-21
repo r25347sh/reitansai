@@ -27,7 +27,6 @@ body.theme-literature {
 .theme-literature .icon-wrapper img {
   border-radius: 2px !important;
   border: 1px solid #8b3048 !important;
-  animation: lit-page 6s ease-in-out infinite;
 }
 @keyframes lit-page {
   0%,100%{ transform: perspective(300px) rotateY(0); }

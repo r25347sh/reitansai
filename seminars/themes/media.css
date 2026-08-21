@@ -11,12 +11,11 @@ body.theme-media {
 .theme-media .seminar-detail h1 { color: #e8f4f8; font-weight: 700; letter-spacing: 0.04em; }
 .theme-media .seminar-detail h1::after {
   content: ' ON AIR'; font-size: 0.5em; color: #e03030; vertical-align: middle;
-  letter-spacing: 0.15em; animation: onair 1.5s steps(2) infinite;
+  letter-spacing: 0.15em;
 }
 @keyframes onair { 0%,100%{ opacity:1; } 50%{ opacity:0.3; } }
 .theme-media .icon-wrapper img {
   border-radius: 50% !important; border: 3px solid #1080a0 !important;
-  animation: media-wave 1.8s ease-in-out infinite;
 }
 @keyframes media-wave { 0%,100%{ transform: scale(1); } 50%{ transform: scale(1.08); } }
 .theme-media .teacher-name span { color: #40b0c8; }

@@ -13,8 +13,7 @@ body.theme-tourism {
 }
 .theme-tourism .seminar-detail h1 { color: #0a4060; }
 .theme-tourism .icon-wrapper img {
-  border-radius: 50% 50% 50% 0 !important; border: 3px solid #1890b8 !important;
-  animation: tour-bob 2.5s ease-in-out infinite; box-shadow: 0 8px 24px rgba(24,144,184,0.25) !important;
+  border-radius: 50% 50% 50% 0 !important; border: 3px solid #1890b8 !important; box-shadow: 0 8px 24px rgba(24,144,184,0.25) !important;
 }
 @keyframes tour-bob { 0%,100%{ transform: translateY(0); } 50%{ transform: translateY(-10px); } }
 .theme-tourism .content-body h2 { border-left: 4px solid #1890b8; color: #0a4060; }
