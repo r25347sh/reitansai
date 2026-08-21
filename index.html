@@ -6,6 +6,7 @@
   <meta name="description" content="麗澤中学・高等学校 探究ゼミ紹介サイト｜麗探祭（Reitansai）">
   <title>ホーム｜麗探祭 Reitansai</title>
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="MENU/MENU.css">
 </head>
 <body>
 
@@ -25,11 +26,11 @@
         麗澤中学・高等学校の「探究ゼミ」を紹介するサイトです。<br>
         興味のあるゼミを選んで、詳細をチェックしてください。
       </p>
+      <p class="hero-hint">長押し / トリプルタップでメニューを開く</p>
     </section>
 
     <section class="seminar-list" aria-label="ゼミ一覧">
       <div class="seminar-grid" id="seminar-grid">
-        <!-- カードは JS で生成（フォールバック用に静的リンクも用意） -->
         <noscript>
           <ul class="seminar-fallback">
             <li><a href="seminars/asobi-tankyu.html">遊びの探究ゼミ</a></li>
@@ -60,5 +61,6 @@
 
   <script src="js/seminars-data.js"></script>
   <script src="js/index.js"></script>
+  <script src="MENU/MENU.js"></script>
 </body>
 </html>
