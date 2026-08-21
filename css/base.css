@@ -1,0 +1,74 @@
+/* ==============================================
+   Base — reset, body, typography, selection
+   ============================================== */
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Noto+Sans+JP:wght@400;500;600;700&family=Noto+Serif+JP:wght@500;600&display=swap');
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  min-height: 100dvh;
+  font-family: var(--font-sans);
+  background: var(--bg-page);
+  color: var(--text-primary);
+  line-height: 1.75;
+  overflow-x: hidden;
+  background-image:
+    radial-gradient(ellipse 80% 50% at 10% -10%, rgba(168, 197, 176, 0.35), transparent 55%),
+    radial-gradient(ellipse 60% 40% at 95% 5%, rgba(224, 200, 120, 0.18), transparent 50%),
+    radial-gradient(ellipse 50% 30% at 50% 100%, rgba(116, 163, 124, 0.12), transparent 45%),
+    linear-gradient(180deg, #faf8f2 0%, #f4f1e8 40%, #efebe0 100%);
+  background-attachment: fixed;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.4;
+  background-image:
+    radial-gradient(circle at 20% 30%, rgba(90, 155, 110, 0.04) 0%, transparent 8%),
+    radial-gradient(circle at 70% 60%, rgba(196, 163, 90, 0.03) 0%, transparent 10%),
+    radial-gradient(circle at 40% 80%, rgba(116, 163, 124, 0.035) 0%, transparent 9%);
+}
+
+a {
+  color: var(--text-link);
+  text-decoration: none;
+  transition: color var(--dur-fast) ease;
+}
+
+a:hover {
+  color: var(--text-link-hover);
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+button {
+  font-family: inherit;
+}
+
+::selection {
+  background: rgba(90, 155, 110, 0.28);
+  color: var(--text-primary);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}

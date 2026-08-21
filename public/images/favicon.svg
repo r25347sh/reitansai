@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="麗探祭">
+  <defs>
+    <linearGradient id="grove" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#2d5a3d"/>
+      <stop offset="55%" stop-color="#4a7c59"/>
+      <stop offset="100%" stop-color="#6b9b6e"/>
+    </linearGradient>
+    <linearGradient id="halo" x1="50%" y1="0%" x2="50%" y2="100%">
+      <stop offset="0%" stop-color="#f0e6c8" stop-opacity="0.95"/>
+      <stop offset="100%" stop-color="#d4c49a" stop-opacity="0.4"/>
+    </linearGradient>
+    <linearGradient id="leaf" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#7cb87e"/>
+      <stop offset="100%" stop-color="#3d6b4f"/>
+    </linearGradient>
+  </defs>
+  <circle cx="32" cy="32" r="30" fill="#f7f4ec"/>
+  <circle cx="32" cy="32" r="28" fill="none" stroke="#c9b896" stroke-width="1.5"/>
+  <circle cx="32" cy="32" r="25.5" fill="none" stroke="#e8dfc8" stroke-width="0.75"/>
+  <ellipse cx="32" cy="26" rx="16" ry="14" fill="url(#grove)"/>
+  <ellipse cx="24" cy="28" rx="9" ry="8" fill="url(#leaf)" opacity="0.85"/>
+  <ellipse cx="40" cy="27" rx="8.5" ry="7.5" fill="#5a8f62" opacity="0.9"/>
+  <path d="M29.5 36 Q32 42 32 48 L32 52 Q32 54 30 54 L34 54 Q36 54 36 52 L36 48 Q36 42 34.5 36 Z" fill="#5c4033"/>
+  <circle cx="32" cy="12" r="4" fill="url(#halo)"/>
+  <circle cx="32" cy="12" r="2.2" fill="#f5f0e0"/>
+  <path d="M26 56 L32 53.5 L38 56 L38 58 L32 56 L26 58 Z" fill="#8b7355" opacity="0.7"/>
+</svg>
