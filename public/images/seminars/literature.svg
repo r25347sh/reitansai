@@ -1,31 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 704 704" width="512" height="512" role="img" aria-label="Lit">
-  <defs>
-    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#1e1b4b"/>
-      <stop offset="50%" stop-color="#0f172a"/>
-      <stop offset="100%" stop-color="#1e1b4b"/>
-    </linearGradient>
-    <linearGradient id="g1" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#818cf8"/>
-      <stop offset="100%" stop-color="#c084fc"/>
-    </linearGradient>
-    <linearGradient id="g2" x1="100%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" stop-color="#38bdf8"/>
-      <stop offset="100%" stop-color="#a78bfa"/>
-    </linearGradient>
-  </defs>
-  <rect x="32" y="32" width="640" height="640" rx="96" fill="url(#bg)"/>
-  <rect x="32" y="32" width="640" height="640" rx="96" fill="none" stroke="rgba(165,180,252,0.35)" stroke-width="3"/>
-  <g>
-      <path d="M352 200 L160 160 L160 460 L352 500 Z" fill="url(#g1)" opacity="0.35"/>
-      <path d="M352 200 L544 160 L544 460 L352 500 Z" fill="url(#g2)" opacity="0.35"/>
-      <path d="M352 200 L160 160 L160 460 L352 500 L544 460 L544 160 Z" fill="none" stroke="url(#g1)" stroke-width="14" stroke-linejoin="round"/>
-      <line x1="352" y1="200" x2="352" y2="500" stroke="#c4b5fd" stroke-width="10"/>
-      <path d="M200 240 H300" stroke="#a5b4fc" stroke-width="8" opacity="0.6"/>
-      <path d="M200 290 H300" stroke="#a5b4fc" stroke-width="8" opacity="0.5"/>
-      <path d="M200 340 H280" stroke="#a5b4fc" stroke-width="8" opacity="0.4"/>
-      <path d="M404 240 H504" stroke="#a5b4fc" stroke-width="8" opacity="0.6"/>
-      <path d="M404 290 H504" stroke="#a5b4fc" stroke-width="8" opacity="0.5"/>
-  </g>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 704 704" width="512" height="512">
+  <rect x="32" y="32" width="640" height="640" rx="88" fill="#f3efe6"/>
+  <rect x="32" y="32" width="640" height="640" rx="88" fill="none" stroke="rgba(26,48,36,0.14)" stroke-width="2.5"/>
+  <rect x="160" y="380" width="380" height="70" rx="8" fill="#8b4a5a"/>
+  <rect x="180" y="300" width="340" height="70" rx="8" fill="#b07080"/>
+  <rect x="200" y="220" width="300" height="70" rx="8" fill="#8b4a5a"/>
+  <rect x="220" y="140" width="260" height="70" rx="8" fill="#5a2838"/>
+  <path d="M480 140 L480 240 L500 220 L520 240 L520 140 Z" fill="#c4a35a"/>
 </svg>

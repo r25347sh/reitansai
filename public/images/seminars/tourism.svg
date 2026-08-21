@@ -1,21 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 704 704" width="512" height="512" role="img">
-  <defs>
-    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#f7f4ec"/>
-      <stop offset="50%" stop-color="#efebe0"/>
-      <stop offset="100%" stop-color="#e8dfc8"/>
-    </linearGradient>
-    <linearGradient id="g1" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#3d7a55"/>
-      <stop offset="100%" stop-color="#2d5a3d"/>
-    </linearGradient>
-  </defs>
-  <rect x="32" y="32" width="640" height="640" rx="96" fill="url(#bg)"/>
-  <rect x="32" y="32" width="640" height="640" rx="96" fill="none" stroke="rgba(45,90,61,0.22)" stroke-width="3"/>
-  <g>
-      <path d="M352 140 C280 140 220 200 220 280 C220 380 352 500 352 500 C352 500 484 380 484 280 C484 200 424 140 352 140 Z" fill="url(#g1)"/>
-      <circle cx="352" cy="280" r="56" fill="#f7f4ec"/>
-      <circle cx="352" cy="280" r="28" fill="#c4a35a"/>
-  </g>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 704 704" width="512" height="512">
+  <rect x="32" y="32" width="640" height="640" rx="88" fill="#f3efe6"/>
+  <rect x="32" y="32" width="640" height="640" rx="88" fill="none" stroke="rgba(26,48,36,0.14)" stroke-width="2.5"/>
+  <path d="M352 120 C270 120 210 185 210 270 C210 380 352 520 352 520 C352 520 494 380 494 270 C494 185 434 120 352 120 Z" fill="#4a8aaa"/>
+  <circle cx="352" cy="270" r="58" fill="#faf6ee"/>
+  <circle cx="352" cy="270" r="28" fill="#c4a35a"/>
+  <path d="M160 500 Q250 460 320 480 Q400 500 480 450 Q540 420 560 400" fill="none" stroke="#70b0cc" stroke-width="8" stroke-dasharray="12 10" stroke-linecap="round" opacity="0.6"/>
 </svg>

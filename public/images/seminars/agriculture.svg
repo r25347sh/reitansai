@@ -1,28 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 704 704" width="512" height="512" role="img">
-  <defs>
-    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#f7f4ec"/>
-      <stop offset="50%" stop-color="#efebe0"/>
-      <stop offset="100%" stop-color="#e8dfc8"/>
-    </linearGradient>
-    <linearGradient id="g1" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#3d7a55"/>
-      <stop offset="100%" stop-color="#2d5a3d"/>
-    </linearGradient>
-    <linearGradient id="g2" x1="100%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" stop-color="#c4a35a"/>
-      <stop offset="100%" stop-color="#5a9b6e"/>
-    </linearGradient>
-  </defs>
-  <rect x="32" y="32" width="640" height="640" rx="96" fill="url(#bg)"/>
-  <rect x="32" y="32" width="640" height="640" rx="96" fill="none" stroke="rgba(45,90,61,0.22)" stroke-width="3"/>
-  <rect x="48" y="48" width="608" height="608" rx="84" fill="none" stroke="rgba(196,163,90,0.25)" stroke-width="1.5"/>
-  <g>
-      <path d="M352 480 L352 280" stroke="url(#g1)" stroke-width="22" stroke-linecap="round"/>
-      <path d="M352 320 Q240 280 200 180 Q300 200 352 280" fill="url(#g2)"/>
-      <path d="M352 360 Q460 300 500 200 Q400 240 352 320" fill="url(#g1)"/>
-      <path d="M352 220 Q300 160 280 100 Q340 130 352 180" fill="#c4a35a"/>
-      <circle cx="352" cy="500" r="24" fill="#3d7a55"/>
-  </g>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 704 704" width="512" height="512">
+  <rect x="32" y="32" width="640" height="640" rx="88" fill="#f3efe6"/>
+  <rect x="32" y="32" width="640" height="640" rx="88" fill="none" stroke="rgba(26,48,36,0.14)" stroke-width="2.5"/>
+  <ellipse cx="352" cy="520" rx="160" ry="40" fill="#8b7355" opacity="0.5"/>
+  <path d="M352 480 L352 260" stroke="#6a8a3a" stroke-width="20" stroke-linecap="round"/>
+  <path d="M352 300 Q220 250 180 140 Q280 180 352 260" fill="#8aaa5a"/>
+  <path d="M352 340 Q480 280 530 160 Q430 210 352 300" fill="#6a8a3a"/>
+  <path d="M352 200 Q290 140 270 80 Q330 110 352 160" fill="#c4a35a"/>
+  <circle cx="520" cy="120" r="36" fill="#c4a35a" opacity="0.7"/>
 </svg>
