@@ -1,31 +1,26 @@
-/* Radial Menu — quiet forest, no search chrome */
 :root {
   --rm-font: 'Noto Sans JP', system-ui, sans-serif;
-  --rm-item-size: 56px;
+  --rm-item-size: 58px;
   --rm-z: 9999999;
-  --rm-ease: cubic-bezier(0.34, 1.35, 0.64, 1);
-  --rm-bg: linear-gradient(145deg, rgba(250, 246, 238, 0.94), rgba(235, 230, 220, 0.96));
+  --rm-ease: cubic-bezier(0.34, 1.3, 0.64, 1);
+  --rm-bg: linear-gradient(145deg, rgba(250, 246, 238, 0.95), rgba(235, 230, 220, 0.97));
   --rm-bg-hover: linear-gradient(145deg, #356b4a, #274a36);
-  --rm-bg-parent: linear-gradient(145deg, rgba(77, 130, 98, 0.2), rgba(250, 246, 238, 0.92));
+  --rm-bg-parent: linear-gradient(145deg, rgba(77, 130, 98, 0.22), rgba(250, 246, 238, 0.94));
   --rm-border: rgba(26, 48, 36, 0.2);
   --rm-border-hover: #a8925a;
   --rm-text: #1c2a22;
   --rm-text-hover: #ebe6dc;
-  --rm-orbit: rgba(77, 130, 98, 0.18);
+  --rm-orbit: rgba(77, 130, 98, 0.16);
   --rm-core: linear-gradient(135deg, #356b4a, #4d8262);
   --rm-label-bg: rgba(26, 48, 36, 0.9);
   --rm-label-text: #ebe6dc;
-}
-
-.main-content, .seminar-detail, .content-body, .lead-text {
-  user-select: text; -webkit-user-select: text;
 }
 
 .radial-menu-wrapper {
   position: fixed; top: 0; left: 0; width: 0; height: 0;
   z-index: var(--rm-z); pointer-events: none;
   visibility: hidden; opacity: 0;
-  transition: visibility 0s linear 0.25s, opacity 0.16s ease-out;
+  transition: visibility 0s linear 0.22s, opacity 0.14s ease-out;
   font-family: var(--rm-font);
 }
 .radial-menu-wrapper.active {
@@ -35,9 +30,9 @@
 
 .rm-backdrop {
   position: fixed; inset: 0;
-  background: rgba(20, 36, 28, 0.22);
+  background: rgba(20, 36, 28, 0.24);
   backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px);
-  opacity: 0; pointer-events: none; transition: opacity 0.22s ease; z-index: -1;
+  opacity: 0; pointer-events: none; transition: opacity 0.2s ease; z-index: -1;
 }
 .radial-menu-wrapper.active .rm-backdrop { opacity: 1; pointer-events: auto; }
 
@@ -50,11 +45,11 @@
   position: absolute; border-radius: 50%;
   border: 1px dashed var(--rm-orbit);
   pointer-events: none; z-index: 2;
-  transform: scale(0.2) rotate(-90deg); opacity: 0;
-  transition: transform 0.55s var(--rm-ease), opacity 0.3s ease;
+  transform: scale(0.2); opacity: 0;
+  transition: transform 0.5s var(--rm-ease), opacity 0.28s ease;
 }
 .radial-menu-wrapper.active .rm-shell-orbit {
-  transform: scale(1) rotate(0deg); opacity: 1;
+  transform: scale(1); opacity: 1;
 }
 
 .rm-core-btn {
@@ -63,14 +58,13 @@
   border: 1.5px solid rgba(168, 146, 90, 0.45);
   background: var(--rm-core); color: #fff; font-size: 16px; font-weight: 700;
   cursor: pointer; display: flex; align-items: center; justify-content: center;
-  z-index: 12;
-  box-shadow: 0 0 20px rgba(53, 107, 74, 0.35);
+  z-index: 12; box-shadow: 0 0 18px rgba(53, 107, 74, 0.32);
   opacity: 0; pointer-events: none;
-  transform: scale(0) rotate(-120deg);
-  transition: transform 0.4s var(--rm-ease), opacity 0.2s ease;
+  transform: scale(0);
+  transition: transform 0.35s var(--rm-ease), opacity 0.18s ease;
 }
-.rm-core-btn.visible { opacity: 1; pointer-events: auto; transform: scale(1) rotate(0deg); }
-.rm-core-btn:hover { transform: scale(1.12) rotate(90deg) !important; }
+.rm-core-btn.visible { opacity: 1; pointer-events: auto; transform: scale(1); }
+.rm-core-btn:hover { transform: scale(1.1) !important; }
 
 .rm-item {
   position: absolute; width: var(--rm-item-size); height: var(--rm-item-size);
@@ -78,43 +72,60 @@
   margin-left: calc(-1 * var(--rm-item-size) / 2);
   border-radius: 50%; border: 1.5px solid var(--rm-border);
   background: var(--rm-bg);
-  backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
   color: var(--rm-text); font-size: 20px; cursor: pointer;
   display: flex; align-items: center; justify-content: center; z-index: 3;
-  box-shadow: 0 6px 18px rgba(20, 36, 28, 0.1);
+  box-shadow: 0 6px 16px rgba(20, 36, 28, 0.1);
   opacity: 0; pointer-events: none;
-  transform: translate3d(0,0,0) scale(0) rotate(-120deg);
-  transition: transform 0.48s var(--rm-ease), opacity 0.25s ease, border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+  transform: translate3d(0,0,0) scale(0);
+  transition: transform 0.45s var(--rm-ease), opacity 0.22s ease, border-color 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+  overflow: hidden;
+  padding: 0;
 }
 .radial-menu-wrapper.active .rm-item.rendered {
   opacity: 1; pointer-events: auto;
-  transform: translate3d(var(--x), var(--y), 0) scale(1) rotate(0deg);
+  transform: translate3d(var(--x), var(--y), 0) scale(1);
 }
 .rm-item:hover, .rm-item:focus-visible {
   background: var(--rm-bg-hover) !important;
   border-color: var(--rm-border-hover); color: var(--rm-text-hover);
-  transform: translate3d(var(--x), var(--y), 0) scale(1.18) rotate(0deg) !important;
-  box-shadow: 0 0 22px rgba(53, 107, 74, 0.35); z-index: 8; outline: none;
+  transform: translate3d(var(--x), var(--y), 0) scale(1.16) !important;
+  box-shadow: 0 0 20px rgba(53, 107, 74, 0.32); z-index: 8; outline: none;
 }
 .rm-item.has-sub {
   background: var(--rm-bg-parent);
   border-color: rgba(77, 130, 98, 0.4);
 }
+.rm-item.has-img {
+  background: #faf6ee;
+  padding: 6px;
+}
+.rm-item.has-img:hover {
+  background: #fff !important;
+}
+.rm-icon-img {
+  width: 100%; height: 100%;
+  object-fit: contain;
+  border-radius: 50%;
+  pointer-events: none;
+  display: block;
+}
 
 .rm-item::after {
   content: attr(data-label);
-  position: absolute; bottom: -32px; left: 50%;
-  transform: translateX(-50%) translateY(-6px) scale(0.9);
+  position: absolute; bottom: -30px; left: 50%;
+  transform: translateX(-50%) translateY(-4px) scale(0.92);
   background: var(--rm-label-bg); color: var(--rm-label-text);
-  padding: 3px 10px; border-radius: 7px;
-  font-size: 11px; font-weight: 600; white-space: nowrap;
+  padding: 3px 9px; border-radius: 6px;
+  font-size: 10px; font-weight: 600; white-space: nowrap;
   opacity: 0; pointer-events: none;
-  transition: transform 0.28s var(--rm-ease), opacity 0.2s ease;
+  transition: transform 0.25s var(--rm-ease), opacity 0.18s ease;
+  z-index: 20;
 }
 .radial-menu-wrapper.active .rm-item.rendered::after {
   opacity: 1; transform: translateX(-50%) translateY(0) scale(1);
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .rm-shell-orbit, .rm-item, .rm-core-btn { transition-duration: 0.01ms !important; animation: none !important; }
+  .rm-shell-orbit, .rm-item, .rm-core-btn { transition-duration: 0.01ms !important; }
 }
