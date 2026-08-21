@@ -1,13 +1,50 @@
+/* デジタル — neon violet */
 body.theme-digital-content {
-  --theme-accent: #6b4a9a; --theme-accent2: #9b7ec8; --theme-deep: #3a2060;
-  --accent: #6b4a9a; --accent-soft: #9b7ec8; --accent-deep: #3a2060;
-  --text-link: #6b4a9a; --text-link-hover: #3a2060;
-  background-image: radial-gradient(ellipse 70% 40% at 10% -5%, rgba(107,74,154,0.06), transparent 50%), linear-gradient(180deg, #ebe4f2 0%, #e4dcec 100%) !important;
+  --theme-accent: #9b5cff;
+  --theme-deep: #f0e8ff;
+  --accent: #9b5cff;
+  --text-primary: #efe8ff;
+  --text-secondary: #c8b8e8;
+  --text-muted: #8878b0;
+  --text-link: #b88cff;
+  --bg-card: rgba(30, 16, 48, 0.85);
+  background: #12081c !important;
+  background-image:
+    radial-gradient(ellipse at 30% 0%, rgba(155,92,255,0.2), transparent 50%),
+    radial-gradient(ellipse at 90% 80%, rgba(80,40,160,0.15), transparent 40%),
+    linear-gradient(180deg, #1a0e28, #12081c) !important;
+  color: #efe8ff;
 }
-body.theme-digital-content::after { content:''; position:fixed; inset:0; pointer-events:none; z-index:0; background:rgba(107,74,154,0.06); }
-.theme-digital-content .seminar-detail h1 { background:linear-gradient(135deg,#6b4a9a,#9b7ec8); -webkit-background-clip:text; background-clip:text; color:transparent; }
-.theme-digital-content .teacher-name span { color: var(--theme-accent); }
-.theme-digital-content .icon-wrapper img { border-radius:16px !important; animation: digi-glow 2.4s ease-in-out infinite alternate; }
-@keyframes digi-glow { from{filter:drop-shadow(0 0 2px rgba(107,74,154,0.25))} to{filter:drop-shadow(0 0 14px rgba(155,126,200,0.55))} }
-.theme-digital-content .content-section { background:linear-gradient(135deg,rgba(107,74,154,0.06),rgba(255,255,255,0.5)); border-color:rgba(107,74,154,0.25); }
-@media (prefers-reduced-motion: reduce) { .theme-digital-content .icon-wrapper img { animation: none !important; } }
+.theme-digital-content .page-header .back-link {
+  background: rgba(30,16,48,0.9); color: #b88cff; border-color: rgba(155,92,255,0.4);
+}
+.theme-digital-content .seminar-detail h1 {
+  background: linear-gradient(90deg, #9b5cff, #e080ff);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+  font-weight: 700;
+}
+.theme-digital-content .icon-wrapper img {
+  border-radius: 14px !important;
+  border: 2px solid #9b5cff !important;
+  animation: digi-glow 2s ease-in-out infinite alternate;
+  box-shadow: 0 0 24px rgba(155,92,255,0.4) !important;
+}
+@keyframes digi-glow {
+  from { filter: drop-shadow(0 0 4px rgba(155,92,255,0.3)); }
+  to { filter: drop-shadow(0 0 16px rgba(224,128,255,0.6)); }
+}
+.theme-digital-content .teacher-name span { color: #b88cff; }
+.theme-digital-content .content-body h2 {
+  color: #e080ff; border-left: 3px solid #9b5cff;
+}
+.theme-digital-content .content-section {
+  background: rgba(40,20,60,0.8);
+  border: 1px solid rgba(155,92,255,0.3);
+  border-radius: 12px;
+  color: #c8b8e8;
+}
+.theme-digital-content .content-section h2 { color: #efe8ff; }
+.theme-digital-content .site-footer, .theme-digital-content .site-footer a { color: #8878b0; }
+@media (prefers-reduced-motion: reduce) {
+  .theme-digital-content .icon-wrapper img { animation: none !important; }
+}

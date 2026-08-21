@@ -1,14 +1,53 @@
+/* 教育 — chalkboard */
 body.theme-education {
-  --theme-accent: #4a6a38; --theme-accent2: #7a9a6a; --theme-deep: #243a18;
-  --accent: #4a6a38; --accent-soft: #7a9a6a; --accent-deep: #243a18;
-  --text-link: #4a6a38; --text-link-hover: #243a18;
-  background-image: radial-gradient(ellipse 70% 40% at 10% -5%, rgba(74,106,56,0.05), transparent 50%), linear-gradient(180deg, #e8efe2 0%, #e0e8d8 100%) !important;
+  --theme-accent: #d0c48a;
+  --theme-deep: #f0ead8;
+  --accent: #d0c48a;
+  --text-primary: #e8e0c8;
+  --text-secondary: #c0b898;
+  --text-muted: #908870;
+  --text-link: #e0d8a0;
+  background: #2a3828 !important;
+  background-image:
+    radial-gradient(circle at 20% 30%, rgba(255,255,255,0.03) 0 1px, transparent 1px),
+    radial-gradient(circle at 70% 60%, rgba(255,255,255,0.02) 0 1px, transparent 1px),
+    linear-gradient(180deg, #304030, #2a3828) !important;
+  background-size: 40px 40px, 60px 60px, 100% 100% !important;
+  color: #e8e0c8;
 }
-body.theme-education::after { content:''; position:fixed; inset:0; pointer-events:none; z-index:0; background:rgba(74,106,56,0.05); }
-.theme-education .seminar-detail h1 { color: var(--theme-deep); border-bottom: 3px double var(--theme-accent); padding-bottom: 8px; display: inline-block; }
-.theme-education .teacher-name span { color: var(--theme-accent); }
-.theme-education .icon-wrapper img { animation: edu-breathe 3.2s ease-in-out infinite; }
-@keyframes edu-breathe { 0%,100%{transform:scale(1)} 50%{transform:scale(1.06)} }
-.theme-education .content-body h2 { background: rgba(74,106,56,0.08); border-left: 4px solid var(--theme-accent); padding: 8px 12px; }
-.theme-education .content-section { box-shadow: inset 0 0 0 1px rgba(74,106,56,0.12); }
-@media (prefers-reduced-motion: reduce) { .theme-education .icon-wrapper img { animation: none !important; } }
+.theme-education .page-header .back-link {
+  background: #3a4838; color: #d0c48a; border-color: #d0c48a;
+}
+.theme-education .seminar-detail h1 {
+  color: #f0ead8;
+  border-bottom: 3px double #d0c48a;
+  display: inline-block;
+  padding-bottom: 8px;
+  font-family: 'Noto Serif JP', Georgia, serif;
+}
+.theme-education .icon-wrapper img {
+  border: 3px solid #d0c48a !important;
+  background: #3a4838 !important;
+  animation: edu-breathe 3s ease-in-out infinite;
+}
+@keyframes edu-breathe {
+  0%,100%{ transform: scale(1); }
+  50%{ transform: scale(1.06); }
+}
+.theme-education .teacher-name span { color: #d0c48a; }
+.theme-education .content-body h2 {
+  color: #d0c48a;
+  border-left: 4px solid #d0c48a;
+  background: rgba(208,196,138,0.1);
+  padding: 6px 12px;
+}
+.theme-education .content-section {
+  background: rgba(40,50,38,0.8);
+  border: 1px solid rgba(208,196,138,0.25);
+  color: #c0b898;
+}
+.theme-education .content-section h2 { color: #f0ead8; }
+.theme-education .site-footer, .theme-education .site-footer a { color: #908870; }
+@media (prefers-reduced-motion: reduce) {
+  .theme-education .icon-wrapper img { animation: none !important; }
+}

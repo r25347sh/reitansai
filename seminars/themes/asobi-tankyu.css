@@ -1,50 +1,63 @@
-/* Theme: asobi-tankyu — strong identity */
+/* 遊び — warm playground */
 body.theme-asobi-tankyu {
-  --theme-accent: #d4652a;
-  --theme-accent2: #f0a060;
-  --theme-deep: #6b2e0e;
-  --accent: #d4652a;
+  --theme-accent: #e06020;
+  --theme-deep: #6b2808;
+  --accent: #e06020;
   --accent-soft: #f0a060;
-  --accent-deep: #6b2e0e;
-  --text-link: #d4652a;
-  --text-link-hover: #6b2e0e;
+  --accent-deep: #6b2808;
+  --text-link: #c05018;
+  --bg-card: rgba(255, 245, 230, 0.9);
+  --radius: 28px;
+  background: #f8e8d4 !important;
   background-image:
-    radial-gradient(ellipse 70% 40% at 10% -5%, rgba(212,101,42,0.07), transparent 50%),
-    linear-gradient(180deg, #f5e8dc 0%, #ebe0d2 100%) !important;
+    radial-gradient(circle at 15% 20%, rgba(224,96,32,0.12) 0 40px, transparent 41px),
+    radial-gradient(circle at 80% 60%, rgba(240,160,96,0.1) 0 50px, transparent 51px),
+    radial-gradient(circle at 40% 80%, rgba(224,96,32,0.08) 0 30px, transparent 31px),
+    linear-gradient(160deg, #fcefdc, #f0dcc4) !important;
 }
-body.theme-asobi-tankyu::after {
-  content: '';
-  position: fixed; inset: 0; pointer-events: none; z-index: 0;
-  background: rgba(212,101,42,0.07);
+.theme-asobi-tankyu .seminar-detail {
+  max-width: 640px;
+  background: rgba(255,250,240,0.75);
+  border-radius: 32px;
+  padding: 36px 28px 60px;
+  border: 3px solid rgba(224,96,32,0.25);
+  box-shadow: 8px 12px 0 rgba(224,96,32,0.12);
 }
-.theme-asobi-tankyu .back-link:hover {
-  border-color: var(--theme-accent);
-  color: var(--theme-deep);
-}
-.theme-asobi-tankyu .seminar-detail h1 { color: var(--theme-deep); }
-.theme-asobi-tankyu .content-body h2 {
-  border-left-color: var(--theme-accent);
-  color: var(--theme-deep);
-}
-.theme-asobi-tankyu .teacher-name span { color: var(--theme-accent); }
-.theme-asobi-tankyu .seminar-detail::before {
-  content: '◆  ◇  ◆';
-  display: block; text-align: center; letter-spacing: 0.6em;
-  color: var(--theme-accent); opacity: 0.35; font-size: 0.7rem; margin-bottom: 12px;
+.theme-asobi-tankyu .seminar-detail h1 {
+  color: #6b2808;
+  font-size: clamp(1.8rem, 5vw, 2.5rem);
+  transform: rotate(-1.5deg);
+  display: inline-block;
 }
 .theme-asobi-tankyu .icon-wrapper img {
-  border-radius: 28% !important;
-  animation: asobi-bounce 2.6s ease-in-out infinite;
-  box-shadow: 0 8px 24px rgba(212,101,42,0.25), 0 0 0 4px rgba(212,101,42,0.15) !important;
+  width: 110px !important; height: 110px !important;
+  border-radius: 30% !important;
+  border: 4px solid #e06020 !important;
+  animation: asobi-bounce 2.4s ease-in-out infinite;
+  box-shadow: 0 10px 0 rgba(224,96,32,0.3) !important;
 }
 @keyframes asobi-bounce {
-  0%,100%{transform:translateY(0) rotate(0)}
-  40%{transform:translateY(-8px) rotate(-4deg)}
-  70%{transform:translateY(-2px) rotate(3deg)}
+  0%,100%{ transform: translateY(0) rotate(0); }
+  40%{ transform: translateY(-10px) rotate(-5deg); }
+  70%{ transform: translateY(-3px) rotate(4deg); }
 }
 .theme-asobi-tankyu .content-section {
-  border-left: 4px solid var(--theme-accent);
-  background: rgba(255,248,240,0.85);
+  border-radius: 20px;
+  border: 2px dashed rgba(224,96,32,0.35);
+  background: #fff8f0;
+}
+.theme-asobi-tankyu .content-body h2 {
+  background: #e06020;
+  color: #fff !important;
+  border-left: none !important;
+  padding: 8px 16px;
+  border-radius: 999px;
+  display: inline-block;
+}
+.theme-asobi-tankyu .back-link {
+  border-radius: 999px;
+  border-color: #e06020;
+  color: #6b2808;
 }
 @media (prefers-reduced-motion: reduce) {
   .theme-asobi-tankyu .icon-wrapper img { animation: none !important; }

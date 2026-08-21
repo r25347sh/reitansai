@@ -1,48 +1,66 @@
+/* 文学 — parchment book */
 body.theme-literature {
-  --theme-accent: #7a3848;
-  --theme-accent2: #b07080;
-  --theme-deep: #4a1828;
-  --accent: #7a3848;
-  --accent-soft: #b07080;
-  --accent-deep: #4a1828;
-  --text-link: #7a3848;
-  --text-link-hover: #4a1828;
+  --theme-accent: #8b3048;
+  --theme-deep: #3a1520;
+  --accent: #8b3048;
+  --text-link: #8b3048;
+  background: #e8dcc8 !important;
   background-image:
-    radial-gradient(ellipse 70% 40% at 10% -5%, rgba(122,56,72,0.05), transparent 50%),
-    linear-gradient(180deg, #f0e6e8 0%, #e8dce0 100%) !important;
+    repeating-linear-gradient(0deg, transparent, transparent 28px, rgba(139,48,72,0.04) 28px 29px),
+    linear-gradient(180deg, #f0e6d4, #e0d4bc) !important;
 }
-body.theme-literature::after {
-  content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 0;
-  background: rgba(122,56,72,0.05);
+.theme-literature .seminar-detail {
+  max-width: 580px;
+  background: #faf4ea;
+  border: 1px solid #c8b8a0;
+  box-shadow: 0 0 0 8px #f0e6d4, 4px 6px 24px rgba(60,30,20,0.15);
+  border-radius: 2px;
+  padding: 40px 36px 70px;
 }
-.theme-literature .back-link:hover { border-color: var(--theme-accent); color: var(--theme-deep); }
 .theme-literature .seminar-detail h1 {
-  color: var(--theme-deep);
   font-family: 'Noto Serif JP', Georgia, serif;
+  color: #3a1520;
+  border-bottom: 1px solid #c8b8a0;
+  padding-bottom: 12px;
   font-weight: 600;
 }
-.theme-literature .content-body h2 { border-left-color: var(--theme-accent); color: var(--theme-deep); }
-.theme-literature .teacher-name span { color: var(--theme-accent); }
 .theme-literature .icon-wrapper img {
-  animation: lit-page 5s ease-in-out infinite;
-  border-radius: 4px !important;
+  border-radius: 2px !important;
+  border: 1px solid #8b3048 !important;
+  animation: lit-page 6s ease-in-out infinite;
 }
 @keyframes lit-page {
-  0%,100%{transform:perspective(240px) rotateY(0)}
-  50%{transform:perspective(240px) rotateY(-8deg)}
+  0%,100%{ transform: perspective(300px) rotateY(0); }
+  50%{ transform: perspective(300px) rotateY(-10deg); }
 }
 .theme-literature .content-body {
   font-family: 'Noto Serif JP', Georgia, serif;
-  line-height: 2.05;
+  line-height: 2.15;
+  color: #3a3028;
+  font-size: 1.05rem;
+}
+.theme-literature .content-body h2 {
+  font-family: 'Noto Serif JP', Georgia, serif;
+  color: #8b3048;
+  border-left: none;
+  border-bottom: 1px double #8b3048;
+  padding-left: 0; padding-bottom: 4px;
 }
 .theme-literature .content-body blockquote {
-  border-left: 3px solid var(--theme-accent);
-  background: rgba(122,56,72,0.06);
+  border-left: 2px solid #8b3048;
   font-style: italic;
+  background: rgba(139,48,72,0.05);
 }
 .theme-literature .content-section {
-  background: #faf6f2;
-  box-shadow: 2px 3px 0 rgba(122,56,72,0.08);
+  background: #f5eee2;
+  border: 1px solid #d0c0a8;
+  border-radius: 0;
+  box-shadow: 3px 3px 0 rgba(139,48,72,0.08);
+}
+.theme-literature .back-link {
+  border-radius: 2px;
+  border-color: #8b3048;
+  color: #3a1520;
 }
 @media (prefers-reduced-motion: reduce) {
   .theme-literature .icon-wrapper img { animation: none !important; }

@@ -1,50 +1,60 @@
+/* 映像 — cinema dark */
 body.theme-video-editing {
-  --theme-accent: #a83228;
-  --theme-accent2: #d46a5c;
-  --theme-deep: #5a1810;
-  --accent: #a83228;
-  --accent-soft: #d46a5c;
-  --accent-deep: #5a1810;
-  --text-link: #a83228;
-  --text-link-hover: #5a1810;
-  background-image:
-    radial-gradient(ellipse 70% 40% at 10% -5%, rgba(168,50,40,0.05), transparent 50%),
-    linear-gradient(180deg, #efe4e2 0%, #e8dcd9 100%) !important;
+  --theme-accent: #e04030;
+  --theme-deep: #f0e8e4;
+  --accent: #e04030;
+  --text-primary: #f0e8e4;
+  --text-secondary: #c8b8b0;
+  --text-muted: #887870;
+  --text-link: #e06050;
+  --bg-card: rgba(20, 16, 14, 0.9);
+  --border-subtle: rgba(224,64,48,0.2);
+  background: #0c0a08 !important;
+  background-image: linear-gradient(180deg, #14100e, #0c0a08) !important;
+  color: #f0e8e4;
 }
-body.theme-video-editing::after {
-  content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 0;
-  background: rgba(168,50,40,0.05);
-}
-.theme-video-editing .back-link:hover { border-color: var(--theme-accent); color: var(--theme-deep); }
-.theme-video-editing .seminar-detail h1 { color: var(--theme-deep); }
-.theme-video-editing .content-body h2 { border-left-color: var(--theme-accent); color: var(--theme-deep); }
-.theme-video-editing .teacher-name span { color: var(--theme-accent); }
-.theme-video-editing .icon-wrapper img {
-  border-radius: 6px !important;
-  animation: film-flicker 3s steps(2) infinite;
-}
-@keyframes film-flicker {
-  0%,100%{opacity:1; filter:none}
-  50%{opacity:0.9; filter:contrast(1.05)}
+.theme-video-editing .page-header .back-link {
+  background: #1a1410; color: #e04030; border-color: #e04030;
 }
 .theme-video-editing .seminar-detail {
-  border-left: 8px solid #1a1a1a;
-  border-right: 8px solid #1a1a1a;
-  padding-left: 20px; padding-right: 20px;
+  max-width: 680px;
+  border-left: 12px solid #1a1a1a;
+  border-right: 12px solid #1a1a1a;
+  padding-left: 28px; padding-right: 28px;
+  background: linear-gradient(180deg, #161210, #0e0c0a);
 }
 .theme-video-editing .seminar-detail::before,
 .theme-video-editing .seminar-detail::after {
   content: '';
-  display: block; height: 10px;
-  background: repeating-linear-gradient(90deg, #1a1a1a 0 8px, transparent 8px 16px);
-  opacity: 0.15; margin: 8px 0;
+  display: block; height: 14px; margin: 0 -28px 16px;
+  background: repeating-linear-gradient(90deg, #222 0 10px, #0c0a08 10px 18px);
+}
+.theme-video-editing .seminar-detail::after { margin: 16px -28px 0; }
+.theme-video-editing .seminar-detail h1 {
+  color: #f0e8e4;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 1.5rem;
+}
+.theme-video-editing .icon-wrapper img {
+  border-radius: 4px !important;
+  border: 2px solid #e04030 !important;
+  animation: film-flicker 2.8s steps(2) infinite;
+}
+@keyframes film-flicker {
+  0%,100%{ opacity:1; } 50%{ opacity:0.85; }
+}
+.theme-video-editing .teacher-name span { color: #e04030; }
+.theme-video-editing .content-body h2 {
+  color: #e04030; border-left: 4px solid #e04030;
+  font-family: inherit; letter-spacing: 0.06em;
 }
 .theme-video-editing .content-section {
-  background: #1a1a1a; color: #e8e0dc;
-  border: none;
+  background: #1a1410; border: none; border-top: 2px solid #e04030;
+  border-radius: 0; color: #c8b8b0;
 }
-.theme-video-editing .content-section h2 { color: #e8e0dc; }
-.theme-video-editing .content-section p { color: #c8c0bc; }
+.theme-video-editing .content-section h2 { color: #f0e8e4; }
+.theme-video-editing .site-footer, .theme-video-editing .site-footer a { color: #887870; }
 @media (prefers-reduced-motion: reduce) {
   .theme-video-editing .icon-wrapper img { animation: none !important; }
 }
