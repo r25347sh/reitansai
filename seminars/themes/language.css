@@ -7,8 +7,7 @@ body.theme-language {
 .theme-language .seminar-detail h1 { color: #102848; }
 .theme-language .seminar-detail h1::before { content: '「'; color: #3060a0; opacity: 0.45; margin-right: 4px; }
 .theme-language .seminar-detail h1::after { content: '」'; color: #3060a0; opacity: 0.45; margin-left: 4px; }
-.theme-language .icon-wrapper img {
-  animation: lang-speak 2.4s ease-in-out infinite; border: 3px solid #3060a0 !important;
+.theme-language .icon-wrapper img { border: 3px solid #3060a0 !important;
   border-radius: 20px 20px 20px 4px !important;
 }
 @keyframes lang-speak {

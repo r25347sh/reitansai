@@ -26,7 +26,6 @@ body.theme-digital-content {
 .theme-digital-content .icon-wrapper img {
   border-radius: 14px !important;
   border: 2px solid #9b5cff !important;
-  animation: digi-glow 2s ease-in-out infinite alternate;
   box-shadow: 0 0 24px rgba(155,92,255,0.4) !important;
 }
 @keyframes digi-glow {
