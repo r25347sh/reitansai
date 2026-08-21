@@ -42,7 +42,6 @@ body.theme-data-science-ai {
   border-radius: 8px !important;
   border: 1px solid #1a8ab8 !important;
   background: #0a2834 !important;
-  animation: ds-pulse 2.5s ease-in-out infinite;
   box-shadow: 0 0 20px rgba(26,138,184,0.35) !important;
 }
 @keyframes ds-pulse {
