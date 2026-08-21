@@ -1,340 +1,228 @@
 /**
- * Radial Menu — Reitansai
- * Long-press / triple-tap to open
- * Paths resolve relative to site root (works from / and /seminars/)
+ * Radial Menu — Sacred Forest University (high-spec)
  */
 (function () {
-  const inSeminarsDir =
-    /\/seminars\/(?:[^/]+\.html)?$/.test(location.pathname) ||
-    location.pathname.includes('/seminars/');
-  const root = inSeminarsDir ? '../' : '';
-
-  const RADIAL_MENU_DATA = [
-    { label: 'ホーム', icon: '🏠', url: root + 'index.html' },
-    {
-      label: 'ゼミ一覧',
-      icon: '📚',
-      items: [
-        { label: '遊びの探究', icon: '🎮', url: root + 'seminars/asobi-tankyu.html' },
-        { label: 'データAI', icon: '🤖', url: root + 'seminars/data-science-ai.html' },
-        { label: 'デジタル', icon: '💻', url: root + 'seminars/digital-content.html' },
-        { label: 'イベント', icon: '🎉', url: root + 'seminars/event-planning.html' },
-        { label: '文芸創作', icon: '✍️', url: root + 'seminars/creative-writing.html' },
-        { label: '映像編集', icon: '🎬', url: root + 'seminars/video-editing.html' },
-        { label: 'メディア', icon: '📡', url: root + 'seminars/media.html' },
-        { label: '化学', icon: '🧪', url: root + 'seminars/chemistry.html' },
-        { label: '国際地域', icon: '🌍', url: root + 'seminars/international-area.html' },
-        { label: '教育', icon: '📖', url: root + 'seminars/education.html' },
-        { label: '文学', icon: '📕', url: root + 'seminars/literature.html' },
-        { label: '社会', icon: '🏛', url: root + 'seminars/sociology.html' },
-        { label: '観光', icon: '🗾', url: root + 'seminars/tourism.html' },
-        { label: '語学', icon: '🗣', url: root + 'seminars/language.html' },
-        { label: '農業', icon: '🌾', url: root + 'seminars/agriculture.html' }
-      ]
-    }
+  var inSeminars = /\/seminars\//.test(location.pathname);
+  var root = inSeminars ? "../" : "";
+  var DATA = [
+    { label: "ホーム", icon: "🏛", url: root + "index.html", keywords: "home ホーム" },
+    { label: "ゼミ一覧", icon: "🌳", keywords: "ゼミ seminar", items: [
+      { label: "遊びの探究", icon: "🎮", url: root + "seminars/asobi-tankyu.html", keywords: "遊び" },
+      { label: "データAI", icon: "🤖", url: root + "seminars/data-science-ai.html", keywords: "データ AI" },
+      { label: "デジタル", icon: "💻", url: root + "seminars/digital-content.html", keywords: "デジタル" },
+      { label: "イベント", icon: "🎉", url: root + "seminars/event-planning.html", keywords: "イベント" },
+      { label: "文芸創作", icon: "✍️", url: root + "seminars/creative-writing.html", keywords: "文芸" },
+      { label: "映像編集", icon: "🎬", url: root + "seminars/video-editing.html", keywords: "映像" },
+      { label: "メディア", icon: "📡", url: root + "seminars/media.html", keywords: "メディア" },
+      { label: "化学", icon: "🧪", url: root + "seminars/chemistry.html", keywords: "化学" },
+      { label: "国際地域", icon: "🌍", url: root + "seminars/international-area.html", keywords: "国際" },
+      { label: "教育", icon: "📖", url: root + "seminars/education.html", keywords: "教育" },
+      { label: "文学", icon: "📕", url: root + "seminars/literature.html", keywords: "文学" },
+      { label: "社会", icon: "🏛", url: root + "seminars/sociology.html", keywords: "社会" },
+      { label: "観光", icon: "🗾", url: root + "seminars/tourism.html", keywords: "観光" },
+      { label: "語学", icon: "🗣", url: root + "seminars/language.html", keywords: "語学" },
+      { label: "農業", icon: "🌾", url: root + "seminars/agriculture.html", keywords: "農業" }
+    ]},
+    { label: "操作", icon: "⚙️", keywords: "操作 help", items: [
+      { label: "このメニュー", icon: "ℹ️", action: function () {
+        alert("【麗探祭メニュー】\n・長押し / トリプルタップで開く\n・検索で絞り込み\n・Esc 閉じる / 矢印で選択 / Enter 決定");
+      }, keywords: "ヘルプ" },
+      { label: "トップへ", icon: "↑", action: function () { window.scrollTo({ top: 0, behavior: "smooth" }); }, keywords: "スクロール" }
+    ]}
   ];
+  var LONG = 360, TRIPLE = 300, MOVE = 8;
+  var CAPS = [6, 10, 14], RADII = [120, 190, 260];
+  var menuEl, itemsC, orbitsC, coreBtn, canvas, ctx, searchInput, backdrop;
+  var timer, startX, startY, isOpen = false, stack = [], focusIdx = -1;
+  var taps = 0, tapTimer;
 
-  const LONG_PRESS_MS = 360;
-  const TRIPLE_TAP_DELAY_MS = 300;
-  const MOVE_THRESHOLD = 8;
+  function go(url) { close(); setTimeout(function () { location.href = url; }, 160); }
 
-  const SHELL_CAPACITIES = [6, 10, 14];
-  const SHELL_RADII = [115, 185, 255];
-
-  let menuEl = null;
-  let itemsContainer = null;
-  let orbitsContainer = null;
-  let coreBtn = null;
-  let canvas = null;
-  let ctx = null;
-
-  let timer = null;
-  let startX = 0, startY = 0;
-  let isOpen = false;
-  let menuStack = [];
-
-  let tapCount = 0;
-  let tapTimer = null;
-
-  function navigateWithDelay(url) {
-    closeMenu();
-    setTimeout(() => {
-      location.href = url;
-    }, 180);
-  }
-
-  function triggerParticleBurst() {
+  function burst() {
     if (!canvas || !ctx) return;
-    canvas.width = 600;
-    canvas.height = 600;
-    const cX = 300, cY = 300;
-
-    let ring1Radius = 10, ring1Alpha = 1;
-    let ring2Radius = 5, ring2Alpha = 0.8;
-
-    const particleCount = 28;
-    const particles = Array.from({ length: particleCount }, (_, idx) => {
-      const a = (idx / particleCount) * Math.PI * 2 + (Math.random() * 0.15);
-      const spd = Math.random() * 7 + 3.5;
-      const hue = 200 + Math.floor(Math.random() * 80);
-      return {
-        x: cX, y: cY,
-        vx: Math.cos(a) * spd, vy: Math.sin(a) * spd,
-        size: Math.random() * 3 + 1.5,
-        color: `hsl(${hue}, 90%, 70%)`,
-        alpha: 1
-      };
+    canvas.width = canvas.height = 640;
+    var cx = 320, cy = 320, r1 = 8, a1 = 1, r2 = 4, a2 = 0.85;
+    var cols = ["hsl(142,45%,42%)", "hsl(130,40%,55%)", "hsl(45,55%,58%)", "hsl(155,35%,48%)"];
+    var ps = Array.from({ length: 36 }, function (_, i) {
+      var a = (i / 36) * Math.PI * 2 + Math.random() * 0.2, s = Math.random() * 6.5 + 3;
+      return { x: cx, y: cy, vx: Math.cos(a) * s, vy: Math.sin(a) * s, size: Math.random() * 3 + 1.2, color: cols[i % 4], alpha: 1 };
     });
-
-    function draw() {
-      ctx.clearRect(0, 0, 600, 600);
-
-      if (ring1Alpha > 0) {
-        ctx.beginPath();
-        ctx.arc(cX, cY, ring1Radius, 0, Math.PI * 2);
-        ctx.strokeStyle = `rgba(99, 102, 241, ${ring1Alpha})`;
-        ctx.lineWidth = 3.5;
-        ctx.stroke();
-        ring1Radius += 8;
-        ring1Alpha -= 0.048;
-      }
-
-      if (ring2Alpha > 0) {
-        ctx.beginPath();
-        ctx.arc(cX, cY, ring2Radius, 0, Math.PI * 2);
-        ctx.strokeStyle = `rgba(168, 85, 247, ${ring2Alpha})`;
-        ctx.lineWidth = 2.5;
-        ctx.stroke();
-        ring2Radius += 6.5;
-        ring2Alpha -= 0.038;
-      }
-
-      let isAlive = false;
-      particles.forEach(p => {
-        if (p.alpha > 0) {
-          isAlive = true;
-          p.x += p.vx;
-          p.y += p.vy;
-          p.vx *= 0.93;
-          p.vy *= 0.93;
-          p.alpha -= 0.033;
-
-          ctx.beginPath();
-          ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-          ctx.fillStyle = p.color;
-          ctx.globalAlpha = Math.max(0, p.alpha);
-          ctx.fill();
-        }
+    (function draw() {
+      ctx.clearRect(0, 0, 640, 640);
+      if (a1 > 0) { ctx.beginPath(); ctx.arc(cx, cy, r1, 0, Math.PI * 2); ctx.strokeStyle = "rgba(61,122,85," + a1 + ")"; ctx.lineWidth = 3; ctx.stroke(); r1 += 7.5; a1 -= 0.045; }
+      if (a2 > 0) { ctx.beginPath(); ctx.arc(cx, cy, r2, 0, Math.PI * 2); ctx.strokeStyle = "rgba(196,163,90," + a2 + ")"; ctx.lineWidth = 2.2; ctx.stroke(); r2 += 6; a2 -= 0.036; }
+      var alive = false;
+      ps.forEach(function (p) {
+        if (p.alpha > 0) { alive = true; p.x += p.vx; p.y += p.vy; p.vx *= 0.92; p.vy *= 0.92; p.alpha -= 0.03;
+          ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2); ctx.fillStyle = p.color; ctx.globalAlpha = Math.max(0, p.alpha); ctx.fill(); ctx.globalAlpha = 1; }
       });
-
-      if (ring1Alpha > 0 || ring2Alpha > 0 || isAlive) {
-        requestAnimationFrame(draw);
-      } else {
-        ctx.clearRect(0, 0, 600, 600);
-      }
-    }
-    draw();
+      if (a1 > 0 || a2 > 0 || alive) requestAnimationFrame(draw); else ctx.clearRect(0, 0, 640, 640);
+    })();
   }
 
-  function calculateShellLayout(items) {
-    const layout = [];
-    let remaining = items.length;
-    let itemIdx = 0;
-
-    for (let sIdx = 0; sIdx < SHELL_CAPACITIES.length && remaining > 0; sIdx++) {
-      const capacity = SHELL_CAPACITIES[sIdx];
-      const countInShell = Math.min(remaining, capacity);
-      const radius = SHELL_RADII[sIdx];
-
-      for (let i = 0; i < countInShell; i++) {
-        const angle = (i / countInShell) * 2 * Math.PI - (Math.PI / 2);
-        const x = Math.round(Math.cos(angle) * radius);
-        const y = Math.round(Math.sin(angle) * radius);
-
-        layout.push({ item: items[itemIdx], x, y, shellIndex: sIdx });
-        itemIdx++;
+  function layout(items) {
+    var out = [], left = items.length, idx = 0;
+    for (var s = 0; s < CAPS.length && left > 0; s++) {
+      var n = Math.min(left, CAPS[s]), R = RADII[s];
+      for (var i = 0; i < n; i++) {
+        var ang = (i / n) * 2 * Math.PI - Math.PI / 2;
+        out.push({ item: items[idx++], x: Math.round(Math.cos(ang) * R), y: Math.round(Math.sin(ang) * R), shell: s });
       }
-      remaining -= countInShell;
+      left -= n;
     }
-    return layout;
+    return out;
   }
 
-  function renderMenuLevel(items) {
-    const oldItems = itemsContainer.querySelectorAll('.rm-item');
-    oldItems.forEach(el => {
-      el.classList.remove('rendered');
-      setTimeout(() => el.remove(), 200);
+  function visibleBtns() {
+    return Array.prototype.slice.call(itemsC.querySelectorAll(".rm-item.rendered:not(.rm-hidden-by-search)"));
+  }
+  function setFocus(i) {
+    var b = visibleBtns(); b.forEach(function (x) { x.classList.remove("rm-focused"); });
+    if (!b.length) { focusIdx = -1; return; }
+    focusIdx = ((i % b.length) + b.length) % b.length;
+    b[focusIdx].classList.add("rm-focused");
+    try { b[focusIdx].focus({ preventScroll: true }); } catch (e) {}
+  }
+  function filter(q) {
+    q = (q || "").trim().toLowerCase();
+    itemsC.querySelectorAll(".rm-item").forEach(function (btn) {
+      if (!q || (btn.getAttribute("data-search") || "").toLowerCase().indexOf(q) !== -1)
+        btn.classList.remove("rm-hidden-by-search");
+      else btn.classList.add("rm-hidden-by-search");
     });
+    focusIdx = -1; setFocus(0);
+  }
 
-    orbitsContainer.innerHTML = '';
-
-    const layout = calculateShellLayout(items);
-    const activeShells = new Set();
-
-    layout.forEach((data, index) => {
-      activeShells.add(data.shellIndex);
-
-      const btn = document.createElement('button');
-      btn.className = 'rm-item' + (data.item.items ? ' has-sub' : '');
-      btn.setAttribute('data-label', data.item.label);
-      btn.innerHTML = data.item.icon;
-      btn.style.setProperty('--x', `${data.x}px`);
-      btn.style.setProperty('--y', `${data.y}px`);
-      btn.style.transitionDelay = `${index * 0.025}s`;
-      btn.addEventListener('click', (e) => {
+  function render(items) {
+    focusIdx = -1;
+    itemsC.querySelectorAll(".rm-item").forEach(function (el) {
+      el.classList.remove("rendered"); setTimeout(function () { el.remove(); }, 200);
+    });
+    orbitsC.innerHTML = "";
+    var L = layout(items), shells = {};
+    L.forEach(function (d, index) {
+      shells[d.shell] = 1;
+      var btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "rm-item" + (d.item.items ? " has-sub" : "");
+      btn.setAttribute("data-label", d.item.label);
+      btn.setAttribute("data-search", [d.item.label, d.item.keywords || ""].join(" "));
+      btn.setAttribute("aria-label", d.item.label);
+      btn.innerHTML = d.item.icon;
+      btn.style.setProperty("--x", d.x + "px");
+      btn.style.setProperty("--y", d.y + "px");
+      btn.style.transitionDelay = index * 0.022 + "s";
+      btn.addEventListener("click", function (e) {
         e.stopPropagation();
-        if (data.item.items && data.item.items.length > 0) {
-          menuStack.push(items);
-          renderMenuLevel(data.item.items);
-          triggerParticleBurst();
-        } else {
-          if (data.item.url) {
-            navigateWithDelay(data.item.url);
-          } else if (data.item.action) {
-            data.item.action();
-            closeMenu();
-          }
-        }
+        if (d.item.items && d.item.items.length) {
+          stack.push(items); if (searchInput) searchInput.value = "";
+          render(d.item.items); burst();
+        } else if (d.item.url) go(d.item.url);
+        else if (typeof d.item.action === "function") { d.item.action(); close(); }
       });
-
-      itemsContainer.appendChild(btn);
-
-      requestAnimationFrame(() => {
-        setTimeout(() => btn.classList.add('rendered'), 15);
-      });
+      itemsC.appendChild(btn);
+      requestAnimationFrame(function () { setTimeout(function () { btn.classList.add("rendered"); }, 12); });
     });
-
-    activeShells.forEach(sIdx => {
-      const orbit = document.createElement('div');
-      orbit.className = 'rm-shell-orbit';
-      const d = SHELL_RADII[sIdx] * 2;
-      orbit.style.width = `${d}px`;
-      orbit.style.height = `${d}px`;
-      orbit.style.marginTop = `-${SHELL_RADII[sIdx]}px`;
-      orbit.style.marginLeft = `-${SHELL_RADII[sIdx]}px`;
-      orbitsContainer.appendChild(orbit);
+    Object.keys(shells).forEach(function (s) {
+      s = +s; var o = document.createElement("div"); o.className = "rm-shell-orbit";
+      var d = RADII[s] * 2; o.style.width = o.style.height = d + "px";
+      o.style.marginTop = o.style.marginLeft = -RADII[s] + "px"; orbitsC.appendChild(o);
     });
-
-    if (menuStack.length > 0) {
-      coreBtn.classList.add('visible');
-    } else {
-      coreBtn.classList.remove('visible');
-    }
+    if (stack.length) { coreBtn.classList.add("visible"); coreBtn.setAttribute("aria-label", "戻る"); }
+    else coreBtn.classList.remove("visible");
+    if (searchInput) { searchInput.value = ""; setTimeout(function () { try { searchInput.focus({ preventScroll: true }); } catch (e) {} }, 80); }
   }
 
-  function createMenuDOM() {
-    menuEl = document.createElement('div');
-    menuEl.className = 'radial-menu-wrapper';
-
-    canvas = document.createElement('canvas');
-    canvas.className = 'rm-canvas-layer';
-    ctx = canvas.getContext('2d');
-    menuEl.appendChild(canvas);
-
-    orbitsContainer = document.createElement('div');
-    menuEl.appendChild(orbitsContainer);
-
-    itemsContainer = document.createElement('div');
-    menuEl.appendChild(itemsContainer);
-
-    coreBtn = document.createElement('button');
-    coreBtn.className = 'rm-core-btn';
-    coreBtn.innerHTML = '✕';
-    coreBtn.addEventListener('click', (e) => {
+  function createDOM() {
+    menuEl = document.createElement("div");
+    menuEl.className = "radial-menu-wrapper";
+    menuEl.setAttribute("role", "dialog");
+    menuEl.setAttribute("aria-label", "ナビゲーションメニュー");
+    backdrop = document.createElement("div"); backdrop.className = "rm-backdrop";
+    backdrop.addEventListener("click", close); menuEl.appendChild(backdrop);
+    canvas = document.createElement("canvas"); canvas.className = "rm-canvas-layer";
+    ctx = canvas.getContext("2d"); menuEl.appendChild(canvas);
+    orbitsC = document.createElement("div"); menuEl.appendChild(orbitsC);
+    itemsC = document.createElement("div"); menuEl.appendChild(itemsC);
+    var sw = document.createElement("div"); sw.className = "rm-search-wrap";
+    var si = document.createElement("span"); si.className = "rm-search-icon"; si.textContent = "🔍";
+    searchInput = document.createElement("input"); searchInput.type = "search";
+    searchInput.className = "rm-search-input"; searchInput.placeholder = "ゼミを検索…";
+    searchInput.setAttribute("aria-label", "メニュー内検索");
+    searchInput.addEventListener("input", function () { filter(searchInput.value); });
+    searchInput.addEventListener("click", function (e) { e.stopPropagation(); });
+    sw.appendChild(si); sw.appendChild(searchInput); menuEl.appendChild(sw);
+    coreBtn = document.createElement("button"); coreBtn.type = "button"; coreBtn.className = "rm-core-btn"; coreBtn.innerHTML = "←";
+    coreBtn.addEventListener("click", function (e) {
       e.stopPropagation();
-      if (menuStack.length > 0) {
-        const prevLevel = menuStack.pop();
-        renderMenuLevel(prevLevel);
-        triggerParticleBurst();
-      } else {
-        closeMenu();
-      }
+      if (stack.length) { var p = stack.pop(); if (searchInput) searchInput.value = ""; render(p); burst(); }
+      else close();
     });
     menuEl.appendChild(coreBtn);
-
+    var hint = document.createElement("div"); hint.className = "rm-hint";
+    hint.textContent = "Esc 閉じる · ←→ 選択 · Enter 決定"; menuEl.appendChild(hint);
     document.body.appendChild(menuEl);
   }
 
-  function openMenu(x, y) {
-    const margin = 180;
-    const clampedX = Math.max(margin, Math.min(x, window.innerWidth - margin));
-    const clampedY = Math.max(margin, Math.min(y, window.innerHeight - margin));
-
-    menuEl.style.left = `${clampedX}px`;
-    menuEl.style.top = `${clampedY}px`;
-    menuEl.classList.add('active');
-    isOpen = true;
-
-    menuStack = [];
-    renderMenuLevel(RADIAL_MENU_DATA);
-    triggerParticleBurst();
+  function open(x, y) {
+    var m = 200;
+    menuEl.style.left = Math.max(m, Math.min(x, window.innerWidth - m)) + "px";
+    menuEl.style.top = Math.max(m, Math.min(y, window.innerHeight - m)) + "px";
+    menuEl.classList.add("active"); isOpen = true; stack = []; render(DATA); burst();
   }
-
-  function closeMenu() {
+  function close() {
     if (!menuEl) return;
-    menuEl.classList.remove('active');
-    const oldItems = itemsContainer.querySelectorAll('.rm-item');
-    oldItems.forEach(el => el.classList.remove('rendered'));
-    coreBtn.classList.remove('visible');
-    isOpen = false;
+    menuEl.classList.remove("active");
+    itemsC.querySelectorAll(".rm-item").forEach(function (el) { el.classList.remove("rendered"); });
+    coreBtn.classList.remove("visible"); isOpen = false; focusIdx = -1;
+    if (searchInput) searchInput.value = "";
   }
 
-  function initEvents() {
-    document.addEventListener('pointerdown', (e) => {
-      if (isOpen && menuEl.contains(e.target)) return;
-      if (isOpen && !menuEl.contains(e.target)) {
-        closeMenu();
-        return;
-      }
+  function onKey(e) {
+    if (!isOpen) return;
+    if (e.key === "Escape") {
+      e.preventDefault();
+      if (stack.length) { var p = stack.pop(); if (searchInput) searchInput.value = ""; render(p); burst(); }
+      else close(); return;
+    }
+    if (e.key === "Backspace" && document.activeElement !== searchInput) {
+      e.preventDefault();
+      if (stack.length) { var q = stack.pop(); if (searchInput) searchInput.value = ""; render(q); burst(); }
+      return;
+    }
+    if (e.key === "ArrowRight" || e.key === "ArrowDown") { e.preventDefault(); setFocus(focusIdx + 1); return; }
+    if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
+      e.preventDefault(); setFocus(focusIdx <= 0 ? visibleBtns().length - 1 : focusIdx - 1); return;
+    }
+    if (e.key === "Enter" && document.activeElement !== searchInput) {
+      e.preventDefault();
+      var b = visibleBtns(); if (focusIdx >= 0 && b[focusIdx]) b[focusIdx].click();
+    }
+  }
 
-      startX = e.clientX;
-      startY = e.clientY;
-
-      tapCount++;
+  function init() {
+    document.addEventListener("keydown", onKey);
+    document.addEventListener("pointerdown", function (e) {
+      if (isOpen && menuEl.contains(e.target) && !e.target.classList.contains("rm-backdrop")) return;
+      if (isOpen && !menuEl.contains(e.target)) { close(); return; }
+      startX = e.clientX; startY = e.clientY; taps++;
       clearTimeout(tapTimer);
-
-      if (tapCount === 3) {
-        clearTimeout(timer);
-        timer = null;
-        tapCount = 0;
-        openMenu(startX, startY);
-        return;
-      }
-
-      tapTimer = setTimeout(() => {
-        tapCount = 0;
-      }, TRIPLE_TAP_DELAY_MS);
-
+      if (taps === 3) { clearTimeout(timer); timer = null; taps = 0; open(startX, startY); return; }
+      tapTimer = setTimeout(function () { taps = 0; }, TRIPLE);
       clearTimeout(timer);
-      timer = setTimeout(() => {
-        tapCount = 0;
-        openMenu(startX, startY);
-      }, LONG_PRESS_MS);
+      timer = setTimeout(function () { taps = 0; open(startX, startY); }, LONG);
     });
-
-    document.addEventListener('pointermove', (e) => {
+    document.addEventListener("pointermove", function (e) {
       if (!timer || isOpen) return;
-      if (Math.hypot(e.clientX - startX, e.clientY - startY) > MOVE_THRESHOLD) {
-        clearTimeout(timer);
-        timer = null;
-      }
+      if (Math.hypot(e.clientX - startX, e.clientY - startY) > MOVE) { clearTimeout(timer); timer = null; }
     });
-
-    document.addEventListener('pointerup', () => {
-      if (timer && !isOpen) {
-        clearTimeout(timer);
-        timer = null;
-      }
+    document.addEventListener("pointerup", function () {
+      if (timer && !isOpen) { clearTimeout(timer); timer = null; }
     });
-
-    document.addEventListener('contextmenu', (e) => {
-      if (isOpen) e.preventDefault();
-    });
+    document.addEventListener("contextmenu", function (e) { if (isOpen) e.preventDefault(); });
   }
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => { createMenuDOM(); initEvents(); });
-  } else {
-    createMenuDOM(); initEvents();
-  }
+  if (document.readyState === "loading")
+    document.addEventListener("DOMContentLoaded", function () { createDOM(); init(); });
+  else { createDOM(); init(); }
 })();
