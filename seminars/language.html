@@ -5,37 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>語学ゼミ｜麗探祭</title>
   <link rel="icon" type="image/svg+xml" href="../public/images/favicon.svg">
-  <link rel="stylesheet" href="../style.css">
-  <link rel="stylesheet" href="seminar.css">
-  <link rel="stylesheet" href="layouts-extra.css">
-  <link rel="stylesheet" href="themes/language.css">
   <link rel="stylesheet" href="../MENU/MENU.css">
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
-<body class="theme-language layout-language">
-  <div class="lang-duo">
-    <a href="../index.html" class="back-link">← back</a>
-    <div class="lang-columns">
-      <div class="lang-col lang-jp">
-        <p class="lang-label">日本語</p>
-        <h1 id="seminar-title">読み込み中...</h1>
-        <p class="teacher-name">担当 <span id="seminar-teacher">-</span></p>
-        <p id="seminar-description" class="lead-text"></p>
-      </div>
-      <div class="lang-col lang-en">
-        <p class="lang-label">English</p>
-        <img id="seminar-icon" src="" alt="" style="display:none" class="lang-icon">
-        <p class="lang-en-title" id="lang-en-title">Language Seminar</p>
-      </div>
-    </div>
-    <div class="lang-flash">
-      <button type="button" id="lang-flip">Flip</button>
-      <p id="lang-card-text"></p>
-    </div>
-    <div class="image-wrapper"><img id="seminar-image" src="" alt="" style="display:none"></div>
-    <article id="seminar-body" class="content-body"></article>
-    <div id="seminar-sections" class="content-sections"></div>
-  </div>
+<body>
+  <section class="pages_cms" id="pages_cms"></section>
   <script src="../js/seminar-loader.js"></script>
   <script src="../MENU/MENU.js"></script>
   <script>loadSeminar("語学ゼミ", "語学ゼミ");</script>

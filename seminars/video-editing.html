@@ -5,38 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>映像編集ゼミ｜麗探祭</title>
   <link rel="icon" type="image/svg+xml" href="../public/images/favicon.svg">
-  <link rel="stylesheet" href="../style.css">
-  <link rel="stylesheet" href="seminar.css">
-  <link rel="stylesheet" href="layouts-extra.css">
-  <link rel="stylesheet" href="themes/video-editing.css">
   <link rel="stylesheet" href="../MENU/MENU.css">
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
-<body class="theme-video-editing layout-video-editing">
-  <div class="vid-frame">
-    <div class="vid-topbar">
-      <a href="../index.html" class="back-link">← 編集室を出る</a>
-      <span class="vid-timecode" id="vid-timecode">00:00:00:00</span>
-    </div>
-    <div class="vid-monitor">
-      <img id="seminar-icon" src="" alt="" style="display:none" class="vid-poster">
-      <h1 id="seminar-title">読み込み中...</h1>
-      <p class="teacher-name">監督 <span id="seminar-teacher">-</span></p>
-      <button type="button" class="vid-play" id="vid-play">▶</button>
-    </div>
-    <div class="vid-timeline">
-      <div class="vid-track">
-        <div class="vid-clip" style="left:5%;width:25%"></div>
-        <div class="vid-clip c2" style="left:32%;width:20%"></div>
-        <div class="vid-clip c3" style="left:55%;width:30%"></div>
-      </div>
-      <div class="vid-playhead" id="vid-playhead"></div>
-    </div>
-    <p id="seminar-description" class="lead-text"></p>
-    <div class="image-wrapper"><img id="seminar-image" src="" alt="" style="display:none"></div>
-    <article id="seminar-body" class="content-body"></article>
-    <div id="seminar-sections" class="content-sections"></div>
-  </div>
+<body>
+  <section class="pages_cms" id="pages_cms"></section>
   <script src="../js/seminar-loader.js"></script>
   <script src="../MENU/MENU.js"></script>
   <script>loadSeminar("映像編集ゼミ", "映像編集ゼミ");</script>

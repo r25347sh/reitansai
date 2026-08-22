@@ -5,35 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>文学ゼミ｜麗探祭</title>
   <link rel="icon" type="image/svg+xml" href="../public/images/favicon.svg">
-  <link rel="stylesheet" href="../style.css">
-  <link rel="stylesheet" href="seminar.css">
-  <link rel="stylesheet" href="layouts-extra.css">
-  <link rel="stylesheet" href="themes/literature.css">
   <link rel="stylesheet" href="../MENU/MENU.css">
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
-<body class="theme-literature layout-literature">
-  <div class="lit-book">
-    <a href="../index.html" class="back-link">← 書架へ</a>
-    <div class="lit-spread">
-      <div class="lit-page lit-left">
-        <img id="seminar-icon" src="" alt="" style="display:none" class="lit-emblem">
-        <p class="lit-epigraph" id="lit-epigraph"></p>
-      </div>
-      <div class="lit-page lit-right">
-        <h1 id="seminar-title">読み込み中...</h1>
-        <p class="teacher-name">担当 <span id="seminar-teacher">-</span></p>
-        <p id="seminar-description" class="lead-text"></p>
-      </div>
-    </div>
-    <div class="lit-controls">
-      <button type="button" id="lit-prev">←</button>
-      <button type="button" id="lit-next">→</button>
-    </div>
-    <div class="image-wrapper"><img id="seminar-image" src="" alt="" style="display:none"></div>
-    <article id="seminar-body" class="content-body"></article>
-    <div id="seminar-sections" class="content-sections"></div>
-  </div>
+<body>
+  <section class="pages_cms" id="pages_cms"></section>
   <script src="../js/seminar-loader.js"></script>
   <script src="../MENU/MENU.js"></script>
   <script>loadSeminar("文学ゼミ", "文学ゼミ");</script>

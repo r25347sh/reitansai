@@ -1,28 +1,23 @@
 /**
- * ゼミ詳細ページ共通ローダー
- * - YAML frontmatter（簡易パーサ）を解析
- * - marked.js で Markdown 本文を HTML 化
- * - sections（text_block / image_text_block）に対応
- * - icon をファビコンに設定
+ * Pages CMS 用ゼミ詳細ローダー（純化版）
+ * - YAML frontmatter を解析
+ * - marked.js で Markdown を HTML 化
+ * - 結果を <section class="pages_cms" id="pages_cms"></section> にのみ挿入
  *
  * 使い方:
  *   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
  *   <script src="../js/seminar-loader.js"></script>
- *   <script>loadSeminar("遊びの探求ゼミ", "遊びの探究ゼミ");</script>
+ *   <script>loadSeminar("遊びの探求ゼミ", "遊びの探求ゼミ");</script>
  */
 
 function loadSeminar(mdFileName, fallbackTitle) {
-  const titleEl = document.getElementById("seminar-title");
-  const teacherEl = document.getElementById("seminar-teacher");
-  const descEl = document.getElementById("seminar-description");
-  const bodyEl = document.getElementById("seminar-body");
-  const iconEl = document.getElementById("seminar-icon");
-  const imageEl = document.getElementById("seminar-image");
-  const sectionsEl = document.getElementById("seminar-sections");
+  var container = document.getElementById("pages_cms");
+  if (!container) {
+    console.error("[seminar-loader] #pages_cms が見つかりません");
+    return;
+  }
 
-  // 日本語ファイル名は encodeURIComponent 必須
-  // GitHub Pages では .nojekyll が必要（Jekyll が frontmatter 付き .md を食うため）
-  const path = "../content/seminars/" + encodeURIComponent(mdFileName) + ".md";
+  var path = "../content/seminars/" + encodeURIComponent(mdFileName) + ".md";
 
   fetch(path)
     .then(function (res) {
@@ -31,104 +26,99 @@ function loadSeminar(mdFileName, fallbackTitle) {
     })
     .then(function (text) {
       var parsed = parseFrontmatter(text);
-      var frontmatter = parsed.frontmatter;
+      var fm = parsed.frontmatter;
       var body = parsed.body;
 
-      if (titleEl) {
-        titleEl.textContent = frontmatter.title || fallbackTitle || mdFileName;
-      }
-      if (teacherEl) {
-        teacherEl.textContent = frontmatter.teacher || "-";
-      }
-      if (descEl) {
-        descEl.textContent = frontmatter.description || "";
+      var title = fm.title || fallbackTitle || mdFileName;
+      document.title = title + "｜麗探祭";
+
+      if (fm.icon) {
+        setFavicon(resolveAssetPath(fm.icon));
       }
 
-      // ゼミアイコン → ファビコン（＆ページ内表示）
-      if (frontmatter.icon) {
-        var iconSrc = resolveAssetPath(frontmatter.icon);
-        setFavicon(iconSrc);
-        if (iconEl) {
-          iconEl.src = iconSrc;
-          iconEl.style.display = "block";
-        }
+      var html = "";
+
+      // タイトル
+      html += "<h1>" + escapeHtml(title) + "</h1>";
+
+      // 担当
+      if (fm.teacher) {
+        html += '<p class="teacher">担当：' + escapeHtml(fm.teacher) + "</p>";
       }
 
-      if (imageEl && frontmatter.image) {
-        imageEl.src = resolveAssetPath(frontmatter.image);
-        imageEl.style.display = "block";
+      // アイコン
+      if (fm.icon) {
+        html +=
+          '<p class="icon"><img src="' +
+          escapeAttr(resolveAssetPath(fm.icon)) +
+          '" alt="" width="80" height="80"></p>';
       }
 
-      var bodyContent = frontmatter.body || body || "";
-      if (bodyEl) {
-        if (typeof marked !== "undefined" && bodyContent) {
-          bodyEl.innerHTML = marked.parse(bodyContent);
+      // 一言概要
+      if (fm.description) {
+        html += '<p class="description">' + escapeHtml(fm.description) + "</p>";
+      }
+
+      // 画像
+      if (fm.image) {
+        html +=
+          '<p class="image"><img src="' +
+          escapeAttr(resolveAssetPath(fm.image)) +
+          '" alt=""></p>';
+      }
+
+      // 本文（frontmatter.body 優先、なければ Markdown body）
+      var bodyContent = fm.body || body || "";
+      if (bodyContent) {
+        if (typeof marked !== "undefined") {
+          html += '<div class="body">' + marked.parse(bodyContent) + "</div>";
         } else {
-          bodyEl.textContent = bodyContent;
+          html +=
+            '<div class="body"><pre>' + escapeHtml(bodyContent) + "</pre></div>";
         }
       }
 
-      if (sectionsEl && Array.isArray(frontmatter.sections)) {
-        sectionsEl.innerHTML = "";
-        frontmatter.sections.forEach(function (sec) {
-          var section = document.createElement("section");
-          section.className = "content-section";
-
+      // sections
+      if (Array.isArray(fm.sections)) {
+        fm.sections.forEach(function (sec) {
+          html += '<section class="cms-section">';
           if (sec.type === "text_block") {
             if (sec.heading) {
-              var h = document.createElement("h2");
-              h.textContent = sec.heading;
-              section.appendChild(h);
+              html += "<h2>" + escapeHtml(sec.heading) + "</h2>";
             }
             if (sec.body) {
-              var p = document.createElement("p");
-              p.textContent = sec.body;
-              section.appendChild(p);
+              html += "<p>" + escapeHtml(sec.body) + "</p>";
             }
           } else if (sec.type === "image_text_block") {
             if (sec.image) {
-              var img = document.createElement("img");
-              img.src = resolveAssetPath(sec.image);
-              img.alt = sec.caption || "";
-              img.className = "section-image";
-              section.appendChild(img);
+              html +=
+                '<img src="' +
+                escapeAttr(resolveAssetPath(sec.image)) +
+                '" alt="' +
+                escapeAttr(sec.caption || "") +
+                '">';
             }
             if (sec.caption) {
-              var cap = document.createElement("p");
-              cap.className = "image-caption";
-              cap.textContent = sec.caption;
-              section.appendChild(cap);
+              html += "<p>" + escapeHtml(sec.caption) + "</p>";
             }
           }
-
-          sectionsEl.appendChild(section);
+          html += "</section>";
         });
       }
 
-      document.title =
-        (frontmatter.title || fallbackTitle || mdFileName) + " - ゼミ紹介｜麗探祭";
+      container.innerHTML = html;
     })
     .catch(function (err) {
       console.error("[seminar-loader]", err);
-      if (titleEl) {
-        titleEl.textContent = "データの読み込みに失敗しました";
-      }
-      if (bodyEl) {
-        bodyEl.innerHTML =
-          "<p style=\"color:#f87171;\">コンテンツを取得できませんでした。<br>" +
-          "<code style=\"font-size:0.85em;\">" +
-          path +
-          "</code></p>";
-      }
+      container.innerHTML =
+        "<p>データの読み込みに失敗しました。</p><code>" +
+        escapeHtml(path) +
+        "</code>";
     });
 }
 
-/**
- * ファビコンを差し替え（既存 link[rel=icon] を更新 or 新規作成）
- */
 function setFavicon(href) {
   if (!href) return;
-
   var type = "image/png";
   if (/\.svg(\?|$)/i.test(href)) type = "image/svg+xml";
   else if (/\.ico(\?|$)/i.test(href)) type = "image/x-icon";
@@ -143,21 +133,11 @@ function setFavicon(href) {
     });
     return;
   }
-
   var link = document.createElement("link");
   link.rel = "icon";
   link.type = type;
   link.href = href;
   document.head.appendChild(link);
-
-  // Apple touch 用も合わせて設定
-  var apple = document.querySelector("link[rel='apple-touch-icon']");
-  if (!apple) {
-    apple = document.createElement("link");
-    apple.rel = "apple-touch-icon";
-    document.head.appendChild(apple);
-  }
-  apple.href = href;
 }
 
 function parseFrontmatter(text) {
@@ -234,16 +214,9 @@ function unquote(s) {
   return s;
 }
 
-/**
- * アセットパス解決
- * - /images/... → ../public/images/...（実体は public/ 配下）
- * - 相対パスはそのまま
- */
 function resolveAssetPath(path) {
   if (!path) return "";
   if (path.indexOf("http") === 0 || path.indexOf("data:") === 0) return path;
-
-  // CMS の output: /images/seminars → 実ファイルは public/images/seminars
   if (path.indexOf("/images/") === 0) {
     return "../public" + path;
   }
@@ -251,4 +224,16 @@ function resolveAssetPath(path) {
     return ".." + path;
   }
   return path;
+}
+
+function escapeHtml(s) {
+  return String(s)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+function escapeAttr(s) {
+  return escapeHtml(s).replace(/'/g, "&#39;");
 }
