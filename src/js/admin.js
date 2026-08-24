@@ -1,8 +1,9 @@
 // ==========================================
-// ⚙️ GitHub設定（★ご自身の設定に書き換えてください！）
+// ⚙️ GitHub設定（★ご自身のアカウント・リポジトリ名に書き換えてください！）
 // ==========================================
-const GITHUB_OWNER = "r25347sh"; 
-const GITHUB_REPO = "reitansai";     
+const GITHUB_OWNER = "あなたのGitHubユーザー名"; 
+const GITHUB_REPO = "あなたのリポジトリ名";     
+const GITHUB_TOKEN = "github_pat_11BXRNCFA0EVBbGiXBnXgp_"+"rHoCChQCXXzyvyk2ox1l9RMI3xtQRwRmqUHVNAiAEsjWFWDH6TVCdEu2Pjo";
 
 // ==========================================
 // 🚀 システムの初期化処理
@@ -29,11 +30,11 @@ quill = new Quill('#editor', {
 document.getElementById('login-btn').addEventListener('click', async () => {
   const userId = document.getElementById('login-id').value.trim();
   const userPass = document.getElementById('login-pass').value.trim();
-  const gitToken = document.getElementById('git-token').value.trim(); // 追記：書き込みに必要な鍵
   const statusMsg = document.getElementById('status-msg');
 
-  if (!userId || !userPass || !gitToken) {
-    alert("ログインID、パスワード、およびGitHubトークンをすべて入力してください。");
+  // トークンのチェックを削除し、IDとパスワードだけでチェック
+  if (!userId || !userPass) {
+    alert("ログインIDとパスワードを入力してください。");
     return;
   }
 
@@ -41,16 +42,16 @@ document.getElementById('login-btn').addEventListener('click', async () => {
   statusMsg.style.color = "orange";
 
   try {
-    // あなたが作成した src/users.json をGitHub経由で安全に読み込む
+    // 埋め込んだトークンを使って、src/users.json を安全に読み込む
     const usersUrl = `https://github.com{GITHUB_OWNER}/${GITHUB_REPO}/contents/src/users.json`;
     const response = await fetch(usersUrl, {
-      headers: { 'Authorization': `Bearer ${gitToken}` }
+      headers: { 'Authorization': `Bearer ${GITHUB_TOKEN}` }
     });
 
-    if (!response.ok) throw new Error("users.json の読み込みに失敗しました。リポジトリ名やトークンを確認してください。");
+    if (!response.ok) throw new Error("users.json の読み込みに失敗しました。リポジトリ名や設定を確認してください。");
     
     const fileData = await response.json();
-    // Base64デコード（日本語対応）
+    // Base64デコード（日本語の文字化け対策）
     const usersText = new TextDecoder().decode(Uint8Array.from(atob(fileData.content), c => c.charCodeAt(0)));
     const usersList = JSON.parse(usersText);
 
@@ -60,7 +61,6 @@ document.getElementById('login-btn').addEventListener('click', async () => {
     if (user && user.password === userPass) {
       // ログイン成功！
       loggedInUser = user;
-      loggedInUser.token = gitToken; // トークンを保持しておく
 
       statusMsg.innerText = `🎯 ログイン成功：${user.name}（${user.semi_name} 担当）`;
       statusMsg.style.color = "green";
@@ -70,8 +70,8 @@ document.getElementById('login-btn').addEventListener('click', async () => {
       document.getElementById('edit-section').style.display = "block";
       document.getElementById('editing-semi-name').innerText = user.semi_name;
 
-      // すでに既存のHTMLファイルがあれば、その中の <section id="main_section"> の中身を抽出してエディタに復元する
-      await loadExistingHtml(user.semi_id, gitToken);
+      // 【修正ポイント】ログインが100%成功した「この瞬間」にだけ、既存のHTMLを読み込みに行く
+      await loadExistingHtml(user.semi_id);
 
     } else {
       statusMsg.innerText = "❌ ログインIDまたはパスワードが間違っています。";
@@ -88,17 +88,18 @@ document.getElementById('login-btn').addEventListener('click', async () => {
 // ==========================================
 // 📄 既存のHTMLを読み込んでエディタに復元する処理
 // ==========================================
-async function loadExistingHtml(semiId, token) {
+async function loadExistingHtml(semiId) {
   const path = `pages/seminars/${semiId}.html`;
   const url = `https://github.com{GITHUB_OWNER}/${GITHUB_REPO}/contents/${path}`;
 
   try {
-    const res = await fetch(url, { headers: { 'Authorization': `Bearer ${token}` } });
+    // 埋め込んだトークンで既存のHTMLをチェック
+    const res = await fetch(url, { headers: { 'Authorization': `Bearer ${GITHUB_TOKEN}` } });
     if (res.ok) {
       const fileData = await res.json();
       const fullHtml = new TextDecoder().decode(Uint8Array.from(atob(fileData.content), c => c.charCodeAt(0)));
       
-      // 特有の <section id="main_section"> の内側だけを抜き出す
+      // 特有の <section id="main_section"> の内側だけを抜き出してエディタにセット
       const doc = new DOMParser().parseFromString(fullHtml, 'text/html');
       const mainSection = doc.getElementById('main_section');
       if (mainSection) {
@@ -149,7 +150,7 @@ document.getElementById('save-btn').addEventListener('click', async () => {
 
   try {
     // 3. 上書きするために、現在のHTMLファイルの最新バージョン（sha）を取得
-    const fileRes = await fetch(fileUrl, { headers: { 'Authorization': `Bearer ${loggedInUser.token}` } });
+    const fileRes = await fetch(fileUrl, { headers: { 'Authorization': `Bearer ${GITHUB_TOKEN}` } });
     let currentSha = null;
     if (fileRes.ok) {
       const fileData = await fileRes.json();
@@ -160,11 +161,11 @@ document.getElementById('save-btn').addEventListener('click', async () => {
     const utf8Bytes = new TextEncoder().encode(finalFullHtml);
     const base64Content = btoa(String.fromCharCode(...utf8Bytes));
 
-    // 5. GitHub API を叩いて、プレーンHTMLを自動上書きプッシュ！
+    // 5. 【後半の保存処理】埋め込みトークンで、プレーンHTMLを自動上書きプッシュ！
     const putRes = await fetch(fileUrl, {
       method: 'PUT',
       headers: {
-        'Authorization': `Bearer ${loggedInUser.token}`,
+        'Authorization': `Bearer ${GITHUB_TOKEN}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
@@ -177,7 +178,7 @@ document.getElementById('save-btn').addEventListener('click', async () => {
     if (!putRes.ok) throw new Error("HTMLの保存に失敗しました。");
 
     // 6. 📄 編集履歴ログ（src/log.txt）の追記処理
-    const logRes = await fetch(logUrl, { headers: { 'Authorization': `Bearer ${loggedInUser.token}` } });
+    const logRes = await fetch(logUrl, { headers: { 'Authorization': `Bearer ${GITHUB_TOKEN}` } });
     let logSha = null;
     let currentLogText = "";
     if (logRes.ok) {
@@ -194,11 +195,11 @@ document.getElementById('save-btn').addEventListener('click', async () => {
     const logBytes = new TextEncoder().encode(updatedLogText);
     const base64Log = btoa(String.fromCharCode(...logBytes));
 
-    // ログファイルをGitHubへプッシュ
+    // 【後半の保存処理】ログファイルを埋め込みトークンでGitHubへプッシュ
     await fetch(logUrl, {
       method: 'PUT',
       headers: {
-        'Authorization': `Bearer ${loggedInUser.token}`,
+        'Authorization': `Bearer ${GITHUB_TOKEN}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
