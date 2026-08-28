@@ -11,8 +11,12 @@
   }
 
   function getUser() {
-    try { return JSON.parse(sessionStorage.getItem('reitansai_user') || 'null'); }
-    catch { return null; }
+    try {
+      var raw = localStorage.getItem('reitansai_user') || sessionStorage.getItem('reitansai_user') || 'null';
+      return JSON.parse(raw);
+    } catch {
+      return null;
+    }
   }
 
   function mount() {
@@ -33,7 +37,8 @@
         '<button type="button" class="auth-btn auth-out" id="auth-logout">ログアウト</button>';
       header.appendChild(box);
       document.getElementById('auth-logout')?.addEventListener('click', () => {
-        sessionStorage.removeItem('reitansai_user');
+        try { localStorage.removeItem('reitansai_user'); } catch (e) {}
+        try { sessionStorage.removeItem('reitansai_user'); } catch (e) {}
         location.reload();
       });
     } else {

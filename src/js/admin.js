@@ -184,6 +184,7 @@
   }
 
   function tryLogin(id, pw) {
+    id = String(id || '').trim().toLowerCase();
     var u = BUILTIN_USERS[id];
     if (!u) return null;
     if (String(u.password) !== String(pw)) return null;
@@ -301,7 +302,7 @@
             frame.setAttribute('data-css-sha', cssFile.sha);
             var cssText = decodeContent(cssFile.content);
             var m = cssText.match(
-              /\/\* --- teacher-custom-css-start --- \*\/([\s\S]*?)\/\* --- teacher-custom-css-end --- \*\/
+              /\/\* --- teacher-custom-css-start --- \*\/([\s\S]*?)\/\* --- teacher-custom-css-end --- \*\//
             );
             $('css-editor').value = m ? m[1].trim() : '';
             status.textContent = '編集可能';
@@ -380,15 +381,15 @@
         if (cmd === 'createLink') {
           var url = prompt('URL');
           if (url) document.execCommand(cmd, false, url);
-        } else if (cmd === 'insertImage') {
-          var u2 = prompt('画像URL');
-          if (u2) document.execCommand('insertImage', false, u2);
         } else if (cmd === 'insertTable') {
           document.execCommand(
             'insertHTML',
             false,
             '<table><tr><th>A</th><th>B</th></tr><tr><td>-</td><td>-</td></tr></table>'
           );
+        } else if (cmd === 'insertImage') {
+          var u2 = prompt('画像URL');
+          if (u2) document.execCommand('insertImage', false, u2);
         } else if (cmd === 'insertEmbed') {
           var u3 = prompt('iframe src');
           if (u3)
