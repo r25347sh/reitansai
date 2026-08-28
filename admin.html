@@ -3,255 +3,233 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin CMS | 麗誕祭</title>
-  <link rel="stylesheet" href="src/css/common.css">
+  <title>Reitansai CMS</title>
   <link rel="stylesheet" href="src/css/pages/admin.css">
 </head>
-<body class="admin-body">
-  <div class="bg-fixed" aria-hidden="true"></div>
-  <div class="bg-overlay" aria-hidden="true"></div>
-
-  <section id="login-view" class="admin-login-wrap">
-    <div class="card admin-card login-card">
-      <h1 class="page-title" style="margin-top:0">教員ログイン</h1>
-      <p class="page-sub">関係者専用 · Visual CMS</p>
-      <div id="login-box">
-        <label>ユーザーID<input id="uid" autocomplete="username" placeholder="r25347sh"></label>
-        <label>パスワード<input id="pw" type="password" autocomplete="current-password"></label>
-        <button type="button" id="login-btn" class="btn-gold">ログイン</button>
-      </div>
-      <p id="login-status" class="status"></p>
-      <p id="login-error" class="error"></p>
+<body class="cms-app">
+  <!-- LOGIN -->
+  <div id="view-login" class="view view-login">
+    <div class="login-panel">
+      <div class="login-brand">🌲 REITANSAI <span>CMS</span></div>
+      <h1>教員ログイン</h1>
+      <p class="muted">関係者専用ワークスペース</p>
+      <label>ユーザーID<input id="uid" autocomplete="username"></label>
+      <label>パスワード<input id="pw" type="password" autocomplete="current-password"></label>
+      <button type="button" id="btn-login" class="btn primary">ログイン</button>
+      <p id="login-msg" class="msg"></p>
     </div>
-  </section>
+  </div>
 
-  <section id="dash-view" class="admin-dash hidden">
-    <header class="cms-topbar">
-      <a class="site-logo" href="index.html">🌲 REITANSAI <span>CMS</span></a>
-      <div class="cms-topbar-right">
-        <span id="user-label" class="auth-name"></span>
-        <button type="button" id="logout-btn" class="btn-outline">ログアウト</button>
+  <!-- DASH -->
+  <div id="view-dash" class="view view-dash hidden">
+    <header class="app-bar">
+      <a class="brand" href="index.html">🌲 REITANSAI</a>
+      <div class="app-bar-right">
+        <span id="dash-user" class="user-pill"></span>
+        <button type="button" id="btn-logout" class="btn ghost">ログアウト</button>
       </div>
     </header>
-    <main class="cms-dash-main">
-      <h1 class="page-title">ページを選ぶ</h1>
-      <p class="page-sub">タイトルをクリックして、実サイトと同じ画面で編集します。</p>
-      <p id="dash-loading" class="status">ページ情報を読み込み中…</p>
-      <ul id="perm-list" class="perm-list"></ul>
-      <p><a class="auth-btn auth-in" href="index.html">← サイトに戻る</a></p>
+    <main class="dash-main">
+      <div class="dash-head">
+        <h1>ページ一覧</h1>
+        <p class="muted">編集するページを選んでください</p>
+      </div>
+      <div id="presence-board" class="presence-board hidden"></div>
+      <div id="page-grid" class="page-grid"></div>
+      <p id="dash-status" class="muted center"></p>
     </main>
-  </section>
+  </div>
 
-  <section id="edit-view" class="cms-editor hidden">
-    <header class="cms-toolbar">
-      <button type="button" id="btn-back" class="btn-outline">← 戻る</button>
-      <span id="edit-path" class="mono path-chip"></span>
-      <span id="edit-title-chip" class="title-chip"></span>
-      <span id="edit-status" class="status"></span>
-      <div class="toolbar-spacer"></div>
-      <div class="device-toggle">
-        <button type="button" data-device="desktop" class="dev-btn active">🖥</button>
-        <button type="button" data-device="tablet" class="dev-btn">▭</button>
-        <button type="button" data-device="mobile" class="dev-btn">📱</button>
+  <!-- EDITOR -->
+  <div id="view-editor" class="view view-editor hidden">
+    <header class="editor-bar">
+      <button type="button" id="btn-back" class="btn ghost">←</button>
+      <div class="editor-title-block">
+        <div id="ed-title" class="ed-title">—</div>
+        <div id="ed-path" class="ed-path mono"></div>
       </div>
-      <button type="button" id="btn-outline-mode" class="btn-outline">枠線</button>
-      <button type="button" id="btn-undo" class="btn-outline">↶</button>
-      <button type="button" id="btn-redo" class="btn-outline">↷</button>
-      <label class="adv-toggle"><input type="checkbox" id="chk-advanced"> 上級者</label>
-      <input id="commit-msg" class="commit-input" placeholder="変更メモ">
-      <button type="button" id="btn-save" class="btn-gold">保存</button>
+      <div id="collab-pills" class="collab-pills"></div>
+      <div class="bar-spacer"></div>
+      <div class="seg" id="device-seg">
+        <button type="button" data-device="desktop" class="seg-btn on">PC</button>
+        <button type="button" data-device="tablet" class="seg-btn">Tab</button>
+        <button type="button" data-device="mobile" class="seg-btn">SP</button>
+      </div>
+      <button type="button" id="btn-outline" class="btn ghost" title="枠線">枠</button>
+      <button type="button" id="btn-undo" class="btn ghost" title="元に戻す (Ctrl+Z)">↶</button>
+      <button type="button" id="btn-redo" class="btn ghost" title="やり直し (Ctrl+Shift+Z)">↷</button>
+      <input id="commit-msg" class="commit" placeholder="変更メモ">
+      <button type="button" id="btn-save" class="btn primary">保存</button>
     </header>
 
-    <div class="cms-workspace">
-      <aside class="cms-sidebar">
-        <div class="side-tabs">
-          <button type="button" class="side-tab active" data-panel="props">要素</button>
-          <button type="button" class="side-tab" data-panel="blocks">追加</button>
-          <button type="button" class="side-tab" data-panel="meta">メタ</button>
-          <button type="button" class="side-tab" data-panel="media">画像</button>
-          <button type="button" class="side-tab" data-panel="theme">テーマ</button>
-          <button type="button" class="side-tab" data-panel="vars">変数</button>
-          <button type="button" class="side-tab" data-panel="adv">上級</button>
-        </div>
+    <div class="editor-body">
+      <aside class="rail" id="rail">
+        <nav class="rail-tabs" id="rail-tabs">
+          <button type="button" data-tab="style" class="rail-tab on">スタイル</button>
+          <button type="button" data-tab="add" class="rail-tab">追加</button>
+          <button type="button" data-tab="meta" class="rail-tab">メタ</button>
+          <button type="button" data-tab="assets" class="rail-tab">素材</button>
+          <button type="button" data-tab="theme" class="rail-tab">テーマ</button>
+          <button type="button" data-tab="layout" class="rail-tab">配置</button>
+          <button type="button" data-tab="vars" class="rail-tab">変数</button>
+          <button type="button" data-tab="adv" class="rail-tab">上級</button>
+        </nav>
 
-        <div class="side-panel" id="panel-props">
-          <h3 class="side-title">選択中</h3>
-          <p id="sel-tag" class="mono side-meta">（未選択）</p>
-          <p id="sel-lock" class="side-lock hidden">🔒 保護要素（管理者のみ）</p>
-          <label class="side-label">テキスト<textarea id="prop-text" rows="3"></textarea></label>
-          <label class="side-label">リンク URL<input id="prop-href"></label>
-          <label class="side-label">画像 URL<input id="prop-src"></label>
-          <div class="side-row">
-            <label class="side-label">文字色<input type="color" id="prop-color" value="#f0d060"></label>
-            <label class="side-label">背景色<input type="color" id="prop-bg" value="#0a1a12"></label>
-          </div>
-          <label class="side-label">文字サイズ
-            <input type="range" id="prop-size" min="10" max="96" value="16">
-            <span id="prop-size-val" class="mono">16px</span>
-          </label>
-          <label class="side-label">太さ
-            <select id="prop-weight">
-              <option value="">そのまま</option>
-              <option value="300">細</option><option value="400">普通</option>
-              <option value="600">やや太</option><option value="700">太</option>
-            </select>
-          </label>
-          <label class="side-label">配置
-            <select id="prop-align">
-              <option value="">そのまま</option>
-              <option value="left">左</option><option value="center">中央</option><option value="right">右</option>
-            </select>
-          </label>
-          <label class="side-label">不透明度
-            <input type="range" id="prop-opacity" min="10" max="100" value="100">
-            <span id="prop-opacity-val" class="mono">100%</span>
-          </label>
-          <div class="side-actions">
-            <button type="button" id="btn-apply-props" class="btn-gold">適用</button>
-            <button type="button" id="btn-duplicate" class="btn-outline">複製</button>
-            <button type="button" id="btn-make-link" class="btn-outline">リンク化</button>
-            <button type="button" id="btn-unlink" class="btn-outline">リンク解除</button>
-            <button type="button" id="btn-delete-el" class="btn-outline danger">削除</button>
-          </div>
-          <div class="fmt-row" style="margin-top:.75rem">
-            <button type="button" data-cmd="bold" class="fmt-btn"><b>B</b></button>
-            <button type="button" data-cmd="italic" class="fmt-btn"><i>I</i></button>
-            <button type="button" data-cmd="underline" class="fmt-btn"><u>U</u></button>
-            <button type="button" data-cmd="strikeThrough" class="fmt-btn"><s>S</s></button>
-          </div>
-          <p class="side-hint">ドラッグで移動 · 角ハンドルでリサイズ</p>
-        </div>
+        <div class="rail-panels">
+          <section class="rail-panel" data-panel="style">
+            <div id="sel-info" class="sel-info">未選択</div>
+            <label>テキスト<textarea id="p-text" rows="3"></textarea></label>
+            <div class="row2">
+              <label>文字色<input type="color" id="p-color" value="#e8f0e8"></label>
+              <label>背景<input type="color" id="p-bg" value="#0a1a12"></label>
+            </div>
+            <label>サイズ <span id="p-size-v">16</span>px
+              <input type="range" id="p-size" min="10" max="96" value="16">
+            </label>
+            <label>太さ
+              <select id="p-weight">
+                <option value="">—</option>
+                <option value="300">細</option><option value="400">並</option>
+                <option value="600">中太</option><option value="700">太</option>
+              </select>
+            </label>
+            <label>揃え
+              <select id="p-align">
+                <option value="">—</option>
+                <option value="left">左</option><option value="center">中央</option><option value="right">右</option>
+              </select>
+            </label>
+            <label>リンク<input id="p-href" placeholder="URL"></label>
+            <div class="fmt">
+              <button type="button" data-cmd="bold"><b>B</b></button>
+              <button type="button" data-cmd="italic"><i>I</i></button>
+              <button type="button" data-cmd="underline"><u>U</u></button>
+              <button type="button" data-cmd="strikeThrough"><s>S</s></button>
+              <button type="button" data-cmd="justifyLeft">左</button>
+              <button type="button" data-cmd="justifyCenter">中</button>
+              <button type="button" data-cmd="justifyRight">右</button>
+              <button type="button" data-cmd="insertUnorderedList">•</button>
+              <button type="button" data-cmd="insertOrderedList">1.</button>
+            </div>
+            <button type="button" id="btn-apply-style" class="btn primary block">適用</button>
+          </section>
 
-        <div class="side-panel hidden" id="panel-blocks">
-          <h3 class="side-title">ブロック追加</h3>
-          <div class="block-grid">
-            <button type="button" class="block-btn" data-ins="heading">見出し</button>
-            <button type="button" class="block-btn" data-ins="text">テキスト</button>
-            <button type="button" class="block-btn" data-ins="button">ボタン</button>
-            <button type="button" class="block-btn" data-ins="link">リンク</button>
-            <button type="button" class="block-btn" data-ins="image">画像</button>
-            <button type="button" class="block-btn" data-ins="box">ボックス</button>
-            <button type="button" class="block-btn" data-ins="card">カード</button>
-            <button type="button" class="block-btn" data-ins="list">リスト</button>
-            <button type="button" class="block-btn" data-ins="divider">区切り</button>
-            <button type="button" class="block-btn" data-ins="spacer">余白</button>
-            <button type="button" class="block-btn" data-ins="columns">2カラム</button>
-            <button type="button" class="block-btn" data-ins="video">動画枠</button>
-            <button type="button" class="block-btn" data-ins="date">日付</button>
-            <button type="button" class="block-btn" data-ins="var">変数</button>
-          </div>
-        </div>
+          <section class="rail-panel hidden" data-panel="add">
+            <p class="hint">選択位置の近くに挿入（自動微調整あり）</p>
+            <div class="add-grid">
+              <button type="button" data-add="h2">見出し</button>
+              <button type="button" data-add="p">段落</button>
+              <button type="button" data-add="btn">ボタン</button>
+              <button type="button" data-add="a">リンク</button>
+              <button type="button" data-add="img">画像</button>
+              <button type="button" data-add="box">ボックス</button>
+              <button type="button" data-add="card">カード</button>
+              <button type="button" data-add="ul">リスト</button>
+              <button type="button" data-add="hr">区切り</button>
+              <button type="button" data-add="spacer">余白</button>
+              <button type="button" data-add="cols">2列</button>
+              <button type="button" data-add="date">日付</button>
+            </div>
+          </section>
 
-        <div class="side-panel hidden" id="panel-meta">
-          <h3 class="side-title">ページのメタ情報</h3>
-          <p class="side-hint">検索結果やブラウザタブに出る情報です</p>
-          <label class="side-label">title（タブ名・検索タイトル）
-            <input id="meta-title" placeholder="ページタイトル">
-          </label>
-          <label class="side-label">description（説明文）
-            <textarea id="meta-desc" rows="3" placeholder="120文字前後が目安"></textarea>
-          </label>
-          <label class="side-label">author
-            <input id="meta-author" placeholder="著者・担当">
-          </label>
-          <label class="side-label">favicon URL
-            <input id="meta-favicon" placeholder="画像URL または サイト内パス">
-          </label>
-          <label class="side-label">OGP画像 URL（任意）
-            <input id="meta-og-image" placeholder="SNS共有用画像">
-          </label>
-          <label class="side-label">robots
-            <select id="meta-robots">
-              <option value="">指定なし</option>
-              <option value="index,follow">index,follow</option>
-              <option value="noindex,nofollow">noindex,nofollow</option>
-              <option value="noindex,follow">noindex,follow</option>
-            </select>
-          </label>
-          <button type="button" id="btn-apply-meta" class="btn-gold">メタを反映</button>
-          <p class="side-hint">反映後、保存でGitHubに書き込みます</p>
-        </div>
+          <section class="rail-panel hidden" data-panel="meta">
+            <label>title<input id="m-title"></label>
+            <label>description<textarea id="m-desc" rows="3"></textarea></label>
+            <label>author<input id="m-author"></label>
+            <label>favicon<input id="m-icon"></label>
+            <label>og:image<input id="m-og"></label>
+            <label>robots
+              <select id="m-robots">
+                <option value="">—</option>
+                <option value="index,follow">index,follow</option>
+                <option value="noindex,nofollow">noindex,nofollow</option>
+              </select>
+            </label>
+            <button type="button" id="btn-meta" class="btn primary block">メタ反映</button>
+          </section>
 
-        <div class="side-panel hidden" id="panel-media">
-          <h3 class="side-title">画像アップロード</h3>
-          <p class="side-hint">保存先: <code id="media-dir-hint">src/files/pages/…</code></p>
-          <label class="side-label">ファイル
-            <input type="file" id="media-file" accept="image/*">
-          </label>
-          <label class="side-label">ファイル名（任意）
-            <input id="media-name" placeholder="自動命名も可">
-          </label>
-          <button type="button" id="btn-upload-media" class="btn-gold">アップロード</button>
-          <p id="media-status" class="status"></p>
-          <label class="side-label">アップロード済みURL
-            <input id="media-url" readonly placeholder="アップロード後に表示">
-          </label>
-          <div class="side-actions">
-            <button type="button" id="btn-use-as-img" class="btn-outline">選択要素の画像にする</button>
-            <button type="button" id="btn-insert-uploaded" class="btn-outline">新規画像として挿入</button>
-          </div>
-        </div>
+          <section class="rail-panel hidden" data-panel="assets">
+            <p class="hint" id="asset-dir">src/files/pages/…</p>
+            <label>アップロード<input type="file" id="asset-file" accept="image/*"></label>
+            <button type="button" id="btn-upload" class="btn primary block">アップロード</button>
+            <p id="asset-msg" class="msg"></p>
+            <div id="asset-list" class="asset-list"></div>
+          </section>
 
-        <div class="side-panel hidden" id="panel-theme">
-          <h3 class="side-title">ページ全体の色</h3>
-          <label class="side-label">背景<input type="color" id="theme-bg" value="#06140e"></label>
-          <label class="side-label">文字<input type="color" id="theme-text" value="#e8f0e8"></label>
-          <label class="side-label">アクセント<input type="color" id="theme-gold" value="#c9a227"></label>
-          <label class="side-label">カード<input type="color" id="theme-card" value="#0a1a12"></label>
-          <button type="button" id="btn-apply-theme" class="btn-gold">テーマ適用</button>
-          <button type="button" id="btn-reset-theme" class="btn-outline">テーマ解除</button>
-          <hr class="side-hr">
-          <h3 class="side-title">ページCSS</h3>
-          <textarea id="css-editor" rows="8" placeholder="/* 追加CSS */"></textarea>
-        </div>
+          <section class="rail-panel hidden" data-panel="theme">
+            <p class="hint">ページ全体の色を一括変更</p>
+            <label>背景<input type="color" id="t-bg" value="#06140e"></label>
+            <label>文字<input type="color" id="t-text" value="#e8f0e8"></label>
+            <label>アクセント<input type="color" id="t-accent" value="#c9a227"></label>
+            <label>カード<input type="color" id="t-card" value="#0c1c14"></label>
+            <button type="button" id="btn-theme" class="btn primary block">テーマ適用</button>
+            <button type="button" id="btn-theme-reset" class="btn ghost block">リセット</button>
+            <label>追加CSS<textarea id="t-css" rows="7" placeholder="/* custom */"></textarea></label>
+          </section>
 
-        <div class="side-panel hidden" id="panel-vars">
-          <h3 class="side-title">動的値</h3>
-          <div class="var-presets">
-            <button type="button" class="btn-outline var-chip" data-var="{{date}}">日付</button>
-            <button type="button" class="btn-outline var-chip" data-var="{{year}}">年</button>
-            <button type="button" class="btn-outline var-chip" data-var="{{user}}">編集者</button>
-            <button type="button" class="btn-outline var-chip" data-var="{{page}}">ページ</button>
-          </div>
-          <h3 class="side-title" style="margin-top:1rem">ユーザー変数</h3>
-          <div id="var-list"></div>
-          <label class="side-label">名前<input id="var-key" placeholder="event_name"></label>
-          <label class="side-label">値<input id="var-val" placeholder="麗誕祭2026"></label>
-          <button type="button" id="btn-add-var" class="btn-gold">追加</button>
-          <button type="button" id="btn-insert-var" class="btn-outline">選択要素に挿入</button>
-        </div>
+          <section class="rail-panel hidden" data-panel="layout">
+            <p class="hint">複数選択（Shift/Ctrl+クリック）向け</p>
+            <button type="button" id="lay-group" class="btn ghost block">グループ化</button>
+            <button type="button" id="lay-ungroup" class="btn ghost block">グループ解除</button>
+            <button type="button" id="lay-row" class="btn ghost block">横並び均等</button>
+            <button type="button" id="lay-col" class="btn ghost block">縦並び均等</button>
+            <button type="button" id="lay-fit-w" class="btn ghost block">横幅にフィット</button>
+            <button type="button" id="lay-region" class="btn primary block">範囲指定して自動配置</button>
+            <p class="hint">範囲指定: キャンバス上をドラッグ → OK</p>
+          </section>
 
-        <div class="side-panel hidden" id="panel-adv">
-          <h3 class="side-title">上級者向け</h3>
-          <label class="side-label">class<input id="adv-class"></label>
-          <label class="side-label">id<input id="adv-id"></label>
-          <label class="side-label">z-index<input id="adv-z" type="number"></label>
-          <label class="side-label">display
-            <select id="adv-display">
-              <option value="">そのまま</option>
-              <option value="block">block</option>
-              <option value="flex">flex</option>
-              <option value="grid">grid</option>
-              <option value="inline-block">inline-block</option>
-              <option value="none">none</option>
-            </select>
-          </label>
-          <label class="side-label">HTML<textarea id="adv-html" rows="8"></textarea></label>
-          <button type="button" id="btn-apply-adv" class="btn-gold">適用</button>
-          <button type="button" id="btn-lock-el" class="btn-outline">要素を保護</button>
-          <button type="button" id="btn-unlock-el" class="btn-outline">保護解除</button>
-          <p class="side-hint">保護は管理者のみ。フッター著作権は既定で保護されます。</p>
+          <section class="rail-panel hidden" data-panel="vars">
+            <div class="chip-row">
+              <button type="button" class="chip" data-var="{{date}}">日付</button>
+              <button type="button" class="chip" data-var="{{year}}">年</button>
+              <button type="button" class="chip" data-var="{{user}}">編集者</button>
+            </div>
+            <div id="var-list"></div>
+            <label>名前<input id="v-key"></label>
+            <label>値<input id="v-val"></label>
+            <button type="button" id="btn-var-add" class="btn primary block">変数追加</button>
+          </section>
+
+          <section class="rail-panel hidden" data-panel="adv">
+            <label>class<input id="a-class"></label>
+            <label>id<input id="a-id"></label>
+            <label>z-index<input id="a-z" type="number"></label>
+            <label>HTML<textarea id="a-html" rows="8"></textarea></label>
+            <button type="button" id="btn-adv" class="btn primary block">適用</button>
+            <button type="button" id="btn-lock" class="btn ghost block">保護</button>
+            <button type="button" id="btn-unlock" class="btn ghost block">保護解除</button>
+          </section>
         </div>
       </aside>
 
-      <div class="cms-canvas-wrap">
-        <div id="canvas-frame" class="cms-canvas device-desktop">
-          <iframe id="preview-frame" title="プレビュー" sandbox="allow-same-origin allow-scripts allow-forms"></iframe>
+      <div class="stage-wrap">
+        <div id="stage" class="stage device-desktop">
+          <iframe id="frame" title="preview" sandbox="allow-same-origin allow-scripts"></iframe>
+          <div id="region-mask" class="region-mask hidden"></div>
         </div>
-        <p class="canvas-hint">クリック選択 · ドラッグ移動 · リサイズ · ダブルクリックで文字編集</p>
+        <div id="status" class="status-bar">準備完了</div>
       </div>
     </div>
-  </section>
+  </div>
+
+  <!-- Context menu -->
+  <div id="ctx" class="ctx hidden" role="menu">
+    <button type="button" data-ctx="edit">テキスト編集</button>
+    <button type="button" data-ctx="copy">コピー</button>
+    <button type="button" data-ctx="cut">切り取り</button>
+    <button type="button" data-ctx="paste">貼り付け</button>
+    <button type="button" data-ctx="dup">複製</button>
+    <button type="button" data-ctx="delete">削除</button>
+    <hr>
+    <button type="button" data-ctx="front">最前面へ</button>
+    <button type="button" data-ctx="forward">前面へ</button>
+    <button type="button" data-ctx="backward">背面へ</button>
+    <button type="button" data-ctx="back">最背面へ</button>
+    <hr>
+    <button type="button" data-ctx="group">グループ化</button>
+    <button type="button" data-ctx="lock">保護（管理者）</button>
+  </div>
+
   <script src="src/js/admin.js"></script>
 </body>
 </html>
