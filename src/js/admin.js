@@ -1,7 +1,7 @@
 /**
  * Reitansai CMS — 確実ログイン版
- * 認証は BUILTIN_USERS（JS内完結）。fetch 不要。
- * 保存のみ GitHub API を使用。
+ * 認証は BUILTIN_USERS（JS内完結・通信不要）
+ * form を使わず button#login-btn の click のみ（リロード防止）
  */
 (function () {
   'use strict';
@@ -19,7 +19,6 @@
     GITHUB_REPO +
     '/contents';
 
-  /* ===== ログイン専用: ネットワーク不要 ===== */
   var ALL_SEMINARS = [
     'pages/seminars/ai.html',
     'pages/seminars/asobi.html',
@@ -47,103 +46,26 @@
   ].concat(ALL_SEMINARS);
 
   var BUILTIN_USERS = {
-    noguchi: {
-      password: 'qU7%kE9!J8s@',
-      name: '野口先生',
-      semi_name: 'データサイエンス探究AIゼミ',
-      permissions: ['pages/seminars/ai.html']
-    },
-    akimoto: {
-      password: 'uP6*ezCL9c3K',
-      name: '秋元先生',
-      semi_name: '教育ゼミ',
-      permissions: ['pages/seminars/kyouiku.html']
-    },
-    kondo: {
-      password: 'tU5@nnVXMNNV',
-      name: '近藤先生',
-      semi_name: '国際地域研究ゼミ',
-      permissions: ['pages/seminars/kokusai.html']
-    },
-    kato: {
-      password: 'eW1%yabeDYwe',
-      name: '加藤先生',
-      semi_name: '文芸小説創作ゼミ',
-      permissions: ['pages/seminars/bungei.html']
-    },
-    hirai: {
-      password: 'qG4!Lu8hwq46',
-      name: '平井先生',
-      semi_name: '化学ゼミ',
-      permissions: ['pages/seminars/kagaku.html']
-    },
-    takeuchi: {
-      password: 'eS8!h&INcndP',
-      name: '竹内先生',
-      semi_name: '文学ゼミ',
-      permissions: ['pages/seminars/bungaku.html']
-    },
-    sasaki: {
-      password: 'nV2!H8eHgFf^',
-      name: '佐々木先生',
-      semi_name: 'メディアゼミ',
-      permissions: ['pages/seminars/media.html']
-    },
-    sudou: {
-      password: 'sF0@Hk2hLahp',
-      name: '須藤先生',
-      semi_name: '社会ゼミ',
-      permissions: ['pages/seminars/syakai.html']
-    },
-    shimokawa: {
-      password: 'lQ4%mGnScp3#',
-      name: '下川先生',
-      semi_name: '農業ゼミ',
-      permissions: ['pages/seminars/nougyou.html']
-    },
-    shibahara: {
-      password: 'bC1&$&XMKxVD',
-      name: '芝原先生',
-      semi_name: '観光ゼミ',
-      permissions: ['pages/seminars/kankou.html']
-    },
-    matsuya: {
-      password: 'wV4#DvjlWCnp',
-      name: '松谷先生',
-      semi_name: '語学ゼミ',
-      permissions: ['pages/seminars/gogaku.html']
-    },
-    matsumaru: {
-      password: 'aS5@P@#vVy$5',
-      name: '松丸先生',
-      semi_name: '遊びの探究ゼミ',
-      permissions: ['pages/seminars/asobi.html']
-    },
-    mieta01: {
-      password: 'xA7*GOYzR@3Y',
-      name: 'ミエタアカウント０１',
-      semi_name: '映像編集ゼミ',
-      permissions: ['pages/seminars/eizou.html']
-    },
-    mieta02: {
-      password: 'iD0*M5pLBV3*',
-      name: 'ミエタアカウント０２',
-      semi_name: 'デジタルコンテンツ制作ゼミ',
-      permissions: ['pages/seminars/digi.html']
-    },
-    mieta03: {
-      password: 'iZ0^NdIkDuf2',
-      name: 'ミエタアカウント０３',
-      semi_name: 'イベント企画ゼミ',
-      permissions: ['pages/seminars/event.html']
-    },
+    noguchi: { password: 'qU7%kE9!J8s@', name: '野口先生', semi_name: 'データサイエンス探究AIゼミ', permissions: ['pages/seminars/ai.html'] },
+    akimoto: { password: 'uP6*ezCL9c3K', name: '秋元先生', semi_name: '教育ゼミ', permissions: ['pages/seminars/kyouiku.html'] },
+    kondo: { password: 'tU5@nnVXMNNV', name: '近藤先生', semi_name: '国際地域研究ゼミ', permissions: ['pages/seminars/kokusai.html'] },
+    kato: { password: 'eW1%yabeDYwe', name: '加藤先生', semi_name: '文芸小説創作ゼミ', permissions: ['pages/seminars/bungei.html'] },
+    hirai: { password: 'qG4!Lu8hwq46', name: '平井先生', semi_name: '化学ゼミ', permissions: ['pages/seminars/kagaku.html'] },
+    takeuchi: { password: 'eS8!h&INcndP', name: '竹内先生', semi_name: '文学ゼミ', permissions: ['pages/seminars/bungaku.html'] },
+    sasaki: { password: 'nV2!H8eHgFf^', name: '佐々木先生', semi_name: 'メディアゼミ', permissions: ['pages/seminars/media.html'] },
+    sudou: { password: 'sF0@Hk2hLahp', name: '須藤先生', semi_name: '社会ゼミ', permissions: ['pages/seminars/syakai.html'] },
+    shimokawa: { password: 'lQ4%mGnScp3#', name: '下川先生', semi_name: '農業ゼミ', permissions: ['pages/seminars/nougyou.html'] },
+    shibahara: { password: 'bC1&$&XMKxVD', name: '芝原先生', semi_name: '観光ゼミ', permissions: ['pages/seminars/kankou.html'] },
+    matsuya: { password: 'wV4#DvjlWCnp', name: '松谷先生', semi_name: '語学ゼミ', permissions: ['pages/seminars/gogaku.html'] },
+    matsumaru: { password: 'aS5@P@#vVy$5', name: '松丸先生', semi_name: '遊びの探究ゼミ', permissions: ['pages/seminars/asobi.html'] },
+    mieta01: { password: 'xA7*GOYzR@3Y', name: 'ミエタアカウント０１', semi_name: '映像編集ゼミ', permissions: ['pages/seminars/eizou.html'] },
+    mieta02: { password: 'iD0*M5pLBV3*', name: 'ミエタアカウント０２', semi_name: 'デジタルコンテンツ制作ゼミ', permissions: ['pages/seminars/digi.html'] },
+    mieta03: { password: 'iZ0^NdIkDuf2', name: 'ミエタアカウント０３', semi_name: 'イベント企画ゼミ', permissions: ['pages/seminars/event.html'] },
     takimura: {
       password: 'Tkm#2026$Forest!Myst9',
       name: '瀧村先生',
       semi_name: '瀧村ゼミ・全体管理',
-      permissions: ['pages/takimura_t.html', 'pages/about_reitansai.html', 'pages/aboutThisSite.html'].concat(
-        ALL_SEMINARS
-      )
+      permissions: ['pages/takimura_t.html', 'pages/about_reitansai.html', 'pages/aboutThisSite.html'].concat(ALL_SEMINARS)
     },
     r25347sh: {
       password: 'kes-2592',
@@ -155,8 +77,7 @@
 
   function getSession() {
     try {
-      var raw =
-        localStorage.getItem(SESSION_KEY) || sessionStorage.getItem(SESSION_KEY);
+      var raw = localStorage.getItem(SESSION_KEY) || sessionStorage.getItem(SESSION_KEY);
       return raw ? JSON.parse(raw) : null;
     } catch (e) {
       return null;
@@ -165,33 +86,24 @@
 
   function setSession(u) {
     var s = JSON.stringify(u);
-    try {
-      localStorage.setItem(SESSION_KEY, s);
-    } catch (e) {}
-    try {
-      sessionStorage.setItem(SESSION_KEY, s);
-    } catch (e) {}
+    try { localStorage.setItem(SESSION_KEY, s); } catch (e) {}
+    try { sessionStorage.setItem(SESSION_KEY, s); } catch (e) {}
   }
 
   function clearSession() {
-    try {
-      localStorage.removeItem(SESSION_KEY);
-    } catch (e) {}
-    try {
-      sessionStorage.removeItem(SESSION_KEY);
-    } catch (e) {}
+    try { localStorage.removeItem(SESSION_KEY); } catch (e) {}
+    try { sessionStorage.removeItem(SESSION_KEY); } catch (e) {}
   }
 
   function $(id) {
     return document.getElementById(id);
   }
 
-  /** CSSに頼らず確実に表示切替 */
   function setVisible(el, on) {
     if (!el) return;
     if (on) {
       el.classList.remove('hidden');
-      el.style.display = '';
+      el.style.display = 'block';
       el.removeAttribute('hidden');
     } else {
       el.classList.add('hidden');
@@ -237,8 +149,7 @@
     var label = $('user-label');
     var list = $('perm-list');
     if (label) {
-      label.textContent =
-        (user.name || user.id) + '（' + (user.semi_name || '') + '）';
+      label.textContent = (user.name || user.id) + '（' + (user.semi_name || '') + '）';
     }
     if (list) {
       list.innerHTML = '';
@@ -284,7 +195,24 @@
     };
   }
 
-  /* ===== GitHub 保存用 ===== */
+  function doLogin() {
+    var errEl = $('login-error');
+    var st = $('login-status');
+    if (errEl) errEl.textContent = '';
+    var id = ($('uid') && $('uid').value.trim()) || '';
+    var pw = ($('pw') && $('pw').value) || '';
+    if (st) st.textContent = '認証中…';
+    var session = tryLogin(id, pw);
+    if (!session) {
+      if (errEl) errEl.textContent = 'ID またはパスワードが違います（id="' + id + '"）';
+      if (st) st.textContent = '';
+      return;
+    }
+    setSession(session);
+    if (st) st.textContent = 'ログイン成功';
+    enterDash(session);
+  }
+
   function ghHeaders() {
     return {
       Accept: 'application/vnd.github+json',
@@ -299,12 +227,10 @@
   }
 
   function getFile(path) {
-    return fetch(API + '/' + path + '?ref=main', { headers: ghHeaders() }).then(
-      function (res) {
-        if (!res.ok) throw new Error('GET ' + path + ': ' + res.status);
-        return res.json();
-      }
-    );
+    return fetch(API + '/' + path + '?ref=main', { headers: ghHeaders() }).then(function (res) {
+      if (!res.ok) throw new Error('GET ' + path + ': ' + res.status);
+      return res.json();
+    });
   }
 
   function putFile(path, content, message, sha) {
@@ -329,9 +255,7 @@
 
   function pathToCss(htmlPath) {
     if (htmlPath.indexOf('pages/seminars/') === 0)
-      return htmlPath
-        .replace('pages/seminars/', 'src/css/pages/seminars/')
-        .replace('.html', '.css');
+      return htmlPath.replace('pages/seminars/', 'src/css/pages/seminars/').replace('.html', '.css');
     if (htmlPath.indexOf('pages/') === 0)
       return htmlPath.replace('pages/', 'src/css/pages/').replace('.html', '.css');
     if (htmlPath === 'index.html') return 'src/css/pages/index.css';
@@ -393,19 +317,15 @@
   }
 
   function boot() {
-    var loginView = $('login-view');
-    var dashView = $('dash-view');
-    var editView = $('edit-view');
-    if (!loginView || !dashView) {
+    if (!$('login-view') || !$('dash-view')) {
       document.body.insertAdjacentHTML(
         'afterbegin',
-        '<p style="color:red;padding:1rem">admin.html の構造が不正です（login-view / dash-view なし）</p>'
+        '<p style="color:red;padding:1rem">admin.html 構造エラー</p>'
       );
       return;
     }
 
-    // 初期は全部一旦隠してから判定
-    setVisible(editView, false);
+    setVisible($('edit-view'), false);
 
     var existing = getSession();
     if (existing && existing.id) {
@@ -415,30 +335,23 @@
       mountHeader(null);
     }
 
-    var form = $('login-form');
-    if (form) {
-      form.addEventListener('submit', function (e) {
-        e.preventDefault();
-        e.stopPropagation();
-        var errEl = $('login-error');
-        var st = $('login-status');
-        if (errEl) errEl.textContent = '';
-        var id = ($('uid') && $('uid').value.trim()) || '';
-        var pw = ($('pw') && $('pw').value) || '';
-        if (st) st.textContent = '認証中…';
-        // 同期・即時（fetchなし）
-        var session = tryLogin(id, pw);
-        if (!session) {
-          if (errEl) errEl.textContent = 'ID またはパスワードが違います（id="' + id + '"）';
-          if (st) st.textContent = '';
-          return false;
-        }
-        setSession(session);
-        if (st) st.textContent = 'ログイン成功 → ダッシュボードへ';
-        enterDash(session);
-        return false;
-      });
+    // ★ form ではなく button click（リロードしない）
+    var loginBtn = $('login-btn');
+    if (loginBtn) {
+      loginBtn.onclick = function (e) {
+        if (e) e.preventDefault();
+        doLogin();
+      };
     }
+    // Enter キーでもログイン（input 上）
+    function onEnter(e) {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        doLogin();
+      }
+    }
+    if ($('uid')) $('uid').addEventListener('keydown', onEnter);
+    if ($('pw')) $('pw').addEventListener('keydown', onEnter);
 
     var logoutBtn = $('logout-btn');
     if (logoutBtn) {
@@ -479,11 +392,7 @@
         } else if (cmd === 'insertEmbed') {
           var u3 = prompt('iframe src');
           if (u3)
-            document.execCommand(
-              'insertHTML',
-              false,
-              '<iframe src="' + u3 + '" allowfullscreen></iframe>'
-            );
+            document.execCommand('insertHTML', false, '<iframe src="' + u3 + '" allowfullscreen></iframe>');
         } else {
           document.execCommand(cmd, false, null);
         }
@@ -497,15 +406,13 @@
         var path = frame.getAttribute('data-path');
         var status = $('edit-status');
         var user = getSession();
-        var commitMsg = (($('commit-msg') && $('commit-msg').value.trim()) || '2026/08/28の変更');
+        var commitMsg =
+          ($('commit-msg') && $('commit-msg').value.trim()) || '2026/08/28の変更';
         if (!path || !user) return;
         status.textContent = '保存中…';
         getFile(path)
           .then(function (file) {
-            var doc = new DOMParser().parseFromString(
-              decodeContent(file.content),
-              'text/html'
-            );
+            var doc = new DOMParser().parseFromString(decodeContent(file.content), 'text/html');
             var title = $('meta-title').value;
             var desc = $('meta-desc').value;
             var author = $('meta-author').value;
