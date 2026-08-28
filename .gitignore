@@ -3,3 +3,4 @@ sandbox/
 node_modules/
 # 将来、秘密の鍵を書いたファイルを作ったらここに追加して隠す
 .env
+.DS_Store

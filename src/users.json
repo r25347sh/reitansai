@@ -1,93 +1,131 @@
 {
-    "noguchi": {
-      "password": "qU7%kE9!J8s@",
-      "name": "野口先生",
-      "semi_id": "ai",
-      "semi_name": "データサイエンス探究AIゼミ"
-    },
-    "akimoto": {
-      "password": "uP6*ezCL9c3K",
-      "name": "秋元先生",
-      "semi_id": "kyouiku",
-      "semi_name": "教育ゼミ"
-    },
-    "kondo": {
-      "password": "tU5@nnVXMNNV",
-      "name": "近藤先生",
-      "semi_id": "kokusai",
-      "semi_name": "国際地域研究ゼミ"
-    },
-    "kato": {
-      "password": "eW1%yabeDYwe",
-      "name": "加藤先生",
-      "semi_id": "bungei",
-      "semi_name": "文芸小説創作ゼミ"
-    },
-    "hirai": {
-      "password": "qG4!Lu8hwq46",
-      "name": "平井先生",
-      "semi_id": "kagaku",
-      "semi_name": "化学ゼミ"
-    },
-    "takeuchi": {
-      "password": "eS8!h&INcndP",
-      "name": "竹内先生",
-      "semi_id": "bungaku",
-      "semi_name": "文学ゼミ"
-    },
-    "sasaki": {
-      "password": "nV2!H8eHgFf^",
-      "name": "佐々木先生",
-      "semi_id": "media",
-      "semi_name": "メディアゼミ"
-    },
-    "sudou": {
-      "password": "sF0@Hk2hLahp",
-      "name": "須藤先生",
-      "semi_id": "syakai",
-      "semi_name": "社会ゼミ"
-    },
-    "shimokawa": {
-      "password": "lQ4%mGnScp3#",
-      "name": "下川先生",
-      "semi_id": "nougyou",
-      "semi_name": "農業ゼミ"
-    },
-    "shibahara": {
-      "password": "bC1&$&XMKxVD",
-      "name": "芝原先生",
-      "semi_id": "kankou",
-      "semi_name": "観光ゼミ"
-    },
-    "matsuya": {
-      "password": "wV4#DvjlWCnp",
-      "name": "松谷先生",
-      "semi_id": "gogaku",
-      "semi_name": "語学ゼミ"
-    },
-    "matsumaru": {
-      "password": "aS5@P@#vVy$5",
-      "name": "松丸先生",
-      "semi_id": "asobi",
-      "semi_name": "遊びの探究ゼミ"
-    },
-    "mieta01": {
-      "password": "xA7*GOYzR@3Y",
-      "name": "ミエタアカウント０１",
-      "semi_id": "eizou",
-      "semi_name": "映像編集ゼミ"
-    },
-    "mieta02": {
-      "password": "iD0*M5pLBV3*",
-      "name": "ミエタアカウント０２",
-      "semi_id": "digi",
-      "semi_name": "デジタルコンテンツ制作ゼミ"
-    },
-    "mieta03": {
-      "password": "iZ0^NdIkDuf2",
-      "name": "ミエタアカウント０３",
-      "semi_id": "event",
-      "semi_name": "イベント企画ゼミ"
-    }
+  "noguchi": {
+    "password": "qU7%kE9!J8s@",
+    "name": "野口先生",
+    "semi_id": "ai",
+    "semi_name": "データサイエンス探究AIゼミ",
+    "permissions": ["pages/seminars/ai.html"]
+  },
+  "akimoto": {
+    "password": "uP6*ezCL9c3K",
+    "name": "秋元先生",
+    "semi_id": "kyouiku",
+    "semi_name": "教育ゼミ",
+    "permissions": ["pages/seminars/kyouiku.html"]
+  },
+  "kondo": {
+    "password": "tU5@nnVXMNNV",
+    "name": "近藤先生",
+    "semi_id": "kokusai",
+    "semi_name": "国際地域研究ゼミ",
+    "permissions": ["pages/seminars/kokusai.html"]
+  },
+  "kato": {
+    "password": "eW1%yabeDYwe",
+    "name": "加藤先生",
+    "semi_id": "bungei",
+    "semi_name": "文芸小説創作ゼミ",
+    "permissions": ["pages/seminars/bungei.html"]
+  },
+  "hirai": {
+    "password": "qG4!Lu8hwq46",
+    "name": "平井先生",
+    "semi_id": "kagaku",
+    "semi_name": "化学ゼミ",
+    "permissions": ["pages/seminars/kagaku.html"]
+  },
+  "takeuchi": {
+    "password": "eS8!h&INcndP",
+    "name": "竹内先生",
+    "semi_id": "bungaku",
+    "semi_name": "文学ゼミ",
+    "permissions": ["pages/seminars/bungaku.html"]
+  },
+  "sasaki": {
+    "password": "nV2!H8eHgFf^",
+    "name": "佐々木先生",
+    "semi_id": "media",
+    "semi_name": "メディアゼミ",
+    "permissions": ["pages/seminars/media.html"]
+  },
+  "sudou": {
+    "password": "sF0@Hk2hLahp",
+    "name": "須藤先生",
+    "semi_id": "syakai",
+    "semi_name": "社会ゼミ",
+    "permissions": ["pages/seminars/syakai.html"]
+  },
+  "shimokawa": {
+    "password": "lQ4%mGnScp3#",
+    "name": "下川先生",
+    "semi_id": "nougyou",
+    "semi_name": "農業ゼミ",
+    "permissions": ["pages/seminars/nougyou.html"]
+  },
+  "shibahara": {
+    "password": "bC1&$&XMKxVD",
+    "name": "芝原先生",
+    "semi_id": "kankou",
+    "semi_name": "観光ゼミ",
+    "permissions": ["pages/seminars/kankou.html"]
+  },
+  "matsuya": {
+    "password": "wV4#DvjlWCnp",
+    "name": "松谷先生",
+    "semi_id": "gogaku",
+    "semi_name": "語学ゼミ",
+    "permissions": ["pages/seminars/gogaku.html"]
+  },
+  "matsumaru": {
+    "password": "aS5@P@#vVy$5",
+    "name": "松丸先生",
+    "semi_id": "asobi",
+    "semi_name": "遊びの探究ゼミ",
+    "permissions": ["pages/seminars/asobi.html"]
+  },
+  "mieta01": {
+    "password": "xA7*GOYzR@3Y",
+    "name": "ミエタアカウント０１",
+    "semi_id": "eizou",
+    "semi_name": "映像編集ゼミ",
+    "permissions": ["pages/seminars/eizou.html"]
+  },
+  "mieta02": {
+    "password": "iD0*M5pLBV3*",
+    "name": "ミエタアカウント０２",
+    "semi_id": "digi",
+    "semi_name": "デジタルコンテンツ制作ゼミ",
+    "permissions": ["pages/seminars/digi.html"]
+  },
+  "mieta03": {
+    "password": "iZ0^NdIkDuf2",
+    "name": "ミエタアカウント０３",
+    "semi_id": "event",
+    "semi_name": "イベント企画ゼミ",
+    "permissions": ["pages/seminars/event.html"]
+  },
+  "takimura": {
+    "password": "Tkm#2026$Forest!Myst9",
+    "name": "瀧村先生",
+    "semi_id": "takimura",
+    "semi_name": "瀧村ゼミ・全体管理",
+    "permissions": [
+      "pages/takimura_t.html",
+      "pages/seminars/ai.html",
+      "pages/seminars/asobi.html",
+      "pages/seminars/bungaku.html",
+      "pages/seminars/bungei.html",
+      "pages/seminars/digi.html",
+      "pages/seminars/eizou.html",
+      "pages/seminars/event.html",
+      "pages/seminars/gogaku.html",
+      "pages/seminars/kagaku.html",
+      "pages/seminars/kankou.html",
+      "pages/seminars/kokusai.html",
+      "pages/seminars/kyouiku.html",
+      "pages/seminars/media.html",
+      "pages/seminars/nougyou.html",
+      "pages/seminars/syakai.html"
+    ]
   }
-  
+}
