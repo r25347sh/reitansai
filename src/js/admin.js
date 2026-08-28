@@ -1,1090 +1,1113 @@
 /**
- * Reitansai Visual CMS (enhanced)
- * 追加・削除・移動・リサイズ・テーマ・動的変数・保護要素・上級者モード
+ * Reitansai CMS — full rewrite
+ * 高速: iframe に親から直接バインド（postMessage 最小）
+ * 右クリックメニュー / 複数選択 / 自動配置 / 素材 / 共同編集プレゼンス
  */
 (function () {
   'use strict';
 
-  var SESSION_KEY = 'reitansai_user';
-  var VARS_KEY = 'reitansai_cms_vars';
-  var GITHUB_OWNER = 'r25347sh';
-  var GITHUB_REPO = 'reitansai';
-  var GITHUB_TOKEN = 'github_pat_11BXRNCFA0LjTsiJbrklH2_'+'TP6niw11mne8Gn8bv9pJNMVdMKGHFAP8Yj8TwHQrsRMTFMMLXIKdXXFGUoj';
-  var API = 'https://api.github.com/repos/' + GITHUB_OWNER + '/' + GITHUB_REPO + '/contents';
-  var API_ROOT = 'https://api.github.com/repos/' + GITHUB_OWNER + '/' + GITHUB_REPO;
-  var SITE_BASE = 'https://r25347sh.github.io/reitansai/';
+  var OWNER = 'r25347sh';
+  var REPO = 'reitansai';
+  var TOKEN = 'github_pat_11BXRNCFA0LjTsiJbrklH2_'+'TP6niw11mne8Gn8bv9pJNMVdMKGHFAP8Yj8TwHQrsRMTFMMLXIKdXXFGUoj';
+  var API = 'https://api.github.com/repos/' + OWNER + '/' + REPO + '/contents';
+  var SITE = 'https://r25347sh.github.io/reitansai/';
+  var SESSION = 'reitansai_user';
+  var VARS = 'reitansai_cms_vars';
+  var PRESENCE_PATH = 'src/cms/presence.json';
 
-  var ALL_SEMINARS = [
-    'pages/seminars/ai.html','pages/seminars/asobi.html','pages/seminars/bungaku.html',
-    'pages/seminars/bungei.html','pages/seminars/digi.html','pages/seminars/eizou.html',
-    'pages/seminars/event.html','pages/seminars/gogaku.html','pages/seminars/kagaku.html',
-    'pages/seminars/kankou.html','pages/seminars/kokusai.html','pages/seminars/kyouiku.html',
-    'pages/seminars/media.html','pages/seminars/nougyou.html','pages/seminars/syakai.html'
-  ];
-  var ALL_PAGES = [
-    'index.html','map.html','admin.html','pages/takimura_t.html',
-    'pages/about_reitansai.html','pages/aboutThisSite.html'
-  ].concat(ALL_SEMINARS);
+  var SEMINARS = [
+    'ai','asobi','bungaku','bungei','digi','eizou','event','gogaku',
+    'kagaku','kankou','kokusai','kyouiku','media','nougyou','syakai'
+  ].map(function (s) { return 'pages/seminars/' + s + '.html'; });
+  var ALL = ['index.html','map.html','admin.html','pages/takimura_t.html','pages/about_reitansai.html','pages/aboutThisSite.html'].concat(SEMINARS);
 
-  var BUILTIN_USERS = {
-    noguchi: { password: 'qU7%kE9!J8s@', name: '野口先生', semi_name: 'データサイエンス探究AIゼミ', permissions: ['pages/seminars/ai.html'], advanced: true },
+  var USERS = {
+    noguchi: { password: 'qU7%kE9!J8s@', name: '野口先生', semi_name: 'AIゼミ', permissions: ['pages/seminars/ai.html'], advanced: true },
     akimoto: { password: 'uP6*ezCL9c3K', name: '秋元先生', semi_name: '教育ゼミ', permissions: ['pages/seminars/kyouiku.html'] },
-    kondo: { password: 'tU5@nnVXMNNV', name: '近藤先生', semi_name: '国際地域研究ゼミ', permissions: ['pages/seminars/kokusai.html'] },
-    kato: { password: 'eW1%yabeDYwe', name: '加藤先生', semi_name: '文芸小説創作ゼミ', permissions: ['pages/seminars/bungei.html'] },
-    hirai: { password: 'qG4!Lu8hwq46', name: '平井先生', semi_name: '化学ゼミ', permissions: ['pages/seminars/kagaku.html'] },
-    takeuchi: { password: 'eS8!h&INcndP', name: '竹内先生', semi_name: '文学ゼミ', permissions: ['pages/seminars/bungaku.html'] },
-    sasaki: { password: 'nV2!H8eHgFf^', name: '佐々木先生', semi_name: 'メディアゼミ', permissions: ['pages/seminars/media.html'] },
-    sudou: { password: 'sF0@Hk2hLahp', name: '須藤先生', semi_name: '社会ゼミ', permissions: ['pages/seminars/syakai.html'] },
-    shimokawa: { password: 'lQ4%mGnScp3#', name: '下川先生', semi_name: '農業ゼミ', permissions: ['pages/seminars/nougyou.html'] },
-    shibahara: { password: 'bC1&$&XMKxVD', name: '芝原先生', semi_name: '観光ゼミ', permissions: ['pages/seminars/kankou.html'] },
-    matsuya: { password: 'wV4#DvjlWCnp', name: '松谷先生', semi_name: '語学ゼミ', permissions: ['pages/seminars/gogaku.html'] },
-    matsumaru: { password: 'aS5@P@#vVy$5', name: '松丸先生', semi_name: '遊びの探究ゼミ', permissions: ['pages/seminars/asobi.html'] },
-    mieta01: { password: 'xA7*GOYzR@3Y', name: 'ミエタアカウント０１', semi_name: '映像編集ゼミ', permissions: ['pages/seminars/eizou.html'] },
-    mieta02: { password: 'iD0*M5pLBV3*', name: 'ミエタアカウント０２', semi_name: 'デジタルコンテンツ制作ゼミ', permissions: ['pages/seminars/digi.html'] },
-    mieta03: { password: 'iZ0^NdIkDuf2', name: 'ミエタアカウント０３', semi_name: 'イベント企画ゼミ', permissions: ['pages/seminars/event.html'] },
-    takimura: {
-      password: 'Tkm#2026$Forest!Myst9', name: '瀧村先生', semi_name: '瀧村ゼミ・全体管理',
-      permissions: ['pages/takimura_t.html','pages/about_reitansai.html','pages/aboutThisSite.html'].concat(ALL_SEMINARS),
-      advanced: true
-    },
-    r25347sh: {
-      password: 'kes-2592', name: 'r25347sh', semi_name: 'サイト管理者',
-      permissions: ALL_PAGES.slice(), advanced: true, isAdmin: true
-    }
+    kondo: { password: 'tU5@nnVXMNNV', name: '近藤先生', semi_name: '国際地域', permissions: ['pages/seminars/kokusai.html'] },
+    kato: { password: 'eW1%yabeDYwe', name: '加藤先生', semi_name: '文芸', permissions: ['pages/seminars/bungei.html'] },
+    hirai: { password: 'qG4!Lu8hwq46', name: '平井先生', semi_name: '化学', permissions: ['pages/seminars/kagaku.html'] },
+    takeuchi: { password: 'eS8!h&INcndP', name: '竹内先生', semi_name: '文学', permissions: ['pages/seminars/bungaku.html'] },
+    sasaki: { password: 'nV2!H8eHgFf^', name: '佐々木先生', semi_name: 'メディア', permissions: ['pages/seminars/media.html'] },
+    sudou: { password: 'sF0@Hk2hLahp', name: '須藤先生', semi_name: '社会', permissions: ['pages/seminars/syakai.html'] },
+    shimokawa: { password: 'lQ4%mGnScp3#', name: '下川先生', semi_name: '農業', permissions: ['pages/seminars/nougyou.html'] },
+    shibahara: { password: 'bC1&$&XMKxVD', name: '芝原先生', semi_name: '観光', permissions: ['pages/seminars/kankou.html'] },
+    matsuya: { password: 'wV4#DvjlWCnp', name: '松谷先生', semi_name: '語学', permissions: ['pages/seminars/gogaku.html'] },
+    matsumaru: { password: 'aS5@P@#vVy$5', name: '松丸先生', semi_name: '遊び', permissions: ['pages/seminars/asobi.html'] },
+    mieta01: { password: 'xA7*GOYzR@3Y', name: 'ミエタ01', semi_name: '映像', permissions: ['pages/seminars/eizou.html'] },
+    mieta02: { password: 'iD0*M5pLBV3*', name: 'ミエタ02', semi_name: 'デジタル', permissions: ['pages/seminars/digi.html'] },
+    mieta03: { password: 'iZ0^NdIkDuf2', name: 'ミエタ03', semi_name: 'イベント', permissions: ['pages/seminars/event.html'] },
+    takimura: { password: 'Tkm#2026$Forest!Myst9', name: '瀧村先生', semi_name: '全体', permissions: ['pages/takimura_t.html','pages/about_reitansai.html','pages/aboutThisSite.html'].concat(SEMINARS), advanced: true },
+    r25347sh: { password: 'kes-2592', name: 'r25347sh', semi_name: '管理者', permissions: ALL.slice(), advanced: true, isAdmin: true }
   };
 
   var state = {
-    path: null, cssPath: null, selected: null, outline: false,
-    undo: [], redo: [], customVars: {}, isAdmin: false, advancedUser: false,
-    pageTitles: {}, meta: {}
+    user: null,
+    path: null,
+    cssPath: null,
+    selected: [],
+    undo: [],
+    redo: [],
+    clipboard: [],
+    outline: false,
+    regionMode: false,
+    vars: {},
+    presenceTimer: null,
+    dirty: false
   };
 
   function $(id) { return document.getElementById(id); }
-  function setVisible(el, on) {
-    if (!el) return;
-    if (on) { el.classList.remove('hidden'); el.style.display = ''; }
-    else { el.classList.add('hidden'); el.style.display = 'none'; }
+  function show(view) {
+    ['view-login','view-dash','view-editor'].forEach(function (id) {
+      var el = $(id); if (!el) return;
+      el.classList.toggle('hidden', id !== view);
+    });
   }
-  function showView(name) {
-    setVisible($('login-view'), name === 'login');
-    setVisible($('dash-view'), name === 'dash');
-    setVisible($('edit-view'), name === 'edit');
-  }
+  function status(t) { var s = $('status'); if (s) s.textContent = t; }
   function pad2(n) { return (n < 10 ? '0' : '') + n; }
   function nowStamp() {
     var d = new Date();
-    return d.getFullYear() + '-' + pad2(d.getMonth() + 1) + '-' + pad2(d.getDate()) + ' ' + pad2(d.getHours()) + ':' + pad2(d.getMinutes());
+    return d.getFullYear() + '-' + pad2(d.getMonth()+1) + '-' + pad2(d.getDate()) + ' ' + pad2(d.getHours()) + ':' + pad2(d.getMinutes());
   }
-  function todayStr() {
+  function todayJP() {
     var d = new Date();
-    return d.getFullYear() + '年' + (d.getMonth() + 1) + '月' + d.getDate() + '日';
+    return d.getFullYear() + '年' + (d.getMonth()+1) + '月' + d.getDate() + '日';
   }
 
-  /* session */
+  /* ---------- auth ---------- */
   function getSession() {
     try {
-      var raw = localStorage.getItem(SESSION_KEY) || sessionStorage.getItem(SESSION_KEY);
-      return raw ? JSON.parse(raw) : null;
+      var r = localStorage.getItem(SESSION) || sessionStorage.getItem(SESSION);
+      return r ? JSON.parse(r) : null;
     } catch (e) { return null; }
   }
   function setSession(u) {
     var s = JSON.stringify(u);
-    try { localStorage.setItem(SESSION_KEY, s); } catch (e) {}
-    try { sessionStorage.setItem(SESSION_KEY, s); } catch (e) {}
+    try { localStorage.setItem(SESSION, s); } catch (e) {}
+    try { sessionStorage.setItem(SESSION, s); } catch (e) {}
   }
   function clearSession() {
-    try { localStorage.removeItem(SESSION_KEY); } catch (e) {}
-    try { sessionStorage.removeItem(SESSION_KEY); } catch (e) {}
+    try { localStorage.removeItem(SESSION); } catch (e) {}
+    try { sessionStorage.removeItem(SESSION); } catch (e) {}
   }
-  function loadVars() {
-    try {
-      state.customVars = JSON.parse(localStorage.getItem(VARS_KEY) || '{}') || {};
-    } catch (e) { state.customVars = {}; }
-  }
-  function saveVars() {
-    try { localStorage.setItem(VARS_KEY, JSON.stringify(state.customVars)); } catch (e) {}
-  }
-
-  function tryLogin(id, pw) {
-    id = String(id || '').trim().toLowerCase();
-    var u = BUILTIN_USERS[id];
-    if (!u || String(u.password) !== String(pw)) return null;
-    return {
+  function login() {
+    var id = (($('uid') && $('uid').value) || '').trim().toLowerCase();
+    var pw = ($('pw') && $('pw').value) || '';
+    var u = USERS[id];
+    var msg = $('login-msg');
+    if (!u || String(u.password) !== String(pw)) {
+      if (msg) msg.textContent = 'ID またはパスワードが違います';
+      return;
+    }
+    var session = {
       id: id, name: u.name, semi_name: u.semi_name,
       permissions: u.permissions.slice(),
       advanced: !!u.advanced, isAdmin: !!u.isAdmin
     };
-  }
-  function doLogin() {
-    var errEl = $('login-error'), st = $('login-status');
-    if (errEl) errEl.textContent = '';
-    var id = ($('uid') && $('uid').value.trim()) || '';
-    var pw = ($('pw') && $('pw').value) || '';
-    if (st) st.textContent = '認証中…';
-    var session = tryLogin(id, pw);
-    if (!session) {
-      if (errEl) errEl.textContent = 'ID またはパスワードが違います（id="' + id + '"）';
-      if (st) st.textContent = '';
-      return;
-    }
+    state.user = session;
     setSession(session);
-    if (st) st.textContent = 'ログイン成功';
-    enterDash(session);
+    openDash();
   }
 
-  function extractTitle(html) {
-    var m = String(html).match(/<title[^>]*>([\s\S]*?)<\/title>/i);
-    if (!m) return '';
-    return m[1].replace(/\s+/g, ' ').trim();
-  }
-
-  function filesDirForPage(htmlPath) {
-    var base = htmlPath.replace(/\.html$/i, '');
-    if (base.indexOf('pages/') === 0) base = base.slice(6);
-    return 'src/files/pages/' + base;
-  }
-
-  function enterDash(user) {
-    state.isAdmin = !!user.isAdmin;
-    state.advancedUser = !!user.advanced || !!user.isAdmin;
-    var label = $('user-label');
-    if (label) label.textContent = (user.name || user.id) + '（' + (user.semi_name || '') + '）';
-    var list = $('perm-list');
-    var loading = $('dash-loading');
-    if (list) list.innerHTML = '';
-    if (loading) { loading.style.display = 'block'; loading.textContent = 'ページ情報を読み込み中…'; }
-    showView('dash');
-
-    var perms = (user.permissions || []).slice();
-    if (!perms.length) {
-      if (list) list.innerHTML = '<li>編集可能なページがありません</li>';
-      if (loading) loading.style.display = 'none';
-      return;
-    }
-
-    Promise.all(perms.map(function (p) {
-      return getFile(p).then(function (f) {
-        var title = '';
-        try { title = extractTitle(decodeContent(f.content)); } catch (e) {}
-        state.pageTitles[p] = title || prettyPath(p);
-        return { path: p, title: state.pageTitles[p] };
-      }).catch(function () {
-        state.pageTitles[p] = prettyPath(p);
-        return { path: p, title: state.pageTitles[p] };
-      });
-    })).then(function (items) {
-      if (loading) loading.style.display = 'none';
-      if (!list) return;
-      list.innerHTML = '';
-      items.forEach(function (item) {
-        var li = document.createElement('li');
-        var b = document.createElement('button');
-        b.type = 'button';
-        b.className = 'btn-gold page-card-btn';
-        b.innerHTML = '<span class="page-card-title"></span><span class="page-card-path"></span>';
-        b.querySelector('.page-card-title').textContent = item.title;
-        b.querySelector('.page-card-path').textContent = item.path;
-        b.onclick = function () { openVisualEditor(user, item.path); };
-        li.appendChild(b);
-        list.appendChild(li);
-      });
-    });
-  }
-  function prettyPath(p) {
-    if (p === 'index.html') return '🏠 トップページ';
-    if (p === 'map.html') return '🗺 マップ';
-    if (p.indexOf('pages/seminars/') === 0) return '📚 ' + p.replace('pages/seminars/', '').replace('.html', '');
-    return p;
-  }
-
-  /* GitHub */
-  function ghHeaders() {
+  /* ---------- github ---------- */
+  function headers() {
     return {
       Accept: 'application/vnd.github+json',
-      Authorization: 'Bearer ' + GITHUB_TOKEN,
+      Authorization: 'Bearer ' + TOKEN,
       'X-GitHub-Api-Version': '2022-11-28',
       'Content-Type': 'application/json'
     };
   }
-  function decodeContent(c) {
-    return decodeURIComponent(escape(atob(String(c).replace(/\n/g, ''))));
-  }
-  function encodeContent(text) {
-    return btoa(unescape(encodeURIComponent(text)));
-  }
+  function decode(c) { return decodeURIComponent(escape(atob(String(c).replace(/\n/g, '')))); }
+  function encode(t) { return btoa(unescape(encodeURIComponent(t))); }
   function getFile(path) {
-    return fetch(API + '/' + path + '?ref=main', { headers: ghHeaders() }).then(function (res) {
-      if (!res.ok) throw new Error('GET ' + path + ': ' + res.status);
-      return res.json();
+    return fetch(API + '/' + path + '?ref=main', { headers: headers() }).then(function (r) {
+      if (!r.ok) throw new Error('GET ' + path + ' ' + r.status);
+      return r.json();
     });
   }
   function putFile(path, content, message, sha) {
-    var body = { message: message || 'CMS編集', content: encodeContent(content), branch: 'main' };
+    var body = { message: message || 'CMS', content: encode(content), branch: 'main' };
     if (sha) body.sha = sha;
-    return fetch(API + '/' + path, { method: 'PUT', headers: ghHeaders(), body: JSON.stringify(body) })
-      .then(function (res) {
-        if (!res.ok) return res.text().then(function (t) { throw new Error('PUT ' + path + ': ' + res.status + ' ' + t); });
-        return res.json();
+    return fetch(API + '/' + path, { method: 'PUT', headers: headers(), body: JSON.stringify(body) })
+      .then(function (r) {
+        if (!r.ok) return r.text().then(function (t) { throw new Error('PUT ' + path + ' ' + r.status + ' ' + t); });
+        return r.json();
       });
   }
-  function pathToCss(htmlPath) {
-    if (htmlPath.indexOf('pages/seminars/') === 0)
-      return htmlPath.replace('pages/seminars/', 'src/css/pages/seminars/').replace('.html', '.css');
-    if (htmlPath.indexOf('pages/') === 0)
-      return htmlPath.replace('pages/', 'src/css/pages/').replace('.html', '.css');
-    if (htmlPath === 'index.html') return 'src/css/pages/index.css';
-    if (htmlPath === 'map.html') return 'src/css/pages/map.css';
+  function putBinary(path, b64, message, sha) {
+    var body = { message: message || 'upload', content: b64, branch: 'main' };
+    if (sha) body.sha = sha;
+    return fetch(API + '/' + path, { method: 'PUT', headers: headers(), body: JSON.stringify(body) })
+      .then(function (r) {
+        if (!r.ok) return r.text().then(function (t) { throw new Error('PUT ' + path + ' ' + r.status + ' ' + t); });
+        return r.json();
+      });
+  }
+  function pathToCss(p) {
+    if (p.indexOf('pages/seminars/') === 0) return p.replace('pages/seminars/', 'src/css/pages/seminars/').replace('.html', '.css');
+    if (p.indexOf('pages/') === 0) return p.replace('pages/', 'src/css/pages/').replace('.html', '.css');
+    if (p === 'index.html') return 'src/css/pages/index.css';
+    if (p === 'map.html') return 'src/css/pages/map.css';
     return null;
   }
-
-  /* frame helpers */
-  function frameDoc() {
-    var f = $('preview-frame');
-    return f && f.contentDocument;
+  function filesDir(p) {
+    var b = p.replace(/\.html$/i, '');
+    if (b.indexOf('pages/') === 0) b = b.slice(6);
+    return 'src/files/pages/' + b;
   }
-  function frameWin() {
-    var f = $('preview-frame');
-    return f && f.contentWindow;
+  function extractTitle(html) {
+    var m = String(html).match(/<title[^>]*>([\s\S]*?)<\/title>/i);
+    return m ? m[1].replace(/\s+/g, ' ').trim() : '';
+  }
+
+  /* ---------- frame ---------- */
+  function frame() { return $('frame'); }
+  function doc() { var f = frame(); return f && f.contentDocument; }
+  function win() { var f = frame(); return f && f.contentWindow; }
+
+  function injectChrome(html, pagePath) {
+    var dir = pagePath.indexOf('/') >= 0 ? pagePath.replace(/\/[^\/]*$/, '/') : '';
+    var base = SITE + dir;
+    var style = '<style id="cms-ui">.cms-sel{outline:2px solid #c9a227!important;outline-offset:2px}' +
+      '.cms-sel-multi{outline:2px solid #6ec6ff!important;outline-offset:2px}' +
+      'body.cms-outline *{outline:1px dashed rgba(201,162,39,.28)!important}' +
+      '[data-cms-lock="1"]{outline-color:#ff8d8d!important}' +
+      '</style>';
+    if (/<head[^>]*>/i.test(html)) html = html.replace(/<head([^>]*)>/i, '<head$1><base href="' + base + '">' + style);
+    else html = '<base href="' + base + '">' + style + html;
+    html = html.replace(/<footer(\s[^>]*)?>/i, function (m) {
+      return /data-cms-copyright/.test(m) ? m : m.replace('<footer', '<footer data-cms-copyright="1"');
+    });
+    return html;
   }
 
   function isProtected(el) {
     if (!el || !el.closest) return false;
-    if (el.closest('[data-cms-lock="1"]') || el.closest('.cms-lock')) return true;
+    if (el.closest('[data-cms-lock="1"]')) return true;
+    if (el.closest('[data-cms-copyright]')) return true;
     if (el.closest('footer')) {
-      var t = (el.textContent || '') + ' ' + (el.className || '');
-      if (/copyright|©|コピーライト|著作権|all\s*rights/i.test(t) || el.closest('[data-cms-copyright]')) return true;
+      var t = (el.textContent || '');
+      if (/©|copyright|コピーライト|著作権|all\s*rights/i.test(t)) return true;
     }
     return false;
   }
   function canEdit(el) {
     if (!el) return false;
-    if (isProtected(el) && !state.isAdmin) return false;
+    if (isProtected(el) && !(state.user && state.user.isAdmin)) return false;
     return true;
   }
-
-  function pushUndo() {
-    var doc = frameDoc();
-    if (!doc || !doc.documentElement) return;
-    state.undo.push(doc.documentElement.outerHTML);
-    if (state.undo.length > 40) state.undo.shift();
-    state.redo = [];
-  }
-  function restoreHtml(html) {
-    var frame = $('preview-frame');
-    frame.srcdoc = injectEditorBridge('<!DOCTYPE html>' + html);
-    clearSelectionUI();
-  }
-  function undo() {
-    if (!state.undo.length) return;
-    var doc = frameDoc();
-    if (doc && doc.documentElement) state.redo.push(doc.documentElement.outerHTML);
-    restoreHtml(state.undo.pop());
-    $('edit-status').textContent = '元に戻しました';
-  }
-  function redo() {
-    if (!state.redo.length) return;
-    var doc = frameDoc();
-    if (doc && doc.documentElement) state.undo.push(doc.documentElement.outerHTML);
-    restoreHtml(state.redo.pop());
-    $('edit-status').textContent = 'やり直しました';
-  }
-
-  function clearSelectionUI() {
-    state.selected = null;
-    var doc = frameDoc();
-    if (doc) {
-      var prev = doc.querySelectorAll('.cms-selected');
-      for (var i = 0; i < prev.length; i++) prev[i].classList.remove('cms-selected');
-      var handles = doc.querySelectorAll('.cms-handle');
-      for (var h = 0; h < handles.length; h++) handles[h].remove();
+  function cleanEmpty(el) {
+    if (!el || !el.querySelectorAll) return;
+    var bad = el.querySelectorAll('font:empty, span:empty, b:empty, i:empty, u:empty');
+    for (var i = 0; i < bad.length; i++) {
+      if (!bad[i].attributes.length) bad[i].remove();
     }
-    if ($('sel-tag')) $('sel-tag').textContent = '（未選択）';
-    if ($('sel-lock')) $('sel-lock').classList.add('hidden');
-    if ($('prop-text')) $('prop-text').value = '';
-    if ($('prop-href')) $('prop-href').value = '';
-    if ($('prop-src')) $('prop-src').value = '';
-    if ($('adv-html')) $('adv-html').value = '';
   }
 
-  function rgbToHex(rgb) {
-    var m = String(rgb).match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
-    if (!m) return null;
-    function h(n) { var s = Number(n).toString(16); return s.length === 1 ? '0' + s : s; }
-    return '#' + h(m[1]) + h(m[2]) + h(m[3]);
+  function clearSelClass() {
+    var d = doc(); if (!d) return;
+    d.querySelectorAll('.cms-sel,.cms-sel-multi').forEach(function (n) {
+      n.classList.remove('cms-sel', 'cms-sel-multi');
+    });
   }
-
-  function selectEl(el) {
-    if (!el || !frameDoc()) return;
-    var doc = frameDoc();
-    if (el === doc.documentElement || el === doc.body) return;
-    if (!canEdit(el)) {
-      $('edit-status').textContent = 'この要素は保護されています（管理者のみ）';
-      if ($('sel-lock')) $('sel-lock').classList.remove('hidden');
-      if (!state.isAdmin) return;
+  function setSelection(els, multi) {
+    clearSelClass();
+    state.selected = (els || []).filter(Boolean);
+    state.selected.forEach(function (el, i) {
+      el.classList.add(state.selected.length > 1 ? 'cms-sel-multi' : 'cms-sel');
+    });
+    updateStylePanel();
+  }
+  function updateStylePanel() {
+    var el = state.selected[0];
+    var info = $('sel-info');
+    if (!el) {
+      if (info) info.textContent = '未選択';
+      return;
     }
-    var prev = doc.querySelectorAll('.cms-selected');
-    for (var i = 0; i < prev.length; i++) prev[i].classList.remove('cms-selected');
-    var oldH = doc.querySelectorAll('.cms-handle');
-    for (var j = 0; j < oldH.length; j++) oldH[j].remove();
-
-    el.classList.add('cms-selected');
-    state.selected = el;
-    if (frameWin()) frameWin().__cmsLast = el;
-
-    var cls = (typeof el.className === 'string' ? el.className : '').split(/\s+/).filter(function (c) {
-      return c && c !== 'cms-selected';
+    var cls = (el.className || '').toString().split(/\s+/).filter(function (c) {
+      return c && c.indexOf('cms-sel') !== 0;
     }).slice(0, 3).join('.');
-    $('sel-tag').textContent = el.tagName.toLowerCase() + (el.id ? '#' + el.id : '') + (cls ? '.' + cls : '');
-    if ($('sel-lock')) {
-      if (isProtected(el)) $('sel-lock').classList.remove('hidden');
-      else $('sel-lock').classList.add('hidden');
+    if (info) {
+      info.textContent = (state.selected.length > 1 ? ('複数 ' + state.selected.length + ' · ') : '') +
+        el.tagName.toLowerCase() + (el.id ? '#' + el.id : '') + (cls ? '.' + cls : '') +
+        (isProtected(el) ? ' 🔒' : '');
     }
-    $('prop-text').value = (el.innerText || '').trim().slice(0, 3000);
-    $('prop-href').value = el.getAttribute('href') || '';
-    $('prop-src').value = el.getAttribute('src') || '';
-    if ($('adv-class')) $('adv-class').value = cls;
-    if ($('adv-id')) $('adv-id').value = el.id || '';
-    if ($('adv-html')) $('adv-html').value = el.outerHTML.slice(0, 8000);
+    if ($('p-text')) $('p-text').value = (el.innerText || '').trim().slice(0, 2500);
+    if ($('p-href')) $('p-href').value = el.getAttribute('href') || '';
+    if ($('a-class')) $('a-class').value = cls;
+    if ($('a-id')) $('a-id').value = el.id || '';
+    if ($('a-html')) $('a-html').value = el.outerHTML.slice(0, 10000);
     try {
-      var cs = frameWin().getComputedStyle(el);
-      var hx = rgbToHex(cs.color); if (hx) $('prop-color').value = hx;
-      var bg = rgbToHex(cs.backgroundColor); if (bg) $('prop-bg').value = bg;
+      var cs = win().getComputedStyle(el);
+      var m = String(cs.color).match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
+      if (m && $('p-color')) {
+        function h(n){n=+n;var s=n.toString(16);return s.length===1?'0'+s:s;}
+        $('p-color').value = '#' + h(m[1])+h(m[2])+h(m[3]);
+      }
       var fs = parseInt(cs.fontSize, 10);
-      if (fs) { $('prop-size').value = fs; $('prop-size-val').textContent = fs + 'px'; }
-      var op = Math.round(parseFloat(cs.opacity) * 100);
-      if (!isNaN(op)) { $('prop-opacity').value = op; $('prop-opacity-val').textContent = op + '%'; }
-      if ($('adv-z')) $('adv-z').value = cs.zIndex === 'auto' ? '' : cs.zIndex;
+      if (fs && $('p-size')) { $('p-size').value = fs; $('p-size-v').textContent = fs; }
     } catch (e) {}
   }
 
-  function rewriteRelativeUrls(html, htmlPath) {
-    var dir = htmlPath.indexOf('/') >= 0 ? htmlPath.replace(/\/[^\/]*$/, '/') : '';
-    var base = SITE_BASE + dir;
-    if (/<head[^>]*>/i.test(html)) html = html.replace(/<head([^>]*)>/i, '<head$1><base href="' + base + '">');
-    else html = '<base href="' + base + '">' + html;
-    return html;
-  }
-
-  function injectEditorBridge(html) {
-    var style =
-      '<style id="cms-editor-style">' +
-      '.cms-selected{outline:2px solid #c9a227!important;outline-offset:2px;position:relative!important}' +
-      'body.cms-outline *[data-cms-skip!="1"]{outline:1px dashed rgba(201,162,39,.3)!important}' +
-      '.cms-handle{position:absolute;width:10px;height:10px;background:#c9a227;border:1px solid #fff;z-index:99999;box-sizing:border-box}' +
-      '.cms-handle.se{right:-5px;bottom:-5px;cursor:nwse-resize}' +
-      '.cms-handle.ne{right:-5px;top:-5px;cursor:nesw-resize}' +
-      '.cms-handle.sw{left:-5px;bottom:-5px;cursor:nesw-resize}' +
-      '.cms-handle.nw{left:-5px;top:-5px;cursor:nwse-resize}' +
-      '[contenteditable="true"]{caret-color:#f0d060}' +
-      '[data-cms-lock="1"]{outline-color:#ff8a8a!important}' +
-      '</style>';
-    var script =
-      '<script>(function(){' +
-      'var drag=null,resize=null;' +
-      'function send(t,p){try{parent.postMessage(Object.assign({type:t},p||{}), "*");}catch(e){}}' +
-      'function isHandle(el){return el&&el.classList&&el.classList.contains("cms-handle");}' +
-      'document.addEventListener("mousedown",function(e){' +
-      '  if(isHandle(e.target)){' +
-      '    e.preventDefault();e.stopPropagation();' +
-      '    var el=window.__cmsLast; if(!el)return;' +
-      '    var r=el.getBoundingClientRect();' +
-      '    resize={el:el,startX:e.clientX,startY:e.clientY,w:r.width,h:r.height,corner:e.target.dataset.corner};' +
-      '    send("cms-resize-start"); return;' +
-      '  }' +
-      '  var el=e.target; if(el===document.body||el===document.documentElement)return;' +
-      '  if(el.closest&&el.closest("script,style"))return;' +
-      '  e.preventDefault();' +
-      '  window.__cmsLast=el; send("cms-select");' +
-      '  drag={el:el,startX:e.clientX,startY:e.clientY,ox:el.offsetLeft,oy:el.offsetTop,moved:false};' +
-      '},true);' +
-      'document.addEventListener("mousemove",function(e){' +
-      '  if(resize){' +
-      '    var dx=e.clientX-resize.startX, dy=e.clientY-resize.startY;' +
-      '    var w=Math.max(40,resize.w+dx), h=Math.max(20,resize.h+dy);' +
-      '    resize.el.style.width=w+"px"; resize.el.style.height=h+"px";' +
-      '    resize.el.style.maxWidth="none"; return;' +
-      '  }' +
-      '  if(!drag)return;' +
-      '  var dx=e.clientX-drag.startX, dy=e.clientY-drag.startY;' +
-      '  if(Math.abs(dx)+Math.abs(dy)<4)return;' +
-      '  drag.moved=true;' +
-      '  var el=drag.el;' +
-      '  var pos=window.getComputedStyle(el).position;' +
-      '  if(pos==="static"){el.style.position="relative";}' +
-      '  el.style.left=(drag.ox+dx)+"px"; el.style.top=(drag.oy+dy)+"px";' +
-      '},true);' +
-      'document.addEventListener("mouseup",function(){' +
-      '  if(drag&&drag.moved) send("cms-moved");' +
-      '  if(resize) send("cms-resized");' +
-      '  drag=null; resize=null;' +
-      '},true);' +
-      'document.addEventListener("click",function(e){' +
-      '  var a=e.target.closest&&e.target.closest("a"); if(a) e.preventDefault();' +
-      '  e.preventDefault(); e.stopPropagation();' +
-      '},true);' +
-      'document.addEventListener("dblclick",function(e){' +
-      '  e.preventDefault(); e.stopPropagation();' +
-      '  var el=e.target; if(el.closest&&el.closest("script,style"))return;' +
-      '  el.contentEditable="true"; el.focus(); send("cms-edit-start");' +
-      '},true);' +
-      'document.addEventListener("keydown",function(e){ if(e.key==="Escape") send("cms-clear"); },true);' +
-      'document.addEventListener("blur",function(e){' +
-      '  if(e.target&&e.target.contentEditable==="true"){e.target.contentEditable="false"; send("cms-edit-end");}' +
-      '},true);' +
-      'window.__cmsAttachHandles=function(el){' +
-      '  if(!el||!el.style)return;' +
-      '  ["nw","ne","sw","se"].forEach(function(c){' +
-      '    var h=document.createElement("div"); h.className="cms-handle "+c; h.dataset.corner=c;' +
-      '    h.setAttribute("data-cms-skip","1"); el.appendChild(h);' +
-      '  });' +
-      '  var pos=window.getComputedStyle(el).position;' +
-      '  if(pos==="static") el.style.position="relative";' +
-      '};' +
-      '})();<\/script>';
-    if (/<\/head>/i.test(html)) html = html.replace(/<\/head>/i, style + '</head>');
-    else html = style + html;
-    if (/<\/body>/i.test(html)) html = html.replace(/<\/body>/i, script + '</body>');
-    else html = html + script;
-    return html;
-  }
-
-  function openVisualEditor(user, htmlPath) {
-    showView('edit');
-    state.path = htmlPath;
-    state.selected = null;
-    state.undo = [];
+  function snapshot() {
+    var d = doc(); if (!d || !d.documentElement) return;
+    state.undo.push(d.documentElement.outerHTML);
+    if (state.undo.length > 40) state.undo.shift();
     state.redo = [];
-    state.isAdmin = !!user.isAdmin;
-    state.advancedUser = !!user.advanced || !!user.isAdmin;
-    $('edit-path').textContent = htmlPath;
-    $('edit-status').textContent = '読み込み中…';
-    if ($('chk-advanced')) {
-      $('chk-advanced').checked = state.advancedUser;
+    state.dirty = true;
+  }
+  function restore(html) {
+    var f = frame();
+    f.onload = function () { bindFrame(); };
+    f.srcdoc = injectChrome('<!DOCTYPE html>' + html, state.path || 'index.html');
+    state.selected = [];
+  }
+  function undo() {
+    if (!state.undo.length) return;
+    var d = doc();
+    if (d && d.documentElement) state.redo.push(d.documentElement.outerHTML);
+    restore(state.undo.pop());
+    status('元に戻しました');
+  }
+  function redo() {
+    if (!state.redo.length) return;
+    var d = doc();
+    if (d && d.documentElement) state.undo.push(d.documentElement.outerHTML);
+    restore(state.redo.pop());
+    status('やり直しました');
+  }
+
+  function pickTarget(e) {
+    var t = e.target;
+    if (!t || t === doc().body || t === doc().documentElement) return null;
+    if (t.closest && t.closest('#cms-ui')) return null;
+    return t;
+  }
+
+  function onFrameClick(e) {
+    if (state.regionMode) return;
+    var t = pickTarget(e);
+    if (!t) return;
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.shiftKey || e.metaKey || e.ctrlKey) {
+      var list = state.selected.slice();
+      var i = list.indexOf(t);
+      if (i >= 0) list.splice(i, 1); else list.push(t);
+      setSelection(list, true);
+    } else {
+      setSelection([t], false);
     }
-    var cssPath = pathToCss(htmlPath);
-    state.cssPath = cssPath;
+  }
+  function onFrameContext(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    var t = pickTarget(e);
+    if (t && state.selected.indexOf(t) < 0) setSelection([t], false);
+    openCtx(e.clientX, e.clientY);
+  }
+  function onFrameDbl(e) {
+    e.preventDefault();
+    var t = pickTarget(e);
+    if (!t || !canEdit(t)) return;
+    snapshot();
+    t.contentEditable = 'true';
+    t.focus();
+  }
 
-    var tasks = [getFile(htmlPath)];
-    if (cssPath) tasks.push(getFile(cssPath).catch(function () { return null; }));
-
-    Promise.all(tasks).then(function (results) {
-      var file = results[0];
-      var html = decodeContent(file.content);
-      try {
-        var docMeta = new DOMParser().parseFromString(html, 'text/html');
-        var tEl = docMeta.querySelector('title');
-        if ($('meta-title')) $('meta-title').value = tEl ? tEl.textContent.trim() : '';
-        if ($('edit-title-chip')) $('edit-title-chip').textContent = tEl ? tEl.textContent.trim() : '';
-        var md = docMeta.querySelector('meta[name="description"]');
-        if ($('meta-desc')) $('meta-desc').value = md ? (md.getAttribute('content') || '') : '';
-        var ma = docMeta.querySelector('meta[name="author"]');
-        if ($('meta-author')) $('meta-author').value = ma ? (ma.getAttribute('content') || '') : '';
-        var ic = docMeta.querySelector('link[rel="icon"], link[rel="shortcut icon"]');
-        if ($('meta-favicon')) $('meta-favicon').value = ic ? (ic.getAttribute('href') || '') : '';
-        var og = docMeta.querySelector('meta[property="og:image"]');
-        if ($('meta-og-image')) $('meta-og-image').value = og ? (og.getAttribute('content') || '') : '';
-        var rb = docMeta.querySelector('meta[name="robots"]');
-        if ($('meta-robots')) $('meta-robots').value = rb ? (rb.getAttribute('content') || '') : '';
-      } catch (e) {}
-      if ($('media-dir-hint')) $('media-dir-hint').textContent = filesDirForPage(htmlPath) + '/';
-
-      html = rewriteRelativeUrls(html, htmlPath);
-      html = html.replace(/<footer(\s[^>]*)?>/i, function (m) {
-        if (/data-cms-copyright/.test(m)) return m;
-        return m.replace('<footer', '<footer data-cms-copyright="1"');
-      });
-      $('preview-frame').srcdoc = injectEditorBridge(html);
-
-      if (cssPath && results[1]) {
-        var cssText = decodeContent(results[1].content);
-        var m = cssText.match(/\/\* --- teacher-custom-css-start --- \*\/([\s\S]*?)\/\* --- teacher-custom-css-end --- \*\//);
-        $('css-editor').value = m ? m[1].trim() : '';
-      } else {
-        $('css-editor').value = '';
+  function bindFrame() {
+    var d = doc(); if (!d) return;
+    d.removeEventListener('click', onFrameClick, true);
+    d.removeEventListener('contextmenu', onFrameContext, true);
+    d.removeEventListener('dblclick', onFrameDbl, true);
+    d.addEventListener('click', onFrameClick, true);
+    d.addEventListener('contextmenu', onFrameContext, true);
+    d.addEventListener('dblclick', onFrameDbl, true);
+    d.addEventListener('click', function (e) {
+      var a = e.target.closest && e.target.closest('a');
+      if (a) e.preventDefault();
+    }, true);
+    d.addEventListener('blur', function (e) {
+      if (e.target && e.target.contentEditable === 'true') {
+        e.target.contentEditable = 'false';
+        cleanEmpty(e.target);
+        status('文字編集を確定');
       }
-      $('edit-status').textContent = '編集可能';
-      clearSelectionUI();
-      renderVarList();
-    }).catch(function (err) {
-      $('edit-status').textContent = '読込失敗: ' + err.message;
+    }, true);
+    if (state.outline && d.body) d.body.classList.add('cms-outline');
+  }
+
+  /* ---------- ctx menu ---------- */
+  function openCtx(x, y) {
+    var menu = $('ctx'); if (!menu) return;
+    menu.classList.remove('hidden');
+    var w = menu.offsetWidth, h = menu.offsetHeight;
+    menu.style.left = Math.min(x, window.innerWidth - w - 8) + 'px';
+    menu.style.top = Math.min(y, window.innerHeight - h - 8) + 'px';
+  }
+  function closeCtx() { var m = $('ctx'); if (m) m.classList.add('hidden'); }
+
+  function zChange(mode) {
+    var el = state.selected[0]; if (!el || !canEdit(el)) return;
+    snapshot();
+    var z = parseInt(win().getComputedStyle(el).zIndex, 10);
+    if (isNaN(z)) z = 0;
+    if (mode === 'front') z = 9999;
+    else if (mode === 'back') z = 0;
+    else if (mode === 'forward') z += 1;
+    else if (mode === 'backward') z = Math.max(0, z - 1);
+    el.style.position = el.style.position || 'relative';
+    el.style.zIndex = String(z);
+    status('重なり順を変更');
+  }
+
+  function doDelete() {
+    if (!state.selected.length) return;
+    snapshot();
+    state.selected.forEach(function (el) {
+      if (canEdit(el) && el.parentNode) el.parentNode.removeChild(el);
     });
+    setSelection([], false);
+    status('削除');
+  }
+  function doCopy() {
+    state.clipboard = state.selected.filter(canEdit).map(function (el) {
+      var c = el.cloneNode(true);
+      c.classList.remove('cms-sel', 'cms-sel-multi');
+      return c.outerHTML;
+    });
+    status('コピー (' + state.clipboard.length + ')');
+  }
+  function doCut() { doCopy(); doDelete(); }
+  function doPaste() {
+    if (!state.clipboard.length) return;
+    var d = doc(); if (!d) return;
+    snapshot();
+    var parent = (state.selected[0] && state.selected[0].parentNode) || d.body;
+    var created = [];
+    state.clipboard.forEach(function (html) {
+      var wrap = d.createElement('div');
+      wrap.innerHTML = html;
+      var node = wrap.firstElementChild;
+      if (node) { parent.appendChild(node); autoNudge(node); created.push(node); }
+    });
+    setSelection(created, created.length > 1);
+    status('貼り付け');
+  }
+  function doDup() {
+    doCopy(); doPaste();
   }
 
-  function applyProps() {
-    var el = state.selected || (frameWin() && frameWin().__cmsLast);
-    if (!el || !canEdit(el)) { $('edit-status').textContent = '編集できない要素です'; return; }
-    pushUndo();
-    var text = $('prop-text').value;
-    var href = $('prop-href').value.trim();
-    var src = $('prop-src').value.trim();
-    if (text !== '' && (el.childElementCount === 0 || /^(H1|H2|H3|H4|P|SPAN|A|BUTTON|LI|LABEL)$/.test(el.tagName))) {
-      el.textContent = text;
+  function autoNudge(el) {
+    if (!el || !el.style) return;
+    // soft spacing so new blocks don't stick to previous
+    var cs = win().getComputedStyle(el);
+    if (cs.display !== 'inline' && !el.style.marginTop) el.style.marginTop = '0.75rem';
+  }
+
+  /* ---------- add blocks ---------- */
+  function insertNear(node) {
+    var d = doc(); if (!d) return;
+    snapshot();
+    var anchor = state.selected[0];
+    var parent = d.body;
+    if (anchor && anchor.parentNode) {
+      if (anchor.tagName === 'IMG' || anchor.tagName === 'BR') parent = anchor.parentNode;
+      else parent = anchor.parentNode;
+      parent.insertBefore(node, anchor.nextSibling);
+    } else {
+      parent.appendChild(node);
     }
-    if (el.tagName === 'A' && href) el.setAttribute('href', href);
-    if (el.tagName === 'IMG' && src) el.setAttribute('src', src);
-    el.style.color = $('prop-color').value;
-    el.style.backgroundColor = $('prop-bg').value;
-    el.style.fontSize = $('prop-size').value + 'px';
-    if ($('prop-weight').value) el.style.fontWeight = $('prop-weight').value;
-    if ($('prop-align').value) el.style.textAlign = $('prop-align').value;
-    el.style.opacity = (parseInt($('prop-opacity').value, 10) / 100).toString();
-    selectEl(el);
-    $('edit-status').textContent = '適用しました（未保存）';
+    autoNudge(node);
+    setSelection([node], false);
+    status('追加');
   }
-
-  function insertBlock(type) {
-    var doc = frameDoc();
-    if (!doc) return;
-    pushUndo();
-    var parent = state.selected && canEdit(state.selected) ? state.selected : doc.body;
-    if (parent.tagName === 'IMG' || parent.tagName === 'BR') parent = parent.parentNode || doc.body;
-    var el = null;
-    var user = getSession() || {};
-    if (type === 'heading') {
-      el = doc.createElement('h2');
-      el.textContent = '新しい見出し';
-      el.style.color = '#f0d060';
-    } else if (type === 'text') {
-      el = doc.createElement('p');
-      el.textContent = '新しいテキストを入力';
-    } else if (type === 'button') {
-      el = doc.createElement('a');
-      el.href = '#';
-      el.textContent = 'ボタン';
-      el.style.cssText = 'display:inline-block;padding:.6rem 1.2rem;border-radius:999px;background:#c9a227;color:#1a1205;text-decoration:none;font-weight:600;';
-    } else if (type === 'link') {
-      el = doc.createElement('a');
-      el.href = 'https://';
-      el.textContent = 'リンク';
-      el.style.color = '#f0d060';
-    } else if (type === 'image') {
-      var url = prompt('画像URL', 'https://');
-      if (!url) return;
-      el = doc.createElement('img');
-      el.src = url; el.alt = ''; el.style.maxWidth = '100%';
+  function addBlock(type) {
+    var d = doc(); if (!d) return;
+    var el;
+    if (type === 'h2') { el = d.createElement('h2'); el.textContent = '新しい見出し'; el.style.color = '#f0d060'; }
+    else if (type === 'p') { el = d.createElement('p'); el.textContent = 'テキストを入力'; }
+    else if (type === 'btn') {
+      el = d.createElement('a'); el.href = '#'; el.textContent = 'ボタン';
+      el.style.cssText = 'display:inline-block;padding:.55rem 1.1rem;border-radius:999px;background:#c9a227;color:#1a1205;text-decoration:none;font-weight:700;';
+    } else if (type === 'a') { el = d.createElement('a'); el.href = '#'; el.textContent = 'リンク'; el.style.color = '#f0d060'; }
+    else if (type === 'img') {
+      var url = prompt('画像URL'); if (!url) return;
+      el = d.createElement('img'); el.src = url; el.alt = ''; el.style.maxWidth = '100%';
     } else if (type === 'box') {
-      el = doc.createElement('div');
-      el.style.cssText = 'padding:1rem;margin:.5rem 0;border:1px solid rgba(201,162,39,.4);border-radius:12px;';
+      el = d.createElement('div');
+      el.style.cssText = 'padding:1rem;border:1px solid rgba(201,162,39,.35);border-radius:12px;';
       el.innerHTML = '<p>ボックス</p>';
     } else if (type === 'card') {
-      el = doc.createElement('div');
-      el.style.cssText = 'padding:1.2rem;margin:.6rem 0;border-radius:14px;background:rgba(0,0,0,.35);border:1px solid rgba(201,162,39,.3);';
-      el.innerHTML = '<h3 style="color:#f0d060;margin-top:0">カード見出し</h3><p>説明文</p>';
-    } else if (type === 'list') {
-      el = doc.createElement('ul');
-      el.innerHTML = '<li>項目1</li><li>項目2</li><li>項目3</li>';
-    } else if (type === 'divider') {
-      el = doc.createElement('hr');
-      el.style.cssText = 'border:none;border-top:1px solid rgba(201,162,39,.35);margin:1rem 0;';
-    } else if (type === 'spacer') {
-      el = doc.createElement('div');
-      el.style.cssText = 'height:48px;';
-      el.setAttribute('aria-hidden', 'true');
-    } else if (type === 'columns') {
-      el = doc.createElement('div');
+      el = d.createElement('div');
+      el.style.cssText = 'padding:1.1rem;border-radius:14px;background:rgba(0,0,0,.28);border:1px solid rgba(201,162,39,.28);';
+      el.innerHTML = '<h3 style="margin-top:0;color:#f0d060">カード</h3><p>説明</p>';
+    } else if (type === 'ul') { el = d.createElement('ul'); el.innerHTML = '<li>項目1</li><li>項目2</li>'; }
+    else if (type === 'hr') { el = d.createElement('hr'); el.style.border = 'none'; el.style.borderTop = '1px solid rgba(201,162,39,.3)'; }
+    else if (type === 'spacer') { el = d.createElement('div'); el.style.height = '40px'; el.setAttribute('aria-hidden','true'); }
+    else if (type === 'cols') {
+      el = d.createElement('div');
       el.style.cssText = 'display:grid;grid-template-columns:1fr 1fr;gap:1rem;';
-      el.innerHTML = '<div style="padding:.8rem;border:1px dashed rgba(201,162,39,.4);border-radius:8px;"><p>左カラム</p></div><div style="padding:.8rem;border:1px dashed rgba(201,162,39,.4);border-radius:8px;"><p>右カラム</p></div>';
-    } else if (type === 'video') {
-      el = doc.createElement('div');
-      el.style.cssText = 'position:relative;padding-top:56.25%;background:#000;border-radius:10px;overflow:hidden;';
-      el.innerHTML = '<p style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#f0d060;">動画URLを設定してください</p>';
-    } else if (type === 'date') {
-      el = doc.createElement('span');
-      el.setAttribute('data-cms-dynamic', 'date');
-      el.textContent = '{{date}}';
-      el.style.color = '#f0d060';
-    } else if (type === 'var') {
-      var key = prompt('変数名（例: event_name）', 'event_name');
-      if (!key) return;
-      el = doc.createElement('span');
-      el.setAttribute('data-cms-dynamic', 'var:' + key);
-      el.textContent = '{{' + key + '}}';
-      el.style.color = '#f0d060';
-    }
-    if (!el) return;
-    parent.appendChild(el);
-    selectEl(el);
-    if (frameWin() && frameWin().__cmsAttachHandles) {
-      try { frameWin().__cmsAttachHandles(el); } catch (e) {}
-    }
-    $('edit-status').textContent = 'ブロックを追加しました（未保存）';
+      el.setAttribute('data-cms-group', '1');
+      el.innerHTML = '<div style="padding:.8rem;border:1px dashed rgba(201,162,39,.35);border-radius:8px"><p>左</p></div><div style="padding:.8rem;border:1px dashed rgba(201,162,39,.35);border-radius:8px"><p>右</p></div>';
+    } else if (type === 'date') { el = d.createElement('span'); el.textContent = '{{date}}'; el.style.color = '#f0d060'; }
+    if (el) insertNear(el);
   }
 
-  function expandDynamics(html) {
-    var user = getSession() || {};
-    var map = {
-      date: todayStr(),
-      year: String(new Date().getFullYear()),
-      user: user.name || user.id || '',
-      page: state.path || ''
-    };
-    Object.keys(state.customVars || {}).forEach(function (k) {
-      map[k] = state.customVars[k];
+  /* ---------- layout ---------- */
+  function layoutRow() {
+    if (state.selected.length < 2) return status('複数選択してください');
+    snapshot();
+    var parent = state.selected[0].parentNode;
+    var wrap = doc().createElement('div');
+    wrap.style.cssText = 'display:flex;flex-wrap:wrap;gap:12px;align-items:stretch;';
+    wrap.setAttribute('data-cms-group', '1');
+    state.selected.forEach(function (el) {
+      if (el.parentNode) el.parentNode.removeChild(el);
+      el.style.flex = '1 1 180px';
+      wrap.appendChild(el);
     });
-    return html.replace(/\{\{\s*([a-zA-Z0-9_\-]+)\s*\}\}/g, function (_, key) {
-      return map.hasOwnProperty(key) ? String(map[key]) : '{{' + key + '}}';
+    parent.appendChild(wrap);
+    setSelection([wrap], false);
+    status('横並び均等');
+  }
+  function layoutCol() {
+    if (state.selected.length < 2) return status('複数選択してください');
+    snapshot();
+    var parent = state.selected[0].parentNode;
+    var wrap = doc().createElement('div');
+    wrap.style.cssText = 'display:flex;flex-direction:column;gap:12px;';
+    wrap.setAttribute('data-cms-group', '1');
+    state.selected.forEach(function (el) {
+      if (el.parentNode) el.parentNode.removeChild(el);
+      wrap.appendChild(el);
     });
+    parent.appendChild(wrap);
+    setSelection([wrap], false);
+    status('縦並び均等');
+  }
+  function layoutFitW() {
+    if (!state.selected.length) return;
+    snapshot();
+    state.selected.forEach(function (el) {
+      if (!canEdit(el)) return;
+      el.style.width = '100%';
+      el.style.maxWidth = '100%';
+      el.style.boxSizing = 'border-box';
+    });
+    status('横幅フィット');
+  }
+  function layoutGroup() {
+    if (state.selected.length < 2) return status('複数選択してください');
+    snapshot();
+    var parent = state.selected[0].parentNode;
+    var wrap = doc().createElement('div');
+    wrap.setAttribute('data-cms-group', '1');
+    wrap.style.cssText = 'display:grid;gap:10px;';
+    state.selected.forEach(function (el) {
+      if (el.parentNode) el.parentNode.removeChild(el);
+      wrap.appendChild(el);
+    });
+    parent.appendChild(wrap);
+    setSelection([wrap], false);
+    status('グループ化');
+  }
+  function layoutUngroup() {
+    var el = state.selected[0];
+    if (!el || el.getAttribute('data-cms-group') !== '1') return status('グループを選択');
+    snapshot();
+    var parent = el.parentNode;
+    while (el.firstChild) parent.insertBefore(el.firstChild, el);
+    parent.removeChild(el);
+    setSelection([], false);
+    status('グループ解除');
+  }
+  function startRegionLayout() {
+    state.regionMode = true;
+    var mask = $('region-mask');
+    mask.classList.remove('hidden');
+    mask.innerHTML = '';
+    status('範囲をドラッグして指定 → マウスアップで配置');
+    var box = null, sx = 0, sy = 0;
+    function pos(e) {
+      var r = mask.getBoundingClientRect();
+      return { x: e.clientX - r.left, y: e.clientY - r.top };
+    }
+    function onDown(e) {
+      var p = pos(e); sx = p.x; sy = p.y;
+      box = document.createElement('div');
+      box.className = 'region-box';
+      box.style.left = sx + 'px'; box.style.top = sy + 'px';
+      box.style.width = '0'; box.style.height = '0';
+      mask.appendChild(box);
+    }
+    function onMove(e) {
+      if (!box) return;
+      var p = pos(e);
+      var x = Math.min(sx, p.x), y = Math.min(sy, p.y);
+      var w = Math.abs(p.x - sx), h = Math.abs(p.y - sy);
+      box.style.left = x + 'px'; box.style.top = y + 'px';
+      box.style.width = w + 'px'; box.style.height = h + 'px';
+    }
+    function onUp() {
+      mask.removeEventListener('mousedown', onDown);
+      mask.removeEventListener('mousemove', onMove);
+      mask.removeEventListener('mouseup', onUp);
+      if (!box) { endRegion(); return; }
+      var x = parseFloat(box.style.left), y = parseFloat(box.style.top);
+      var w = parseFloat(box.style.width), h = parseFloat(box.style.height);
+      endRegion();
+      applyRegionLayout(x, y, w, h);
+    }
+    mask.addEventListener('mousedown', onDown);
+    mask.addEventListener('mousemove', onMove);
+    mask.addEventListener('mouseup', onUp);
+  }
+  function endRegion() {
+    state.regionMode = false;
+    var mask = $('region-mask');
+    mask.classList.add('hidden');
+    mask.innerHTML = '';
+  }
+  function applyRegionLayout(x, y, w, h) {
+    var targets = state.selected.length ? state.selected.slice() : Array.prototype.slice.call(doc().body.children);
+    targets = targets.filter(canEdit);
+    if (!targets.length || w < 20 || h < 20) return status('範囲または要素が不足');
+    snapshot();
+    // visual robot: simple responsive grid packing
+    var n = targets.length;
+    var cols = Math.max(1, Math.round(Math.sqrt(n * (w / Math.max(h, 1)))));
+    cols = Math.min(cols, n);
+    var gap = 12;
+    var cellW = (w - gap * (cols - 1)) / cols;
+    var rows = Math.ceil(n / cols);
+    var cellH = (h - gap * (rows - 1)) / rows;
+    targets.forEach(function (el, i) {
+      var c = i % cols, r = Math.floor(i / cols);
+      el.style.position = 'relative';
+      el.style.boxSizing = 'border-box';
+      el.style.width = Math.max(40, cellW) + 'px';
+      el.style.maxWidth = '100%';
+      el.style.margin = gap / 2 + 'px';
+      el.style.padding = el.style.padding || '0.5rem';
+    });
+    // wrap into grid container for stability
+    var parent = targets[0].parentNode || doc().body;
+    var wrap = doc().createElement('div');
+    wrap.setAttribute('data-cms-group', '1');
+    wrap.style.cssText = 'display:grid;grid-template-columns:repeat(' + cols + ',1fr);gap:' + gap + 'px;width:100%;';
+    targets.forEach(function (el) {
+      if (el.parentNode) el.parentNode.removeChild(el);
+      el.style.width = '';
+      el.style.margin = '';
+      wrap.appendChild(el);
+    });
+    parent.appendChild(wrap);
+    setSelection([wrap], false);
+    status('範囲内に自動配置（' + cols + '列）');
   }
 
-
-  function applyMetaToDoc(doc) {
-    if (!doc || !doc.head) return;
-    var title = ($('meta-title') && $('meta-title').value) || '';
-    if (doc.querySelector('title')) doc.querySelector('title').textContent = title;
-    else {
-      var t = doc.createElement('title'); t.textContent = title; doc.head.appendChild(t);
+  /* ---------- meta / theme ---------- */
+  function applyMeta() {
+    var d = doc(); if (!d || !d.head) return;
+    snapshot();
+    var title = ($('m-title') && $('m-title').value) || '';
+    if (d.querySelector('title')) d.querySelector('title').textContent = title;
+    else { var t = d.createElement('title'); t.textContent = title; d.head.appendChild(t); }
+    if ($('ed-title')) $('ed-title').textContent = title || '—';
+    function setName(n, v) {
+      var el = d.querySelector('meta[name="' + n + '"]');
+      if (!v) { if (el) el.remove(); return; }
+      if (!el) { el = d.createElement('meta'); el.setAttribute('name', n); d.head.appendChild(el); }
+      el.setAttribute('content', v);
     }
-    if ($('edit-title-chip')) $('edit-title-chip').textContent = title;
-
-    function setNameMeta(name, val) {
-      var el = doc.querySelector('meta[name="' + name + '"]');
-      if (!val) { if (el) el.remove(); return; }
-      if (!el) { el = doc.createElement('meta'); el.setAttribute('name', name); doc.head.appendChild(el); }
-      el.setAttribute('content', val);
+    function setProp(p, v) {
+      var el = d.querySelector('meta[property="' + p + '"]');
+      if (!v) { if (el) el.remove(); return; }
+      if (!el) { el = d.createElement('meta'); el.setAttribute('property', p); d.head.appendChild(el); }
+      el.setAttribute('content', v);
     }
-    function setPropMeta(prop, val) {
-      var el = doc.querySelector('meta[property="' + prop + '"]');
-      if (!val) { if (el) el.remove(); return; }
-      if (!el) { el = doc.createElement('meta'); el.setAttribute('property', prop); doc.head.appendChild(el); }
-      el.setAttribute('content', val);
-    }
-    setNameMeta('description', ($('meta-desc') && $('meta-desc').value) || '');
-    setNameMeta('author', ($('meta-author') && $('meta-author').value) || '');
-    setNameMeta('robots', ($('meta-robots') && $('meta-robots').value) || '');
-    setPropMeta('og:image', ($('meta-og-image') && $('meta-og-image').value) || '');
-    setPropMeta('og:title', title);
-
-    var fav = ($('meta-favicon') && $('meta-favicon').value) || '';
-    var icon = doc.querySelector('link[rel="icon"], link[rel="shortcut icon"]');
+    setName('description', ($('m-desc') && $('m-desc').value) || '');
+    setName('author', ($('m-author') && $('m-author').value) || '');
+    setName('robots', ($('m-robots') && $('m-robots').value) || '');
+    setProp('og:title', title);
+    setProp('og:image', ($('m-og') && $('m-og').value) || '');
+    var fav = ($('m-icon') && $('m-icon').value) || '';
+    var icon = d.querySelector('link[rel="icon"]');
     if (!fav) { if (icon) icon.remove(); }
     else {
-      if (!icon) { icon = doc.createElement('link'); icon.setAttribute('rel', 'icon'); doc.head.appendChild(icon); }
-      icon.setAttribute('href', fav);
+      if (!icon) { icon = d.createElement('link'); icon.rel = 'icon'; d.head.appendChild(icon); }
+      icon.href = fav;
     }
+    status('メタ反映');
   }
-
-  function sanitizeFileName(name) {
-    return String(name || 'image').replace(/[^a-zA-Z0-9._\-]/g, '_').slice(0, 80);
-  }
-
-  function putBinary(path, base64Content, message, sha) {
-    var body = { message: message || 'upload', content: base64Content, branch: 'main' };
-    if (sha) body.sha = sha;
-    return fetch(API + '/' + path, {
-      method: 'PUT', headers: ghHeaders(), body: JSON.stringify(body)
-    }).then(function (res) {
-      if (!res.ok) return res.text().then(function (t) { throw new Error('PUT ' + path + ': ' + res.status + ' ' + t); });
-      return res.json();
-    });
-  }
-
-  function uploadMediaFile(file) {
-    if (!file || !state.path) return Promise.reject(new Error('ファイルまたはページがありません'));
-    var dir = filesDirForPage(state.path);
-    var name = ($('media-name') && $('media-name').value.trim()) || file.name || ('img_' + Date.now());
-    name = sanitizeFileName(name);
-    if (!/\.[a-z0-9]+$/i.test(name)) {
-      var ext = (file.type || '').split('/')[1] || 'png';
-      name += '.' + ext;
+  function applyTheme() {
+    var d = doc(); if (!d) return;
+    snapshot();
+    var bg = $('t-bg').value, text = $('t-text').value, accent = $('t-accent').value, card = $('t-card').value;
+    var st = d.getElementById('cms-theme');
+    if (!st) { st = d.createElement('style'); st.id = 'cms-theme'; d.head.appendChild(st); }
+    st.textContent =
+      ':root{--bg:' + bg + ';--text:' + text + ';--gold:' + accent + ';--card:' + card + ';}' +
+      'html,body{background:' + bg + '!important;color:' + text + '!important;}' +
+      'a{color:' + accent + ';}' +
+      '.card,.seminar-card,section,article{background-color:' + card + ';}';
+    if (d.body) {
+      d.body.style.setProperty('background', bg, 'important');
+      d.body.style.setProperty('color', text, 'important');
     }
-    var path = dir + '/' + name;
-    var status = $('media-status');
-    if (status) status.textContent = 'アップロード中…';
+    status('テーマ適用');
+  }
+  function resetTheme() {
+    var d = doc(); if (!d) return;
+    snapshot();
+    var st = d.getElementById('cms-theme'); if (st) st.remove();
+    if (d.body) { d.body.style.background = ''; d.body.style.color = ''; }
+    status('テーマ解除');
+  }
 
-    return new Promise(function (resolve, reject) {
-      var reader = new FileReader();
-      reader.onload = function () {
-        var dataUrl = String(reader.result || '');
-        var b64 = dataUrl.split(',')[1];
-        if (!b64) { reject(new Error('読み込み失敗')); return; }
-        getFile(path).then(function (existing) {
-          return putBinary(path, b64, 'upload: ' + path, existing.sha);
-        }).catch(function () {
-          return putBinary(path, b64, 'upload: ' + path, null);
-        }).then(function () {
-          var url = SITE_BASE + path;
-          if ($('media-url')) $('media-url').value = url;
-          if (status) status.textContent = 'アップロード完了';
-          resolve(url);
-        }).catch(reject);
-      };
-      reader.onerror = function () { reject(new Error('ファイル読み込み失敗')); };
-      reader.readAsDataURL(file);
+  function expandVars(html) {
+    var map = {
+      date: todayJP(),
+      year: String(new Date().getFullYear()),
+      user: (state.user && (state.user.name || state.user.id)) || '',
+      page: state.path || ''
+    };
+    Object.keys(state.vars || {}).forEach(function (k) { map[k] = state.vars[k]; });
+    return html.replace(/\{\{\s*([a-zA-Z0-9_\-]+)\s*\}\}/g, function (_, k) {
+      return map.hasOwnProperty(k) ? String(map[k]) : '{{' + k + '}}';
     });
   }
 
   function exportHtml() {
-    var doc = frameDoc();
-    if (!doc) throw new Error('プレビューがありません');
-    applyMetaToDoc(doc);
-    var clone = doc.documentElement.cloneNode(true);
-    var rm = clone.querySelectorAll('#cms-editor-style, base, .cms-handle');
-    for (var i = 0; i < rm.length; i++) rm[i].remove();
-    var scripts = clone.querySelectorAll('script');
-    for (var k = 0; k < scripts.length; k++) {
-      var t = scripts[k].textContent || '';
-      if (t.indexOf('cms-select') >= 0 || t.indexOf('__cmsAttachHandles') >= 0) scripts[k].remove();
-    }
-    var sel = clone.querySelectorAll('.cms-selected');
-    for (var s = 0; s < sel.length; s++) sel[s].classList.remove('cms-selected');
+    var d = doc(); if (!d) throw new Error('no doc');
+    applyMetaQuiet(d);
+    var clone = d.documentElement.cloneNode(true);
+    clone.querySelectorAll('#cms-ui,#cms-theme,base').forEach(function (n) { n.remove(); });
+    clone.querySelectorAll('.cms-sel,.cms-sel-multi').forEach(function (n) {
+      n.classList.remove('cms-sel', 'cms-sel-multi');
+    });
     if (clone.body) clone.body.classList.remove('cms-outline');
-    var eds = clone.querySelectorAll('[contenteditable]');
-    for (var c = 0; c < eds.length; c++) eds[c].removeAttribute('contenteditable');
-    // resolve relative left/top that were for editing only — keep them as inline styles (intentional layout)
-    var html = '<!DOCTYPE html>\n' + clone.outerHTML;
-    // expand dynamics for published view (keep placeholders if unknown)
-    html = expandDynamics(html);
-    return html;
+    clone.querySelectorAll('[contenteditable]').forEach(function (n) { n.removeAttribute('contenteditable'); });
+    // strip empty formatting tags
+    clone.querySelectorAll('span,b,i,u,font').forEach(function (n) {
+      if (!n.textContent && !n.children.length) n.remove();
+    });
+    return expandVars('<!DOCTYPE html>\n' + clone.outerHTML);
+  }
+  function applyMetaQuiet(d) {
+    // already applied via fields when user presses button; on save re-apply current fields
+    if (!$('m-title')) return;
+    var title = $('m-title').value || '';
+    if (d.querySelector('title')) d.querySelector('title').textContent = title;
   }
 
-  function buildCssContent(existing, custom) {
-    var cssText = existing || '/* page */\n';
-    if (cssText.indexOf('teacher-custom-css-start') >= 0) {
-      cssText = cssText.replace(
-        /\/\* --- teacher-custom-css-start --- \*\/[\s\S]*?\/\* --- teacher-custom-css-end --- \*\//,
-        '/* --- teacher-custom-css-start --- */\n' + custom + '\n/* --- teacher-custom-css-end --- */'
-      );
-    } else {
-      cssText += '\n/* --- teacher-custom-css-start --- */\n' + custom + '\n/* --- teacher-custom-css-end --- */\n';
-    }
-    return cssText;
-  }
-
-  function saveAll() {
-    var user = getSession();
-    var path = state.path;
-    var status = $('edit-status');
-    var commitMsg = ($('commit-msg') && $('commit-msg').value.trim()) || ('CMS: ' + path);
-    if (!path || !user) return;
-    status.textContent = '保存中…';
-
+  function save() {
+    if (!state.path || !state.user) return;
+    status('保存中…');
     var htmlOut;
-    try { htmlOut = exportHtml(); }
-    catch (e) { status.textContent = '保存失敗: ' + e.message; return; }
+    try { htmlOut = exportHtml(); } catch (e) { status('保存失敗: ' + e.message); return; }
+    var msg = ($('commit-msg') && $('commit-msg').value.trim()) || ('CMS: ' + state.path);
+    var cssExtra = ($('t-css') && $('t-css').value) || '';
 
-    var chain = Promise.resolve();
-    // HTML
-    chain = chain.then(function () {
-      return getFile(path).then(function (f) {
-        return putFile(path, htmlOut, commitMsg, f.sha);
-      });
-    });
-    // CSS
-    if (state.cssPath) {
-      var customCss = $('css-editor').value;
-      chain = chain.then(function () {
-        return getFile(state.cssPath).then(function (cf) {
-          return putFile(state.cssPath, buildCssContent(decodeContent(cf.content), customCss), commitMsg, cf.sha);
-        }).catch(function () {
-          return putFile(state.cssPath, buildCssContent('', customCss), commitMsg, null);
-        });
-      });
-    }
-    // log
-    chain = chain.then(function () {
-      var line = '[' + nowStamp() + '] ' + (user.name || user.id) + ' | ' + path + ' | ' + commitMsg + '\n';
-      return getFile('src/log.txt').then(function (lf) {
-        var prev = '';
-        try { prev = decodeContent(lf.content); } catch (e) {}
-        if (prev && prev.slice(-1) !== '\n') prev += '\n';
-        return putFile('src/log.txt', prev + line, 'log: ' + path, lf.sha);
-      }).catch(function () {
-        return putFile('src/log.txt', '# reitansai CMS log\n' + line, 'log: ' + path, null);
-      });
-    });
-
-    chain.then(function () {
-      status.textContent = '保存完了 ✓';
-    }).catch(function (err) {
-      status.textContent = '保存失敗: ' + err.message;
-    });
-  }
-
-  function renderVarList() {
-    var box = $('var-list');
-    if (!box) return;
-    box.innerHTML = '';
-    var keys = Object.keys(state.customVars || {});
-    if (!keys.length) {
-      box.innerHTML = '<p class="side-hint">まだ変数がありません</p>';
-      return;
-    }
-    keys.forEach(function (k) {
-      var row = document.createElement('div');
-      row.className = 'var-item';
-      row.innerHTML = '<span><code>{{' + k + '}}</code> = ' + String(state.customVars[k]).slice(0, 40) + '</span>';
-      var del = document.createElement('button');
-      del.type = 'button'; del.className = 'btn-outline'; del.textContent = '削除';
-      del.onclick = function () {
-        delete state.customVars[k];
-        saveVars();
-        renderVarList();
-      };
-      row.appendChild(del);
-      box.appendChild(row);
-    });
-  }
-
-  function applyTheme() {
-    var doc = frameDoc();
-    if (!doc || !doc.documentElement) return;
-    pushUndo();
-    var root = doc.documentElement;
-    root.style.setProperty('--cms-bg', $('theme-bg').value);
-    root.style.setProperty('--cms-text', $('theme-text').value);
-    root.style.setProperty('--cms-gold', $('theme-gold').value);
-    root.style.setProperty('--cms-card', $('theme-card').value);
-    if (doc.body) {
-      doc.body.style.backgroundColor = $('theme-bg').value;
-      doc.body.style.color = $('theme-text').value;
-    }
-    // inject helper style once
-    var st = doc.getElementById('cms-theme-style');
-    if (!st) {
-      st = doc.createElement('style');
-      st.id = 'cms-theme-style';
-      doc.head.appendChild(st);
-    }
-    st.textContent =
-      'body{background:' + $('theme-bg').value + '!important;color:' + $('theme-text').value + ';}' +
-      'a{color:' + $('theme-gold').value + ';}';
-    $('edit-status').textContent = 'テーマ適用（未保存）';
-  }
-
-  function boot() {
-    loadVars();
-    if (!$('login-view') || !$('dash-view')) {
-      document.body.insertAdjacentHTML('afterbegin', '<p style="color:red;padding:1rem">admin.html 構造エラー</p>');
-      return;
-    }
-    var existing = getSession();
-    if (existing && existing.id) enterDash(existing);
-    else showView('login');
-
-    if ($('login-btn')) $('login-btn').onclick = function (e) { if (e) e.preventDefault(); doLogin(); };
-    function onEnter(e) { if (e.key === 'Enter') { e.preventDefault(); doLogin(); } }
-    if ($('uid')) $('uid').addEventListener('keydown', onEnter);
-    if ($('pw')) $('pw').addEventListener('keydown', onEnter);
-    if ($('logout-btn')) $('logout-btn').onclick = function () { clearSession(); showView('login'); };
-    if ($('btn-back')) $('btn-back').onclick = function () {
-      var u = getSession(); if (u) enterDash(u); else showView('login');
-    };
-    if ($('btn-save')) $('btn-save').onclick = saveAll;
-    if ($('btn-undo')) $('btn-undo').onclick = undo;
-    if ($('btn-redo')) $('btn-redo').onclick = redo;
-    if ($('btn-apply-props')) $('btn-apply-props').onclick = applyProps;
-    if ($('prop-size')) $('prop-size').oninput = function () { $('prop-size-val').textContent = this.value + 'px'; };
-    if ($('prop-opacity')) $('prop-opacity').oninput = function () { $('prop-opacity-val').textContent = this.value + '%'; };
-
-    // tabs
-    var tabs = document.querySelectorAll('.side-tab');
-    for (var t = 0; t < tabs.length; t++) {
-      tabs[t].addEventListener('click', function () {
-        for (var i = 0; i < tabs.length; i++) tabs[i].classList.remove('active');
-        this.classList.add('active');
-        var panels = ['props', 'blocks', 'meta', 'media', 'theme', 'vars', 'adv'];
-        for (var p = 0; p < panels.length; p++) {
-          var el = $('panel-' + panels[p]);
-          if (el) el.classList.toggle('hidden', panels[p] !== this.getAttribute('data-panel'));
-        }
-      });
-    }
-
-    // device
-    var devBtns = document.querySelectorAll('.dev-btn');
-    for (var d = 0; d < devBtns.length; d++) {
-      devBtns[d].addEventListener('click', function () {
-        for (var i = 0; i < devBtns.length; i++) devBtns[i].classList.remove('active');
-        this.classList.add('active');
-        $('canvas-frame').className = 'cms-canvas device-' + this.getAttribute('data-device');
-      });
-    }
-    if ($('btn-outline-mode')) {
-      $('btn-outline-mode').onclick = function () {
-        state.outline = !state.outline;
-        var doc = frameDoc();
-        if (doc && doc.body) doc.body.classList.toggle('cms-outline', state.outline);
-        this.classList.toggle('active', state.outline);
-      };
-    }
-
-    // format
-    var cmds = document.querySelectorAll('[data-cmd]');
-    for (var i = 0; i < cmds.length; i++) {
-      cmds[i].addEventListener('click', function () {
-        var doc = frameDoc(); if (!doc) return;
-        pushUndo();
-        doc.execCommand(this.getAttribute('data-cmd'), false, null);
-      });
-    }
-    if ($('btn-make-link')) $('btn-make-link').onclick = function () {
-      var doc = frameDoc(); if (!doc) return;
-      var url = $('prop-href').value.trim() || prompt('リンクURL');
-      if (!url) return; pushUndo(); doc.execCommand('createLink', false, url);
-    };
-    if ($('btn-unlink')) $('btn-unlink').onclick = function () {
-      var doc = frameDoc(); if (!doc) return; pushUndo(); doc.execCommand('unlink', false, null);
-    };
-    if ($('btn-delete-el')) $('btn-delete-el').onclick = function () {
-      var el = state.selected; if (!el || !canEdit(el)) return;
-      pushUndo(); if (el.parentNode) el.parentNode.removeChild(el);
-      clearSelectionUI(); $('edit-status').textContent = '削除しました（未保存）';
-    };
-    if ($('btn-duplicate')) $('btn-duplicate').onclick = function () {
-      var el = state.selected; if (!el || !canEdit(el)) return;
-      pushUndo();
-      var clone = el.cloneNode(true);
-      clone.classList.remove('cms-selected');
-      var handles = clone.querySelectorAll('.cms-handle');
-      for (var h = 0; h < handles.length; h++) handles[h].remove();
-      if (el.parentNode) el.parentNode.insertBefore(clone, el.nextSibling);
-      selectEl(clone);
-    };
-
-    // blocks
-    var blocks = document.querySelectorAll('[data-ins]');
-    for (var b = 0; b < blocks.length; b++) {
-      blocks[b].addEventListener('click', function () {
-        insertBlock(this.getAttribute('data-ins'));
-      });
-    }
-
-    // theme
-    if ($('btn-apply-theme')) $('btn-apply-theme').onclick = applyTheme;
-    if ($('btn-reset-theme')) $('btn-reset-theme').onclick = function () {
-      var doc = frameDoc(); if (!doc) return;
-      pushUndo();
-      var st = doc.getElementById('cms-theme-style'); if (st) st.remove();
-      if (doc.body) { doc.body.style.backgroundColor = ''; doc.body.style.color = ''; }
-      $('edit-status').textContent = 'テーマ解除（未保存）';
-    };
-
-    // vars
-    if ($('btn-add-var')) $('btn-add-var').onclick = function () {
-      var k = ($('var-key').value || '').trim().replace(/[^a-zA-Z0-9_\-]/g, '');
-      var v = $('var-val').value || '';
-      if (!k) return;
-      state.customVars[k] = v; saveVars(); renderVarList();
-      $('var-key').value = ''; $('var-val').value = '';
-    };
-    if ($('btn-insert-var')) $('btn-insert-var').onclick = function () {
-      var k = ($('var-key').value || '').trim() || Object.keys(state.customVars)[0];
-      if (!k) return;
-      var el = state.selected; if (!el || !canEdit(el)) return;
-      pushUndo();
-      el.textContent = (el.textContent || '') + '{{' + k + '}}';
-    };
-    var chips = document.querySelectorAll('.var-chip');
-    for (var c = 0; c < chips.length; c++) {
-      chips[c].addEventListener('click', function () {
-        var el = state.selected;
-        if (el && canEdit(el)) {
-          pushUndo();
-          el.textContent = (el.textContent || '') + this.getAttribute('data-var');
+    getFile(state.path).then(function (f) {
+      return putFile(state.path, htmlOut, msg, f.sha);
+    }).then(function () {
+      if (!state.cssPath) return null;
+      return getFile(state.cssPath).then(function (cf) {
+        var css = decode(cf.content);
+        if (css.indexOf('teacher-custom-css-start') >= 0) {
+          css = css.replace(/\/\* --- teacher-custom-css-start --- \*\/[\s\S]*?\/\* --- teacher-custom-css-end --- \*\//,
+            '/* --- teacher-custom-css-start --- */\n' + cssExtra + '\n/* --- teacher-custom-css-end --- */');
         } else {
-          navigator.clipboard && navigator.clipboard.writeText(this.getAttribute('data-var'));
-          $('edit-status').textContent = '変数をコピーしました: ' + this.getAttribute('data-var');
+          css += '\n/* --- teacher-custom-css-start --- */\n' + cssExtra + '\n/* --- teacher-custom-css-end --- */\n';
         }
+        return putFile(state.cssPath, css, msg, cf.sha);
+      }).catch(function () {
+        return putFile(state.cssPath, '/* page */\n/* --- teacher-custom-css-start --- */\n' + cssExtra + '\n/* --- teacher-custom-css-end --- */\n', msg, null);
+      });
+    }).then(function () {
+      var line = '[' + nowStamp() + '] ' + (state.user.name || state.user.id) + ' | ' + state.path + ' | ' + msg + '\n';
+      return getFile('src/log.txt').then(function (lf) {
+        var prev = ''; try { prev = decode(lf.content); } catch (e) {}
+        if (prev && prev.slice(-1) !== '\n') prev += '\n';
+        return putFile('src/log.txt', prev + line, 'log: ' + state.path, lf.sha);
+      }).catch(function () {
+        return putFile('src/log.txt', '# log\n' + line, 'log', null);
+      });
+    }).then(function () {
+      state.dirty = false;
+      status('保存完了 ✓');
+      beatPresence(true);
+    }).catch(function (err) {
+      status('保存失敗: ' + err.message);
+    });
+  }
+
+  /* ---------- presence (lightweight collab) ---------- */
+  function beatPresence(force) {
+    if (!state.user) return Promise.resolve();
+    var entry = {
+      id: state.user.id,
+      name: state.user.name || state.user.id,
+      path: state.path || '',
+      at: Date.now()
+    };
+    return getFile(PRESENCE_PATH).then(function (f) {
+      var list = [];
+      try { list = JSON.parse(decode(f.content)); } catch (e) { list = []; }
+      if (!Array.isArray(list)) list = [];
+      var now = Date.now();
+      list = list.filter(function (x) { return x && x.at && (now - x.at) < 60000 && x.id !== entry.id; });
+      list.push(entry);
+      return putFile(PRESENCE_PATH, JSON.stringify(list, null, 2), 'presence', f.sha).then(function () {
+        renderPresence(list);
+      });
+    }).catch(function () {
+      return putFile(PRESENCE_PATH, JSON.stringify([entry], null, 2), 'presence', null).then(function () {
+        renderPresence([entry]);
+      });
+    }).catch(function () { /* ignore presence failures */ });
+  }
+  function renderPresence(list) {
+    var board = $('presence-board');
+    var pills = $('collab-pills');
+    var others = (list || []).filter(function (x) {
+      return x && state.user && x.id !== state.user.id && (Date.now() - x.at) < 60000;
+    });
+    if (board) {
+      if (!others.length) board.classList.add('hidden');
+      else {
+        board.classList.remove('hidden');
+        board.textContent = '編集中: ' + others.map(function (x) {
+          return x.name + (x.path ? (' @ ' + x.path) : '');
+        }).join(' · ');
+      }
+    }
+    if (pills) {
+      pills.innerHTML = '';
+      others.filter(function (x) { return x.path === state.path; }).forEach(function (x) {
+        var s = document.createElement('span');
+        s.className = 'collab-pill';
+        s.textContent = x.name + ' が編集中';
+        pills.appendChild(s);
       });
     }
+  }
 
-    // advanced
-    if ($('btn-apply-adv')) $('btn-apply-adv').onclick = function () {
-      var el = state.selected; if (!el || !canEdit(el)) return;
-      pushUndo();
-      if ($('adv-id').value) el.id = $('adv-id').value;
-      if ($('adv-class').value) el.className = $('adv-class').value;
-      if ($('adv-z').value !== '') el.style.zIndex = $('adv-z').value;
-      if ($('adv-display').value) el.style.display = $('adv-display').value;
-      var raw = $('adv-html').value;
-      if (raw && raw !== el.outerHTML && el.parentNode) {
-        var wrap = frameDoc().createElement('div');
-        wrap.innerHTML = raw;
-        var neu = wrap.firstElementChild;
-        if (neu) { el.parentNode.replaceChild(neu, el); selectEl(neu); return; }
-      }
-      selectEl(el);
-      $('edit-status').textContent = '上級設定を適用（未保存）';
-    };
-    if ($('btn-lock-el')) $('btn-lock-el').onclick = function () {
-      if (!state.isAdmin) { $('edit-status').textContent = '保護設定は管理者のみ'; return; }
-      var el = state.selected; if (!el) return;
-      pushUndo();
-      el.setAttribute('data-cms-lock', '1');
-      $('edit-status').textContent = '要素を保護しました';
-      selectEl(el);
-    };
-
-
-    if ($('btn-apply-meta')) $('btn-apply-meta').onclick = function () {
-      var doc = frameDoc(); if (!doc) return;
-      pushUndo();
-      applyMetaToDoc(doc);
-      $('edit-status').textContent = 'メタを反映しました（未保存）';
-      if ($('edit-title-chip') && $('meta-title')) $('edit-title-chip').textContent = $('meta-title').value;
-    };
-
-    if ($('btn-upload-media')) $('btn-upload-media').onclick = function () {
-      var input = $('media-file');
-      if (!input || !input.files || !input.files[0]) {
-        if ($('media-status')) $('media-status').textContent = 'ファイルを選んでください';
+  /* ---------- assets ---------- */
+  function loadAssets() {
+    var list = $('asset-list'); if (!list || !state.path) return;
+    list.innerHTML = '<p class="hint">読み込み中…</p>';
+    var dir = filesDir(state.path);
+    if ($('asset-dir')) $('asset-dir').textContent = dir + '/';
+    fetch(API + '/' + dir + '?ref=main', { headers: headers() }).then(function (r) {
+      if (r.status === 404) { list.innerHTML = '<p class="hint">まだ素材がありません</p>'; return null; }
+      if (!r.ok) throw new Error(String(r.status));
+      return r.json();
+    }).then(function (items) {
+      if (!items) return;
+      if (!Array.isArray(items) || !items.length) {
+        list.innerHTML = '<p class="hint">まだ素材がありません</p>';
         return;
       }
-      uploadMediaFile(input.files[0]).then(function () {
-        $('edit-status').textContent = '画像アップロード完了';
-      }).catch(function (err) {
-        if ($('media-status')) $('media-status').textContent = '失敗: ' + err.message;
+      list.innerHTML = '';
+      items.filter(function (it) { return it.type === 'file'; }).forEach(function (it) {
+        var row = document.createElement('div');
+        row.className = 'asset-item';
+        var url = SITE + it.path;
+        row.innerHTML = '<img alt=""><div style="min-width:0;flex:1"><div class="mono" style="font-size:11px;word-break:break-all"></div></div>';
+        row.querySelector('img').src = url;
+        row.querySelector('.mono').textContent = it.name;
+        var use = document.createElement('button');
+        use.type = 'button'; use.className = 'btn ghost'; use.textContent = '使う';
+        use.onclick = function () {
+          var d = doc(); if (!d) return;
+          snapshot();
+          var img = d.createElement('img');
+          img.src = url; img.alt = it.name; img.style.maxWidth = '100%';
+          insertNear(img);
+        };
+        row.appendChild(use);
+        list.appendChild(row);
+      });
+    }).catch(function () {
+      list.innerHTML = '<p class="hint">素材フォルダを取得できませんでした</p>';
+    });
+  }
+  function uploadAsset() {
+    var input = $('asset-file');
+    if (!input || !input.files || !input.files[0] || !state.path) return;
+    var file = input.files[0];
+    var dir = filesDir(state.path);
+    var name = file.name.replace(/[^a-zA-Z0-9._\-]/g, '_');
+    var path = dir + '/' + name;
+    $('asset-msg').textContent = 'アップロード中…';
+    var reader = new FileReader();
+    reader.onload = function () {
+      var b64 = String(reader.result).split(',')[1];
+      getFile(path).then(function (f) {
+        return putBinary(path, b64, 'upload ' + path, f.sha);
+      }).catch(function () {
+        return putBinary(path, b64, 'upload ' + path, null);
+      }).then(function () {
+        $('asset-msg').textContent = '完了';
+        loadAssets();
+      }).catch(function (e) {
+        $('asset-msg').textContent = '失敗: ' + e.message;
       });
     };
-    if ($('btn-use-as-img')) $('btn-use-as-img').onclick = function () {
-      var url = ($('media-url') && $('media-url').value) || '';
-      var el = state.selected;
-      if (!url) return;
-      if (el && el.tagName === 'IMG' && canEdit(el)) {
-        pushUndo(); el.setAttribute('src', url); selectEl(el);
-      } else if ($('prop-src')) $('prop-src').value = url;
+    reader.readAsDataURL(file);
+  }
+
+  /* ---------- open views ---------- */
+  function openDash() {
+    show('view-dash');
+    if ($('dash-user') && state.user) {
+      $('dash-user').textContent = (state.user.name || state.user.id) + ' · ' + (state.user.semi_name || '');
+    }
+    var grid = $('page-grid');
+    var st = $('dash-status');
+    grid.innerHTML = '';
+    st.textContent = '読み込み中…';
+    var perms = (state.user && state.user.permissions) || [];
+    Promise.all(perms.map(function (p) {
+      return getFile(p).then(function (f) {
+        return { path: p, title: extractTitle(decode(f.content)) || p };
+      }).catch(function () { return { path: p, title: p }; });
+    })).then(function (items) {
+      st.textContent = items.length ? '' : '編集可能なページがありません';
+      items.forEach(function (it) {
+        var b = document.createElement('button');
+        b.type = 'button'; b.className = 'page-card';
+        b.innerHTML = '<span class="t"></span><span class="p mono"></span>';
+        b.querySelector('.t').textContent = it.title;
+        b.querySelector('.p').textContent = it.path;
+        b.onclick = function () { openEditor(it.path); };
+        grid.appendChild(b);
+      });
+    });
+    beatPresence();
+  }
+
+  function openEditor(path) {
+    state.path = path;
+    state.cssPath = pathToCss(path);
+    state.selected = [];
+    state.undo = [];
+    state.redo = [];
+    show('view-editor');
+    if ($('ed-path')) $('ed-path').textContent = path;
+    if ($('ed-title')) $('ed-title').textContent = '読み込み中…';
+    status('読み込み中…');
+    getFile(path).then(function (f) {
+      var html = decode(f.content);
+      var title = extractTitle(html);
+      if ($('ed-title')) $('ed-title').textContent = title || path;
+      // meta fields
+      try {
+        var tmp = new DOMParser().parseFromString(html, 'text/html');
+        if ($('m-title')) $('m-title').value = title || '';
+        var md = tmp.querySelector('meta[name="description"]');
+        if ($('m-desc')) $('m-desc').value = md ? md.content : '';
+        var ma = tmp.querySelector('meta[name="author"]');
+        if ($('m-author')) $('m-author').value = ma ? ma.content : '';
+        var ic = tmp.querySelector('link[rel="icon"]');
+        if ($('m-icon')) $('m-icon').value = ic ? ic.getAttribute('href') : '';
+        var og = tmp.querySelector('meta[property="og:image"]');
+        if ($('m-og')) $('m-og').value = og ? og.content : '';
+      } catch (e) {}
+      var fEl = frame();
+      fEl.onload = function () { bindFrame(); status('編集可能 · 右クリックでメニュー'); };
+      fEl.srcdoc = injectChrome(html, path);
+      if (state.cssPath) {
+        getFile(state.cssPath).then(function (cf) {
+          var css = decode(cf.content);
+          var m = css.match(/\/\* --- teacher-custom-css-start --- \*\/([\s\S]*?)\/\* --- teacher-custom-css-end --- \*\//);
+          if ($('t-css')) $('t-css').value = m ? m[1].trim() : '';
+        }).catch(function () { if ($('t-css')) $('t-css').value = ''; });
+      }
+      loadAssets();
+      beatPresence();
+    }).catch(function (e) {
+      status('読込失敗: ' + e.message);
+    });
+  }
+
+  function applyStyle() {
+    if (!state.selected.length) return;
+    snapshot();
+    state.selected.forEach(function (el) {
+      if (!canEdit(el)) return;
+      var text = $('p-text').value;
+      if (text !== '' && (el.childElementCount === 0 || /^(H1|H2|H3|H4|P|SPAN|A|BUTTON|LI)$/.test(el.tagName))) {
+        el.textContent = text;
+      }
+      el.style.color = $('p-color').value;
+      el.style.backgroundColor = $('p-bg').value;
+      el.style.fontSize = $('p-size').value + 'px';
+      if ($('p-weight').value) el.style.fontWeight = $('p-weight').value;
+      if ($('p-align').value) el.style.textAlign = $('p-align').value;
+      if (el.tagName === 'A' && $('p-href').value) el.setAttribute('href', $('p-href').value);
+    });
+    status('スタイル適用');
+  }
+
+  /* ---------- boot ---------- */
+  function boot() {
+    try { state.vars = JSON.parse(localStorage.getItem(VARS) || '{}') || {}; } catch (e) { state.vars = {}; }
+
+    var s = getSession();
+    if (s && s.id) { state.user = s; openDash(); }
+    else show('view-login');
+
+    if ($('btn-login')) $('btn-login').onclick = login;
+    ['uid','pw'].forEach(function (id) {
+      if ($(id)) $(id).addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') login();
+      });
+    });
+    if ($('btn-logout')) $('btn-logout').onclick = function () {
+      clearSession(); state.user = null; show('view-login');
     };
-    if ($('btn-insert-uploaded')) $('btn-insert-uploaded').onclick = function () {
-      var url = ($('media-url') && $('media-url').value) || '';
-      if (!url) return;
-      var doc = frameDoc(); if (!doc) return;
-      pushUndo();
-      var img = doc.createElement('img');
-      img.src = url; img.alt = ''; img.style.maxWidth = '100%';
-      var parent = (state.selected && canEdit(state.selected)) ? state.selected : doc.body;
-      if (parent.tagName === 'IMG') parent = parent.parentNode || doc.body;
-      parent.appendChild(img); selectEl(img);
+    if ($('btn-back')) $('btn-back').onclick = function () { openDash(); };
+    if ($('btn-save')) $('btn-save').onclick = save;
+    if ($('btn-undo')) $('btn-undo').onclick = undo;
+    if ($('btn-redo')) $('btn-redo').onclick = redo;
+    if ($('btn-outline')) $('btn-outline').onclick = function () {
+      state.outline = !state.outline;
+      var d = doc(); if (d && d.body) d.body.classList.toggle('cms-outline', state.outline);
     };
-    if ($('btn-unlock-el')) $('btn-unlock-el').onclick = function () {
-      if (!state.isAdmin) { $('edit-status').textContent = '保護解除は管理者のみ'; return; }
-      var el = state.selected; if (!el) return;
-      pushUndo();
-      el.removeAttribute('data-cms-lock');
-      $('edit-status').textContent = '保護を解除しました';
-      selectEl(el);
+    if ($('btn-apply-style')) $('btn-apply-style').onclick = applyStyle;
+    if ($('btn-meta')) $('btn-meta').onclick = applyMeta;
+    if ($('btn-theme')) $('btn-theme').onclick = applyTheme;
+    if ($('btn-theme-reset')) $('btn-theme-reset').onclick = resetTheme;
+    if ($('btn-upload')) $('btn-upload').onclick = uploadAsset;
+    if ($('p-size')) $('p-size').oninput = function () { $('p-size-v').textContent = this.value; };
+
+    document.querySelectorAll('.rail-tab').forEach(function (tab) {
+      tab.addEventListener('click', function () {
+        document.querySelectorAll('.rail-tab').forEach(function (t) { t.classList.remove('on'); });
+        tab.classList.add('on');
+        var name = tab.getAttribute('data-tab');
+        document.querySelectorAll('.rail-panel').forEach(function (p) {
+          p.classList.toggle('hidden', p.getAttribute('data-panel') !== name);
+        });
+        if (name === 'assets') loadAssets();
+      });
+    });
+    document.querySelectorAll('#device-seg .seg-btn').forEach(function (b) {
+      b.addEventListener('click', function () {
+        document.querySelectorAll('#device-seg .seg-btn').forEach(function (x) { x.classList.remove('on'); });
+        b.classList.add('on');
+        $('stage').className = 'stage device-' + b.getAttribute('data-device');
+      });
+    });
+    document.querySelectorAll('[data-add]').forEach(function (b) {
+      b.addEventListener('click', function () { addBlock(b.getAttribute('data-add')); });
+    });
+    document.querySelectorAll('[data-cmd]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var d = doc(); if (!d) return;
+        snapshot();
+        d.execCommand(b.getAttribute('data-cmd'), false, null);
+      });
+    });
+    document.querySelectorAll('[data-var]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var el = state.selected[0];
+        if (el && canEdit(el)) { snapshot(); el.textContent = (el.textContent || '') + b.getAttribute('data-var'); }
+      });
+    });
+    if ($('btn-var-add')) $('btn-var-add').onclick = function () {
+      var k = (($('v-key') && $('v-key').value) || '').trim().replace(/[^a-zA-Z0-9_\-]/g, '');
+      var v = ($('v-val') && $('v-val').value) || '';
+      if (!k) return;
+      state.vars[k] = v;
+      try { localStorage.setItem(VARS, JSON.stringify(state.vars)); } catch (e) {}
+      status('変数を保存');
     };
 
-    window.addEventListener('message', function (ev) {
-      var data = ev.data; if (!data || !data.type) return;
-      var win = frameWin();
-      if (data.type === 'cms-select') {
-        if (win && win.__cmsLast) {
-          selectEl(win.__cmsLast);
-          if (win.__cmsAttachHandles && state.selected) {
-            try { win.__cmsAttachHandles(state.selected); } catch (e) {}
+    if ($('lay-row')) $('lay-row').onclick = layoutRow;
+    if ($('lay-col')) $('lay-col').onclick = layoutCol;
+    if ($('lay-fit-w')) $('lay-fit-w').onclick = layoutFitW;
+    if ($('lay-group')) $('lay-group').onclick = layoutGroup;
+    if ($('lay-ungroup')) $('lay-ungroup').onclick = layoutUngroup;
+    if ($('lay-region')) $('lay-region').onclick = startRegionLayout;
+
+    if ($('btn-adv')) $('btn-adv').onclick = function () {
+      var el = state.selected[0]; if (!el || !canEdit(el)) return;
+      snapshot();
+      if ($('a-id').value) el.id = $('a-id').value;
+      if ($('a-class').value) el.className = $('a-class').value;
+      if ($('a-z').value !== '') { el.style.position = el.style.position || 'relative'; el.style.zIndex = $('a-z').value; }
+      var raw = $('a-html').value;
+      if (raw && el.parentNode) {
+        var w = doc().createElement('div'); w.innerHTML = raw;
+        var n = w.firstElementChild;
+        if (n) { el.parentNode.replaceChild(n, el); setSelection([n], false); }
+      }
+      status('上級設定適用');
+    };
+    if ($('btn-lock')) $('btn-lock').onclick = function () {
+      if (!(state.user && state.user.isAdmin)) return status('管理者のみ');
+      var el = state.selected[0]; if (!el) return;
+      snapshot(); el.setAttribute('data-cms-lock', '1'); status('保護');
+    };
+    if ($('btn-unlock')) $('btn-unlock').onclick = function () {
+      if (!(state.user && state.user.isAdmin)) return status('管理者のみ');
+      var el = state.selected[0]; if (!el) return;
+      snapshot(); el.removeAttribute('data-cms-lock'); status('保護解除');
+    };
+
+    document.querySelectorAll('#ctx [data-ctx]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var act = b.getAttribute('data-ctx');
+        closeCtx();
+        if (act === 'edit') {
+          var el = state.selected[0]; if (el && canEdit(el)) { snapshot(); el.contentEditable = 'true'; el.focus(); }
+        } else if (act === 'copy') doCopy();
+        else if (act === 'cut') doCut();
+        else if (act === 'paste') doPaste();
+        else if (act === 'dup') doDup();
+        else if (act === 'delete') doDelete();
+        else if (act === 'front' || act === 'back' || act === 'forward' || act === 'backward') zChange(act);
+        else if (act === 'group') layoutGroup();
+        else if (act === 'lock') {
+          if (state.user && state.user.isAdmin && state.selected[0]) {
+            snapshot(); state.selected[0].setAttribute('data-cms-lock', '1'); status('保護');
           }
         }
-      } else if (data.type === 'cms-clear') {
-        clearSelectionUI();
-      } else if (data.type === 'cms-edit-start' || data.type === 'cms-moved' || data.type === 'cms-resized') {
-        if (data.type === 'cms-edit-start') pushUndo();
-        $('edit-status').textContent = '変更あり（未保存）';
-      } else if (data.type === 'cms-edit-end') {
-        $('edit-status').textContent = '編集可能（未保存の変更あり）';
-      } else if (data.type === 'cms-resize-start') {
-        pushUndo();
+      });
+    });
+    document.addEventListener('click', function (e) {
+      if (!e.target.closest || !e.target.closest('#ctx')) closeCtx();
+    });
+
+    window.addEventListener('keydown', function (e) {
+      var mod = e.metaKey || e.ctrlKey;
+      if (!mod) return;
+      var k = e.key.toLowerCase();
+      if (k === 'z' && !e.shiftKey) { e.preventDefault(); undo(); }
+      else if (k === 'z' && e.shiftKey) { e.preventDefault(); redo(); }
+      else if (k === 'y') { e.preventDefault(); redo(); }
+      else if (k === 's') { e.preventDefault(); save(); }
+      else if (k === 'c') { e.preventDefault(); doCopy(); }
+      else if (k === 'x') { e.preventDefault(); doCut(); }
+      else if (k === 'v') { e.preventDefault(); doPaste(); }
+      else if (k === 'a') {
+        e.preventDefault();
+        var d = doc(); if (!d) return;
+        var all = Array.prototype.slice.call(d.body.querySelectorAll('h1,h2,h3,p,a,img,div,section,article,li,button')).filter(canEdit).slice(0, 50);
+        setSelection(all, true);
       }
     });
+
+    state.presenceTimer = setInterval(function () {
+      if (state.user) beatPresence();
+    }, 20000);
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
