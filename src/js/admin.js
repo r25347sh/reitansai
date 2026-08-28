@@ -1,437 +1,594 @@
 /**
- * Reitansai Admin / CMS
- * ログイン: 同一オリジンの users.json を優先（GitHub API に依存しない）
- * 保存: GitHub Contents API
+ * Reitansai CMS — 確実ログイン版
+ * 認証は BUILTIN_USERS（JS内完結）。fetch 不要。
+ * 保存のみ GitHub API を使用。
  */
-const GITHUB_OWNER = 'r25347sh';
-const GITHUB_REPO = 'reitansai';
-const GITHUB_TOKEN =
-  'github_pat_11BXRNCFA0EVBbGiXBnXgp_' +
-  'rHoCChQCXXzyvyk2ox1l9RMI3xtQRwRmqUHVNAiAEsjWFWDH6TVCdEu2Pjo';
-const API = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents`;
-const SESSION_KEY = 'reitansai_user';
+(function () {
+  'use strict';
 
-const Session = {
-  get() {
+  var SESSION_KEY = 'reitansai_user';
+  var GITHUB_OWNER = 'r25347sh';
+  var GITHUB_REPO = 'reitansai';
+  var GITHUB_TOKEN =
+    'github_pat_11BXRNCFA0EVBbGiXBnXgp_' +
+    'rHoCChQCXXzyvyk2ox1l9RMI3xtQRwRmqUHVNAiAEsjWFWDH6TVCdEu2Pjo';
+  var API =
+    'https://api.github.com/repos/' +
+    GITHUB_OWNER +
+    '/' +
+    GITHUB_REPO +
+    '/contents';
+
+  /* ===== ログイン専用: ネットワーク不要 ===== */
+  var ALL_SEMINARS = [
+    'pages/seminars/ai.html',
+    'pages/seminars/asobi.html',
+    'pages/seminars/bungaku.html',
+    'pages/seminars/bungei.html',
+    'pages/seminars/digi.html',
+    'pages/seminars/eizou.html',
+    'pages/seminars/event.html',
+    'pages/seminars/gogaku.html',
+    'pages/seminars/kagaku.html',
+    'pages/seminars/kankou.html',
+    'pages/seminars/kokusai.html',
+    'pages/seminars/kyouiku.html',
+    'pages/seminars/media.html',
+    'pages/seminars/nougyou.html',
+    'pages/seminars/syakai.html'
+  ];
+  var ALL_PAGES = [
+    'index.html',
+    'map.html',
+    'admin.html',
+    'pages/takimura_t.html',
+    'pages/about_reitansai.html',
+    'pages/aboutThisSite.html'
+  ].concat(ALL_SEMINARS);
+
+  var BUILTIN_USERS = {
+    noguchi: {
+      password: 'qU7%kE9!J8s@',
+      name: '野口先生',
+      semi_name: 'データサイエンス探究AIゼミ',
+      permissions: ['pages/seminars/ai.html']
+    },
+    akimoto: {
+      password: 'uP6*ezCL9c3K',
+      name: '秋元先生',
+      semi_name: '教育ゼミ',
+      permissions: ['pages/seminars/kyouiku.html']
+    },
+    kondo: {
+      password: 'tU5@nnVXMNNV',
+      name: '近藤先生',
+      semi_name: '国際地域研究ゼミ',
+      permissions: ['pages/seminars/kokusai.html']
+    },
+    kato: {
+      password: 'eW1%yabeDYwe',
+      name: '加藤先生',
+      semi_name: '文芸小説創作ゼミ',
+      permissions: ['pages/seminars/bungei.html']
+    },
+    hirai: {
+      password: 'qG4!Lu8hwq46',
+      name: '平井先生',
+      semi_name: '化学ゼミ',
+      permissions: ['pages/seminars/kagaku.html']
+    },
+    takeuchi: {
+      password: 'eS8!h&INcndP',
+      name: '竹内先生',
+      semi_name: '文学ゼミ',
+      permissions: ['pages/seminars/bungaku.html']
+    },
+    sasaki: {
+      password: 'nV2!H8eHgFf^',
+      name: '佐々木先生',
+      semi_name: 'メディアゼミ',
+      permissions: ['pages/seminars/media.html']
+    },
+    sudou: {
+      password: 'sF0@Hk2hLahp',
+      name: '須藤先生',
+      semi_name: '社会ゼミ',
+      permissions: ['pages/seminars/syakai.html']
+    },
+    shimokawa: {
+      password: 'lQ4%mGnScp3#',
+      name: '下川先生',
+      semi_name: '農業ゼミ',
+      permissions: ['pages/seminars/nougyou.html']
+    },
+    shibahara: {
+      password: 'bC1&$&XMKxVD',
+      name: '芝原先生',
+      semi_name: '観光ゼミ',
+      permissions: ['pages/seminars/kankou.html']
+    },
+    matsuya: {
+      password: 'wV4#DvjlWCnp',
+      name: '松谷先生',
+      semi_name: '語学ゼミ',
+      permissions: ['pages/seminars/gogaku.html']
+    },
+    matsumaru: {
+      password: 'aS5@P@#vVy$5',
+      name: '松丸先生',
+      semi_name: '遊びの探究ゼミ',
+      permissions: ['pages/seminars/asobi.html']
+    },
+    mieta01: {
+      password: 'xA7*GOYzR@3Y',
+      name: 'ミエタアカウント０１',
+      semi_name: '映像編集ゼミ',
+      permissions: ['pages/seminars/eizou.html']
+    },
+    mieta02: {
+      password: 'iD0*M5pLBV3*',
+      name: 'ミエタアカウント０２',
+      semi_name: 'デジタルコンテンツ制作ゼミ',
+      permissions: ['pages/seminars/digi.html']
+    },
+    mieta03: {
+      password: 'iZ0^NdIkDuf2',
+      name: 'ミエタアカウント０３',
+      semi_name: 'イベント企画ゼミ',
+      permissions: ['pages/seminars/event.html']
+    },
+    takimura: {
+      password: 'Tkm#2026$Forest!Myst9',
+      name: '瀧村先生',
+      semi_name: '瀧村ゼミ・全体管理',
+      permissions: ['pages/takimura_t.html', 'pages/about_reitansai.html', 'pages/aboutThisSite.html'].concat(
+        ALL_SEMINARS
+      )
+    },
+    r25347sh: {
+      password: 'kes-2592',
+      name: 'r25347sh',
+      semi_name: 'サイト管理者',
+      permissions: ALL_PAGES.slice()
+    }
+  };
+
+  function getSession() {
     try {
-      const raw =
-        localStorage.getItem(SESSION_KEY) ||
-        sessionStorage.getItem(SESSION_KEY);
+      var raw =
+        localStorage.getItem(SESSION_KEY) || sessionStorage.getItem(SESSION_KEY);
       return raw ? JSON.parse(raw) : null;
-    } catch {
+    } catch (e) {
       return null;
     }
-  },
-  set(u) {
-    const s = JSON.stringify(u);
-    localStorage.setItem(SESSION_KEY, s);
-    sessionStorage.setItem(SESSION_KEY, s);
-    window.dispatchEvent(new CustomEvent('reitansai:auth-changed', { detail: u }));
-  },
-  clear() {
-    localStorage.removeItem(SESSION_KEY);
-    sessionStorage.removeItem(SESSION_KEY);
-    window.dispatchEvent(new CustomEvent('reitansai:auth-changed', { detail: null }));
   }
-};
 
-async function ghHeaders() {
-  return {
-    Accept: 'application/vnd.github+json',
-    Authorization: `Bearer ${GITHUB_TOKEN}`,
-    'X-GitHub-Api-Version': '2022-11-28',
-    'Content-Type': 'application/json'
-  };
-}
-
-async function getFile(path) {
-  const res = await fetch(`${API}/${path}?ref=main`, { headers: await ghHeaders() });
-  if (!res.ok) throw new Error(`GET ${path}: ${res.status}`);
-  return res.json();
-}
-
-async function putFile(path, content, message, sha) {
-  const body = {
-    message: message || '2026/08/28の変更',
-    content: btoa(unescape(encodeURIComponent(content))),
-    branch: 'main'
-  };
-  if (sha) body.sha = sha;
-  const res = await fetch(`${API}/${path}`, {
-    method: 'PUT',
-    headers: await ghHeaders(),
-    body: JSON.stringify(body)
-  });
-  if (!res.ok) throw new Error(`PUT ${path}: ${res.status} ${await res.text()}`);
-  return res.json();
-}
-
-function decodeGitHubContent(content) {
-  return decodeURIComponent(escape(atob(String(content).replace(/\n/g, ''))));
-}
-
-async function appendLog(line) {
-  try {
-    let sha = null;
-    let text = '';
+  function setSession(u) {
+    var s = JSON.stringify(u);
     try {
-      const f = await getFile('src/log.txt');
-      sha = f.sha;
-      text = decodeGitHubContent(f.content);
-    } catch (_) {}
-    await putFile(
-      'src/log.txt',
-      text + `[${new Date().toISOString()}] ${line}\n`,
-      '2026/08/28の変更',
-      sha
-    );
-  } catch (e) {
-    console.warn('log', e);
+      localStorage.setItem(SESSION_KEY, s);
+    } catch (e) {}
+    try {
+      sessionStorage.setItem(SESSION_KEY, s);
+    } catch (e) {}
   }
-}
 
-/** ログイン用: APIトークン不要で users.json を読む */
-async function loadUsers() {
-  const urls = [
-    new URL('src/users.json', location.href).href,
-    'https://raw.githubusercontent.com/r25347sh/reitansai/main/src/users.json'
-  ];
-  for (const url of urls) {
+  function clearSession() {
     try {
-      const res = await fetch(url, { cache: 'no-store' });
-      if (!res.ok) continue;
-      const data = await res.json();
-      if (data && typeof data === 'object') return data;
-    } catch (e) {
-      console.warn('loadUsers fail', url, e);
+      localStorage.removeItem(SESSION_KEY);
+    } catch (e) {}
+    try {
+      sessionStorage.removeItem(SESSION_KEY);
+    } catch (e) {}
+  }
+
+  function $(id) {
+    return document.getElementById(id);
+  }
+
+  /** CSSに頼らず確実に表示切替 */
+  function setVisible(el, on) {
+    if (!el) return;
+    if (on) {
+      el.classList.remove('hidden');
+      el.style.display = '';
+      el.removeAttribute('hidden');
+    } else {
+      el.classList.add('hidden');
+      el.style.display = 'none';
     }
   }
-  // 最終手段: GitHub Contents API
-  try {
-    const f = await getFile('src/users.json');
-    return JSON.parse(decodeGitHubContent(f.content));
-  } catch (e) {
-    throw new Error('ユーザー一覧を取得できません。ネット接続または GitHub Pages の公開を確認してください。');
-  }
-}
 
-function pathToCss(htmlPath) {
-  if (htmlPath.startsWith('pages/seminars/')) {
-    return htmlPath.replace('pages/seminars/', 'src/css/pages/seminars/').replace('.html', '.css');
+  function showView(name) {
+    setVisible($('login-view'), name === 'login');
+    setVisible($('dash-view'), name === 'dash');
+    setVisible($('edit-view'), name === 'edit');
   }
-  if (htmlPath.startsWith('pages/')) {
-    return htmlPath.replace('pages/', 'src/css/pages/').replace('.html', '.css');
-  }
-  if (htmlPath === 'index.html') return 'src/css/pages/index.css';
-  if (htmlPath === 'map.html') return 'src/css/pages/map.css';
-  return null;
-}
 
-/** admin ページ専用ヘッダー（MENU.js なしでも動く） */
-function mountAdminHeader() {
-  const header = document.querySelector('.site-header');
-  if (!header) return;
-  let box = header.querySelector('.header-auth');
-  if (box) box.remove();
-  box = document.createElement('div');
-  box.className = 'header-auth';
-  const user = Session.get();
-  if (user) {
-    box.innerHTML =
-      '<span class="auth-name">' +
-      (user.name || user.id) +
-      '</span>' +
-      '<span class="auth-btn auth-cms" style="pointer-events:none;opacity:.9">ログイン中</span>' +
-      '<button type="button" class="auth-btn auth-out" id="header-logout">ログアウト</button>';
-    header.appendChild(box);
-    document.getElementById('header-logout')?.addEventListener('click', () => {
-      Session.clear();
-      location.reload();
-    });
-  } else {
-    box.innerHTML = '<span class="auth-name">未ログイン</span>';
-    header.appendChild(box);
-  }
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-  const loginView = document.getElementById('login-view');
-  const dashView = document.getElementById('dash-view');
-  const editView = document.getElementById('edit-view');
-  const loginForm = document.getElementById('login-form');
-  const errEl = document.getElementById('login-error');
-  const userLabel = document.getElementById('user-label');
-  const permList = document.getElementById('perm-list');
-  const statusLogin = document.getElementById('login-status');
-
-  function show(v) {
-    [loginView, dashView, editView].forEach((x) => x && x.classList.add('hidden'));
-    if (v) v.classList.remove('hidden');
+  function mountHeader(user) {
+    var header = document.querySelector('.site-header');
+    if (!header) return;
+    var old = header.querySelector('.header-auth');
+    if (old) old.parentNode.removeChild(old);
+    var box = document.createElement('div');
+    box.className = 'header-auth';
+    if (user) {
+      box.innerHTML =
+        '<span class="auth-name">' +
+        (user.name || user.id) +
+        '</span>' +
+        '<span class="auth-btn auth-cms">ログイン中</span>' +
+        '<button type="button" class="auth-btn auth-out" id="header-logout">ログアウト</button>';
+      header.appendChild(box);
+      var btn = document.getElementById('header-logout');
+      if (btn) {
+        btn.onclick = function () {
+          clearSession();
+          location.reload();
+        };
+      }
+    } else {
+      box.innerHTML = '<span class="auth-name">未ログイン</span>';
+      header.appendChild(box);
+    }
   }
 
   function enterDash(user) {
-    if (!user) {
-      show(loginView);
-      mountAdminHeader();
+    var label = $('user-label');
+    var list = $('perm-list');
+    if (label) {
+      label.textContent =
+        (user.name || user.id) + '（' + (user.semi_name || '') + '）';
+    }
+    if (list) {
+      list.innerHTML = '';
+      var perms = user.permissions || [];
+      if (!perms.length) {
+        list.innerHTML = '<li>編集可能なページがありません</li>';
+      } else {
+        for (var i = 0; i < perms.length; i++) {
+          (function (p) {
+            var li = document.createElement('li');
+            var b = document.createElement('button');
+            b.type = 'button';
+            b.className = 'btn-gold';
+            b.textContent = p;
+            b.onclick = function () {
+              openEditor(user, p);
+            };
+            li.appendChild(b);
+            list.appendChild(li);
+          })(perms[i]);
+        }
+      }
+    }
+    showView('dash');
+    mountHeader(user);
+    var banner = $('auth-banner');
+    if (banner) {
+      banner.style.display = 'block';
+      banner.textContent =
+        'ログイン中: ' + (user.name || user.id) + ' · 権限 ' + (user.permissions || []).length + ' 件';
+    }
+  }
+
+  function tryLogin(id, pw) {
+    var u = BUILTIN_USERS[id];
+    if (!u) return null;
+    if (String(u.password) !== String(pw)) return null;
+    return {
+      id: id,
+      name: u.name,
+      semi_name: u.semi_name,
+      permissions: u.permissions.slice()
+    };
+  }
+
+  /* ===== GitHub 保存用 ===== */
+  function ghHeaders() {
+    return {
+      Accept: 'application/vnd.github+json',
+      Authorization: 'Bearer ' + GITHUB_TOKEN,
+      'X-GitHub-Api-Version': '2022-11-28',
+      'Content-Type': 'application/json'
+    };
+  }
+
+  function decodeContent(c) {
+    return decodeURIComponent(escape(atob(String(c).replace(/\n/g, ''))));
+  }
+
+  function getFile(path) {
+    return fetch(API + '/' + path + '?ref=main', { headers: ghHeaders() }).then(
+      function (res) {
+        if (!res.ok) throw new Error('GET ' + path + ': ' + res.status);
+        return res.json();
+      }
+    );
+  }
+
+  function putFile(path, content, message, sha) {
+    var body = {
+      message: message || '2026/08/28の変更',
+      content: btoa(unescape(encodeURIComponent(content))),
+      branch: 'main'
+    };
+    if (sha) body.sha = sha;
+    return fetch(API + '/' + path, {
+      method: 'PUT',
+      headers: ghHeaders(),
+      body: JSON.stringify(body)
+    }).then(function (res) {
+      if (!res.ok)
+        return res.text().then(function (t) {
+          throw new Error('PUT ' + path + ': ' + res.status + ' ' + t);
+        });
+      return res.json();
+    });
+  }
+
+  function pathToCss(htmlPath) {
+    if (htmlPath.indexOf('pages/seminars/') === 0)
+      return htmlPath
+        .replace('pages/seminars/', 'src/css/pages/seminars/')
+        .replace('.html', '.css');
+    if (htmlPath.indexOf('pages/') === 0)
+      return htmlPath.replace('pages/', 'src/css/pages/').replace('.html', '.css');
+    if (htmlPath === 'index.html') return 'src/css/pages/index.css';
+    if (htmlPath === 'map.html') return 'src/css/pages/map.css';
+    return null;
+  }
+
+  function openEditor(user, htmlPath) {
+    showView('edit');
+    $('edit-path').textContent = htmlPath;
+    var frame = $('edit-frame');
+    var status = $('edit-status');
+    status.textContent = '読み込み中…';
+    getFile(htmlPath)
+      .then(function (file) {
+        var html = decodeContent(file.content);
+        frame.setAttribute('data-sha', file.sha);
+        frame.setAttribute('data-path', htmlPath);
+        var doc = new DOMParser().parseFromString(html, 'text/html');
+        $('meta-title').value = (doc.querySelector('title') && doc.querySelector('title').textContent) || '';
+        var md = doc.querySelector('meta[name="description"]');
+        $('meta-desc').value = (md && md.getAttribute('content')) || '';
+        var ma = doc.querySelector('meta[name="author"]');
+        $('meta-author').value = (ma && ma.getAttribute('content')) || '';
+        var ic = doc.querySelector('link[rel="icon"]');
+        $('meta-favicon').value = (ic && ic.getAttribute('href')) || '';
+        var section = doc.querySelector('section.article_by_teacher');
+        var editor = $('rich-editor');
+        editor.innerHTML = section
+          ? section.innerHTML
+          : '<p>（section.article_by_teacher なし — メタのみ編集可）</p>';
+        editor.contentEditable = 'true';
+        var cssPath = pathToCss(htmlPath);
+        $('css-path').textContent = cssPath || '（なし）';
+        frame.setAttribute('data-css-path', cssPath || '');
+        if (!cssPath) {
+          $('css-editor').value = '';
+          status.textContent = '編集可能';
+          return;
+        }
+        return getFile(cssPath)
+          .then(function (cssFile) {
+            frame.setAttribute('data-css-sha', cssFile.sha);
+            var cssText = decodeContent(cssFile.content);
+            var m = cssText.match(
+              /\/\* --- teacher-custom-css-start --- \*\/([\s\S]*?)\/\* --- teacher-custom-css-end --- \*\/
+            );
+            $('css-editor').value = m ? m[1].trim() : '';
+            status.textContent = '編集可能';
+          })
+          .catch(function () {
+            $('css-editor').value = '';
+            status.textContent = '編集可能（CSS新規可）';
+          });
+      })
+      .catch(function (err) {
+        status.textContent = '読込失敗: ' + err.message;
+      });
+  }
+
+  function boot() {
+    var loginView = $('login-view');
+    var dashView = $('dash-view');
+    var editView = $('edit-view');
+    if (!loginView || !dashView) {
+      document.body.insertAdjacentHTML(
+        'afterbegin',
+        '<p style="color:red;padding:1rem">admin.html の構造が不正です（login-view / dash-view なし）</p>'
+      );
       return;
     }
-    userLabel.textContent = `${user.name || user.id}（${user.semi_name || ''}）`;
-    permList.innerHTML = '';
-    const perms = user.permissions || [];
-    if (!perms.length) {
-      const li = document.createElement('li');
-      li.textContent = '編集可能なページがありません';
-      permList.appendChild(li);
+
+    // 初期は全部一旦隠してから判定
+    setVisible(editView, false);
+
+    var existing = getSession();
+    if (existing && existing.id) {
+      enterDash(existing);
     } else {
-      perms.forEach((p) => {
-        const li = document.createElement('li');
-        const btn = document.createElement('button');
-        btn.type = 'button';
-        btn.className = 'btn-gold';
-        btn.textContent = p;
-        btn.addEventListener('click', () => openEditor(user, p));
-        li.appendChild(btn);
-        permList.appendChild(li);
+      showView('login');
+      mountHeader(null);
+    }
+
+    var form = $('login-form');
+    if (form) {
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var errEl = $('login-error');
+        var st = $('login-status');
+        if (errEl) errEl.textContent = '';
+        var id = ($('uid') && $('uid').value.trim()) || '';
+        var pw = ($('pw') && $('pw').value) || '';
+        if (st) st.textContent = '認証中…';
+        // 同期・即時（fetchなし）
+        var session = tryLogin(id, pw);
+        if (!session) {
+          if (errEl) errEl.textContent = 'ID またはパスワードが違います（id="' + id + '"）';
+          if (st) st.textContent = '';
+          return false;
+        }
+        setSession(session);
+        if (st) st.textContent = 'ログイン成功 → ダッシュボードへ';
+        enterDash(session);
+        return false;
       });
     }
-    show(dashView);
-    mountAdminHeader();
-  }
 
-  // 既存セッション復元
-  const existing = Session.get();
-  if (existing) {
-    enterDash(existing);
-  } else {
-    show(loginView);
-    mountAdminHeader();
-  }
-
-  loginForm?.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    errEl.textContent = '';
-    if (statusLogin) statusLogin.textContent = '認証中…';
-    const id = document.getElementById('uid').value.trim();
-    const pw = document.getElementById('pw').value;
-    const btn = loginForm.querySelector('button[type="submit"]');
-    if (btn) btn.disabled = true;
-    try {
-      const users = await loadUsers();
-      const u = users[id];
-      if (!u || String(u.password) !== String(pw)) {
-        errEl.textContent = 'ID またはパスワードが違います';
-        if (statusLogin) statusLogin.textContent = '';
-        return;
-      }
-      const session = {
-        id,
-        name: u.name,
-        semi_name: u.semi_name,
-        permissions: u.permissions || []
+    var logoutBtn = $('logout-btn');
+    if (logoutBtn) {
+      logoutBtn.onclick = function () {
+        clearSession();
+        showView('login');
+        mountHeader(null);
+        var banner = $('auth-banner');
+        if (banner) banner.style.display = 'none';
       };
-      Session.set(session);
-      appendLog(`LOGIN ${id}`).catch(() => {});
-      if (statusLogin) statusLogin.textContent = 'ログイン成功';
-      enterDash(session);
-    } catch (err) {
-      errEl.textContent = '認証エラー: ' + (err.message || err);
-      if (statusLogin) statusLogin.textContent = '';
-    } finally {
-      if (btn) btn.disabled = false;
     }
-  });
 
-  document.getElementById('logout-btn')?.addEventListener('click', () => {
-    Session.clear();
-    show(loginView);
-    mountAdminHeader();
-    if (errEl) errEl.textContent = '';
-  });
-
-  async function openEditor(user, htmlPath) {
-    // index.html 等は article_by_teacher が無い場合あり
-    show(editView);
-    document.getElementById('edit-path').textContent = htmlPath;
-    const frame = document.getElementById('edit-frame');
-    const status = document.getElementById('edit-status');
-    status.textContent = '読み込み中…';
-    try {
-      const file = await getFile(htmlPath);
-      const html = decodeGitHubContent(file.content);
-      frame.dataset.sha = file.sha;
-      frame.dataset.path = htmlPath;
-      const doc = new DOMParser().parseFromString(html, 'text/html');
-      document.getElementById('meta-title').value = doc.querySelector('title')?.textContent || '';
-      document.getElementById('meta-desc').value =
-        doc.querySelector('meta[name="description"]')?.getAttribute('content') || '';
-      document.getElementById('meta-author').value =
-        doc.querySelector('meta[name="author"]')?.getAttribute('content') || '';
-      document.getElementById('meta-favicon').value =
-        doc.querySelector('link[rel="icon"]')?.getAttribute('href') || '';
-      const section = doc.querySelector('section.article_by_teacher');
-      const editor = document.getElementById('rich-editor');
-      editor.innerHTML = section
-        ? section.innerHTML
-        : '<p>（このページに section.article_by_teacher がありません。メタ情報のみ編集できます）</p>';
-      editor.contentEditable = 'true';
-      const cssPath = pathToCss(htmlPath);
-      document.getElementById('css-path').textContent = cssPath || '（なし）';
-      frame.dataset.cssPath = cssPath || '';
-      if (cssPath) {
-        try {
-          const cssFile = await getFile(cssPath);
-          frame.dataset.cssSha = cssFile.sha;
-          const cssText = decodeGitHubContent(cssFile.content);
-          const m = cssText.match(
-            /\/\* --- teacher-custom-css-start --- \*\/([\s\S]*?)\/\* --- teacher-custom-css-end --- \*\/
-          );
-          document.getElementById('css-editor').value = m ? m[1].trim() : '';
-        } catch {
-          document.getElementById('css-editor').value = '';
-        }
-      } else {
-        document.getElementById('css-editor').value = '';
-      }
-      status.textContent = '編集可能';
-    } catch (err) {
-      status.textContent = '読込失敗: ' + err.message;
+    var backBtn = $('btn-back');
+    if (backBtn) {
+      backBtn.onclick = function () {
+        var u = getSession();
+        if (u) enterDash(u);
+        else showView('login');
+      };
     }
-  }
 
-  document.getElementById('btn-back')?.addEventListener('click', () => {
-    const u = Session.get();
-    if (u) enterDash(u);
-    else show(loginView);
-  });
-
-  document.querySelectorAll('[data-cmd]').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      const cmd = btn.getAttribute('data-cmd');
-      if (cmd === 'createLink') {
-        const url = prompt('URL');
-        if (url) document.execCommand(cmd, false, url);
-      } else if (cmd === 'insertImage') {
-        const url = prompt('画像URL');
-        if (url) document.execCommand('insertImage', false, url);
-      } else if (cmd === 'insertTable') {
-        document.execCommand(
-          'insertHTML',
-          false,
-          '<table><tr><th>A</th><th>B</th></tr><tr><td>-</td><td>-</td></tr></table>'
-        );
-      } else if (cmd === 'insertEmbed') {
-        const url = prompt('iframe src');
-        if (url)
+    var cmds = document.querySelectorAll('[data-cmd]');
+    for (var i = 0; i < cmds.length; i++) {
+      cmds[i].addEventListener('click', function () {
+        var cmd = this.getAttribute('data-cmd');
+        if (cmd === 'createLink') {
+          var url = prompt('URL');
+          if (url) document.execCommand(cmd, false, url);
+        } else if (cmd === 'insertImage') {
+          var u2 = prompt('画像URL');
+          if (u2) document.execCommand('insertImage', false, u2);
+        } else if (cmd === 'insertTable') {
           document.execCommand(
             'insertHTML',
             false,
-            '<iframe src="' + url + '" allowfullscreen></iframe>'
+            '<table><tr><th>A</th><th>B</th></tr><tr><td>-</td><td>-</td></tr></table>'
           );
-      } else {
-        document.execCommand(cmd, false, null);
-      }
-    });
-  });
-
-  document.getElementById('rich-editor')?.addEventListener('paste', (e) => {
-    const items = e.clipboardData?.items;
-    if (!items) return;
-    for (const item of items) {
-      if (item.type.startsWith('image/')) {
-        e.preventDefault();
-        const reader = new FileReader();
-        reader.onload = () => document.execCommand('insertImage', false, reader.result);
-        reader.readAsDataURL(item.getAsFile());
-        break;
-      }
-    }
-  });
-
-  document.getElementById('btn-save')?.addEventListener('click', async () => {
-    const frame = document.getElementById('edit-frame');
-    const path = frame.dataset.path;
-    const status = document.getElementById('edit-status');
-    const commitMsg =
-      document.getElementById('commit-msg').value.trim() || '2026/08/28の変更';
-    const user = Session.get();
-    if (!path || !user) return;
-    status.textContent = '保存中…';
-    try {
-      const file = await getFile(path);
-      const doc = new DOMParser().parseFromString(
-        decodeGitHubContent(file.content),
-        'text/html'
-      );
-      const title = document.getElementById('meta-title').value;
-      const desc = document.getElementById('meta-desc').value;
-      const author = document.getElementById('meta-author').value;
-      const fav = document.getElementById('meta-favicon').value;
-      if (doc.querySelector('title')) doc.querySelector('title').textContent = title;
-      let md = doc.querySelector('meta[name="description"]');
-      if (md) md.setAttribute('content', desc);
-      else {
-        md = doc.createElement('meta');
-        md.name = 'description';
-        md.content = desc;
-        doc.head.appendChild(md);
-      }
-      let ma = doc.querySelector('meta[name="author"]');
-      if (ma) ma.setAttribute('content', author);
-      else {
-        ma = doc.createElement('meta');
-        ma.name = 'author';
-        ma.content = author;
-        doc.head.appendChild(ma);
-      }
-      let icon = doc.querySelector('link[rel="icon"]');
-      if (icon) icon.href = fav;
-      else if (fav) {
-        icon = doc.createElement('link');
-        icon.rel = 'icon';
-        icon.href = fav;
-        doc.head.appendChild(icon);
-      }
-      const section = doc.querySelector('section.article_by_teacher');
-      if (section) section.innerHTML = document.getElementById('rich-editor').innerHTML;
-      await putFile(
-        path,
-        '<!DOCTYPE html>\n' + doc.documentElement.outerHTML,
-        commitMsg,
-        file.sha
-      );
-      const cssPath = frame.dataset.cssPath;
-      const customCss = document.getElementById('css-editor').value;
-      if (cssPath) {
-        let cssSha = frame.dataset.cssSha;
-        let cssText = '';
-        try {
-          const cf = await getFile(cssPath);
-          cssSha = cf.sha;
-          cssText = decodeGitHubContent(cf.content);
-        } catch (_) {
-          cssText =
-            '/* page */\n/* --- teacher-custom-css-start --- */\n/* --- teacher-custom-css-end --- */\n';
-        }
-        if (cssText.includes('teacher-custom-css-start')) {
-          cssText = cssText.replace(
-            /\/\* --- teacher-custom-css-start --- \*\/[\s\S]*?\/\* --- teacher-custom-css-end --- \*\//,
-            '/* --- teacher-custom-css-start --- */\n' +
-              customCss +
-              '\n/* --- teacher-custom-css-end --- */'
-          );
+        } else if (cmd === 'insertEmbed') {
+          var u3 = prompt('iframe src');
+          if (u3)
+            document.execCommand(
+              'insertHTML',
+              false,
+              '<iframe src="' + u3 + '" allowfullscreen></iframe>'
+            );
         } else {
-          cssText +=
-            '\n/* --- teacher-custom-css-start --- */\n' +
-            customCss +
-            '\n/* --- teacher-custom-css-end --- */\n';
+          document.execCommand(cmd, false, null);
         }
-        await putFile(cssPath, cssText, commitMsg, cssSha);
-      }
-      await appendLog('EDIT ' + user.id + ' ' + path + ' | ' + commitMsg);
-      status.textContent = '保存完了 ✓';
-      frame.dataset.sha = (await getFile(path)).sha;
-    } catch (err) {
-      status.textContent = '保存失敗: ' + err.message;
+      });
     }
-  });
-});
+
+    var saveBtn = $('btn-save');
+    if (saveBtn) {
+      saveBtn.onclick = function () {
+        var frame = $('edit-frame');
+        var path = frame.getAttribute('data-path');
+        var status = $('edit-status');
+        var user = getSession();
+        var commitMsg = (($('commit-msg') && $('commit-msg').value.trim()) || '2026/08/28の変更');
+        if (!path || !user) return;
+        status.textContent = '保存中…';
+        getFile(path)
+          .then(function (file) {
+            var doc = new DOMParser().parseFromString(
+              decodeContent(file.content),
+              'text/html'
+            );
+            var title = $('meta-title').value;
+            var desc = $('meta-desc').value;
+            var author = $('meta-author').value;
+            var fav = $('meta-favicon').value;
+            if (doc.querySelector('title')) doc.querySelector('title').textContent = title;
+            var md = doc.querySelector('meta[name="description"]');
+            if (md) md.setAttribute('content', desc);
+            else {
+              md = doc.createElement('meta');
+              md.name = 'description';
+              md.content = desc;
+              doc.head.appendChild(md);
+            }
+            var ma = doc.querySelector('meta[name="author"]');
+            if (ma) ma.setAttribute('content', author);
+            else {
+              ma = doc.createElement('meta');
+              ma.name = 'author';
+              ma.content = author;
+              doc.head.appendChild(ma);
+            }
+            var icon = doc.querySelector('link[rel="icon"]');
+            if (icon) icon.href = fav;
+            else if (fav) {
+              icon = doc.createElement('link');
+              icon.rel = 'icon';
+              icon.href = fav;
+              doc.head.appendChild(icon);
+            }
+            var section = doc.querySelector('section.article_by_teacher');
+            if (section) section.innerHTML = $('rich-editor').innerHTML;
+            return putFile(
+              path,
+              '<!DOCTYPE html>\n' + doc.documentElement.outerHTML,
+              commitMsg,
+              file.sha
+            ).then(function () {
+              var cssPath = frame.getAttribute('data-css-path');
+              var customCss = $('css-editor').value;
+              if (!cssPath) {
+                status.textContent = '保存完了 ✓';
+                return;
+              }
+              return getFile(cssPath)
+                .then(function (cf) {
+                  var cssText = decodeContent(cf.content);
+                  if (cssText.indexOf('teacher-custom-css-start') >= 0) {
+                    cssText = cssText.replace(
+                      /\/\* --- teacher-custom-css-start --- \*\/[\s\S]*?\/\* --- teacher-custom-css-end --- \*\//,
+                      '/* --- teacher-custom-css-start --- */\n' +
+                        customCss +
+                        '\n/* --- teacher-custom-css-end --- */'
+                    );
+                  } else {
+                    cssText +=
+                      '\n/* --- teacher-custom-css-start --- */\n' +
+                      customCss +
+                      '\n/* --- teacher-custom-css-end --- */\n';
+                  }
+                  return putFile(cssPath, cssText, commitMsg, cf.sha);
+                })
+                .catch(function () {
+                  var cssText =
+                    '/* page */\n/* --- teacher-custom-css-start --- */\n' +
+                    customCss +
+                    '\n/* --- teacher-custom-css-end --- */\n';
+                  return putFile(cssPath, cssText, commitMsg, null);
+                })
+                .then(function () {
+                  status.textContent = '保存完了 ✓';
+                });
+            });
+          })
+          .catch(function (err) {
+            status.textContent = '保存失敗: ' + err.message;
+          });
+      };
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', boot);
+  } else {
+    boot();
+  }
+})();
