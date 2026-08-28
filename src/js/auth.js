@@ -1,5 +1,5 @@
 /**
- * Header login/logout (関係者専用)
+ * login/logout (関係者専用)
  * sessionStorage key: reitansai_user
  */
 (function () {
