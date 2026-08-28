@@ -7,7 +7,6 @@
   <link rel="stylesheet" href="src/css/common.css">
   <link rel="stylesheet" href="src/css/pages/admin.css">
   <style>
-    /* 確実表示用（CSS未読込でも動く） */
     .hidden { display: none !important; }
     #auth-banner {
       display: none;
@@ -33,15 +32,16 @@
     <section id="login-view" class="card admin-card">
       <h1 class="page-title" style="margin-top:0">教員ログイン</h1>
       <p class="page-sub">関係者専用</p>
-      <form id="login-form" action="#" method="post">
+      <!-- form の submit によるリロードを避けるため form を使わない -->
+      <div id="login-box">
         <label>ユーザーID
-          <input id="uid" name="uid" required autocomplete="username" placeholder="r25347sh">
+          <input id="uid" name="uid" autocomplete="username" placeholder="r25347sh">
         </label>
         <label>パスワード
-          <input id="pw" name="pw" type="password" required autocomplete="current-password">
+          <input id="pw" name="pw" type="password" autocomplete="current-password">
         </label>
-        <button type="submit" class="btn-gold">ログイン</button>
-      </form>
+        <button type="button" id="login-btn" class="btn-gold">ログイン</button>
+      </div>
       <p id="login-status" class="status" style="margin-top:.75rem;color:#f0d060"></p>
       <p id="login-error" class="error" style="color:#ff8a8a"></p>
     </section>
