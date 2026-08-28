@@ -18,11 +18,13 @@
   <main class="main admin-main">
     <section id="login-view" class="card admin-card">
       <h1 class="page-title" style="margin-top:0">教員ログイン</h1>
+      <p class="page-sub" style="margin-bottom:1rem">関係者専用 · 公開メニューには表示されません</p>
       <form id="login-form">
-        <label>ユーザーID<input id="uid" name="uid" required autocomplete="username"></label>
+        <label>ユーザーID<input id="uid" name="uid" required autocomplete="username" placeholder="例: r25347sh"></label>
         <label>パスワード<input id="pw" name="pw" type="password" required autocomplete="current-password"></label>
         <button type="submit" class="btn-gold">ログイン</button>
       </form>
+      <p id="login-status" class="status" style="margin-top:.75rem"></p>
       <p id="login-error" class="error"></p>
     </section>
     <section id="dash-view" class="card admin-card hidden">
@@ -30,6 +32,7 @@
       <p id="user-label" class="page-sub"></p>
       <p>編集可能なページを選んでください。</p>
       <ul id="perm-list" class="perm-list"></ul>
+      <p style="margin:1rem 0 .5rem"><a class="auth-btn auth-in" href="index.html">← サイトに戻る</a></p>
       <button type="button" id="logout-btn" class="btn-outline">ログアウト</button>
     </section>
     <section id="edit-view" class="admin-edit hidden">
@@ -46,7 +49,7 @@
         <label>favicon URL<input id="meta-favicon"></label>
       </div>
       <div class="card admin-card">
-        <h2>本文（公開ページと同じ見た目で編集）</h2>
+        <h2>本文（section.article_by_teacher）</h2>
         <div class="rte-toolbar">
           <button type="button" data-cmd="bold" title="太字"><b>B</b></button>
           <button type="button" data-cmd="italic" title="斜体"><i>I</i></button>
@@ -60,7 +63,7 @@
           <button type="button" data-cmd="removeFormat">クリア</button>
         </div>
         <div id="rich-editor" class="rich-editor article_by_teacher" contenteditable="true"></div>
-        <p class="hint">画像はコピペで貼り付け可能。表・iframe 埋め込み対応。</p>
+        <p class="hint">画像はコピペで貼り付け可能。</p>
       </div>
       <div class="card admin-card">
         <h2>ページ固有 CSS（common は変更不可）</h2>
