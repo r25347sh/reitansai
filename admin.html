@@ -6,33 +6,16 @@
   <title>Admin CMS | 麗誕祭</title>
   <link rel="stylesheet" href="src/css/common.css">
   <link rel="stylesheet" href="src/css/pages/admin.css">
-  <style>
-    .hidden { display: none !important; }
-    #auth-banner {
-      display: none;
-      margin: 0.75rem 1rem 0;
-      padding: 0.65rem 1rem;
-      border-radius: 10px;
-      border: 1px solid rgba(201,162,39,0.45);
-      background: rgba(201,162,39,0.12);
-      color: #f0d060;
-      font-size: 0.9rem;
-      text-align: center;
-    }
-  </style>
 </head>
 <body class="admin-body">
   <div class="bg-fixed" aria-hidden="true"></div>
   <div class="bg-overlay" aria-hidden="true"></div>
-  <header class="site-header">
-    <a class="site-logo" href="index.html">🌲 REITANSAI <span>CMS</span></a>
-  </header>
-  <div id="auth-banner" role="status"></div>
-  <main class="main admin-main">
-    <section id="login-view" class="card admin-card">
+
+  <!-- ===== LOGIN ===== -->
+  <section id="login-view" class="admin-login-wrap">
+    <div class="card admin-card login-card">
       <h1 class="page-title" style="margin-top:0">教員ログイン</h1>
-      <p class="page-sub">関係者専用</p>
-      <!-- form の submit によるリロードを避けるため form を使わない -->
+      <p class="page-sub">関係者専用 · Visual CMS</p>
       <div id="login-box">
         <label>ユーザーID
           <input id="uid" name="uid" autocomplete="username" placeholder="r25347sh">
@@ -42,58 +25,136 @@
         </label>
         <button type="button" id="login-btn" class="btn-gold">ログイン</button>
       </div>
-      <p id="login-status" class="status" style="margin-top:.75rem;color:#f0d060"></p>
-      <p id="login-error" class="error" style="color:#ff8a8a"></p>
-    </section>
+      <p id="login-status" class="status"></p>
+      <p id="login-error" class="error"></p>
+    </div>
+  </section>
 
-    <section id="dash-view" class="card admin-card hidden" style="display:none">
-      <h1 class="page-title" style="margin-top:0">ホームメニュー</h1>
-      <p id="user-label" class="page-sub"></p>
-      <p>編集可能なページを選んでください。</p>
+  <!-- ===== DASHBOARD ===== -->
+  <section id="dash-view" class="admin-dash hidden">
+    <header class="cms-topbar">
+      <a class="site-logo" href="index.html">🌲 REITANSAI <span>CMS</span></a>
+      <div class="cms-topbar-right">
+        <span id="user-label" class="auth-name"></span>
+        <button type="button" id="logout-btn" class="btn-outline">ログアウト</button>
+      </div>
+    </header>
+    <main class="cms-dash-main">
+      <h1 class="page-title">編集するページを選ぶ</h1>
+      <p class="page-sub">実際のサイトと同じ見た目で、クリックして直接編集できます。</p>
       <ul id="perm-list" class="perm-list"></ul>
-      <p style="margin:1rem 0"><a class="auth-btn auth-in" href="index.html">← サイトに戻る</a></p>
-      <button type="button" id="logout-btn" class="btn-outline">ログアウト</button>
-    </section>
+      <p><a class="auth-btn auth-in" href="index.html">← サイトに戻る</a></p>
+    </main>
+  </section>
 
-    <section id="edit-view" class="admin-edit hidden" style="display:none">
-      <div class="edit-toolbar-top">
-        <button type="button" id="btn-back" class="btn-outline">← 戻る</button>
-        <span id="edit-path" class="mono"></span>
-        <span id="edit-status" class="status"></span>
+  <!-- ===== VISUAL EDITOR ===== -->
+  <section id="edit-view" class="cms-editor hidden">
+    <header class="cms-toolbar">
+      <button type="button" id="btn-back" class="btn-outline" title="一覧に戻る">← 戻る</button>
+      <span id="edit-path" class="mono path-chip"></span>
+      <span id="edit-status" class="status"></span>
+      <div class="toolbar-spacer"></div>
+      <div class="device-toggle" role="group" aria-label="プレビュー幅">
+        <button type="button" data-device="desktop" class="dev-btn active" title="PC">🖥</button>
+        <button type="button" data-device="tablet" class="dev-btn" title="タブレット">▭</button>
+        <button type="button" data-device="mobile" class="dev-btn" title="スマホ">📱</button>
       </div>
-      <div class="card admin-card">
-        <h2>メタ情報</h2>
-        <label>title<input id="meta-title"></label>
-        <label>description<input id="meta-desc"></label>
-        <label>author<input id="meta-author"></label>
-        <label>favicon URL<input id="meta-favicon"></label>
-      </div>
-      <div class="card admin-card">
-        <h2>本文</h2>
-        <div class="rte-toolbar">
-          <button type="button" data-cmd="bold"><b>B</b></button>
-          <button type="button" data-cmd="italic"><i>I</i></button>
-          <button type="button" data-cmd="underline"><u>U</u></button>
-          <button type="button" data-cmd="insertUnorderedList">•</button>
-          <button type="button" data-cmd="createLink">リンク</button>
-          <button type="button" data-cmd="insertImage">画像</button>
-          <button type="button" data-cmd="insertTable">表</button>
-          <button type="button" data-cmd="insertEmbed">埋込</button>
+      <button type="button" id="btn-outline-mode" class="btn-outline" title="要素の枠線表示">枠線</button>
+      <button type="button" id="btn-undo" class="btn-outline" title="元に戻す">↶</button>
+      <input id="commit-msg" class="commit-input" placeholder="変更のメモ（任意）">
+      <button type="button" id="btn-save" class="btn-gold">保存</button>
+    </header>
+
+    <div class="cms-workspace">
+      <aside class="cms-sidebar" id="cms-sidebar">
+        <h3 class="side-title">選択中の要素</h3>
+        <p id="sel-tag" class="mono side-meta">（未選択）</p>
+
+        <label class="side-label">テキスト
+          <textarea id="prop-text" rows="3" placeholder="表示テキスト"></textarea>
+        </label>
+
+        <label class="side-label">リンク URL
+          <input id="prop-href" placeholder="https:// または 相対パス">
+        </label>
+
+        <label class="side-label">画像 URL
+          <input id="prop-src" placeholder="画像のURL">
+        </label>
+
+        <div class="side-row">
+          <label class="side-label">文字色
+            <input type="color" id="prop-color" value="#f0d060">
+          </label>
+          <label class="side-label">背景色
+            <input type="color" id="prop-bg" value="#0a1a12">
+          </label>
         </div>
-        <div id="rich-editor" class="rich-editor article_by_teacher" contenteditable="true"></div>
+
+        <label class="side-label">文字サイズ
+          <input type="range" id="prop-size" min="10" max="72" value="16">
+          <span id="prop-size-val" class="mono">16px</span>
+        </label>
+
+        <label class="side-label">太さ
+          <select id="prop-weight">
+            <option value="">（変更しない）</option>
+            <option value="300">細い</option>
+            <option value="400">普通</option>
+            <option value="600">やや太字</option>
+            <option value="700">太字</option>
+          </select>
+        </label>
+
+        <label class="side-label">配置
+          <select id="prop-align">
+            <option value="">（変更しない）</option>
+            <option value="left">左</option>
+            <option value="center">中央</option>
+            <option value="right">右</option>
+          </select>
+        </label>
+
+        <div class="side-actions">
+          <button type="button" id="btn-apply-props" class="btn-gold">適用</button>
+          <button type="button" id="btn-make-link" class="btn-outline">リンク化</button>
+          <button type="button" id="btn-unlink" class="btn-outline">リンク解除</button>
+          <button type="button" id="btn-delete-el" class="btn-outline danger">要素を削除</button>
+        </div>
+
+        <hr class="side-hr">
+        <h3 class="side-title">書式（選択テキスト）</h3>
+        <div class="fmt-row">
+          <button type="button" data-cmd="bold" class="fmt-btn"><b>B</b></button>
+          <button type="button" data-cmd="italic" class="fmt-btn"><i>I</i></button>
+          <button type="button" data-cmd="underline" class="fmt-btn"><u>U</u></button>
+          <button type="button" data-cmd="strikeThrough" class="fmt-btn"><s>S</s></button>
+        </div>
+
+        <hr class="side-hr">
+        <h3 class="side-title">挿入</h3>
+        <div class="fmt-row wrap">
+          <button type="button" id="btn-ins-text" class="btn-outline">テキスト</button>
+          <button type="button" id="btn-ins-image" class="btn-outline">画像</button>
+          <button type="button" id="btn-ins-link" class="btn-outline">リンク</button>
+          <button type="button" id="btn-ins-box" class="btn-outline">ボックス</button>
+        </div>
+
+        <hr class="side-hr">
+        <h3 class="side-title">ページCSS（上級）</h3>
+        <p class="side-hint">空でもOK。色や余白の一括指定に使えます。</p>
+        <textarea id="css-editor" rows="6" placeholder="/* 例: .card { border-radius: 16px; } */"></textarea>
+      </aside>
+
+      <div class="cms-canvas-wrap">
+        <div id="canvas-frame" class="cms-canvas device-desktop">
+          <iframe id="preview-frame" title="ページプレビュー" sandbox="allow-same-origin allow-scripts allow-forms"></iframe>
+        </div>
+        <p class="canvas-hint">要素をクリックして選択 · ダブルクリックで直接文字編集 · Escで選択解除</p>
       </div>
-      <div class="card admin-card">
-        <h2>ページ固有 CSS</h2>
-        <p class="mono" id="css-path"></p>
-        <textarea id="css-editor" rows="8"></textarea>
-      </div>
-      <div class="card admin-card save-bar">
-        <label>コミットメッセージ<input id="commit-msg" placeholder="2026/08/28の変更"></label>
-        <button type="button" id="btn-save" class="btn-gold">GitHub に保存</button>
-      </div>
-      <div id="edit-frame" hidden></div>
-    </section>
-  </main>
+    </div>
+  </section>
+
   <script src="src/js/admin.js"></script>
 </body>
 </html>
