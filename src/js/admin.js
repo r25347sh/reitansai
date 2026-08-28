@@ -5,7 +5,6 @@
  */
 (function () {
   'use strict';
-
   var SESSION_KEY = 'reitansai_user';
   var GITHUB_OWNER = 'r25347sh';
   var GITHUB_REPO = 'reitansai';
