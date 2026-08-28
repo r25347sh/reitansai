@@ -1,0 +1,1 @@
+.map-wrap{padding:1rem;overflow:auto}#campus-map{width:100%;max-width:800px;margin:0 auto;height:auto}#campus-map [data-loc]{cursor:pointer;transition:fill .2s}#campus-map [data-loc]:hover{fill:#1a5a3a}.map-info{margin-top:1rem;text-align:center;color:var(--text-muted);font-size:.875rem}
