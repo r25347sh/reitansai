@@ -55,7 +55,8 @@
 
   var state = {
     path: null, cssPath: null, selected: null, outline: false,
-    undo: [], redo: [], customVars: {}, isAdmin: false, advancedUser: false
+    undo: [], redo: [], customVars: {}, isAdmin: false, advancedUser: false,
+    pageTitles: {}, meta: {}
   };
 
   function $(id) { return document.getElementById(id); }
@@ -131,30 +132,63 @@
     enterDash(session);
   }
 
+  function extractTitle(html) {
+    var m = String(html).match(/<title[^>]*>([\s\S]*?)<\/title>/i);
+    if (!m) return '';
+    return m[1].replace(/\s+/g, ' ').trim();
+  }
+
+  function filesDirForPage(htmlPath) {
+    var base = htmlPath.replace(/\.html$/i, '');
+    if (base.indexOf('pages/') === 0) base = base.slice(6);
+    return 'src/files/pages/' + base;
+  }
+
   function enterDash(user) {
     state.isAdmin = !!user.isAdmin;
     state.advancedUser = !!user.advanced || !!user.isAdmin;
     var label = $('user-label');
     if (label) label.textContent = (user.name || user.id) + '（' + (user.semi_name || '') + '）';
     var list = $('perm-list');
-    if (list) {
-      list.innerHTML = '';
-      var perms = user.permissions || [];
-      if (!perms.length) list.innerHTML = '<li>編集可能なページがありません</li>';
-      else {
-        for (var i = 0; i < perms.length; i++) {
-          (function (p) {
-            var li = document.createElement('li');
-            var b = document.createElement('button');
-            b.type = 'button'; b.className = 'btn-gold';
-            b.textContent = prettyPath(p);
-            b.onclick = function () { openVisualEditor(user, p); };
-            li.appendChild(b); list.appendChild(li);
-          })(perms[i]);
-        }
-      }
-    }
+    var loading = $('dash-loading');
+    if (list) list.innerHTML = '';
+    if (loading) { loading.style.display = 'block'; loading.textContent = 'ページ情報を読み込み中…'; }
     showView('dash');
+
+    var perms = (user.permissions || []).slice();
+    if (!perms.length) {
+      if (list) list.innerHTML = '<li>編集可能なページがありません</li>';
+      if (loading) loading.style.display = 'none';
+      return;
+    }
+
+    Promise.all(perms.map(function (p) {
+      return getFile(p).then(function (f) {
+        var title = '';
+        try { title = extractTitle(decodeContent(f.content)); } catch (e) {}
+        state.pageTitles[p] = title || prettyPath(p);
+        return { path: p, title: state.pageTitles[p] };
+      }).catch(function () {
+        state.pageTitles[p] = prettyPath(p);
+        return { path: p, title: state.pageTitles[p] };
+      });
+    })).then(function (items) {
+      if (loading) loading.style.display = 'none';
+      if (!list) return;
+      list.innerHTML = '';
+      items.forEach(function (item) {
+        var li = document.createElement('li');
+        var b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'btn-gold page-card-btn';
+        b.innerHTML = '<span class="page-card-title"></span><span class="page-card-path"></span>';
+        b.querySelector('.page-card-title').textContent = item.title;
+        b.querySelector('.page-card-path').textContent = item.path;
+        b.onclick = function () { openVisualEditor(user, item.path); };
+        li.appendChild(b);
+        list.appendChild(li);
+      });
+    });
   }
   function prettyPath(p) {
     if (p === 'index.html') return '🏠 トップページ';
@@ -436,8 +470,25 @@
     Promise.all(tasks).then(function (results) {
       var file = results[0];
       var html = decodeContent(file.content);
+      try {
+        var docMeta = new DOMParser().parseFromString(html, 'text/html');
+        var tEl = docMeta.querySelector('title');
+        if ($('meta-title')) $('meta-title').value = tEl ? tEl.textContent.trim() : '';
+        if ($('edit-title-chip')) $('edit-title-chip').textContent = tEl ? tEl.textContent.trim() : '';
+        var md = docMeta.querySelector('meta[name="description"]');
+        if ($('meta-desc')) $('meta-desc').value = md ? (md.getAttribute('content') || '') : '';
+        var ma = docMeta.querySelector('meta[name="author"]');
+        if ($('meta-author')) $('meta-author').value = ma ? (ma.getAttribute('content') || '') : '';
+        var ic = docMeta.querySelector('link[rel="icon"], link[rel="shortcut icon"]');
+        if ($('meta-favicon')) $('meta-favicon').value = ic ? (ic.getAttribute('href') || '') : '';
+        var og = docMeta.querySelector('meta[property="og:image"]');
+        if ($('meta-og-image')) $('meta-og-image').value = og ? (og.getAttribute('content') || '') : '';
+        var rb = docMeta.querySelector('meta[name="robots"]');
+        if ($('meta-robots')) $('meta-robots').value = rb ? (rb.getAttribute('content') || '') : '';
+      } catch (e) {}
+      if ($('media-dir-hint')) $('media-dir-hint').textContent = filesDirForPage(htmlPath) + '/';
+
       html = rewriteRelativeUrls(html, htmlPath);
-      // auto-mark footer copyright if plain footer exists
       html = html.replace(/<footer(\s[^>]*)?>/i, function (m) {
         if (/data-cms-copyright/.test(m)) return m;
         return m.replace('<footer', '<footer data-cms-copyright="1"');
@@ -575,9 +626,97 @@
     });
   }
 
+
+  function applyMetaToDoc(doc) {
+    if (!doc || !doc.head) return;
+    var title = ($('meta-title') && $('meta-title').value) || '';
+    if (doc.querySelector('title')) doc.querySelector('title').textContent = title;
+    else {
+      var t = doc.createElement('title'); t.textContent = title; doc.head.appendChild(t);
+    }
+    if ($('edit-title-chip')) $('edit-title-chip').textContent = title;
+
+    function setNameMeta(name, val) {
+      var el = doc.querySelector('meta[name="' + name + '"]');
+      if (!val) { if (el) el.remove(); return; }
+      if (!el) { el = doc.createElement('meta'); el.setAttribute('name', name); doc.head.appendChild(el); }
+      el.setAttribute('content', val);
+    }
+    function setPropMeta(prop, val) {
+      var el = doc.querySelector('meta[property="' + prop + '"]');
+      if (!val) { if (el) el.remove(); return; }
+      if (!el) { el = doc.createElement('meta'); el.setAttribute('property', prop); doc.head.appendChild(el); }
+      el.setAttribute('content', val);
+    }
+    setNameMeta('description', ($('meta-desc') && $('meta-desc').value) || '');
+    setNameMeta('author', ($('meta-author') && $('meta-author').value) || '');
+    setNameMeta('robots', ($('meta-robots') && $('meta-robots').value) || '');
+    setPropMeta('og:image', ($('meta-og-image') && $('meta-og-image').value) || '');
+    setPropMeta('og:title', title);
+
+    var fav = ($('meta-favicon') && $('meta-favicon').value) || '';
+    var icon = doc.querySelector('link[rel="icon"], link[rel="shortcut icon"]');
+    if (!fav) { if (icon) icon.remove(); }
+    else {
+      if (!icon) { icon = doc.createElement('link'); icon.setAttribute('rel', 'icon'); doc.head.appendChild(icon); }
+      icon.setAttribute('href', fav);
+    }
+  }
+
+  function sanitizeFileName(name) {
+    return String(name || 'image').replace(/[^a-zA-Z0-9._\-]/g, '_').slice(0, 80);
+  }
+
+  function putBinary(path, base64Content, message, sha) {
+    var body = { message: message || 'upload', content: base64Content, branch: 'main' };
+    if (sha) body.sha = sha;
+    return fetch(API + '/' + path, {
+      method: 'PUT', headers: ghHeaders(), body: JSON.stringify(body)
+    }).then(function (res) {
+      if (!res.ok) return res.text().then(function (t) { throw new Error('PUT ' + path + ': ' + res.status + ' ' + t); });
+      return res.json();
+    });
+  }
+
+  function uploadMediaFile(file) {
+    if (!file || !state.path) return Promise.reject(new Error('ファイルまたはページがありません'));
+    var dir = filesDirForPage(state.path);
+    var name = ($('media-name') && $('media-name').value.trim()) || file.name || ('img_' + Date.now());
+    name = sanitizeFileName(name);
+    if (!/\.[a-z0-9]+$/i.test(name)) {
+      var ext = (file.type || '').split('/')[1] || 'png';
+      name += '.' + ext;
+    }
+    var path = dir + '/' + name;
+    var status = $('media-status');
+    if (status) status.textContent = 'アップロード中…';
+
+    return new Promise(function (resolve, reject) {
+      var reader = new FileReader();
+      reader.onload = function () {
+        var dataUrl = String(reader.result || '');
+        var b64 = dataUrl.split(',')[1];
+        if (!b64) { reject(new Error('読み込み失敗')); return; }
+        getFile(path).then(function (existing) {
+          return putBinary(path, b64, 'upload: ' + path, existing.sha);
+        }).catch(function () {
+          return putBinary(path, b64, 'upload: ' + path, null);
+        }).then(function () {
+          var url = SITE_BASE + path;
+          if ($('media-url')) $('media-url').value = url;
+          if (status) status.textContent = 'アップロード完了';
+          resolve(url);
+        }).catch(reject);
+      };
+      reader.onerror = function () { reject(new Error('ファイル読み込み失敗')); };
+      reader.readAsDataURL(file);
+    });
+  }
+
   function exportHtml() {
     var doc = frameDoc();
     if (!doc) throw new Error('プレビューがありません');
+    applyMetaToDoc(doc);
     var clone = doc.documentElement.cloneNode(true);
     var rm = clone.querySelectorAll('#cms-editor-style, base, .cms-handle');
     for (var i = 0; i < rm.length; i++) rm[i].remove();
@@ -743,7 +882,7 @@
       tabs[t].addEventListener('click', function () {
         for (var i = 0; i < tabs.length; i++) tabs[i].classList.remove('active');
         this.classList.add('active');
-        var panels = ['props', 'blocks', 'theme', 'vars', 'adv'];
+        var panels = ['props', 'blocks', 'meta', 'media', 'theme', 'vars', 'adv'];
         for (var p = 0; p < panels.length; p++) {
           var el = $('panel-' + panels[p]);
           if (el) el.classList.toggle('hidden', panels[p] !== this.getAttribute('data-panel'));
@@ -873,6 +1012,55 @@
       pushUndo();
       el.setAttribute('data-cms-lock', '1');
       $('edit-status').textContent = '要素を保護しました';
+      selectEl(el);
+    };
+
+
+    if ($('btn-apply-meta')) $('btn-apply-meta').onclick = function () {
+      var doc = frameDoc(); if (!doc) return;
+      pushUndo();
+      applyMetaToDoc(doc);
+      $('edit-status').textContent = 'メタを反映しました（未保存）';
+      if ($('edit-title-chip') && $('meta-title')) $('edit-title-chip').textContent = $('meta-title').value;
+    };
+
+    if ($('btn-upload-media')) $('btn-upload-media').onclick = function () {
+      var input = $('media-file');
+      if (!input || !input.files || !input.files[0]) {
+        if ($('media-status')) $('media-status').textContent = 'ファイルを選んでください';
+        return;
+      }
+      uploadMediaFile(input.files[0]).then(function () {
+        $('edit-status').textContent = '画像アップロード完了';
+      }).catch(function (err) {
+        if ($('media-status')) $('media-status').textContent = '失敗: ' + err.message;
+      });
+    };
+    if ($('btn-use-as-img')) $('btn-use-as-img').onclick = function () {
+      var url = ($('media-url') && $('media-url').value) || '';
+      var el = state.selected;
+      if (!url) return;
+      if (el && el.tagName === 'IMG' && canEdit(el)) {
+        pushUndo(); el.setAttribute('src', url); selectEl(el);
+      } else if ($('prop-src')) $('prop-src').value = url;
+    };
+    if ($('btn-insert-uploaded')) $('btn-insert-uploaded').onclick = function () {
+      var url = ($('media-url') && $('media-url').value) || '';
+      if (!url) return;
+      var doc = frameDoc(); if (!doc) return;
+      pushUndo();
+      var img = doc.createElement('img');
+      img.src = url; img.alt = ''; img.style.maxWidth = '100%';
+      var parent = (state.selected && canEdit(state.selected)) ? state.selected : doc.body;
+      if (parent.tagName === 'IMG') parent = parent.parentNode || doc.body;
+      parent.appendChild(img); selectEl(img);
+    };
+    if ($('btn-unlock-el')) $('btn-unlock-el').onclick = function () {
+      if (!state.isAdmin) { $('edit-status').textContent = '保護解除は管理者のみ'; return; }
+      var el = state.selected; if (!el) return;
+      pushUndo();
+      el.removeAttribute('data-cms-lock');
+      $('edit-status').textContent = '保護を解除しました';
       selectEl(el);
     };
 
