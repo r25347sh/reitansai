@@ -252,6 +252,59 @@
     });
   }
 
+
+  function pad2(n) {
+    return (n < 10 ? '0' : '') + n;
+  }
+
+  function nowStamp() {
+    var d = new Date();
+    return (
+      d.getFullYear() +
+      '-' +
+      pad2(d.getMonth() + 1) +
+      '-' +
+      pad2(d.getDate()) +
+      ' ' +
+      pad2(d.getHours()) +
+      ':' +
+      pad2(d.getMinutes())
+    );
+  }
+
+  /** 保存成功時に src/log.txt へ1行追記（失敗しても本体保存は成功扱い） */
+  function appendLog(user, path, commitMsg) {
+    var line =
+      '[' +
+      nowStamp() +
+      '] ' +
+      ((user && (user.name || user.id)) || 'unknown') +
+      ' | ' +
+      path +
+      ' | ' +
+      (commitMsg || '') +
+      '\n';
+    var logPath = 'src/log.txt';
+    return getFile(logPath)
+      .then(function (file) {
+        var prev = '';
+        try {
+          prev = decodeContent(file.content);
+        } catch (e) {
+          prev = '';
+        }
+        if (prev && prev.charAt(prev.length - 1) !== '\n') prev += '\n';
+        return putFile(logPath, prev + line, 'log: ' + path, file.sha);
+      })
+      .catch(function () {
+        // ファイルが無い場合は新規作成
+        return putFile(logPath, line, 'log: ' + path, null);
+      })
+      .catch(function (err) {
+        console.warn('log append failed', err);
+      });
+  }
+
   function pathToCss(htmlPath) {
     if (htmlPath.indexOf('pages/seminars/') === 0)
       return htmlPath.replace('pages/seminars/', 'src/css/pages/seminars/').replace('.html', '.css');
@@ -452,8 +505,9 @@
               var cssPath = frame.getAttribute('data-css-path');
               var customCss = $('css-editor').value;
               if (!cssPath) {
-                status.textContent = '保存完了 ✓';
-                return;
+                return appendLog(user, path, commitMsg).then(function () {
+                  status.textContent = '保存完了 ✓';
+                });
               }
               return getFile(cssPath)
                 .then(function (cf) {
@@ -481,7 +535,9 @@
                   return putFile(cssPath, cssText, commitMsg, null);
                 })
                 .then(function () {
-                  status.textContent = '保存完了 ✓';
+                  return appendLog(user, path, commitMsg).then(function () {
+                    status.textContent = '保存完了 ✓';
+                  });
                 });
             });
           })
