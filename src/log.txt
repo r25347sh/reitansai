@@ -2,3 +2,4 @@
 # format: [YYYY-MM-DD HH:MM] user | path | message
 [2026-08-28] CMS initialized
 [2026-08-28 15:19] r25347sh | index.html | 空白の変更です。テスト用コミット。
+[2026-08-28 15:54] r25347sh | index.html | テスト変更
