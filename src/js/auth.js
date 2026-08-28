@@ -47,21 +47,6 @@
       header.appendChild(box);
     }
 
-    // メニュー開く用FAB（使いやすさ優先）
-    if (!document.querySelector('.menu-fab')) {
-      const fab = document.createElement('button');
-      fab.type = 'button';
-      fab.className = 'menu-fab';
-      fab.setAttribute('aria-label', 'メニューを開く');
-      fab.innerHTML = '☰';
-      fab.title = 'メニュー（または長押し）';
-      document.body.appendChild(fab);
-      fab.addEventListener('click', () => {
-        window.dispatchEvent(new CustomEvent('reitansai:open-menu', {
-          detail: { x: window.innerWidth / 2, y: window.innerHeight / 2 }
-        }));
-      });
-    }
   }
 
   if (document.readyState === 'loading') {
