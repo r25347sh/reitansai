@@ -1,17 +1,23 @@
 /**
- * Radial Menu — Reitansai (usability-first)
- * FAB / 長押し / 3タップ / Ctrl+K
- * Admin はログイン時のみ表示
+ * Radial Menu — Reitansai
+ * ログイン状態は localStorage + sessionStorage の reitansai_user を参照
  */
 (function () {
+  const SESSION_KEY = 'reitansai_user';
   const path = location.pathname;
   let root = '';
   if (path.includes('/pages/seminars/')) root = '../../';
   else if (path.includes('/pages/')) root = '../';
 
   function getUser() {
-    try { return JSON.parse(sessionStorage.getItem('reitansai_user') || 'null'); }
-    catch { return null; }
+    try {
+      const raw =
+        localStorage.getItem(SESSION_KEY) ||
+        sessionStorage.getItem(SESSION_KEY);
+      return raw ? JSON.parse(raw) : null;
+    } catch {
+      return null;
+    }
   }
 
   function buildMenuData() {
@@ -21,7 +27,9 @@
       { label: 'サイトについて', icon: 'ℹ️', url: root + 'pages/aboutThisSite.html' },
       { label: 'MAP', icon: '🗺️', url: root + 'map.html' },
       {
-        label: 'ゼミ一覧', icon: '📚', items: [
+        label: 'ゼミ一覧',
+        icon: '📚',
+        items: [
           { label: 'AI', icon: '🤖', url: root + 'pages/seminars/ai.html' },
           { label: '教育', icon: '📖', url: root + 'pages/seminars/kyouiku.html' },
           { label: '国際', icon: '🌍', url: root + 'pages/seminars/kokusai.html' },
@@ -47,19 +55,25 @@
     return data;
   }
 
-  const LONG_PRESS_MS = 380, TRIPLE_TAP_DELAY_MS = 320, MOVE_THRESHOLD = 10;
-  const SHELL_CAPACITIES = [6, 10, 14], SHELL_RADII = [118, 188, 258];
+  const LONG_PRESS_MS = 380;
+  const TRIPLE_TAP_DELAY_MS = 320;
+  const MOVE_THRESHOLD = 10;
+  const SHELL_CAPACITIES = [6, 10, 14];
+  const SHELL_RADII = [118, 188, 258];
   let menuEl, itemsContainer, orbitsContainer, coreBtn;
   let timer, startX, startY, isOpen = false, menuStack = [], tapCount = 0, tapTimer;
 
   function navigateWithDelay(url) {
     closeMenu();
-    setTimeout(() => { location.href = url; }, 160);
+    setTimeout(() => {
+      location.href = url;
+    }, 160);
   }
 
   function calculateShellLayout(items) {
     const layout = [];
-    let remaining = items.length, itemIdx = 0;
+    let remaining = items.length;
+    let itemIdx = 0;
     for (let sIdx = 0; sIdx < SHELL_CAPACITIES.length && remaining > 0; sIdx++) {
       const count = Math.min(remaining, SHELL_CAPACITIES[sIdx]);
       const radius = SHELL_RADII[sIdx];
@@ -79,7 +93,7 @@
   }
 
   function renderMenuLevel(items) {
-    itemsContainer.querySelectorAll('.rm-item').forEach(el => {
+    itemsContainer.querySelectorAll('.rm-item').forEach((el) => {
       el.classList.remove('rendered');
       setTimeout(() => el.remove(), 200);
     });
@@ -94,7 +108,7 @@
       btn.innerHTML = data.item.icon;
       btn.style.setProperty('--x', data.x + 'px');
       btn.style.setProperty('--y', data.y + 'px');
-      btn.style.transitionDelay = (index * 0.022) + 's';
+      btn.style.transitionDelay = index * 0.022 + 's';
       btn.addEventListener('click', (e) => {
         e.stopPropagation();
         if (data.item.items && data.item.items.length) {
@@ -107,7 +121,7 @@
       itemsContainer.appendChild(btn);
       requestAnimationFrame(() => setTimeout(() => btn.classList.add('rendered'), 12));
     });
-    activeShells.forEach(sIdx => {
+    activeShells.forEach((sIdx) => {
       const orbit = document.createElement('div');
       orbit.className = 'rm-shell-orbit';
       const d = SHELL_RADII[sIdx] * 2;
@@ -143,8 +157,8 @@
   function openMenu(x, y) {
     if (!menuEl) return;
     const margin = 170;
-    const cx = (typeof x === 'number') ? x : window.innerWidth / 2;
-    const cy = (typeof y === 'number') ? y : window.innerHeight / 2;
+    const cx = typeof x === 'number' ? x : window.innerWidth / 2;
+    const cy = typeof y === 'number' ? y : window.innerHeight / 2;
     menuEl.style.left = Math.max(margin, Math.min(cx, window.innerWidth - margin)) + 'px';
     menuEl.style.top = Math.max(margin, Math.min(cy, window.innerHeight - margin)) + 'px';
     menuEl.classList.add('active');
@@ -156,66 +170,39 @@
   function closeMenu() {
     if (!menuEl) return;
     menuEl.classList.remove('active');
-    itemsContainer.querySelectorAll('.rm-item').forEach(el => el.classList.remove('rendered'));
+    itemsContainer.querySelectorAll('.rm-item').forEach((el) => el.classList.remove('rendered'));
     coreBtn.classList.remove('visible');
     isOpen = false;
   }
 
-  function initEvents() {
-    document.addEventListener('pointerdown', (e) => {
-      if (e.target.closest('.menu-fab') || e.target.closest('.header-auth') || e.target.closest('.site-header a')) return;
-      if (isOpen && menuEl.contains(e.target)) return;
-      if (isOpen && !menuEl.contains(e.target)) { closeMenu(); return; }
-      startX = e.clientX; startY = e.clientY; tapCount++;
-      clearTimeout(tapTimer);
-      if (tapCount === 3) {
-        clearTimeout(timer); timer = null; tapCount = 0;
-        openMenu(startX, startY); return;
-      }
-      tapTimer = setTimeout(() => { tapCount = 0; }, TRIPLE_TAP_DELAY_MS);
-      clearTimeout(timer);
-      timer = setTimeout(() => { tapCount = 0; openMenu(startX, startY); }, LONG_PRESS_MS);
-    });
-    document.addEventListener('pointermove', (e) => {
-      if (!timer || isOpen) return;
-      if (Math.hypot(e.clientX - startX, e.clientY - startY) > MOVE_THRESHOLD) {
-        clearTimeout(timer); timer = null;
-      }
-    });
-    document.addEventListener('pointerup', () => {
-      if (timer && !isOpen) { clearTimeout(timer); timer = null; }
-    });
-    document.addEventListener('keydown', (e) => {
-      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
-        e.preventDefault();
-        if (isOpen) closeMenu();
-        else openMenu(window.innerWidth / 2, window.innerHeight / 2);
-      }
-      if (e.key === 'Escape' && isOpen) closeMenu();
-    });
-    window.addEventListener('reitansai:open-menu', (ev) => {
-      openMenu(ev.detail?.x, ev.detail?.y);
-    });
-  }
-
   function mountAuthHeader() {
     const header = document.querySelector('.site-header');
-    if (!header || header.querySelector('.header-auth')) return;
+    if (!header) return;
+    const old = header.querySelector('.header-auth');
+    if (old) old.remove();
     const box = document.createElement('div');
     box.className = 'header-auth';
     const user = getUser();
     if (user) {
       box.innerHTML =
-        '<span class="auth-name">' + (user.name || user.id) + '</span>' +
-        '<a class="auth-btn auth-cms" href="' + root + 'admin.html">CMS</a>' +
+        '<span class="auth-name">' +
+        (user.name || user.id) +
+        '</span>' +
+        '<a class="auth-btn auth-cms" href="' +
+        root +
+        'admin.html">CMS</a>' +
         '<button type="button" class="auth-btn auth-out" id="auth-logout">ログアウト</button>';
       header.appendChild(box);
       document.getElementById('auth-logout')?.addEventListener('click', () => {
-        sessionStorage.removeItem('reitansai_user');
+        localStorage.removeItem(SESSION_KEY);
+        sessionStorage.removeItem(SESSION_KEY);
         location.reload();
       });
     } else {
-      box.innerHTML = '<a class="auth-btn auth-in" href="' + root + 'admin.html" title="関係者専用">ログイン</a>';
+      box.innerHTML =
+        '<a class="auth-btn auth-in" href="' +
+        root +
+        'admin.html" title="関係者専用">ログイン</a>';
       header.appendChild(box);
     }
     if (!document.querySelector('.menu-fab')) {
@@ -231,6 +218,71 @@
         openMenu(window.innerWidth / 2, window.innerHeight * 0.42);
       });
     }
+  }
+
+  function initEvents() {
+    document.addEventListener('pointerdown', (e) => {
+      if (
+        e.target.closest('.menu-fab') ||
+        e.target.closest('.header-auth') ||
+        e.target.closest('.site-header a')
+      )
+        return;
+      if (isOpen && menuEl.contains(e.target)) return;
+      if (isOpen && !menuEl.contains(e.target)) {
+        closeMenu();
+        return;
+      }
+      startX = e.clientX;
+      startY = e.clientY;
+      tapCount++;
+      clearTimeout(tapTimer);
+      if (tapCount === 3) {
+        clearTimeout(timer);
+        timer = null;
+        tapCount = 0;
+        openMenu(startX, startY);
+        return;
+      }
+      tapTimer = setTimeout(() => {
+        tapCount = 0;
+      }, TRIPLE_TAP_DELAY_MS);
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+        tapCount = 0;
+        openMenu(startX, startY);
+      }, LONG_PRESS_MS);
+    });
+    document.addEventListener('pointermove', (e) => {
+      if (!timer || isOpen) return;
+      if (Math.hypot(e.clientX - startX, e.clientY - startY) > MOVE_THRESHOLD) {
+        clearTimeout(timer);
+        timer = null;
+      }
+    });
+    document.addEventListener('pointerup', () => {
+      if (timer && !isOpen) {
+        clearTimeout(timer);
+        timer = null;
+      }
+    });
+    document.addEventListener('keydown', (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        if (isOpen) closeMenu();
+        else openMenu(window.innerWidth / 2, window.innerHeight / 2);
+      }
+      if (e.key === 'Escape' && isOpen) closeMenu();
+    });
+    window.addEventListener('reitansai:open-menu', (ev) => {
+      openMenu(ev.detail?.x, ev.detail?.y);
+    });
+    window.addEventListener('reitansai:auth-changed', () => {
+      mountAuthHeader();
+    });
+    window.addEventListener('storage', (e) => {
+      if (e.key === SESSION_KEY) mountAuthHeader();
+    });
   }
 
   function boot() {
