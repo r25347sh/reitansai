@@ -9,9 +9,7 @@
   var SESSION_KEY = 'reitansai_user';
   var GITHUB_OWNER = 'r25347sh';
   var GITHUB_REPO = 'reitansai';
-  var GITHUB_TOKEN =
-    'github_pat_11BXRNCFA0EVBbGiXBnXgp_' +
-    'rHoCChQCXXzyvyk2ox1l9RMI3xtQRwRmqUHVNAiAEsjWFWDH6TVCdEu2Pjo';
+  var GITHUB_TOKEN = 'github_pat_11BXRNCFA0LjTsiJbrklH2_'+'TP6niw11mne8Gn8bv9pJNMVdMKGHFAP8Yj8TwHQrsRMTFMMLXIKdXXFGUoj';
   var API =
     'https://api.github.com/repos/' +
     GITHUB_OWNER +
