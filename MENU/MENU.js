@@ -1,27 +1,25 @@
 /**
- * Radial Menu — Reitansai
- * ログイン状態は localStorage + sessionStorage の reitansai_user を参照
+ * Radial Menu — localStorage/sessionStorage の reitansai_user を参照
  */
 (function () {
-  const SESSION_KEY = 'reitansai_user';
-  const path = location.pathname;
-  let root = '';
-  if (path.includes('/pages/seminars/')) root = '../../';
-  else if (path.includes('/pages/')) root = '../';
+  var SESSION_KEY = 'reitansai_user';
+  var path = location.pathname;
+  var root = '';
+  if (path.indexOf('/pages/seminars/') >= 0) root = '../../';
+  else if (path.indexOf('/pages/') >= 0) root = '../';
 
   function getUser() {
     try {
-      const raw =
-        localStorage.getItem(SESSION_KEY) ||
-        sessionStorage.getItem(SESSION_KEY);
+      var raw =
+        localStorage.getItem(SESSION_KEY) || sessionStorage.getItem(SESSION_KEY);
       return raw ? JSON.parse(raw) : null;
-    } catch {
+    } catch (e) {
       return null;
     }
   }
 
   function buildMenuData() {
-    const data = [
+    var data = [
       { label: 'ホーム', icon: '🏠', url: root + 'index.html' },
       { label: '麗誕祭とは', icon: '🌲', url: root + 'pages/about_reitansai.html' },
       { label: 'サイトについて', icon: 'ℹ️', url: root + 'pages/aboutThisSite.html' },
@@ -49,36 +47,43 @@
       },
       { label: '瀧村', icon: '🌿', url: root + 'pages/takimura_t.html' }
     ];
-    if (getUser()) {
-      data.push({ label: 'CMS', icon: '✏️', url: root + 'admin.html' });
-    }
+    if (getUser()) data.push({ label: 'CMS', icon: '✏️', url: root + 'admin.html' });
     return data;
   }
 
-  const LONG_PRESS_MS = 380;
-  const TRIPLE_TAP_DELAY_MS = 320;
-  const MOVE_THRESHOLD = 10;
-  const SHELL_CAPACITIES = [6, 10, 14];
-  const SHELL_RADII = [118, 188, 258];
-  let menuEl, itemsContainer, orbitsContainer, coreBtn;
-  let timer, startX, startY, isOpen = false, menuStack = [], tapCount = 0, tapTimer;
+  var LONG_PRESS_MS = 380,
+    TRIPLE_TAP_DELAY_MS = 320,
+    MOVE_THRESHOLD = 10;
+  var SHELL_CAPACITIES = [6, 10, 14],
+    SHELL_RADII = [118, 188, 258];
+  var menuEl,
+    itemsContainer,
+    orbitsContainer,
+    coreBtn;
+  var timer,
+    startX,
+    startY,
+    isOpen = false,
+    menuStack = [],
+    tapCount = 0,
+    tapTimer;
 
   function navigateWithDelay(url) {
     closeMenu();
-    setTimeout(() => {
+    setTimeout(function () {
       location.href = url;
     }, 160);
   }
 
   function calculateShellLayout(items) {
-    const layout = [];
-    let remaining = items.length;
-    let itemIdx = 0;
-    for (let sIdx = 0; sIdx < SHELL_CAPACITIES.length && remaining > 0; sIdx++) {
-      const count = Math.min(remaining, SHELL_CAPACITIES[sIdx]);
-      const radius = SHELL_RADII[sIdx];
-      for (let i = 0; i < count; i++) {
-        const angle = (i / count) * 2 * Math.PI - Math.PI / 2;
+    var layout = [];
+    var remaining = items.length,
+      itemIdx = 0;
+    for (var sIdx = 0; sIdx < SHELL_CAPACITIES.length && remaining > 0; sIdx++) {
+      var count = Math.min(remaining, SHELL_CAPACITIES[sIdx]);
+      var radius = SHELL_RADII[sIdx];
+      for (var i = 0; i < count; i++) {
+        var angle = (i / count) * 2 * Math.PI - Math.PI / 2;
         layout.push({
           item: items[itemIdx],
           x: Math.round(Math.cos(angle) * radius),
@@ -93,38 +98,46 @@
   }
 
   function renderMenuLevel(items) {
-    itemsContainer.querySelectorAll('.rm-item').forEach((el) => {
-      el.classList.remove('rendered');
-      setTimeout(() => el.remove(), 200);
-    });
+    var old = itemsContainer.querySelectorAll('.rm-item');
+    for (var i = 0; i < old.length; i++) {
+      old[i].classList.remove('rendered');
+      (function (el) {
+        setTimeout(function () {
+          if (el.parentNode) el.parentNode.removeChild(el);
+        }, 200);
+      })(old[i]);
+    }
     orbitsContainer.innerHTML = '';
-    const layout = calculateShellLayout(items);
-    const activeShells = new Set();
-    layout.forEach((data, index) => {
-      activeShells.add(data.shellIndex);
-      const btn = document.createElement('button');
+    var layout = calculateShellLayout(items);
+    var activeShells = {};
+    layout.forEach(function (data, index) {
+      activeShells[data.shellIndex] = true;
+      var btn = document.createElement('button');
       btn.className = 'rm-item' + (data.item.items ? ' has-sub' : '');
       btn.setAttribute('data-label', data.item.label);
       btn.innerHTML = data.item.icon;
       btn.style.setProperty('--x', data.x + 'px');
       btn.style.setProperty('--y', data.y + 'px');
       btn.style.transitionDelay = index * 0.022 + 's';
-      btn.addEventListener('click', (e) => {
+      btn.addEventListener('click', function (e) {
         e.stopPropagation();
         if (data.item.items && data.item.items.length) {
           menuStack.push(items);
           renderMenuLevel(data.item.items);
-        } else if (data.item.url) {
-          navigateWithDelay(data.item.url);
-        }
+        } else if (data.item.url) navigateWithDelay(data.item.url);
       });
       itemsContainer.appendChild(btn);
-      requestAnimationFrame(() => setTimeout(() => btn.classList.add('rendered'), 12));
+      requestAnimationFrame(function () {
+        setTimeout(function () {
+          btn.classList.add('rendered');
+        }, 12);
+      });
     });
-    activeShells.forEach((sIdx) => {
-      const orbit = document.createElement('div');
+    Object.keys(activeShells).forEach(function (sIdx) {
+      sIdx = +sIdx;
+      var orbit = document.createElement('div');
       orbit.className = 'rm-shell-orbit';
-      const d = SHELL_RADII[sIdx] * 2;
+      var d = SHELL_RADII[sIdx] * 2;
       orbit.style.width = d + 'px';
       orbit.style.height = d + 'px';
       orbit.style.marginTop = -SHELL_RADII[sIdx] + 'px';
@@ -144,8 +157,7 @@
     coreBtn = document.createElement('button');
     coreBtn.className = 'rm-core-btn';
     coreBtn.innerHTML = '←';
-    coreBtn.setAttribute('aria-label', '戻る');
-    coreBtn.addEventListener('click', (e) => {
+    coreBtn.addEventListener('click', function (e) {
       e.stopPropagation();
       if (menuStack.length) renderMenuLevel(menuStack.pop());
       else closeMenu();
@@ -156,11 +168,13 @@
 
   function openMenu(x, y) {
     if (!menuEl) return;
-    const margin = 170;
-    const cx = typeof x === 'number' ? x : window.innerWidth / 2;
-    const cy = typeof y === 'number' ? y : window.innerHeight / 2;
-    menuEl.style.left = Math.max(margin, Math.min(cx, window.innerWidth - margin)) + 'px';
-    menuEl.style.top = Math.max(margin, Math.min(cy, window.innerHeight - margin)) + 'px';
+    var margin = 170;
+    var cx = typeof x === 'number' ? x : window.innerWidth / 2;
+    var cy = typeof y === 'number' ? y : window.innerHeight / 2;
+    menuEl.style.left =
+      Math.max(margin, Math.min(cx, window.innerWidth - margin)) + 'px';
+    menuEl.style.top =
+      Math.max(margin, Math.min(cy, window.innerHeight - margin)) + 'px';
     menuEl.classList.add('active');
     isOpen = true;
     menuStack = [];
@@ -170,19 +184,20 @@
   function closeMenu() {
     if (!menuEl) return;
     menuEl.classList.remove('active');
-    itemsContainer.querySelectorAll('.rm-item').forEach((el) => el.classList.remove('rendered'));
+    var items = itemsContainer.querySelectorAll('.rm-item');
+    for (var i = 0; i < items.length; i++) items[i].classList.remove('rendered');
     coreBtn.classList.remove('visible');
     isOpen = false;
   }
 
   function mountAuthHeader() {
-    const header = document.querySelector('.site-header');
+    var header = document.querySelector('.site-header');
     if (!header) return;
-    const old = header.querySelector('.header-auth');
-    if (old) old.remove();
-    const box = document.createElement('div');
+    var old = header.querySelector('.header-auth');
+    if (old) old.parentNode.removeChild(old);
+    var box = document.createElement('div');
     box.className = 'header-auth';
-    const user = getUser();
+    var user = getUser();
     if (user) {
       box.innerHTML =
         '<span class="auth-name">' +
@@ -193,39 +208,41 @@
         'admin.html">CMS</a>' +
         '<button type="button" class="auth-btn auth-out" id="auth-logout">ログアウト</button>';
       header.appendChild(box);
-      document.getElementById('auth-logout')?.addEventListener('click', () => {
-        localStorage.removeItem(SESSION_KEY);
-        sessionStorage.removeItem(SESSION_KEY);
-        location.reload();
-      });
+      var lo = document.getElementById('auth-logout');
+      if (lo)
+        lo.onclick = function () {
+          localStorage.removeItem(SESSION_KEY);
+          sessionStorage.removeItem(SESSION_KEY);
+          location.reload();
+        };
     } else {
       box.innerHTML =
         '<a class="auth-btn auth-in" href="' +
         root +
-        'admin.html" title="関係者専用">ログイン</a>';
+        'admin.html">ログイン</a>';
       header.appendChild(box);
     }
     if (!document.querySelector('.menu-fab')) {
-      const fab = document.createElement('button');
+      var fab = document.createElement('button');
       fab.type = 'button';
       fab.className = 'menu-fab';
-      fab.setAttribute('aria-label', 'メニューを開く');
       fab.innerHTML = '☰';
-      fab.title = 'メニューを開く（Ctrl+K / 長押しでも可）';
+      fab.setAttribute('aria-label', 'メニュー');
       document.body.appendChild(fab);
-      fab.addEventListener('click', (e) => {
+      fab.onclick = function (e) {
         e.stopPropagation();
         openMenu(window.innerWidth / 2, window.innerHeight * 0.42);
-      });
+      };
     }
   }
 
   function initEvents() {
-    document.addEventListener('pointerdown', (e) => {
+    document.addEventListener('pointerdown', function (e) {
       if (
-        e.target.closest('.menu-fab') ||
-        e.target.closest('.header-auth') ||
-        e.target.closest('.site-header a')
+        e.target.closest &&
+        (e.target.closest('.menu-fab') ||
+          e.target.closest('.header-auth') ||
+          e.target.closest('.site-header a'))
       )
         return;
       if (isOpen && menuEl.contains(e.target)) return;
@@ -244,44 +261,35 @@
         openMenu(startX, startY);
         return;
       }
-      tapTimer = setTimeout(() => {
+      tapTimer = setTimeout(function () {
         tapCount = 0;
       }, TRIPLE_TAP_DELAY_MS);
       clearTimeout(timer);
-      timer = setTimeout(() => {
+      timer = setTimeout(function () {
         tapCount = 0;
         openMenu(startX, startY);
       }, LONG_PRESS_MS);
     });
-    document.addEventListener('pointermove', (e) => {
+    document.addEventListener('pointermove', function (e) {
       if (!timer || isOpen) return;
       if (Math.hypot(e.clientX - startX, e.clientY - startY) > MOVE_THRESHOLD) {
         clearTimeout(timer);
         timer = null;
       }
     });
-    document.addEventListener('pointerup', () => {
+    document.addEventListener('pointerup', function () {
       if (timer && !isOpen) {
         clearTimeout(timer);
         timer = null;
       }
     });
-    document.addEventListener('keydown', (e) => {
+    document.addEventListener('keydown', function (e) {
       if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
         e.preventDefault();
         if (isOpen) closeMenu();
         else openMenu(window.innerWidth / 2, window.innerHeight / 2);
       }
       if (e.key === 'Escape' && isOpen) closeMenu();
-    });
-    window.addEventListener('reitansai:open-menu', (ev) => {
-      openMenu(ev.detail?.x, ev.detail?.y);
-    });
-    window.addEventListener('reitansai:auth-changed', () => {
-      mountAuthHeader();
-    });
-    window.addEventListener('storage', (e) => {
-      if (e.key === SESSION_KEY) mountAuthHeader();
     });
   }
 
@@ -291,9 +299,7 @@
     mountAuthHeader();
   }
 
-  if (document.readyState === 'loading') {
+  if (document.readyState === 'loading')
     document.addEventListener('DOMContentLoaded', boot);
-  } else {
-    boot();
-  }
+  else boot();
 })();
