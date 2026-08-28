@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="キャンパスマップ — 麗誕祭">
+<title>MAP | 麗誕祭</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🗺️</text></svg>">
+<link rel="stylesheet" href="src/css/common.css">
+<link rel="stylesheet" href="src/css/pages/map.css">
+<link rel="stylesheet" href="MENU/MENU.css">
+</head>
+<body>
+<div class="bg-fixed" aria-hidden="true"></div>
+<div class="bg-overlay" aria-hidden="true"></div>
+<header class="site-header">
+<a class="site-logo" href="index.html">🌲 REITANSAI <span>Deep Forest</span></a>
+<nav class="nav-desktop"><a href="index.html">HOME</a><a href="pages/aboutThisSite.html">ABOUT</a><a href="map.html">MAP</a></nav>
+<span class="menu-hint">長押し / 3タップでメニュー</span>
+</header>
+<main class="main">
+<h1 class="page-title">🗺️ Campus Map</h1>
+<p class="page-sub">University of the Deep Forest</p>
+<div class="map-wrap card">
+<svg id="campus-map" viewBox="0 0 800 500" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="キャンパスマップ">
+<rect width="800" height="500" fill="#0a1f18" rx="8"/>
+<text x="400" y="40" text-anchor="middle" fill="#c9a227" font-size="18">DEEP FOREST CAMPUS</text>
+<rect x="80" y="80" width="140" height="100" fill="#0f3d2e" stroke="#c9a227" stroke-width="1.5" rx="6" data-loc="main-hall"/>
+<text x="150" y="135" text-anchor="middle" fill="#e8f0e8" font-size="12">本館</text>
+<rect x="280" y="100" width="120" height="80" fill="#0f3d2e" stroke="#c9a227" stroke-width="1.5" rx="6" data-loc="library"/>
+<text x="340" y="145" text-anchor="middle" fill="#e8f0e8" font-size="12">図書館</text>
+<rect x="460" y="80" width="130" height="100" fill="#0f3d2e" stroke="#c9a227" stroke-width="1.5" rx="6" data-loc="lab"/>
+<text x="525" y="135" text-anchor="middle" fill="#e8f0e8" font-size="12">実験棟</text>
+<rect x="620" y="200" width="120" height="90" fill="#0f3d2e" stroke="#c9a227" stroke-width="1.5" rx="6" data-loc="festival"/>
+<text x="680" y="250" text-anchor="middle" fill="#e8f0e8" font-size="12">祭会場</text>
+<ellipse cx="400" cy="320" rx="80" ry="40" fill="#0d2a1a" stroke="#a67c00" stroke-width="1"/>
+<text x="400" y="325" text-anchor="middle" fill="#c9a227" font-size="11">中央広場</text>
+</svg>
+<p id="map-info" class="map-info">建物をタップすると情報が表示されます。</p>
+</div>
+</main>
+<footer class="site-footer">© 2026 麗誕祭</footer>
+<script src="MENU/MENU.js"></script>
+<script src="src/js/location.js"></script>
+<script src="src/js/main.js"></script>
+</body>
+</html>
