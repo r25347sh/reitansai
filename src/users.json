@@ -4,105 +4,135 @@
     "name": "野口先生",
     "semi_id": "ai",
     "semi_name": "データサイエンス探究AIゼミ",
-    "permissions": ["pages/seminars/ai.html"]
+    "permissions": [
+      "pages/seminars/ai.html"
+    ]
   },
   "akimoto": {
     "password": "uP6*ezCL9c3K",
     "name": "秋元先生",
     "semi_id": "kyouiku",
     "semi_name": "教育ゼミ",
-    "permissions": ["pages/seminars/kyouiku.html"]
+    "permissions": [
+      "pages/seminars/kyouiku.html"
+    ]
   },
   "kondo": {
     "password": "tU5@nnVXMNNV",
     "name": "近藤先生",
     "semi_id": "kokusai",
     "semi_name": "国際地域研究ゼミ",
-    "permissions": ["pages/seminars/kokusai.html"]
+    "permissions": [
+      "pages/seminars/kokusai.html"
+    ]
   },
   "kato": {
     "password": "eW1%yabeDYwe",
     "name": "加藤先生",
     "semi_id": "bungei",
     "semi_name": "文芸小説創作ゼミ",
-    "permissions": ["pages/seminars/bungei.html"]
+    "permissions": [
+      "pages/seminars/bungei.html"
+    ]
   },
   "hirai": {
     "password": "qG4!Lu8hwq46",
     "name": "平井先生",
     "semi_id": "kagaku",
     "semi_name": "化学ゼミ",
-    "permissions": ["pages/seminars/kagaku.html"]
+    "permissions": [
+      "pages/seminars/kagaku.html"
+    ]
   },
   "takeuchi": {
     "password": "eS8!h&INcndP",
     "name": "竹内先生",
     "semi_id": "bungaku",
     "semi_name": "文学ゼミ",
-    "permissions": ["pages/seminars/bungaku.html"]
+    "permissions": [
+      "pages/seminars/bungaku.html"
+    ]
   },
   "sasaki": {
     "password": "nV2!H8eHgFf^",
     "name": "佐々木先生",
     "semi_id": "media",
     "semi_name": "メディアゼミ",
-    "permissions": ["pages/seminars/media.html"]
+    "permissions": [
+      "pages/seminars/media.html"
+    ]
   },
   "sudou": {
     "password": "sF0@Hk2hLahp",
     "name": "須藤先生",
     "semi_id": "syakai",
     "semi_name": "社会ゼミ",
-    "permissions": ["pages/seminars/syakai.html"]
+    "permissions": [
+      "pages/seminars/syakai.html"
+    ]
   },
   "shimokawa": {
     "password": "lQ4%mGnScp3#",
     "name": "下川先生",
     "semi_id": "nougyou",
     "semi_name": "農業ゼミ",
-    "permissions": ["pages/seminars/nougyou.html"]
+    "permissions": [
+      "pages/seminars/nougyou.html"
+    ]
   },
   "shibahara": {
     "password": "bC1&$&XMKxVD",
     "name": "芝原先生",
     "semi_id": "kankou",
     "semi_name": "観光ゼミ",
-    "permissions": ["pages/seminars/kankou.html"]
+    "permissions": [
+      "pages/seminars/kankou.html"
+    ]
   },
   "matsuya": {
     "password": "wV4#DvjlWCnp",
     "name": "松谷先生",
     "semi_id": "gogaku",
     "semi_name": "語学ゼミ",
-    "permissions": ["pages/seminars/gogaku.html"]
+    "permissions": [
+      "pages/seminars/gogaku.html"
+    ]
   },
   "matsumaru": {
     "password": "aS5@P@#vVy$5",
     "name": "松丸先生",
     "semi_id": "asobi",
     "semi_name": "遊びの探究ゼミ",
-    "permissions": ["pages/seminars/asobi.html"]
+    "permissions": [
+      "pages/seminars/asobi.html"
+    ]
   },
   "mieta01": {
     "password": "xA7*GOYzR@3Y",
     "name": "ミエタアカウント０１",
     "semi_id": "eizou",
     "semi_name": "映像編集ゼミ",
-    "permissions": ["pages/seminars/eizou.html"]
+    "permissions": [
+      "pages/seminars/eizou.html"
+    ]
   },
   "mieta02": {
     "password": "iD0*M5pLBV3*",
     "name": "ミエタアカウント０２",
     "semi_id": "digi",
     "semi_name": "デジタルコンテンツ制作ゼミ",
-    "permissions": ["pages/seminars/digi.html"]
+    "permissions": [
+      "pages/seminars/digi.html"
+    ]
   },
   "mieta03": {
     "password": "iZ0^NdIkDuf2",
     "name": "ミエタアカウント０３",
     "semi_id": "event",
     "semi_name": "イベント企画ゼミ",
-    "permissions": ["pages/seminars/event.html"]
+    "permissions": [
+      "pages/seminars/event.html"
+    ]
   },
   "takimura": {
     "password": "Tkm#2026$Forest!Myst9",
@@ -127,10 +157,11 @@
       "pages/seminars/kyouiku.html",
       "pages/seminars/media.html",
       "pages/seminars/nougyou.html",
-      "pages/seminars/syakai.html"
+      "pages/seminars/syakai.html",
+      "pages/seminars/doutoku.html"
     ]
   },
-  "r25347sh":{
+  "r25347sh": {
     "password": "kes-2592",
     "name": "r25347sh",
     "semi_id": "admin",
@@ -156,7 +187,17 @@
       "pages/seminars/kyouiku.html",
       "pages/seminars/media.html",
       "pages/seminars/nougyou.html",
-      "pages/seminars/syakai.html"
+      "pages/seminars/syakai.html",
+      "pages/seminars/doutoku.html"
+    ]
+  },
+  "doutoku": {
+    "password": "c@kE5O7S8eOV",
+    "name": "道徳担当",
+    "semi_id": "doutoku",
+    "semi_name": "道徳ゼミ",
+    "permissions": [
+      "pages/seminars/doutoku.html"
     ]
   }
 }
