@@ -21,13 +21,14 @@
   function buildMenuData() {
     var data = [
       { label: 'ホーム', icon: '🏠', url: root + 'index.html' },
-      { label: '麗誕祭とは', icon: '🌲', url: root + 'pages/about_reitansai.html' },
+      { label: '麗探祭とは', icon: '🌲', url: root + 'pages/about_reitansai.html' },
       { label: 'サイトについて', icon: 'ℹ️', url: root + 'pages/aboutThisSite.html' },
       { label: 'MAP', icon: '🗺️', url: root + 'map.html' },
       {
         label: 'ゼミ一覧',
         icon: '📚',
         items: [
+          { label: '道徳', icon: '⚖️', url: root + 'pages/seminars/doutoku.html' },
           { label: 'AI', icon: '🤖', url: root + 'pages/seminars/ai.html' },
           { label: '教育', icon: '📖', url: root + 'pages/seminars/kyouiku.html' },
           { label: '国際', icon: '🌍', url: root + 'pages/seminars/kokusai.html' },
