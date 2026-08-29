@@ -168,7 +168,6 @@
     "semi_name": "サイト管理者",
     "permissions": [
       "index.html",
-      "map.html",
       "admin.html",
       "pages/takimura_t.html",
       "pages/about_reitansai.html",
