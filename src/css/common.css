@@ -184,3 +184,10 @@ section.article_by_teacher iframe{width:100%;min-height:280px;border:1px solid v
   text-align:center;padding:2rem 1rem 5rem;font-size:.75rem;color:var(--text-muted);
   border-top:1px solid rgba(201,162,39,.15);margin-top:2rem;
 }
+
+
+/* CMS page background support */
+html, body[data-cms-id="cms-body"] {
+  /* page-level background from CMS may override */
+  min-height: 100%;
+}
