@@ -168,6 +168,7 @@
   }
 
   function openMenu(x, y) {
+    if (pieDisabled) return;
     if (!menuEl) return;
     var margin = 170;
     var cx = typeof x === 'number' ? x : window.innerWidth / 2;
@@ -294,10 +295,114 @@
     });
   }
 
+
+  var pieDisabled = false;
+
+  function ensureHamburgerUI() {
+    if (document.getElementById('ham-overlay')) return;
+    if (!document.getElementById('ham-style')) {
+      var style = document.createElement('style');
+      style.id = 'ham-style';
+      style.textContent = [
+        '#ham-overlay{position:fixed;inset:0;z-index:100000;display:none;background:rgba(5,20,12,.6);backdrop-filter:blur(6px);}',
+        '#ham-overlay.open{display:block}',
+        '#ham-panel{position:fixed;inset:0;z-index:100001;display:none;flex-direction:column;',
+        'background:linear-gradient(165deg,#0b1f14 0%,#143020 55%,#1b5e20 100%);color:#e8f5e9;padding:1.25rem 1.25rem 2rem;overflow:auto}',
+        '#ham-panel.open{display:flex}',
+        '#ham-panel .ham-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem}',
+        '#ham-panel .ham-title{font-weight:700;font-size:1.15rem}',
+        '#ham-panel .ham-close{background:transparent;border:1px solid rgba(232,245,233,.25);color:#e8f5e9;border-radius:999px;width:2.4rem;height:2.4rem;font-size:1.2rem;cursor:pointer}',
+        '#ham-list{display:flex;flex-direction:column;gap:.55rem}',
+        '#ham-list .ham-link,#ham-list .ham-group-btn{display:block;width:100%;text-align:left;padding:.85rem 1rem;border-radius:14px;',
+        'background:rgba(255,255,255,.06);border:1px solid rgba(232,245,233,.12);color:#e8f5e9;text-decoration:none;font:inherit;cursor:pointer}',
+        '#ham-list .ham-sub{display:flex;flex-direction:column;gap:.35rem;padding:.35rem 0 .35rem 1rem}',
+        '#ham-list .ham-sub a{color:#c8e6c9;text-decoration:none;padding:.45rem .6rem;border-radius:10px}',
+        '.menu-fab{position:fixed;top:1rem;right:1rem;z-index:99990;width:2.75rem;height:2.75rem;border-radius:999px;',
+        'border:1px solid rgba(232,245,233,.2);background:rgba(11,31,20,.85);color:#e8f5e9;font-size:1.25rem;cursor:pointer;',
+        'box-shadow:0 8px 24px rgba(0,0,0,.35);backdrop-filter:blur(8px)}'
+      ].join('');
+      document.head.appendChild(style);
+    }
+    var overlay = document.createElement('div');
+    overlay.id = 'ham-overlay';
+    overlay.onclick = closeHamburger;
+    var panel = document.createElement('div');
+    panel.id = 'ham-panel';
+    panel.innerHTML = '<div class="ham-top"><div class="ham-title">🌲 MENU</div><button type="button" class="ham-close" id="ham-close" aria-label="閉じる">×</button></div><div id="ham-list"></div>';
+    document.body.appendChild(overlay);
+    document.body.appendChild(panel);
+    document.getElementById('ham-close').onclick = function (e) { e.stopPropagation(); closeHamburger(); };
+    panel.onclick = function (e) { e.stopPropagation(); };
+  }
+
+  function openHamburger() {
+    ensureHamburgerUI();
+    pieDisabled = true;
+    try { closeMenu(); } catch (e) {}
+    var list = document.getElementById('ham-list');
+    list.innerHTML = '';
+    var data = buildMenuData();
+    data.forEach(function (item) {
+      if (item.items && item.items.length) {
+        var wrap = document.createElement('div');
+        var btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'ham-group-btn';
+        btn.textContent = (item.icon ? item.icon + ' ' : '') + item.label;
+        var sub = document.createElement('div');
+        sub.className = 'ham-sub';
+        sub.style.display = 'none';
+        item.items.forEach(function (subItem) {
+          var a = document.createElement('a');
+          a.href = subItem.url || '#';
+          a.textContent = (subItem.icon ? subItem.icon + ' ' : '') + subItem.label;
+          sub.appendChild(a);
+        });
+        btn.onclick = function () {
+          sub.style.display = sub.style.display === 'none' ? 'flex' : 'none';
+        };
+        wrap.appendChild(btn);
+        wrap.appendChild(sub);
+        list.appendChild(wrap);
+      } else {
+        var a = document.createElement('a');
+        a.className = 'ham-link';
+        a.href = item.url || '#';
+        a.textContent = (item.icon ? item.icon + ' ' : '') + item.label;
+        list.appendChild(a);
+      }
+    });
+    document.getElementById('ham-overlay').classList.add('open');
+    document.getElementById('ham-panel').classList.add('open');
+  }
+
+  function closeHamburger() {
+    var o = document.getElementById('ham-overlay');
+    var p = document.getElementById('ham-panel');
+    if (o) o.classList.remove('open');
+    if (p) p.classList.remove('open');
+    pieDisabled = false;
+  }
+
+  function ensureMenuFab() {
+    if (document.querySelector('.menu-fab')) return;
+    var fab = document.createElement('button');
+    fab.type = 'button';
+    fab.className = 'menu-fab';
+    fab.setAttribute('aria-label', 'メニューを開く');
+    fab.innerHTML = '☰';
+    document.body.appendChild(fab);
+    fab.onclick = function (e) {
+      e.stopPropagation();
+      openHamburger();
+    };
+  }
+
   function boot() {
     createMenuDOM();
     initEvents();
     mountAuthHeader();
+    ensureMenuFab();
   }
 
   if (document.readyState === 'loading')
