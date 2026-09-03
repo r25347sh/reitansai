@@ -1,4 +1,4 @@
-/* 壊れてるかも */
+/* parallax for home background */
 (function () {
   const bg = document.getElementById('home-bg') || document.querySelector('.page-home .bg-fixed');
   if (!bg) return;
