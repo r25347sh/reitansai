@@ -77,8 +77,41 @@
       'Content-Type': 'application/json'
     };
   }
-  function decode(c) { return decodeURIComponent(escape(atob(String(c).replace(/\n/g, '')))); }
-  function encode(t) { return btoa(unescape(encodeURIComponent(t))); }
+  function decode(c) {
+    var b64 = String(c || '').replace(/\s/g, '');
+    try {
+      var bin = atob(b64);
+      if (typeof TextDecoder !== 'undefined') {
+        var bytes = new Uint8Array(bin.length);
+        for (var i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+        return new TextDecoder('utf-8').decode(bytes);
+      }
+      return decodeURIComponent(escape(bin));
+    } catch (e1) {
+      try { return decodeURIComponent(escape(atob(b64))); } catch (e2) {
+        throw new Error('Base64デコード失敗: ' + (e2.message || e2));
+      }
+    }
+  }
+  function encode(t) {
+    var s = String(t == null ? '' : t);
+    try {
+      if (typeof TextEncoder !== 'undefined') {
+        var bytes = new TextEncoder().encode(s);
+        var bin = '';
+        for (var i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
+        return btoa(bin);
+      }
+      return btoa(unescape(encodeURIComponent(s)));
+    } catch (e) {
+      return btoa(unescape(encodeURIComponent(s)));
+    }
+  }
+  function encodePath(p) {
+    return String(p || '').split('/').map(function (seg) {
+      return encodeURIComponent(seg);
+    }).join('/');
+  }
 
   function friendlyErr(text, statusCode) {
     if (statusCode === 403 || (text && text.indexOf('Resource not accessible') >= 0)) {
@@ -91,9 +124,53 @@
 
   function getFile(path, apiBase) {
     var base = apiBase || API;
-    return fetch(base + '/' + path + '?ref=main', { headers: headers() })
+    var useMainApi = !apiBase || apiBase === API;
+    var apiUrl = base + '/' + encodePath(path) + '?ref=main';
+
+    function fromRaw() {
+      var rawUrl = 'https://raw.githubusercontent.com/' + OWNER + '/' + REPO + '/main/' + path;
+      return fetch(rawUrl, { cache: 'no-store' })
+        .then(function (r2) {
+          if (!r2.ok) throw new Error('RAW GET ' + path + ' ' + r2.status);
+          return r2.text();
+        })
+        .then(function (text) {
+          return {
+            name: path.split('/').pop(),
+            path: path,
+            sha: null,
+            content: encode(text),
+            encoding: 'base64',
+            _fromRaw: true
+          };
+        });
+    }
+
+    return fetch(apiUrl, { headers: headers() })
       .then(function (r) {
-        if (!r.ok) throw new Error(friendlyErr('', r.status) || ('GET ' + path + ' ' + r.status));
+        if (r.ok) return r.json();
+        /* 公開リポジトリなら raw にフォールバック（読取の安定化） */
+        if (useMainApi && (r.status === 401 || r.status === 403 || r.status === 404 || r.status >= 500)) {
+          return fromRaw().catch(function () {
+            throw new Error(friendlyErr('', r.status) || ('GET ' + path + ' ' + r.status));
+          });
+        }
+        throw new Error(friendlyErr('', r.status) || ('GET ' + path + ' ' + r.status));
+      })
+      .catch(function (err) {
+        if (useMainApi) {
+          return fromRaw().catch(function () { throw err; });
+        }
+        throw err;
+      });
+  }
+
+  /** 保存用に必ず API 経由で最新 sha を取る */
+  function getFileMeta(path, apiBase) {
+    var base = apiBase || API;
+    return fetch(base + '/' + encodePath(path) + '?ref=main', { headers: headers() })
+      .then(function (r) {
+        if (!r.ok) throw new Error(friendlyErr('', r.status) || ('META ' + path + ' ' + r.status));
         return r.json();
       });
   }
@@ -101,7 +178,7 @@
     var base = apiBase || API;
     var body = { message: message || 'CMS update', content: encode(content), branch: 'main' };
     if (sha) body.sha = sha;
-    return fetch(base + '/' + path, { method: 'PUT', headers: headers(), body: JSON.stringify(body) })
+    return fetch(base + '/' + encodePath(path), { method: 'PUT', headers: headers(), body: JSON.stringify(body) })
       .then(function (r) {
         if (!r.ok) return r.text().then(function (t) {
           throw new Error(friendlyErr(t, r.status));
@@ -110,7 +187,7 @@
       });
   }
   function deleteFile(path, sha, message) {
-    return fetch(API + '/' + path, {
+    return fetch(API + '/' + encodePath(path), {
       method: 'DELETE',
       headers: headers(),
       body: JSON.stringify({ message: message || 'CMS delete', sha: sha, branch: 'main' })
@@ -120,7 +197,7 @@
     });
   }
   function listDir(path) {
-    return fetch(API + '/' + path + '?ref=main', { headers: headers() })
+    return fetch(API + '/' + encodePath(path) + '?ref=main', { headers: headers() })
       .then(function (r) {
         if (r.status === 404) return [];
         if (!r.ok) throw new Error('LIST ' + path + ' ' + r.status);
@@ -130,10 +207,22 @@
   }
 
   function loadUsers() {
-    return getFile('src/users.json').then(function (f) {
-      USERS = JSON.parse(decode(f.content));
-      return USERS;
-    });
+    var rawUrl = 'https://raw.githubusercontent.com/' + OWNER + '/' + REPO + '/main/src/users.json';
+    return fetch(rawUrl, { cache: 'no-store' })
+      .then(function (r) {
+        if (!r.ok) throw new Error('users raw ' + r.status);
+        return r.text();
+      })
+      .then(function (t) {
+        USERS = JSON.parse(t);
+        return USERS;
+      })
+      .catch(function () {
+        return getFile('src/users.json').then(function (f) {
+          USERS = JSON.parse(decode(f.content));
+          return USERS;
+        });
+      });
   }
 
   function getSession() {
@@ -390,7 +479,45 @@
     if (!state.user) return false;
     if (state.user.fullAccess || state.user.isAdmin) return true;
     var perms = state.user.permissions || [];
+    if (perms.indexOf('*') >= 0) return true;
     return perms.indexOf(path) >= 0;
+  }
+
+  function collectHtmlPaths(entries, prefix) {
+    var out = [];
+    (entries || []).forEach(function (e) {
+      if (!e || !e.path) return;
+      if (e.type === 'file' && /\.html?$/i.test(e.path)) {
+        if (e.path === 'admin.html') return;
+        out.push(e.path);
+      }
+    });
+    return out;
+  }
+
+  function discoverPages() {
+    /* 管理者向け: 主要ディレクトリから HTML を列挙 */
+    var roots = ['', 'pages', 'pages/seminars'];
+    return Promise.all(roots.map(function (root) {
+      return listDir(root || '').catch(function () { return []; });
+    })).then(function (results) {
+      var set = {};
+      results.forEach(function (entries) {
+        collectHtmlPaths(entries).forEach(function (p) { set[p] = true; });
+      });
+      /* pages 直下のサブdir も浅く探索 */
+      return listDir('pages').catch(function () { return []; }).then(function (pageEntries) {
+        var subdirs = (pageEntries || []).filter(function (e) { return e.type === 'dir'; });
+        return Promise.all(subdirs.map(function (d) {
+          return listDir(d.path).catch(function () { return []; });
+        })).then(function (subResults) {
+          subResults.forEach(function (entries) {
+            collectHtmlPaths(entries).forEach(function (p) { set[p] = true; });
+          });
+          return Object.keys(set).sort();
+        });
+      });
+    });
   }
 
   function loadPages() {
@@ -398,35 +525,61 @@
     if (!grid) return;
     grid.innerHTML = '';
     if (st) st.textContent = '読み込み中…';
+
+    var isPower = state.user && (state.user.fullAccess || state.user.isAdmin);
     var permsPromise;
-    if (state.user && (state.user.fullAccess || state.user.isAdmin)) {
-      permsPromise = Promise.resolve((state.user.permissions || []).slice());
+    if (isPower) {
+      /* 権限配列が空でも全ページを発見 */
+      permsPromise = discoverPages().then(function (found) {
+        var extra = (state.user.permissions || []).slice();
+        var set = {};
+        found.concat(extra).forEach(function (p) { if (p) set[p] = true; });
+        return Object.keys(set).sort();
+      }).catch(function () {
+        return (state.user.permissions || []).slice();
+      });
     } else {
       permsPromise = Promise.resolve((state.user && state.user.permissions) || []);
     }
+
     permsPromise.then(function (perms) {
+      if (!perms.length) {
+        if (st) st.textContent = '編集可能なページがありません';
+        return;
+      }
       return Promise.all(perms.map(function (p) {
         return getFile(p).then(function (f) {
-          return { path: p, title: extractTitle(decode(f.content)) || p };
-        }).catch(function () { return { path: p, title: p + ' (読込失敗)' }; });
+          var title = p;
+          try { title = extractTitle(decode(f.content)) || p; } catch (e) { title = p; }
+          return { path: p, title: title, ok: true };
+        }).catch(function (err) {
+          console.warn('loadPages fail', p, err);
+          return { path: p, title: p + ' (読込失敗)', ok: false, err: String(err && err.message || err) };
+        });
       })).then(function (items) {
-        if (st) st.textContent = items.length ? items.length + ' ページ' : 'なし';
+        var okCount = items.filter(function (it) { return it.ok; }).length;
+        if (st) {
+          st.textContent = items.length
+            ? (okCount + '/' + items.length + ' ページ' + (okCount < items.length ? '（一部失敗）' : ''))
+            : 'なし';
+        }
         items.forEach(function (it) {
           var b = document.createElement('button');
           b.type = 'button';
-          b.className = 'page-card';
+          b.className = 'page-card' + (it.ok ? '' : ' page-card-fail');
           b.innerHTML = '<span class="t"></span><span class="p mono"></span>';
           b.querySelector('.t').textContent = it.title;
-          b.querySelector('.p').textContent = it.path;
+          b.querySelector('.p').textContent = it.path + (it.err ? ' — ' + it.err : '');
           b.onclick = function () {
-            if (!canEditPath(it.path)) { status('このページを編集する権限がありません'); return; }
+            if (!canEditPath(it.path) && !isPower) { status('このページを編集する権限がありません'); return; }
             openEditor(it.path, true);
           };
           grid.appendChild(b);
         });
       });
     }).catch(function (e) {
-      if (st) st.textContent = '読込失敗: ' + e.message;
+      if (st) st.textContent = '読込失敗: ' + (e && e.message ? e.message : e);
+      console.error('loadPages', e);
     });
   }
 
@@ -1448,7 +1601,13 @@
     getFile(path).then(function (f) {
       var content = decode(f.content);
       state.originalHtml = content;
-      state.fileSha = f.sha;
+      state.fileSha = f.sha || null;
+      /* raw 経由で sha が無い場合は裏で API から取得を試みる */
+      if (!state.fileSha) {
+        getFileMeta(path).then(function (meta) {
+          if (meta && meta.sha) state.fileSha = meta.sha;
+        }).catch(function () { /* 保存時に再取得 */ });
+      }
       if (isHtml) {
         var title = extractTitle(content);
         if ($('ed-title')) $('ed-title').textContent = title || path;
