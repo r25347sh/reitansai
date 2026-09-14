@@ -1867,7 +1867,7 @@
     }
     var cssPath = state.isHtml ? pageCssPath(state.path) : null;
     var cssBody = state.isHtml ? buildPageCss() : null;
-    getFile(state.path).then(function (f) {
+    getFileMeta(state.path).then(function (f) {
       state.fileSha = f.sha;
       return buildCommitMessage(userMsg).then(function (cm) {
         return putFile(state.path, out, cm, f.sha).then(function (res) {
