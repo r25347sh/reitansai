@@ -50,7 +50,7 @@
         <button type="button" class="tab hidden" data-tab="admin" id="tab-admin">⚙️ 管理</button>
       </nav>
       <section id="panel-pages" class="dash-panel">
-        <div class="panel-help">要素にホバー → 右上の ✏️ を押して編集。<strong>data-lock="true"</strong> のみ編集不可。</div>
+        <div class="panel-help">本文テキスト（p・見出し・リスト等）をクリックして編集。<strong>data-lock="true"</strong> とサイト骨格（header/nav/footer）は編集不可。大きなブロックを編集したい場合は <code>data-editable="true"</code> を付与。</div>
         <div id="page-grid" class="page-grid"></div>
         <p id="dash-status" class="muted center"></p>
       </section>
@@ -125,8 +125,8 @@
       <aside class="rail" id="rail-visual">
         <div class="rail-panels">
           <section class="rail-panel">
-            <div class="sel-info" id="sel-info">クリックで直接編集</div>
-            <p class="muted" style="font-size:.78rem;line-height:1.5">要素をクリックするとその場で編集できます。data-lock="true" は編集不可です。</p>
+            <div class="sel-info" id="sel-info">本文をクリックして編集（data-lock / 骨格要素は不可）</div>
+            <p class="muted" style="font-size:.78rem;line-height:1.5">p・見出し・リストなどの本文テキストのみ直接編集できます。data-lock="true" とサイト骨格は編集不可です。</p>
           </section>
           <section class="rail-panel">
             <h3 class="rail-h">見た目</h3>
@@ -246,13 +246,13 @@
           <section class="rail-panel">
             <p class="muted" style="font-size:.78rem;margin-bottom:.4rem">操作</p>
             <ul class="tips">
-              <li>クリック … 直接編集</li>
+              <li>本文テキストをクリック → 直接編集</li>
+              <li>骨格・data-lock は編集不可（🔒）</li>
+              <li>大きなブロックは data-editable="true"</li>
               <li>Ctrl+A … 要素内の文字だけ全選択</li>
               <li>文字色・マーカー … 上部バー</li>
               <li>Esc … 編集終了</li>
-              <li>data-lock … 編集不可（🔒）</li>
-              <li>Ctrl/Cmd+Z … 元に戻す</li>
-              <li>Ctrl/Cmd+Y … やり直し</li>
+              <li>Ctrl/Cmd+Z / Y … 戻す・やり直し</li>
               <li>Ctrl/Cmd+D … 複製</li>
             </ul>
           </section>
@@ -313,6 +313,7 @@
       <p id="new-msg" class="msg"></p>
     </div>
   </div>
+  <script src="src/js/cms-data.js"></script>
   <script src="src/js/admin.js"></script>
 </body>
 </html>
