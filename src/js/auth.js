@@ -1,6 +1,7 @@
 /**
  * login/logout (関係者専用)
  * sessionStorage key: reitansai_user
+ * 公開UIからのCMS/ログイン誘導は削除（admin.html 自体は残置）
  */
 (function () {
   function rootPath() {
@@ -23,7 +24,6 @@
     const header = document.querySelector('.site-header');
     if (!header || header.querySelector('.header-auth')) return;
 
-    const root = rootPath();
     const box = document.createElement('div');
     box.className = 'header-auth';
 
@@ -33,7 +33,6 @@
         '<span class="auth-name" title="' + (user.name || user.id) + '">' +
         (user.name || user.id) +
         '</span>' +
-        '<a class="auth-btn auth-cms" href="' + root + 'admin.html">CMS</a>' +
         '<button type="button" class="auth-btn auth-out" id="auth-logout">ログアウト</button>';
       header.appendChild(box);
       document.getElementById('auth-logout')?.addEventListener('click', () => {
@@ -41,12 +40,8 @@
         try { sessionStorage.removeItem('reitansai_user'); } catch (e) {}
         location.reload();
       });
-    } else {
-      box.innerHTML =
-        '<a class="auth-btn auth-in" href="' + root + 'admin.html" title="関係者専用">ログイン</a>';
-      header.appendChild(box);
     }
-
+    // 未ログイン時は公開UIにログイン/CMSリンクを出さない
   }
 
   if (document.readyState === 'loading') {
