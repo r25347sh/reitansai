@@ -1,5 +1,6 @@
 /**
  * Radial Menu — localStorage/sessionStorage の reitansai_user を参照
+ * 公開メニュー/ヘッダーから CMS 誘導は削除（admin.html は残置）
  */
 (function () {
   var SESSION_KEY = 'reitansai_user';
@@ -48,7 +49,6 @@
       },
       { label: '瀧村', icon: '🌿', url: root + 'pages/takimura_t.html' }
     ];
-    if (getUser()) data.push({ label: 'CMS', icon: '✏️', url: root + 'admin.html' });
     return data;
   }
 
@@ -68,6 +68,7 @@
     menuStack = [],
     tapCount = 0,
     tapTimer;
+  var pieDisabled = false;
 
   function navigateWithDelay(url) {
     closeMenu();
@@ -205,9 +206,6 @@
         '<span class="auth-name">' +
         (user.name || user.id) +
         '</span>' +
-        '<a class="auth-btn auth-cms" href="' +
-        root +
-        'admin.html">CMS</a>' +
         '<button type="button" class="auth-btn auth-out" id="auth-logout">ログアウト</button>';
       header.appendChild(box);
       var lo = document.getElementById('auth-logout');
@@ -217,12 +215,6 @@
           sessionStorage.removeItem(SESSION_KEY);
           location.reload();
         };
-    } else {
-      box.innerHTML =
-        '<a class="auth-btn auth-in" href="' +
-        root +
-        'admin.html">ログイン</a>';
-      header.appendChild(box);
     }
     if (!document.querySelector('.menu-fab')) {
       var fab = document.createElement('button');
@@ -295,9 +287,6 @@
     });
   }
 
-
-  var pieDisabled = false;
-
   function ensureHamburgerUI() {
     if (document.getElementById('ham-overlay')) return;
     if (!document.getElementById('ham-style')) {
@@ -316,10 +305,7 @@
         '#ham-list .ham-link,#ham-list .ham-group-btn{display:block;width:100%;text-align:left;padding:.85rem 1rem;border-radius:14px;',
         'background:rgba(255,255,255,.06);border:1px solid rgba(232,245,233,.12);color:#e8f5e9;text-decoration:none;font:inherit;cursor:pointer}',
         '#ham-list .ham-sub{display:flex;flex-direction:column;gap:.35rem;padding:.35rem 0 .35rem 1rem}',
-        '#ham-list .ham-sub a{color:#c8e6c9;text-decoration:none;padding:.45rem .6rem;border-radius:10px}',
-        '.menu-fab{position:fixed;top:1rem;right:1rem;z-index:99990;width:2.75rem;height:2.75rem;border-radius:999px;',
-        'border:1px solid rgba(232,245,233,.2);background:rgba(11,31,20,.85);color:#e8f5e9;font-size:1.25rem;cursor:pointer;',
-        'box-shadow:0 8px 24px rgba(0,0,0,.35);backdrop-filter:blur(8px)}'
+        '#ham-list .ham-sub a{color:#c8e6c9;text-decoration:none;padding:.45rem .6rem;border-radius:10px}'
       ].join('');
       document.head.appendChild(style);
     }
