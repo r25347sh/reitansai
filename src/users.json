@@ -140,6 +140,7 @@
     "semi_id": "takimura",
     "semi_name": "瀧村ゼミ・全体管理",
     "permissions": [
+      "login.html",
       "pages/takimura_t.html",
       "pages/about_reitansai.html",
       "pages/aboutThisSite.html",
@@ -168,7 +169,7 @@
     "semi_name": "サイト管理者",
     "permissions": [
       "index.html",
-      "admin.html",
+      "login.html",
       "pages/takimura_t.html",
       "pages/about_reitansai.html",
       "pages/aboutThisSite.html",
