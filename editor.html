@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>編集 | 麗探祭 CMS</title>
+  <link rel="stylesheet" href="src/css/pages/cms-common.css">
+  <link rel="stylesheet" href="src/css/pages/cms-editor.css">
+</head>
+<body class="cms-app cms-editor-page">
+  <header class="cms-topbar">
+    <div class="topbar-left">
+      <button type="button" id="btn-back" class="btn ghost">← 戻る</button>
+      <div class="ed-heading">
+        <h1 id="ed-title">読み込み中…</h1>
+        <p id="ed-path" class="mono muted">—</p>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <span id="user-pill" class="user-pill">—</span>
+      <button type="button" id="btn-logout" class="btn ghost">ログアウト</button>
+    </div>
+  </header>
+
+  <main class="editor-main">
+    <aside class="editor-side">
+      <div class="side-card">
+        <h2>保存</h2>
+        <label class="field"><span>コミットメッセージ</span>
+          <input id="commit-msg" placeholder="例: ゼミ目標を更新" required>
+        </label>
+        <button type="button" id="btn-save" class="btn primary block">保存する</button>
+        <p id="save-status" class="status-line">フォーム入力後に保存できます</p>
+      </div>
+    </aside>
+
+    <section class="editor-form-wrap">
+      <form id="form-seminar" class="cms-form hidden" data-type="seminar">
+        <fieldset class="form-block">
+          <legend>ゼミ情報</legend>
+          <label class="field"><span>ゼミ目標</span>
+            <input id="s-goal" type="text" placeholder="短文で目標を入力">
+          </label>
+          <label class="field"><span>概要／説明等</span>
+            <div class="rt-toolbar" data-for="s-desc"></div>
+            <div id="s-desc" class="rt-area" contenteditable="true"></div>
+          </label>
+        </fieldset>
+        <fieldset class="form-block">
+          <legend>添付ファイル</legend>
+          <div class="attach-box">
+            <div class="attach-row">
+              <input type="file" class="attach-file-input" multiple>
+              <select class="attach-mode">
+                <option value="link">ダウンロードリンク</option>
+                <option value="inline">インライン表示</option>
+              </select>
+              <button type="button" class="btn ghost sm attach-from-lib">ライブラリから</button>
+            </div>
+            <p class="pending-files muted tiny hidden attach-pending"></p>
+            <ul class="file-list attach-list"></ul>
+          </div>
+        </fieldset>
+      </form>
+
+      <form id="form-teacher" class="cms-form hidden" data-type="teacher">
+        <fieldset class="form-block">
+          <legend>自己概要</legend>
+          <div class="field">
+            <span class="field-caption">役職</span>
+            <div id="t-roles" class="dynamic-list"></div>
+            <button type="button" id="t-role-add" class="btn ghost small">＋ 役職を追加</button>
+          </div>
+        </fieldset>
+        <fieldset class="form-block">
+          <legend>メッセージ等</legend>
+          <div class="rt-toolbar" data-for="t-message"></div>
+          <div id="t-message" class="rt-area" contenteditable="true"></div>
+        </fieldset>
+        <fieldset class="form-block">
+          <legend>添付ファイル</legend>
+          <div class="attach-box">
+            <div class="attach-row">
+              <input type="file" class="attach-file-input" multiple>
+              <select class="attach-mode">
+                <option value="link">ダウンロードリンク</option>
+                <option value="inline">インライン表示</option>
+              </select>
+              <button type="button" class="btn ghost sm attach-from-lib">ライブラリから</button>
+            </div>
+            <p class="pending-files muted tiny hidden attach-pending"></p>
+            <ul class="file-list attach-list"></ul>
+          </div>
+        </fieldset>
+      </form>
+      <p id="form-error" class="msg err hidden"></p>
+    </section>
+  </main>
+
+  <div id="attach-lib-modal" class="modal hidden" role="dialog">
+    <div class="modal-card">
+      <header class="modal-head">
+        <h2>ライブラリから選ぶ</h2>
+        <button type="button" id="attach-lib-close" class="btn ghost sm">閉じる</button>
+      </header>
+      <div id="attach-lib-list" class="attach-lib-list">読み込み中…</div>
+    </div>
+  </div>
+
+  <script src="src/js/cms/config.js"></script>
+  <script src="src/js/cms/session.js"></script>
+  <script src="src/js/cms/api.js"></script>
+  <script src="src/js/cms/sanitize.js"></script>
+  <script src="src/js/cms/render.js"></script>
+  <script src="src/js/cms/attachments.js"></script>
+  <script src="src/js/cms/rt-toolbar.js"></script>
+  <script src="src/js/cms/editor.js"></script>
+</body>
+</html>
