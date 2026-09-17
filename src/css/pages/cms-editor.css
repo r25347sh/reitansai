@@ -132,3 +132,15 @@ body.cms-editor-page{background:
   width: 100%; border: 1px solid rgba(43,33,64,.15); border-radius: 6px; padding: .35rem .45rem;
 }
 .btn.small { font-size: .8rem; padding: .3rem .6rem; }
+
+.modal { position: fixed; inset: 0; background: rgba(20,16,30,.45); display: flex; align-items: center; justify-content: center; z-index: 80; padding: 1rem; }
+.modal.hidden { display: none; }
+.modal-card { background: #fff; border-radius: 16px; max-width: 520px; width: 100%; max-height: 80vh; overflow: auto; padding: 1rem 1.1rem; }
+.modal-head { display: flex; justify-content: space-between; align-items: center; }
+.attach-lib-list { display: flex; flex-direction: column; gap: .45rem; margin-top: .75rem; }
+.lib-row { display: flex; justify-content: space-between; align-items: center; gap: .5rem; padding: .4rem .5rem; border-radius: 8px; border: 1px solid rgba(43,33,64,.08); }
+.dynamic-list .dyn-row { display: flex; gap: .4rem; margin-bottom: .35rem; }
+.dynamic-list input { flex: 1; }
+.rt-toolbar-compact { display: flex; flex-wrap: wrap; gap: .25rem; align-items: center; margin-bottom: .4rem; }
+.rt-icon { border: 1px solid rgba(43,33,64,.12); background: #fff; border-radius: 6px; padding: .2rem .4rem; cursor: pointer; }
+.rt-area { min-height: 120px; border: 1px solid rgba(43,33,64,.14); border-radius: 10px; padding: .65rem .75rem; }
