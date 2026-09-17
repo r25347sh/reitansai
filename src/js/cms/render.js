@@ -24,8 +24,8 @@
   function fillAttachments(doc, data, depth) {
     var host = ensureAttachmentsHost(doc);
     if (!host) return;
-    host.innerHTML = (g.ASOBI_ATTACH && g.ASOBI_ATTACH.publicRender)
-      ? (g.ASOBI_ATTACH.publicRender(data.attachments, depth) || '')
+    host.innerHTML = (window.ASOBI_ATTACH && window.ASOBI_ATTACH.publicRender)
+      ? (window.ASOBI_ATTACH.publicRender(data.attachments, depth) || '')
       : '';
   }
   function renderSeminarHtml(baseHtml, data) {
