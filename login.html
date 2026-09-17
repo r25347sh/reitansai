@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ログイン | 麗探祭 CMS</title>
+  <link rel="stylesheet" href="src/css/pages/cms-common.css">
+  <link rel="stylesheet" href="src/css/pages/cms-login.css">
+</head>
+<body class="cms-app cms-login-page">
+  <main class="login-wrap">
+    <section class="login-card">
+      <div class="login-brand">
+        <span class="brand-mark">🌲</span>
+        <div>
+          <p class="brand-kicker">麗探祭</p>
+          <h1>CMS ログイン</h1>
+        </div>
+      </div>
+      <form id="login-form" class="login-form">
+        <label class="field"><span>ユーザーID</span><input id="login-id" autocomplete="username" required></label>
+        <label class="field"><span>パスワード</span><input id="login-pw" type="password" autocomplete="current-password" required></label>
+        <button type="submit" class="btn primary block">ログイン</button>
+        <p id="login-msg" class="msg"></p>
+      </form>
+      <p class="muted tiny"><a href="index.html">サイトに戻る</a></p>
+    </section>
+  </main>
+  <script src="src/js/cms/config.js"></script>
+  <script src="src/js/cms/session.js"></script>
+  <script src="src/js/cms/api.js"></script>
+  <script src="src/js/cms/login.js"></script>
+</body>
+</html>
