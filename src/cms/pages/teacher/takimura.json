@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "type": "teacher",
+  "teacherId": "takimura",
+  "roles": [],
+  "messageHtml": "",
+  "attachments": [],
+  "htmlPath": "pages/takimura_t.html",
+  "updatedAt": "2026-09-17T00:00:00.000Z",
+  "updatedBy": "system"
+}
