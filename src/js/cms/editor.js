@@ -46,7 +46,7 @@
     if (!modal || !list) return;
     modal.classList.remove('hidden');
     list.textContent = '読み込み中…';
-    window.ASOBI_ATTACH.listUserFiles(state.user.id).then(function (files) {
+    (window.ASOBI_ATTACH && window.ASOBI_ATTACH.listUserFiles ? window.ASOBI_ATTACH.listUserFiles(state.user.id) : Promise.resolve([])).then(function (files) {
       if (!files.length) { list.innerHTML = '<p class="muted">ライブラリは空です</p>'; return; }
       list.innerHTML = '';
       files.forEach(function (f) {
@@ -73,7 +73,9 @@
         var st = box && box.querySelector('.attach-pending');
         if (st) { st.classList.remove('hidden'); st.textContent = 'アップロード中…'; }
         var folder = 'users/' + state.user.id;
-        window.ASOBI_ATTACH.uploadFiles(folder, input.files, mode).then(function (rows) {
+        (window.ASOBI_ATTACH && window.ASOBI_ATTACH.uploadFiles
+          ? window.ASOBI_ATTACH.uploadFiles(folder, input.files, mode)
+          : Promise.reject(new Error('attachments モジュール未読込'))).then(function (rows) {
           rows.forEach(function (r) { ensureAttachList().push(r); });
           renderAttachList();
           if (st) st.textContent = rows.length + ' 件追加';
