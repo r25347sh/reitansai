@@ -121,7 +121,7 @@
     $('form-seminar').classList.remove('hidden');
     $('form-teacher').classList.add('hidden');
     renderAttachList();
-    if (window.ASOBI_RT && window.ASOBI_RT.mountAll) window.ASOBI_RT.mountAll();
+    if (window.ASOBI_RT && window.ASOBI_RT.mountAll) window.ASOBI_RT.bindRtToolbars();
   }
   function applyTeacherForm(j) {
     state.data = j;
@@ -135,7 +135,7 @@
     $('form-teacher').classList.remove('hidden');
     $('form-seminar').classList.add('hidden');
     renderAttachList();
-    if (window.ASOBI_RT && window.ASOBI_RT.mountAll) window.ASOBI_RT.mountAll();
+    if (window.ASOBI_RT && window.ASOBI_RT.mountAll) window.ASOBI_RT.bindRtToolbars();
   }
 
   function collectSeminar() {
