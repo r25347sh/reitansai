@@ -1,0 +1,115 @@
+/* pages/seminars/index.css */
+
+.hero-compact {
+  padding: 2.2rem 1rem 1.2rem;
+  margin-bottom: 0.5rem;
+}
+.hero-compact h1 {
+  font-size: clamp(1.7rem, 4.5vw, 2.4rem);
+}
+.hero-compact .lead {
+  margin-bottom: 0;
+}
+
+.filter-bar-section {
+  margin-bottom: 1.5rem;
+}
+.filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.filter-btn {
+  padding: 0.45rem 1rem;
+  border-radius: 999px;
+  border: 1.5px solid var(--rt-border);
+  background: transparent;
+  color: var(--rt-text-muted);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.2s, color 0.2s, border-color 0.2s, transform 0.2s;
+}
+.filter-btn:hover {
+  border-color: var(--rt-accent);
+  color: var(--rt-accent);
+}
+.filter-btn.is-active {
+  background: var(--rt-accent);
+  border-color: var(--rt-accent);
+  color: #fff;
+  box-shadow: 0 4px 14px var(--rt-glow);
+}
+
+.seminars-index-grid {
+  grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+  gap: 1.2rem;
+}
+
+.seminar-card {
+  position: relative;
+  min-height: 220px;
+  overflow: hidden;
+}
+.seminar-card .card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 0.15rem;
+}
+.seminar-card .count-badge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.2rem 0.55rem;
+  border-radius: 6px;
+  background: var(--rt-accent-soft);
+  color: var(--rt-accent);
+}
+.seminar-card h3 {
+  font-size: 1.08rem;
+  margin-bottom: 0.35rem;
+}
+.seminar-card .venue-line,
+.seminar-card .teacher-line {
+  font-size: 0.82rem;
+  color: var(--rt-text-muted);
+  margin: 0;
+  line-height: 1.45;
+}
+.seminar-card .venue-line strong,
+.seminar-card .teacher-line strong {
+  color: var(--rt-text);
+  font-weight: 600;
+  margin-right: 0.3rem;
+}
+.seminar-card .overview-snip {
+  font-size: 0.8rem;
+  color: var(--rt-text-muted);
+  margin-top: 0.55rem;
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.seminar-card.is-hidden {
+  display: none;
+}
+
+/* entrance */
+.seminar-card {
+  opacity: 0;
+  transform: translateY(16px);
+  transition:
+    opacity 0.5s ease,
+    transform 0.5s cubic-bezier(0.34,1.2,0.64,1),
+    background 2.5s ease,
+    border-color 2.5s ease,
+    box-shadow 0.3s;
+}
+.seminar-card.in-view {
+  opacity: 1;
+  transform: translateY(0);
+}
