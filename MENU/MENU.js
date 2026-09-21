@@ -1,15 +1,10 @@
 /**
- * Reitansai Radial Menu
- * asobiseminar方式を踏襲：長押し / トリプルタップで放射メニュー
- * ＋ 右下ハンバーガーFAB
- * 来場者向けのためCMS誘導なし
+ * Reitansai Radial Menu — high contrast labels + FAB
  */
 (function () {
   'use strict';
 
   var path = location.pathname;
-  var BASE = '/reitansai';
-  // ルート相対の解決
   function rootPath() {
     if (path.indexOf('/pages/seminars/') >= 0) return '../../';
     if (path.indexOf('/pages/') >= 0) return '../';
@@ -57,7 +52,7 @@
   var MOVE_THRESHOLD = 8;
   var SHELL_CAPACITIES = [6, 10, 14];
   var SHELL_RADII = [118, 190, 262];
-  var menuEl, itemsContainer, orbitsContainer, coreBtn, canvas, ctx;
+  var menuEl, itemsContainer, orbitsContainer, coreBtn;
   var timer, startX, startY, isOpen = false, menuStack = [];
   var pieDisabled = false;
   var tapCount = 0, tapTimer = null;
@@ -101,6 +96,7 @@
       var btn = document.createElement('button');
       btn.className = 'rm-item' + (data.item.items ? ' has-sub' : '');
       btn.setAttribute('data-label', data.item.label);
+      btn.setAttribute('aria-label', data.item.label);
       btn.innerHTML = data.item.icon || '•';
       btn.style.setProperty('--x', data.x + 'px');
       btn.style.setProperty('--y', data.y + 'px');
@@ -137,10 +133,6 @@
   function createMenuDOM() {
     menuEl = document.createElement('div');
     menuEl.className = 'radial-menu-wrapper';
-    canvas = document.createElement('canvas');
-    canvas.className = 'rm-canvas-layer';
-    ctx = canvas.getContext('2d');
-    menuEl.appendChild(canvas);
     orbitsContainer = document.createElement('div');
     menuEl.appendChild(orbitsContainer);
     itemsContainer = document.createElement('div');
@@ -148,6 +140,7 @@
     coreBtn = document.createElement('button');
     coreBtn.className = 'rm-core-btn';
     coreBtn.innerHTML = '←';
+    coreBtn.setAttribute('aria-label', '戻る');
     coreBtn.addEventListener('click', function (e) {
       e.stopPropagation();
       if (menuStack.length) renderMenuLevel(menuStack.pop());
@@ -237,13 +230,26 @@
     if (document.getElementById('ham-overlay')) return;
     var style = document.createElement('style');
     style.id = 'ham-style';
-    style.textContent = '#ham-overlay{position:fixed;inset:0;z-index:100000;display:none;background:rgba(20,16,32,.55);backdrop-filter:blur(6px)}#ham-overlay.open{display:block}#ham-panel{position:fixed;inset:0;z-index:100001;display:none;flex-direction:column;background:linear-gradient(165deg, color-mix(in srgb, var(--rt-bg) 40%, #1a1528), color-mix(in srgb, var(--rt-accent) 25%, #2a1f3d));color:var(--rt-text);padding:1.25rem;overflow:auto}#ham-panel.open{display:flex}#ham-list{display:flex;flex-direction:column;gap:.55rem}.ham-link,.ham-group-btn{display:block;width:100%;text-align:left;padding:.9rem 1rem;border-radius:14px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);color:inherit;text-decoration:none;font:inherit;cursor:pointer}.ham-sub{display:none;flex-direction:column;gap:.35rem;padding-left:1rem;margin-top:.3rem}.ham-sub a{color:inherit;opacity:.9;text-decoration:none;padding:.5rem;border-radius:8px}.ham-sub a:hover{background:rgba(255,255,255,.1)}.ham-close{border:0;background:rgba(255,255,255,.12);color:inherit;width:42px;height:42px;border-radius:50%;cursor:pointer;font-size:1.1rem}';
+    style.textContent =
+      '#ham-overlay{position:fixed;inset:0;z-index:100000;display:none;background:rgba(5,8,14,.75);backdrop-filter:blur(8px)}' +
+      '#ham-overlay.open{display:block}' +
+      '#ham-panel{position:fixed;inset:0;z-index:100001;display:none;flex-direction:column;background:#0b0e14;color:#e8eef7;padding:1.25rem;overflow:auto}' +
+      '#ham-panel.open{display:flex}' +
+      '#ham-list{display:flex;flex-direction:column;gap:.5rem}' +
+      '.ham-link,.ham-group-btn{display:block;width:100%;text-align:left;padding:.95rem 1.05rem;border-radius:4px;background:#151a24;border:1px solid rgba(201,162,39,0.35);color:#f0f4fa;text-decoration:none;font:inherit;font-weight:700;font-size:0.95rem;cursor:pointer;letter-spacing:0.04em}' +
+      '.ham-link:hover,.ham-group-btn:hover{background:#c9a227;color:#0b0e14;border-color:#f0d060}' +
+      '.ham-sub{display:none;flex-direction:column;gap:.3rem;padding:0.4rem 0 0.4rem 0.75rem}' +
+      '.ham-sub a{color:#e8eef7;text-decoration:none;padding:.55rem .75rem;border-radius:4px;font-weight:600;font-size:0.88rem;background:#12161f;border:1px solid rgba(255,255,255,0.08)}' +
+      '.ham-sub a:hover{background:#1c2330;border-color:rgba(201,162,39,0.4);color:#c9a227}' +
+      '.ham-close{border:1px solid rgba(201,162,39,0.5);background:#151a24;color:#c9a227;width:42px;height:42px;border-radius:4px;cursor:pointer;font-size:1.1rem;font-weight:700}' +
+      '.ham-close:hover{background:#c9a227;color:#0b0e14}' +
+      '#ham-title{font-family:Shippori Mincho,serif;font-weight:700;font-size:1.15rem;letter-spacing:0.12em;color:#e8eef7}';
     document.head.appendChild(style);
     var ov = document.createElement('div');
     ov.id = 'ham-overlay';
     var panel = document.createElement('div');
     panel.id = 'ham-panel';
-    panel.innerHTML = '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem"><div style="font-weight:700;font-size:1.1rem">麗探祭 Menu</div><button type="button" class="ham-close" id="ham-close">✕</button></div><div id="ham-list"></div>';
+    panel.innerHTML = '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem"><div id="ham-title">麗探祭 MENU</div><button type="button" class="ham-close" id="ham-close" aria-label="閉じる">✕</button></div><div id="ham-list"></div>';
     document.body.appendChild(ov);
     document.body.appendChild(panel);
     document.getElementById('ham-close').onclick = closeHamburger;
