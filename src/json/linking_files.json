@@ -1,0 +1,13 @@
+{
+  "ALL": [
+    "/reitansai/src/css/style.css"
+  ],
+  "/reitansai/index": [
+    "/reitansai/src/css/index.css",
+    "/reitansai/src/js/index.js"
+  ],
+  "/reitansai/pages/index": [
+    "/reitansai/src/css/pages/index.css",
+    "/reitansai/src/js/pages/index.js"
+  ]
+}
