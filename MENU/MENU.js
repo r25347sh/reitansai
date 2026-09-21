@@ -43,6 +43,7 @@
         ]
       },
       { label: 'ゼミトップ', icon: '📋', url: abs('pages/seminars/index.html') },
+      { label: 'About', icon: 'ℹ️', url: abs('pages/about_This_Site.html') },
       { label: 'サイトマップ', icon: '🗺️', url: abs('sitemap.html') }
     ];
   }
