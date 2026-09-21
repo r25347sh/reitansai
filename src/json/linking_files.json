@@ -1,5 +1,10 @@
 {
-  "ALL": [],
+  "ALL": [
+    "/reitansai/src/css/common.css",
+    "/reitansai/src/js/time-theme.js",
+    "/reitansai/MENU/MENU.css",
+    "/reitansai/MENU/MENU.js"
+  ],
   "/reitansai/": [
     "/reitansai/src/css/index.css",
     "/reitansai/src/js/index.js"
