@@ -1,1 +1,6 @@
 @import url("/reitansai/src/css/pages/seminars/seminar-common.css");
+.page-seminar {
+  --rt-accent: #a8b4c4;
+  --rt-accent-soft: color-mix(in srgb, #a8b4c4 18%, transparent);
+  --rt-lab: #a8b4c4;
+}
