@@ -9,5 +9,13 @@
   "/reitansai/pages/index": [
     "/reitansai/src/css/pages/index.css",
     "/reitansai/src/js/pages/index.js"
+  ],
+  "/reitansai/sitemap": [
+    "/reitansai/src/css/sitemap.css",
+    "reitansai/src/js/sitemap.js"
+  ],
+  "/reitansai/pages/seminars/index": [
+    "/reitansai/src/css/seminars/index.css",
+    "/reitansai/src/js/seminars/index.js"
   ]
 }
