@@ -95,5 +95,9 @@
   "/reitansai/pages/seminars/道徳ゼミ": [
     "/reitansai/src/css/pages/seminars/道徳ゼミ.css",
     "/reitansai/src/js/pages/seminars/道徳ゼミ.js"
+  ],
+  "/reitansai/pages/takimura_t": [
+    "/reitansai/src/css/pages/takimura_t.css",
+    "/reitansai/src/js/pages/takimura_t.js"
   ]
 }
