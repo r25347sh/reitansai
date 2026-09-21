@@ -1,0 +1,108 @@
+<svg id="light-fairy" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
+  <defs id="fairy-defs">
+    <!-- オーラ用グラデーション -->
+    <radialGradient id="aura-gradient" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.9"/>
+      <stop offset="60%" stop-color="#FFF59D" stop-opacity="0.5"/>
+      <stop offset="100%" stop-color="#80DEEA" stop-opacity="0"/>
+    </radialGradient>
+    
+    <!-- 羽用グラデーション -->
+    <linearGradient id="wing-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#E0F7FA" stop-opacity="0.95"/>
+      <stop offset="100%" stop-color="#4DD0E1" stop-opacity="0.4"/>
+    </linearGradient>
+
+    <!-- ドレス用グラデーション -->
+    <linearGradient id="dress-gradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFFDE7"/>
+      <stop offset="100%" stop-color="#FFF59D"/>
+    </linearGradient>
+  </defs>
+
+  <!-- 背景オーラ -->
+  <circle id="fairy-aura" cx="16" cy="16" r="14" fill="url(#aura-gradient)" />
+
+  <!-- 羽 (上下左右4枚に分割) -->
+  <g id="fairy-wings">
+    <path id="wing-top-left" d="M 14 13 C 6 4, 1 13, 13 16 Z" fill="url(#wing-gradient)" stroke="#B2EBF2" stroke-width="0.3"/>
+    <path id="wing-top-right" d="M 18 13 C 26 4, 31 13, 19 16 Z" fill="url(#wing-gradient)" stroke="#B2EBF2" stroke-width="0.3"/>
+    <path id="wing-bottom-left" d="M 14.5 16.5 C 8 18, 6 23, 13.5 20 Z" fill="url(#wing-gradient)" opacity="0.8"/>
+    <path id="wing-bottom-right" d="M 17.5 16.5 C 24 18, 26 23, 18.5 20 Z" fill="url(#wing-gradient)" opacity="0.8"/>
+  </g>
+
+  <!-- 脚と靴 (ドレスの背後に配置) -->
+  <g id="fairy-legs-group">
+    <line id="leg-left" x1="14.5" y1="23" x2="14" y2="27" stroke="#FFE0B2" stroke-width="1.2" stroke-linecap="round"/>
+    <line id="leg-right" x1="17.5" y1="23" x2="18" y2="27" stroke="#FFE0B2" stroke-width="1.2" stroke-linecap="round"/>
+    <circle id="shoe-left" cx="13.8" cy="27.5" r="1" fill="#FFF176"/>
+    <circle id="shoe-right" cx="18.2" cy="27.5" r="1" fill="#FFF176"/>
+  </g>
+
+  <!-- 胴体・ドレス・首元 -->
+  <g id="fairy-body-group">
+    <path id="fairy-dress" d="M 14.5 15 L 17.5 15 L 20.5 23 L 11.5 23 Z" fill="url(#dress-gradient)"/>
+    <path id="dress-frill" d="M 11 23 Q 16 26 21 23" fill="none" stroke="#FFF59D" stroke-width="0.8"/>
+    <path id="dress-collar" d="M 14 15 Q 16 16.5 18 15" fill="none" stroke="#FFFFFF" stroke-width="0.6"/>
+  </g>
+
+  <!-- 腕・手・ステッキ -->
+  <g id="fairy-arms-group">
+    <!-- 左腕・手 -->
+    <path id="arm-left" d="M 14 16 L 10.5 18.5" stroke="#FFE0B2" stroke-width="1.2" stroke-linecap="round"/>
+    <circle id="hand-left" cx="10" cy="19" r="0.8" fill="#FFE0B2"/>
+    
+    <!-- 右腕・手 -->
+    <path id="arm-right" d="M 18 16 L 21.5 17" stroke="#FFE0B2" stroke-width="1.2" stroke-linecap="round"/>
+    <circle id="hand-right" cx="22" cy="17.2" r="0.8" fill="#FFE0B2"/>
+
+    <!-- ステッキ (星型パーツ付き) -->
+    <g id="fairy-wand-group">
+      <line id="fairy-wand-staff" x1="22" y1="17.2" x2="25.5" y2="10.5" stroke="#FFF59D" stroke-width="0.8" stroke-linecap="round"/>
+      <polygon id="wand-star" points="25.5,8.5 26.3,10 28,10.2 26.8,11.3 27.2,13 25.5,12.1 23.8,13 24.2,11.3 23,10.2 24.7,10" fill="#FFFFFF"/>
+    </g>
+  </g>
+
+  <!-- 頭部・顔・髪 -->
+  <g id="fairy-head-group">
+    <!-- 後ろ髪 & サイドテール -->
+    <path id="hair-back" d="M 10 11 C 9 19, 23 19, 22 11 Z" fill="#FFE082"/>
+    <path id="hair-side-left" d="M 11.5 11 C 9.5 13, 9 17, 10.5 18 C 11.5 18, 12 15, 12.5 12.5 Z" fill="#FFD54F"/>
+    <path id="hair-side-right" d="M 20.5 11 C 22.5 13, 23 17, 21.5 18 C 20.5 18, 20 15, 19.5 12.5 Z" fill="#FFD54F"/>
+
+    <!-- 顔本体 -->
+    <circle id="fairy-face" cx="16" cy="11.5" r="4.3" fill="#FFE0B2"/>
+
+    <!-- 前髪 -->
+    <path id="hair-front" d="M 11.7 10.5 C 13 8, 19 8, 20.3 10.5 C 18 9, 14 9, 11.7 10.5 Z" fill="#FFD54F"/>
+
+    <!-- 眉毛 -->
+    <path id="eyebrow-left" d="M 13.5 10 Q 14.2 9.5 14.8 10" stroke="#8D6E63" stroke-width="0.4" fill="none"/>
+    <path id="eyebrow-right" d="M 17.2 10 Q 17.8 9.5 18.5 10" stroke="#8D6E63" stroke-width="0.4" fill="none"/>
+
+    <!-- 目 & ハイライト -->
+    <g id="eyes-group">
+      <circle id="eye-left" cx="14.3" cy="11.5" r="0.6" fill="#3E2723"/>
+      <circle id="eye-right" cx="17.7" cy="11.5" r="0.6" fill="#3E2723"/>
+      <circle id="eye-shine-left" cx="14.1" cy="11.3" r="0.25" fill="#FFFFFF"/>
+      <circle id="eye-shine-right" cx="17.5" cy="11.3" r="0.25" fill="#FFFFFF"/>
+    </g>
+
+    <!-- 口 & ほっぺ -->
+    <path id="fairy-mouth" d="M 15.3 13 Q 16 13.6 16.7 13" stroke="#E65100" stroke-width="0.4" fill="none" stroke-linecap="round"/>
+    <ellipse id="blush-left" cx="13.2" cy="12.3" rx="0.7" ry="0.4" fill="#FF8A80" opacity="0.6"/>
+    <ellipse id="blush-right" cx="18.8" cy="12.3" rx="0.7" ry="0.4" fill="#FF8A80" opacity="0.6"/>
+
+    <!-- 頭飾（ティアラ & 光輪） -->
+    <ellipse id="fairy-halo" cx="16" cy="5.5" rx="3.5" ry="0.9" fill="none" stroke="#FFFFFF" stroke-width="0.7"/>
+    <path id="fairy-tiara" d="M 14.5 7.5 L 16 6 L 17.5 7.5 Z" fill="#FFF59D"/>
+  </g>
+
+  <!-- エフェクト・パーティクル -->
+  <g id="fairy-sparkles">
+    <path id="sparkle-wand" d="M 25.5 6.5 L 26 5 L 27.5 4.5 L 26 4 L 25.5 2.5 L 25 4 L 23.5 4.5 L 25 5 Z" fill="#FFFFFF"/>
+    <circle id="particle-1" cx="4" cy="7" r="0.7" fill="#FFFDE7"/>
+    <circle id="particle-2" cx="6" cy="24" r="0.5" fill="#E0F7FA"/>
+    <circle id="particle-3" cx="28" cy="22" r="0.6" fill="#FFF59D"/>
+  </g>
+</svg>
