@@ -1,6 +1,8 @@
 {
   "ALL": [
-    "/reitansai/src/css/style.css"
+    "/reitansai/src/css/style.css",
+    "/reitansai/src/module/MENU/pi.css",
+    "/reitansai/src/module/MENU/pi.js"
   ],
   "/reitansai/index": [
     "/reitansai/src/css/index.css",
