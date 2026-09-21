@@ -37,30 +37,24 @@
     }).join('');
   }
 
+  function resolveData() {
+    if (window.SEMINAR_DATA) return window.SEMINAR_DATA;
+    var key = window.SEMINAR_KEY;
+    if (key && window.SEMINARS_ALL && window.SEMINARS_ALL[key]) return window.SEMINARS_ALL[key];
+    return null;
+  }
+
   function boot() {
-    if (window.SEMINAR_DATA) {
-      render(window.SEMINAR_DATA);
+    var data = resolveData();
+    if (data) {
+      render(data);
       return;
     }
-    var key = window.SEMINAR_KEY;
-    if (!key) return;
-    var urls = [
-      '/reitansai/src/json/seminars-p0.json',
-      '/reitansai/src/json/seminars-p1.json',
-      '/reitansai/src/json/seminars-p2.json',
-      '/reitansai/src/json/seminars-p3.json'
-    ];
-    Promise.all(urls.map(function (u) {
-      return fetch(u + '?t=' + Date.now()).then(function (r) {
-        return r.ok ? r.json() : {};
-      }).catch(function () { return {}; });
-    })).then(function (parts) {
-      var all = {};
-      parts.forEach(function (p) {
-        Object.keys(p).forEach(function (k) { all[k] = p[k]; });
-      });
-      if (all[key]) render(all[key]);
-    });
+    // fallback: wait a tick for async data scripts
+    setTimeout(function () {
+      var d = resolveData();
+      if (d) render(d);
+    }, 50);
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
