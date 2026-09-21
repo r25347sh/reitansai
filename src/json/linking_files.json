@@ -25,10 +25,7 @@
     "/reitansai/src/css/sitemap.css",
     "/reitansai/src/js/pages/sitemap.js"
   ],
-  "/reitansai/pages/index": [
-    "/reitansai/src/css/pages/index.css",
-    "/reitansai/src/js/pages/index.js"
-  ],
+  "/reitansai/pages/index": [],
   "/reitansai/pages/schedule": [
     "/reitansai/src/css/pages/schedule.css",
     "/reitansai/src/js/pages/schedule.js"
@@ -36,73 +33,5 @@
   "/reitansai/pages/seminars/index": [
     "/reitansai/src/css/pages/seminars/index.css",
     "/reitansai/src/js/pages/seminars/index.js"
-  ],
-  "/reitansai/pages/seminars/イベント企画ゼミ": [
-    "/reitansai/src/css/pages/seminars/イベント企画ゼミ.css",
-    "/reitansai/src/js/pages/seminars/イベント企画ゼミ.js"
-  ],
-  "/reitansai/pages/seminars/データサイエンス探究AIゼミ": [
-    "/reitansai/src/css/pages/seminars/データサイエンス探究AIゼミ.css",
-    "/reitansai/src/js/pages/seminars/データサイエンス探究AIゼミ.js"
-  ],
-  "/reitansai/pages/seminars/デジタルコンテンツ制作ゼミ": [
-    "/reitansai/src/css/pages/seminars/デジタルコンテンツ制作ゼミ.css",
-    "/reitansai/src/js/pages/seminars/デジタルコンテンツ制作ゼミ.js"
-  ],
-  "/reitansai/pages/seminars/メディアゼミ": [
-    "/reitansai/src/css/pages/seminars/メディアゼミ.css",
-    "/reitansai/src/js/pages/seminars/メディアゼミ.js"
-  ],
-  "/reitansai/pages/seminars/化学ゼミ": [
-    "/reitansai/src/css/pages/seminars/化学ゼミ.css",
-    "/reitansai/src/js/pages/seminars/化学ゼミ.js"
-  ],
-  "/reitansai/pages/seminars/国際地域研究ゼミ": [
-    "/reitansai/src/css/pages/seminars/国際地域研究ゼミ.css",
-    "/reitansai/src/js/pages/seminars/国際地域研究ゼミ.js"
-  ],
-  "/reitansai/pages/seminars/教育ゼミ": [
-    "/reitansai/src/css/pages/seminars/教育ゼミ.css",
-    "/reitansai/src/js/pages/seminars/教育ゼミ.js"
-  ],
-  "/reitansai/pages/seminars/文学ゼミ": [
-    "/reitansai/src/css/pages/seminars/文学ゼミ.css",
-    "/reitansai/src/js/pages/seminars/文学ゼミ.js"
-  ],
-  "/reitansai/pages/seminars/文芸小説創作ゼミ": [
-    "/reitansai/src/css/pages/seminars/文芸小説創作ゼミ.css",
-    "/reitansai/src/js/pages/seminars/文芸小説創作ゼミ.js"
-  ],
-  "/reitansai/pages/seminars/映像編集ゼミ": [
-    "/reitansai/src/css/pages/seminars/映像編集ゼミ.css",
-    "/reitansai/src/js/pages/seminars/映像編集ゼミ.js"
-  ],
-  "/reitansai/pages/seminars/社会ゼミ": [
-    "/reitansai/src/css/pages/seminars/社会ゼミ.css",
-    "/reitansai/src/js/pages/seminars/社会ゼミ.js"
-  ],
-  "/reitansai/pages/seminars/観光ゼミ": [
-    "/reitansai/src/css/pages/seminars/観光ゼミ.css",
-    "/reitansai/src/js/pages/seminars/観光ゼミ.js"
-  ],
-  "/reitansai/pages/seminars/語学ゼミ": [
-    "/reitansai/src/css/pages/seminars/語学ゼミ.css",
-    "/reitansai/src/js/pages/seminars/語学ゼミ.js"
-  ],
-  "/reitansai/pages/seminars/農業ゼミ": [
-    "/reitansai/src/css/pages/seminars/農業ゼミ.css",
-    "/reitansai/src/js/pages/seminars/農業ゼミ.js"
-  ],
-  "/reitansai/pages/seminars/遊びの探究ゼミ": [
-    "/reitansai/src/css/pages/seminars/遊びの探究ゼミ.css",
-    "/reitansai/src/js/pages/seminars/遊びの探究ゼミ.js"
-  ],
-  "/reitansai/pages/seminars/道徳ゼミ": [
-    "/reitansai/src/css/pages/seminars/道徳ゼミ.css",
-    "/reitansai/src/js/pages/seminars/道徳ゼミ.js"
-  ],
-  "/reitansai/pages/takimura_t": [
-    "/reitansai/src/css/pages/takimura_t.css",
-    "/reitansai/src/js/pages/takimura_t.js"
   ]
 }
