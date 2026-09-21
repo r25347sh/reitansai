@@ -1,7 +1,5 @@
 (function () {
   'use strict';
-  var key = window.SEMINAR_KEY;
-  if (!key) return;
 
   function esc(s) {
     var d = document.createElement('div');
@@ -10,10 +8,13 @@
   }
 
   function render(data) {
+    if (!data) return;
     var box = document.getElementById('overview-box');
     if (box && data.overview) {
       var parts = String(data.overview).split(/\n+/).filter(Boolean);
-      box.innerHTML = parts.map(function (p) { return '<p>' + esc(p) + '</p>'; }).join('');
+      box.innerHTML = parts.map(function (p) {
+        return '<p>' + esc(p) + '</p>';
+      }).join('');
     }
     var list = document.getElementById('pres-list');
     if (!list || !data.presentations) return;
@@ -36,23 +37,32 @@
     }).join('');
   }
 
-  var urls = [
-    '/reitansai/src/json/seminars-p0.json',
-    '/reitansai/src/json/seminars-p1.json',
-    '/reitansai/src/json/seminars-p2.json',
-    '/reitansai/src/json/seminars-p3.json'
-  ];
-
-  Promise.all(urls.map(function (u) {
-    return fetch(u + '?t=' + Date.now()).then(function (r) {
-      return r.ok ? r.json() : {};
-    }).catch(function () { return {}; });
-  })).then(function (parts) {
-    var all = {};
-    parts.forEach(function (p) {
-      Object.keys(p).forEach(function (k) { all[k] = p[k]; });
+  function boot() {
+    if (window.SEMINAR_DATA) {
+      render(window.SEMINAR_DATA);
+      return;
+    }
+    var key = window.SEMINAR_KEY;
+    if (!key) return;
+    var urls = [
+      '/reitansai/src/json/seminars-p0.json',
+      '/reitansai/src/json/seminars-p1.json',
+      '/reitansai/src/json/seminars-p2.json',
+      '/reitansai/src/json/seminars-p3.json'
+    ];
+    Promise.all(urls.map(function (u) {
+      return fetch(u + '?t=' + Date.now()).then(function (r) {
+        return r.ok ? r.json() : {};
+      }).catch(function () { return {}; });
+    })).then(function (parts) {
+      var all = {};
+      parts.forEach(function (p) {
+        Object.keys(p).forEach(function (k) { all[k] = p[k]; });
+      });
+      if (all[key]) render(all[key]);
     });
-    if (all[key]) render(all[key]);
-    else console.warn('No data for', key);
-  });
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
+  else boot();
 })();
