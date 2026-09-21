@@ -1,0 +1,206 @@
+/* ==============================================
+   Reitansai Radial Menu — asobiseminar方式踏襲
+   時間連動カラー (--rt-*) と調和
+   ============================================== */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@500;600;700&display=swap');
+
+:root {
+  --rm-font: 'Noto Sans JP', system-ui, sans-serif;
+  --rm-item-bg: color-mix(in srgb, var(--rt-card) 92%, white);
+  --rm-item-hover-bg: linear-gradient(135deg, var(--rt-accent), color-mix(in srgb, var(--rt-accent) 70%, #ffd166));
+  --rm-parent-bg: color-mix(in srgb, var(--rt-accent-soft) 80%, var(--rt-card));
+  --rm-border: color-mix(in srgb, var(--rt-accent) 35%, transparent);
+  --rm-border-hover: var(--rt-accent);
+  --rm-text: var(--rt-text);
+  --rm-orbit: color-mix(in srgb, var(--rt-accent) 22%, transparent);
+  --rm-core-bg: linear-gradient(135deg, var(--rt-accent), color-mix(in srgb, var(--rt-accent) 60%, #4cc9f0));
+  --rm-label-bg: color-mix(in srgb, var(--rt-text) 92%, transparent);
+  --rm-label-border: color-mix(in srgb, var(--rt-accent) 50%, transparent);
+  --rm-item-size: 58px;
+  --rm-ease: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --rm-z: 9999999;
+}
+
+.radial-menu-wrapper {
+  position: fixed;
+  top: 0; left: 0;
+  width: 0; height: 0;
+  z-index: var(--rm-z);
+  pointer-events: none;
+  visibility: hidden;
+  opacity: 0;
+  will-change: transform, opacity;
+  transition: visibility 0s linear 0.28s, opacity 0.18s ease-out;
+}
+.radial-menu-wrapper.active {
+  pointer-events: auto;
+  visibility: visible;
+  opacity: 1;
+  transition: visibility 0s linear 0s, opacity 0.12s ease-in;
+}
+
+.rm-canvas-layer {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.rm-shell-orbit {
+  position: absolute;
+  border-radius: 50%;
+  border: 1.5px dashed var(--rm-orbit);
+  box-shadow: 0 0 24px color-mix(in srgb, var(--rt-accent) 12%, transparent);
+  pointer-events: none;
+  z-index: 2;
+  transform: scale(0.15) rotate(-90deg);
+  opacity: 0;
+  will-change: transform, opacity;
+  transition: transform 0.6s var(--rm-ease), opacity 0.35s ease;
+}
+.radial-menu-wrapper.active .rm-shell-orbit {
+  transform: scale(1) rotate(0deg);
+  opacity: 1;
+  animation: orbitPulse 12s linear infinite;
+}
+@keyframes orbitPulse {
+  0%   { transform: scale(1) rotate(0deg); }
+  50%  { transform: scale(1.02) rotate(180deg); }
+  100% { transform: scale(1) rotate(360deg); }
+}
+
+.rm-core-btn {
+  position: absolute;
+  width: 50px; height: 50px;
+  margin-top: -25px; margin-left: -25px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  background: var(--rm-core-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: #fff;
+  font-size: 18px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  box-shadow: 0 0 28px var(--rt-glow), inset 0 0 14px rgba(255, 255, 255, 0.25);
+  opacity: 0;
+  pointer-events: none;
+  transform: scale(0) rotate(-180deg);
+  will-change: transform, opacity;
+  transition: transform 0.45s var(--rm-ease), opacity 0.22s ease;
+}
+.rm-core-btn.visible {
+  opacity: 1;
+  pointer-events: auto;
+  transform: scale(1) rotate(0deg);
+}
+.rm-core-btn:hover {
+  transform: scale(1.2) rotate(90deg) !important;
+  box-shadow: 0 0 36px var(--rt-glow), inset 0 0 18px rgba(255, 255, 255, 0.35);
+}
+
+.rm-item {
+  position: absolute;
+  width: var(--rm-item-size);
+  height: var(--rm-item-size);
+  margin-top: calc(-1 * var(--rm-item-size) / 2);
+  margin-left: calc(-1 * var(--rm-item-size) / 2);
+  border-radius: 50%;
+  border: 2px solid var(--rm-border);
+  background: var(--rm-item-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  color: var(--rm-text);
+  font-size: 22px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 3;
+  box-shadow: 0 10px 28px color-mix(in srgb, var(--rt-text) 10%, transparent), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  opacity: 0;
+  pointer-events: none;
+  transform: translate3d(0, 0, 0) scale(0) rotate(-140deg);
+  will-change: transform, opacity;
+  transition:
+    transform 0.5s var(--rm-ease),
+    opacity 0.28s ease,
+    border-color 0.2s,
+    box-shadow 0.25s,
+    background 0.25s;
+}
+.radial-menu-wrapper.active .rm-item.rendered {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translate3d(var(--x), var(--y), 0) scale(1) rotate(0deg);
+}
+.rm-item:hover,
+.rm-item:active {
+  background: var(--rm-item-hover-bg) !important;
+  border-color: var(--rm-border-hover);
+  color: #fff;
+  transform: translate3d(var(--x), var(--y), 0) scale(1.24) rotate(0deg) !important;
+  box-shadow: 0 0 32px var(--rt-glow), inset 0 0 12px rgba(255, 255, 255, 0.35);
+  z-index: 5;
+}
+.rm-item.has-sub {
+  background: var(--rm-parent-bg);
+  border-color: color-mix(in srgb, var(--rt-accent) 45%, transparent);
+}
+
+.rm-item::after {
+  content: attr(data-label);
+  position: absolute;
+  bottom: -34px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-8px) scale(0.7);
+  background: var(--rm-label-bg);
+  color: #fff;
+  padding: 5px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--rm-label-border);
+  font-family: var(--rm-font);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  box-shadow: 0 6px 18px color-mix(in srgb, var(--rt-text) 30%, transparent);
+  transition: transform 0.35s var(--rm-ease), opacity 0.22s ease;
+}
+.radial-menu-wrapper.active .rm-item.rendered::after {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0) scale(1);
+}
+
+/* FAB */
+.menu-fab {
+  position: fixed;
+  right: 1.1rem;
+  bottom: 1.4rem;
+  z-index: 99990;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: 0;
+  cursor: pointer;
+  font-size: 1.45rem;
+  background: linear-gradient(145deg, var(--rt-accent), color-mix(in srgb, var(--rt-accent) 70%, #ff8e53));
+  color: #fff;
+  box-shadow: 0 12px 32px var(--rt-glow);
+  animation: fab-pulse 2.6s ease-in-out infinite;
+  transition: transform 0.25s var(--rm-ease), background 2.5s ease;
+}
+.menu-fab:hover {
+  transform: scale(1.08) rotate(8deg);
+}
+@keyframes fab-pulse {
+  0%, 100% { box-shadow: 0 12px 32px var(--rt-glow); }
+  50% { box-shadow: 0 12px 40px var(--rt-glow), 0 0 0 12px color-mix(in srgb, var(--rt-accent) 12%, transparent); }
+}
