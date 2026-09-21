@@ -12,7 +12,7 @@
   function render(data) {
     var box = document.getElementById('overview-box');
     if (box && data.overview) {
-      var parts = data.overview.split(/\n+/).filter(Boolean);
+      var parts = String(data.overview).split(/\n+/).filter(Boolean);
       box.innerHTML = parts.map(function (p) { return '<p>' + esc(p) + '</p>'; }).join('');
     }
     var list = document.getElementById('pres-list');
@@ -37,23 +37,22 @@
   }
 
   var urls = [
-    '/reitansai/src/json/seminars-data.json',
-    '/reitansai/src/json/seminars-part1.json',
-    '/reitansai/src/json/seminars-part2.json'
+    '/reitansai/src/json/seminars-p0.json',
+    '/reitansai/src/json/seminars-p1.json',
+    '/reitansai/src/json/seminars-p2.json',
+    '/reitansai/src/json/seminars-p3.json'
   ];
 
-  function tryLoad(i) {
-    if (i >= urls.length) {
-      console.warn('seminar data not found for', key);
-      return;
-    }
-    fetch(urls[i] + '?t=' + Date.now())
-      .then(function (r) { return r.ok ? r.json() : Promise.reject(); })
-      .then(function (all) {
-        if (all[key]) render(all[key]);
-        else tryLoad(i + 1);
-      })
-      .catch(function () { tryLoad(i + 1); });
-  }
-  tryLoad(0);
+  Promise.all(urls.map(function (u) {
+    return fetch(u + '?t=' + Date.now()).then(function (r) {
+      return r.ok ? r.json() : {};
+    }).catch(function () { return {}; });
+  })).then(function (parts) {
+    var all = {};
+    parts.forEach(function (p) {
+      Object.keys(p).forEach(function (k) { all[k] = p[k]; });
+    });
+    if (all[key]) render(all[key]);
+    else console.warn('No data for', key);
+  });
 })();
