@@ -1,20 +1,32 @@
 (function () {
   'use strict';
-
   function esc(s) {
     var d = document.createElement('div');
     d.textContent = s == null ? '' : String(s);
     return d.innerHTML;
   }
-
+  function observeCards() {
+    var cards = document.querySelectorAll('.pres-card');
+    if (!cards.length) return;
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (en.isIntersecting) {
+          en.target.classList.add('in-view');
+          io.unobserve(en.target);
+        }
+      });
+    }, { threshold: 0.12 });
+    cards.forEach(function (c, i) {
+      c.style.transitionDelay = (i % 10) * 0.04 + 's';
+      io.observe(c);
+    });
+  }
   function render(data) {
     if (!data) return;
     var box = document.getElementById('overview-box');
     if (box && data.overview) {
       var parts = String(data.overview).split(/\n+/).filter(Boolean);
-      box.innerHTML = parts.map(function (p) {
-        return '<p>' + esc(p) + '</p>';
-      }).join('');
+      box.innerHTML = parts.map(function (p) { return '<p>' + esc(p) + '</p>'; }).join('');
     }
     var list = document.getElementById('pres-list');
     if (!list || !data.presentations) return;
@@ -35,28 +47,13 @@
         (speakers ? '<div class="pres-speakers">' + speakers + '</div>' : '') +
         vn + ov + '</article>';
     }).join('');
+    observeCards();
   }
-
-  function resolveData() {
-    if (window.SEMINAR_DATA) return window.SEMINAR_DATA;
-    var key = window.SEMINAR_KEY;
-    if (key && window.SEMINARS_ALL && window.SEMINARS_ALL[key]) return window.SEMINARS_ALL[key];
-    return null;
-  }
-
   function boot() {
-    var data = resolveData();
-    if (data) {
-      render(data);
-      return;
-    }
-    // fallback: wait a tick for async data scripts
-    setTimeout(function () {
-      var d = resolveData();
-      if (d) render(d);
-    }, 50);
+    if (window.SEMINAR_DATA) { render(window.SEMINAR_DATA); return; }
+    var key = window.SEMINAR_KEY;
+    if (key && window.SEMINARS_ALL && window.SEMINARS_ALL[key]) render(window.SEMINARS_ALL[key]);
   }
-
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
   else boot();
 })();
