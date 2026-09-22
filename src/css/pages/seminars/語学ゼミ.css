@@ -1,8 +1,16 @@
 @import url("/reitansai/src/css/pages/seminars/seminar-common.css");
-.page-seminar{--rt-accent:#5eb8d4;--rt-accent-soft:rgba(94,184,212,.18);--rt-lab:#7ecce0}
-.seminar-hero{background:linear-gradient(180deg,rgba(94,184,212,.14),transparent 60%),var(--rt-card);border-color:rgba(94,184,212,.35)}
-.wave-bars{display:flex;gap:3px;justify-content:center;margin:.6rem 0;height:20px;align-items:flex-end}
-.wave-bars span{width:3px;background:var(--rt-accent);border-radius:1px;animation:waveBar 1.2s ease-in-out infinite}
-@keyframes waveBar{0%,100%{height:4px}50%{height:18px}}
-.pres-speakers{font-style:italic;color:var(--rt-lab)}
-.pres-card:hover{transform:translateY(-4px);box-shadow:0 12px 32px rgba(94,184,212,.12)}
+.page-seminar.theme-lang{--rt-accent:#26c6da;--rt-lab:#4dd0e1}
+.page-seminar.theme-lang .seminar-hero{background:linear-gradient(180deg,rgba(38,198,218,.12),transparent 60%),#0a1214;border:1px solid #26c6da44;border-radius:16px;padding:2.5rem 1.5rem}
+.page-seminar.theme-lang .seminar-hero h1{font-family:"Noto Sans JP",sans-serif;letter-spacing:.1em;color:#b2ebf2}
+.page-seminar.theme-lang .tagline{color:#26c6da;letter-spacing:.2em}
+.page-seminar.theme-lang .wave-bars{display:flex;gap:3px;justify-content:center;height:24px;align-items:flex-end;margin:.8rem 0}
+.page-seminar.theme-lang .wave-bars span{width:4px;background:#26c6da;border-radius:2px;animation:waveBar 1.1s ease-in-out infinite}
+@keyframes waveBar{0%,100%{height:4px}50%{height:22px}}
+.page-seminar.theme-lang .meta-pill{background:#26c6da18;border:1px solid #26c6da44;border-radius:999px;color:#80deea;font-size:.72rem;padding:.3rem .75rem}
+.page-seminar.theme-lang .section-title,.page-seminar.theme-lang .pres-section-title{border-left:3px solid #26c6da;color:#4dd0e1;letter-spacing:.1em}
+.page-seminar.theme-lang .overview-box{background:#0c1618;border:1px solid #26c6da33;border-radius:12px;padding:1.4rem}
+.page-seminar.theme-lang .pres-list{display:flex;flex-direction:column;gap:.9rem}
+.page-seminar.theme-lang .pres-card{background:#0a1214;border:1px solid #1a3034;border-radius:12px;padding:1.2rem;opacity:0;transform:translateY(12px);transition:opacity .45s,transform .45s,box-shadow .3s}
+.page-seminar.theme-lang .pres-card.in-view{opacity:1;transform:translateY(0)}
+.page-seminar.theme-lang .pres-card:hover{box-shadow:0 12px 32px rgba(38,198,218,.15);transform:translateY(-4px)}
+.page-seminar.theme-lang .pres-speakers{font-style:italic;color:#4dd0e1}

@@ -1,8 +1,15 @@
 @import url("/reitansai/src/css/pages/seminars/seminar-common.css");
-.page-seminar{--rt-accent:#9aabbc;--rt-accent-soft:rgba(154,171,188,.16);--rt-lab:#b0c0d0}
-.seminar-hero{background:linear-gradient(180deg,#14181e,#0e1014);border-top:3px solid var(--rt-accent);border-radius:0}
-.seminar-hero h1{letter-spacing:.22em}
-.pres-card{border-radius:0;border:1px solid rgba(154,171,188,.2);border-left:4px solid var(--rt-accent)}
-.pres-card:hover{background:#1a1e24;transform:none;border-left-width:6px}
-.pres-title{font-weight:700;letter-spacing:.04em}
-.col-rule{height:1px;background:linear-gradient(90deg,var(--rt-accent),transparent);margin:1rem 0;opacity:.5}
+.page-seminar.theme-soc{--rt-accent:#8a9bb0;--rt-lab:#a8b8c8}
+.page-seminar.theme-soc .seminar-hero{background:#0e1218;border:none;border-top:4px solid #8a9bb0;border-radius:0;padding:2.5rem 1.25rem}
+.page-seminar.theme-soc .seminar-hero h1{font-family:"Noto Sans JP",sans-serif;font-weight:900;letter-spacing:.3em;color:#d0d8e0}
+.page-seminar.theme-soc .tagline{color:#8a9bb0;letter-spacing:.25em;font-size:.75rem}
+.page-seminar.theme-soc .meta-pill{background:none;border:none;border-left:2px solid #8a9bb0;border-radius:0;color:#a0aab8;font-size:.72rem;padding:0 0 0 .6rem}
+.page-seminar.theme-soc .section-title,.page-seminar.theme-soc .pres-section-title{border:none;border-bottom:2px solid #8a9bb0;padding:0 0 .4rem;letter-spacing:.15em;color:#a8b8c8;width:100%}
+.page-seminar.theme-soc .section-title::before{display:none}
+.page-seminar.theme-soc .overview-box{background:#12161c;border:1px solid #2a3340;border-radius:0;padding:1.4rem}
+.page-seminar.theme-soc .pres-list{display:flex;flex-direction:column;gap:0}
+.page-seminar.theme-soc .pres-card{background:transparent;border:none;border-bottom:1px solid #2a3340;border-radius:0;border-left:4px solid #8a9bb0;padding:1.3rem 1rem;opacity:0;transition:opacity .4s,border-left-width .3s,background .3s}
+.page-seminar.theme-soc .pres-card.in-view{opacity:1}
+.page-seminar.theme-soc .pres-card:hover{background:#141a22;border-left-width:8px;transform:none}
+.page-seminar.theme-soc .pres-title{font-weight:800;letter-spacing:.04em;font-family:sans-serif}
+.page-seminar.theme-soc .col-rule{height:1px;background:linear-gradient(90deg,#8a9bb0,transparent);margin:1rem 0}

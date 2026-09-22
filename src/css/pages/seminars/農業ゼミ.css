@@ -1,9 +1,18 @@
 @import url("/reitansai/src/css/pages/seminars/seminar-common.css");
-.page-seminar{--rt-accent:#8fbc6b;--rt-accent-soft:rgba(143,188,107,.18);--rt-lab:#a8d080}
-.seminar-hero{background:radial-gradient(ellipse at 50% 120%,rgba(143,188,107,.2),transparent 55%),linear-gradient(180deg,#10180e,#0c120a);border-color:rgba(143,188,107,.35)}
-.seminar-hero .hero-emoji{animation:floatY 3s ease-in-out infinite}
-.pres-card{border-radius:16px 4px 16px 4px;border-bottom:3px solid rgba(143,188,107,.4);background:linear-gradient(180deg,var(--rt-card),rgba(143,188,107,.05))}
-.pres-card:hover{transform:translateY(-5px);border-bottom-color:#8fbc6b}
-.grow-leaf{display:inline-block;animation:sprout 1.2s ease forwards;transform-origin:bottom center}
+.page-seminar.theme-agri{--rt-accent:#7cb342;--rt-lab:#aed581}
+.page-seminar.theme-agri .seminar-hero{background:radial-gradient(ellipse at 50% 120%,rgba(124,179,66,.25),transparent 55%),#0c140a;border:2px solid #7cb34255;border-radius:40% 40% 12px 12px/20% 20% 12px 12px;padding:2.8rem 1.5rem}
+.page-seminar.theme-agri .hero-emoji{font-size:3rem;animation:floatY 3s ease-in-out infinite}
+.page-seminar.theme-agri .seminar-hero h1{font-family:"Noto Sans JP",sans-serif;letter-spacing:.12em;color:#d0e8b0}
+.page-seminar.theme-agri .tagline{color:#7cb342;letter-spacing:.2em}
+.page-seminar.theme-agri .meta-pill{background:#7cb34222;border:1px solid #7cb34255;border-radius:12px 4px;color:#aed581;font-size:.72rem;padding:.3rem .7rem}
+.page-seminar.theme-agri .section-title,.page-seminar.theme-agri .pres-section-title{border:none;color:#7cb342;letter-spacing:.12em;text-align:center}
+.page-seminar.theme-agri .section-title::before{display:none}
+.page-seminar.theme-agri .overview-box{background:#101a0c;border:1px solid #7cb34233;border-radius:16px;padding:1.4rem}
+.page-seminar.theme-agri .pres-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1rem}
+.page-seminar.theme-agri .pres-card{background:#0e160a;border:1px solid #7cb34233;border-radius:20px 6px 20px 6px;border-bottom:4px solid #7cb34266;padding:1.2rem;opacity:0;transform:scaleY(.5);transform-origin:bottom;transition:opacity .5s,transform .6s cubic-bezier(.34,1.4,.64,1)}
+.page-seminar.theme-agri .pres-card.in-view{opacity:1;transform:scaleY(1)}
+.page-seminar.theme-agri .pres-card:hover{border-bottom-color:#7cb342;transform:translateY(-6px)}
+.page-seminar.theme-agri .grow-leaf{display:inline-block;animation:sprout 1s ease forwards;transform-origin:bottom}
 @keyframes sprout{from{transform:scaleY(0);opacity:0}to{transform:scaleY(1);opacity:1}}
-.leaf-fx{position:absolute;font-size:1rem;opacity:.3;animation:floatY 4s ease-in-out infinite;pointer-events:none}
+.page-seminar.theme-agri .leaf-fx{position:absolute;font-size:1.1rem;opacity:.35;animation:floatY 4s ease-in-out infinite;pointer-events:none}
+@keyframes floatY{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}

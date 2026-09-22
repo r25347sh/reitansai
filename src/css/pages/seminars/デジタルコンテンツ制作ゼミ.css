@@ -1,8 +1,15 @@
 @import url("/reitansai/src/css/pages/seminars/seminar-common.css");
-.page-seminar{--rt-accent:#40d0c0;--rt-accent-soft:rgba(64,208,192,.16);--rt-lab:#60e0d0}
-.seminar-hero{background:#0a1010;border:1px solid rgba(64,208,192,.35)}
-.seminar-hero h1,.pres-time,.pres-no{font-family:ui-monospace,Menlo,monospace!important}
-.pres-card{border:1px dashed rgba(64,208,192,.4);border-radius:0;font-family:ui-monospace,Menlo,monospace;font-size:.86rem}
-.pres-title{font-family:var(--font-serif)!important}
-.code-line{opacity:.5;font-size:.68rem;margin-bottom:.3rem;color:#40d0c0;letter-spacing:.02em}
-.pres-card:hover{border-style:solid;background:rgba(64,208,192,.05)}
+.page-seminar.theme-digital{--rt-accent:#00e5c0;--rt-lab:#1de9b6;font-family:ui-monospace,Menlo,Consolas,monospace}
+.page-seminar.theme-digital .seminar-hero{background:#050a0a;border:1px solid #00e5c055;border-radius:0;padding:2rem 1.25rem}
+.page-seminar.theme-digital .seminar-hero h1{font-family:inherit;font-size:1.2rem;color:#00e5c0;letter-spacing:.05em}
+.page-seminar.theme-digital .tagline{color:#1de9b6;font-size:.75rem;letter-spacing:.1em}
+.page-seminar.theme-digital .meta-pill{background:#00e5c012;border:1px dashed #00e5c044;border-radius:0;color:#00e5c0;font-size:.68rem;padding:.25rem .55rem}
+.page-seminar.theme-digital .section-title,.page-seminar.theme-digital .pres-section-title{border:none;font-family:inherit;font-size:.85rem;color:#00e5c0;border-bottom:1px dashed #00e5c044;padding-bottom:.35rem;letter-spacing:.08em}
+.page-seminar.theme-digital .section-title::before{display:none}
+.page-seminar.theme-digital .overview-box{background:#080e0e;border:1px dashed #00e5c033;border-radius:0;padding:1.2rem;font-size:.85rem}
+.page-seminar.theme-digital .pres-list{display:flex;flex-direction:column;gap:.6rem}
+.page-seminar.theme-digital .pres-card{background:#060c0c;border:1px dashed #00e5c033;border-radius:0;padding:1rem;font-size:.85rem;opacity:0;transform:translateY(8px);transition:opacity .35s,transform .35s,border-style .2s}
+.page-seminar.theme-digital .pres-card.in-view{opacity:1;transform:translateY(0)}
+.page-seminar.theme-digital .pres-card:hover{border-style:solid;border-color:#00e5c0}
+.page-seminar.theme-digital .pres-title{font-family:"Shippori Mincho",serif;font-size:1rem}
+.page-seminar.theme-digital .code-line{opacity:.5;font-size:.65rem;color:#00e5c0;margin-bottom:.35rem}
