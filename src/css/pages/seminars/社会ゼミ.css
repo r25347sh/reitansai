@@ -1,6 +1,4 @@
 @import url("/reitansai/src/css/pages/seminars/seminar-common.css");
-.page-seminar {
-  --rt-accent: #a8b4c4;
-  --rt-accent-soft: color-mix(in srgb, #a8b4c4 18%, transparent);
-  --rt-lab: #a8b4c4;
-}
+.page-seminar{--rt-accent:#a8b4c4;--rt-accent-soft:color-mix(in srgb,#a8b4c4 18%,transparent);--rt-lab:#b8c4d4}
+.pres-card{border-top:2px solid var(--rt-accent)}
+.seminar-hero h1{letter-spacing:.2em}

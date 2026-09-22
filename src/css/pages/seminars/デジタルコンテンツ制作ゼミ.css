@@ -1,7 +1,4 @@
 @import url("/reitansai/src/css/pages/seminars/seminar-common.css");
-.page-seminar {
-  --rt-accent: #60c0b0;
-  --rt-accent-soft: color-mix(in srgb, #60c0b0 18%, transparent);
-  --rt-lab: #60c0b0;
-}
-.pres-time,.pres-no,.meta-pill{font-family:ui-monospace,Menlo,monospace;}
+.page-seminar{--rt-accent:#60c0b0;--rt-accent-soft:color-mix(in srgb,#60c0b0 18%,transparent);--rt-lab:#60c0b0}
+.pres-time,.pres-no,.meta-pill{font-family:ui-monospace,Menlo,monospace}
+.pres-card{border:1px dashed rgba(96,192,176,.35)}
