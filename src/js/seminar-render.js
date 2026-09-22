@@ -15,11 +15,105 @@
           io.unobserve(en.target);
         }
       });
-    }, { threshold: 0.12 });
+    }, { threshold: 0.1 });
     cards.forEach(function (c, i) {
-      c.style.transitionDelay = (i % 10) * 0.04 + 's';
+      c.style.transitionDelay = (i % 12) * 0.05 + 's';
       io.observe(c);
     });
+  }
+  function themeExtras(data) {
+    var theme = (data && data.theme) || '';
+    var list = document.getElementById('pres-list');
+    if (!list) return;
+
+    if (theme === 'theme-data') {
+      list.querySelectorAll('.pres-card').forEach(function (card, i) {
+        var bar = document.createElement('div');
+        bar.className = 'data-bar';
+        var span = document.createElement('span');
+        span.style.setProperty('--w', (45 + (i * 17) % 50) + '%');
+        bar.appendChild(span);
+        card.appendChild(bar);
+      });
+      var hero = document.querySelector('.seminar-hero');
+      if (hero) {
+        var scan = document.createElement('div');
+        scan.className = 'scan-fx';
+        hero.appendChild(scan);
+      }
+    }
+    if (theme === 'theme-tour') {
+      list.querySelectorAll('.pres-card').forEach(function (card) {
+        var st = document.createElement('div');
+        st.className = 'stamp';
+        st.textContent = 'VIEW';
+        card.appendChild(st);
+      });
+    }
+    if (theme === 'theme-digital') {
+      list.querySelectorAll('.pres-card').forEach(function (card, i) {
+        var line = document.createElement('div');
+        line.className = 'code-line';
+        line.textContent = '// content[' + i + '] · export ready';
+        card.insertBefore(line, card.firstChild);
+      });
+    }
+    if (theme === 'theme-film') {
+      list.querySelectorAll('.pres-title').forEach(function (t) {
+        var icon = document.createElement('span');
+        icon.className = 'play-icon';
+        t.insertBefore(icon, t.firstChild);
+      });
+    }
+    if (theme === 'theme-novel') {
+      list.querySelectorAll('.pres-title').forEach(function (t) {
+        t.classList.add('type-cursor');
+      });
+    }
+    if (theme === 'theme-agri') {
+      list.querySelectorAll('.pres-no').forEach(function (n) {
+        n.classList.add('grow-leaf');
+      });
+    }
+    if (theme === 'theme-lang') {
+      var hero = document.querySelector('.seminar-hero');
+      if (hero && !hero.querySelector('.wave-bars')) {
+        var waves = document.createElement('div');
+        waves.className = 'wave-bars';
+        for (var i = 0; i < 12; i++) {
+          var s = document.createElement('span');
+          s.style.animationDelay = (i * 0.08) + 's';
+          waves.appendChild(s);
+        }
+        var tag = hero.querySelector('.tagline');
+        if (tag) tag.after(waves);
+      }
+    }
+    if (theme === 'theme-moral') {
+      list.classList.add('dense');
+      var hero = document.querySelector('.seminar-hero');
+      if (hero && !hero.querySelector('.balance-mark')) {
+        var m = document.createElement('div');
+        m.className = 'balance-mark';
+        hero.appendChild(m);
+      }
+    }
+    if (theme === 'theme-intl') {
+      var hero = document.querySelector('.seminar-hero');
+      if (hero && !hero.querySelector('.globe-ring')) {
+        var g = document.createElement('div');
+        g.className = 'globe-ring';
+        hero.appendChild(g);
+      }
+    }
+    if (theme === 'theme-media') {
+      list.querySelectorAll('.pres-card').forEach(function (card) {
+        var sig = document.createElement('div');
+        sig.className = 'signal-line';
+        var head = card.querySelector('.pres-head');
+        if (head) head.after(sig);
+      });
+    }
   }
   function render(data) {
     if (!data) return;
@@ -48,6 +142,7 @@
         vn + ov + '</article>';
     }).join('');
     observeCards();
+    themeExtras(data);
   }
   function boot() {
     if (window.SEMINAR_DATA) { render(window.SEMINAR_DATA); return; }
