@@ -1,9 +1,17 @@
 @import url("/reitansai/src/css/pages/seminars/seminar-common.css");
-.page-seminar{--rt-accent:#c9a227;--rt-accent-soft:rgba(201,162,39,.18);--rt-lab:#e0c040}
-.seminar-hero{background:radial-gradient(circle at 50% 50%,rgba(201,162,39,.12),transparent 60%),#12100c;border-color:rgba(201,162,39,.4)}
-.seminar-hero h1,.pres-title{font-family:var(--font-serif)!important}
-.balance-mark{position:absolute;top:1rem;right:1.2rem;width:36px;height:36px;border:2px solid rgba(201,162,39,.35);border-radius:50%;opacity:.5;animation:spinSlow 20s linear infinite}
-.balance-mark::before{content:"";position:absolute;left:50%;top:4px;bottom:4px;width:2px;margin-left:-1px;background:rgba(201,162,39,.35)}
-.pres-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:.85rem}
-.pres-card{min-height:7.5rem;border-top:2px solid rgba(201,162,39,.35)}
-.pres-card:hover{border-top-color:var(--rt-accent);box-shadow:0 0 24px rgba(201,162,39,.12)}
+.page-seminar.theme-moral{--rt-accent:#d4af37;--rt-lab:#f0d060}
+.page-seminar.theme-moral .seminar-hero{background:radial-gradient(circle at center,rgba(212,175,55,.15),transparent 60%),#0e0c08;border:1px solid #d4af3766;border-radius:0;padding:2.8rem 1.5rem;text-align:center}
+.page-seminar.theme-moral .seminar-hero h1{font-family:"Shippori Mincho",serif;letter-spacing:.25em;color:#f5e6b0;font-weight:600}
+.page-seminar.theme-moral .tagline{color:#d4af37;letter-spacing:.3em;font-size:.8rem}
+.page-seminar.theme-moral .meta-pill{border:1px solid #d4af3755;background:#d4af3715;color:#e8d080;font-size:.72rem;padding:.3rem .7rem;border-radius:0}
+.page-seminar.theme-moral .section-title,.page-seminar.theme-moral .pres-section-title{border:none;text-align:center;letter-spacing:.2em;color:#d4af37}
+.page-seminar.theme-moral .section-title::before{display:none}
+.page-seminar.theme-moral .overview-box{background:#12100a;border:1px solid #d4af3733;border-radius:0;padding:1.5rem;text-align:center;line-height:1.9}
+.page-seminar.theme-moral .pres-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:.85rem}
+.page-seminar.theme-moral .pres-card{background:#100e08;border:1px solid #d4af3722;border-top:3px solid #d4af37;border-radius:0;padding:1.1rem;min-height:8rem;opacity:0;transform:translateY(16px);transition:opacity .4s,transform .4s,border-color .3s,box-shadow .3s}
+.page-seminar.theme-moral .pres-card.in-view{opacity:1;transform:translateY(0)}
+.page-seminar.theme-moral .pres-card:hover{border-color:#d4af37;box-shadow:0 0 24px rgba(212,175,55,.15)}
+.page-seminar.theme-moral .pres-title{font-family:"Shippori Mincho",serif;font-size:.98rem;letter-spacing:.03em}
+.page-seminar.theme-moral .balance-mark{position:absolute;top:1rem;right:1.2rem;width:40px;height:40px;border:2px solid #d4af3755;border-radius:50%;animation:spinSlow 24s linear infinite}
+.page-seminar.theme-moral .balance-mark::before{content:"";position:absolute;left:50%;top:5px;bottom:5px;width:2px;margin-left:-1px;background:#d4af3755}
+@keyframes spinSlow{to{transform:rotate(360deg)}}

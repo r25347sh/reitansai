@@ -1,8 +1,22 @@
 @import url("/reitansai/src/css/pages/seminars/seminar-common.css");
-.page-seminar{--rt-accent:#ff8f6b;--rt-accent-soft:rgba(255,143,107,.18);--rt-lab:#ffb090}
-.seminar-hero{background:radial-gradient(circle at 30% 20%,rgba(255,143,107,.2),transparent 45%),radial-gradient(circle at 80% 80%,rgba(255,200,100,.1),transparent 40%),#14100e;border:2px solid rgba(255,143,107,.4);border-radius:16px}
-.seminar-hero .hero-emoji{font-size:3.2rem;filter:drop-shadow(0 0 16px rgba(255,143,107,.5));animation:floatY 2.5s ease-in-out infinite}
-.pres-card{border-radius:12px;transition:transform .35s cubic-bezier(.34,1.56,.64,1),box-shadow .3s}
-.pres-card:hover{transform:translateY(-8px) rotate(-1deg) scale(1.02);box-shadow:0 16px 40px rgba(255,143,107,.2)}
-.asobi-link-box{border-style:dashed;border-width:2px;border-radius:12px;animation:pulseGlow 3s ease-in-out infinite}
-.spark{position:absolute;width:4px;height:4px;background:#ff8f6b;border-radius:50%;pointer-events:none;animation:confettiFall 2s ease-in forwards}
+.page-seminar.theme-play{--rt-accent:#ff6b4a;--rt-lab:#ffb347}
+.page-seminar.theme-play .seminar-hero{background:linear-gradient(135deg,#1a0e0a,#0f0a08 50%,#1a1208);border:3px solid #ff6b4a;border-radius:24px;padding:2.5rem 1.5rem;text-align:center;animation:playBounce 3s ease-in-out infinite}
+@keyframes playBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.page-seminar.theme-play .hero-emoji{font-size:3.5rem;animation:playSpin 4s ease-in-out infinite;filter:drop-shadow(0 0 16px #ff6b4a)}
+@keyframes playSpin{0%,100%{transform:rotate(-5deg) scale(1)}50%{transform:rotate(5deg) scale(1.1)}}
+.page-seminar.theme-play .seminar-hero h1{font-family:"Noto Sans JP",sans-serif;font-weight:900;letter-spacing:.08em;color:#fff}
+.page-seminar.theme-play .tagline{color:#ffb347;font-weight:700;letter-spacing:.15em}
+.page-seminar.theme-play .meta-pill{background:#ff6b4a33;border:2px solid #ff6b4a66;border-radius:999px;color:#ffb8a0;font-size:.72rem;padding:.3rem .8rem;font-weight:700}
+.page-seminar.theme-play .section-title,.page-seminar.theme-play .pres-section-title{border:none;text-align:center;color:#ff6b4a;font-weight:900;letter-spacing:.1em}
+.page-seminar.theme-play .section-title::before{display:none}
+.page-seminar.theme-play .overview-box{background:#1a100c;border:2px dashed #ff6b4a66;border-radius:16px;padding:1.4rem}
+.page-seminar.theme-play .pres-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:1rem}
+.page-seminar.theme-play .pres-card{background:#140e0a;border:2px solid #ff6b4a44;border-radius:16px;padding:1.25rem;opacity:0;transform:scale(.8) rotate(-2deg);transition:opacity .4s,transform .5s cubic-bezier(.34,1.6,.64,1),box-shadow .3s}
+.page-seminar.theme-play .pres-card.in-view{opacity:1;transform:scale(1) rotate(0)}
+.page-seminar.theme-play .pres-card:hover{transform:translateY(-10px) rotate(-2deg) scale(1.03);box-shadow:0 16px 40px rgba(255,107,74,.25);border-color:#ff6b4a}
+.page-seminar.theme-play .pres-title{font-family:sans-serif;font-weight:800}
+.page-seminar.theme-play .pres-form{background:#ff6b4a;color:#1a0e0a;border:none;border-radius:999px;font-weight:800}
+.page-seminar.theme-play .spark{position:absolute;width:5px;height:5px;border-radius:50%;pointer-events:none;animation:confettiFall 2s ease-in forwards}
+@keyframes confettiFall{0%{transform:translateY(0) rotate(0);opacity:1}100%{transform:translateY(100px) rotate(360deg);opacity:0}}
+.page-seminar.theme-play .asobi-link-box{border:3px dashed #ff6b4a;border-radius:16px;animation:pulseGlow 2.5s ease-in-out infinite}
+@keyframes pulseGlow{0%,100%{box-shadow:0 0 0 0 #ff6b4a44}50%{box-shadow:0 0 20px 4px #ff6b4a33}}

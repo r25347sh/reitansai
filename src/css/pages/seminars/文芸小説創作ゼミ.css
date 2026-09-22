@@ -1,9 +1,18 @@
 @import url("/reitansai/src/css/pages/seminars/seminar-common.css");
-.page-seminar{--rt-accent:#d4a0a8;--rt-accent-soft:rgba(212,160,168,.18);--rt-lab:#e0b8c0}
-.seminar-hero{background:linear-gradient(175deg,#1a1214 0%,#120e10 100%);border-color:rgba(212,160,168,.35)}
-.seminar-hero h1{font-family:var(--font-serif)!important;font-style:italic;letter-spacing:.18em;text-shadow:0 0 30px rgba(212,160,168,.25)}
-.pres-title{font-family:var(--font-serif)!important;font-style:italic;letter-spacing:.05em}
-.pres-card{background:linear-gradient(90deg,rgba(212,160,168,.05),var(--rt-card));box-shadow:0 0 0 1px rgba(212,160,168,.2),0 10px 30px rgba(0,0,0,.35)}
-.pres-overview{border-left:2px solid rgba(212,160,168,.45);padding-left:.85rem;border-top:none;margin-top:.5rem}
-.type-cursor::after{content:"▌";animation:typeCaret .85s step-end infinite;color:var(--rt-accent);margin-left:1px}
-.ink-blot{position:absolute;width:40px;height:40px;border-radius:40% 60% 55% 45%;background:rgba(212,160,168,.08);filter:blur(8px);pointer-events:none}
+.page-seminar.theme-novel{--rt-accent:#e8a0b0;font-family:"Shippori Mincho",serif}
+.page-seminar.theme-novel .seminar-hero{background:linear-gradient(160deg,#1a0c10,#0e080a);border:none;border-radius:0;padding:3rem 1.5rem;box-shadow:inset 0 0 80px rgba(232,160,176,.08)}
+.page-seminar.theme-novel .seminar-hero h1{font-style:italic;letter-spacing:.2em;font-size:1.9rem;background:linear-gradient(90deg,#e8a0b0,#fff0f3,#e8a0b0);background-size:200% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:inkShine 6s linear infinite}
+@keyframes inkShine{to{background-position:200% 0}}
+.page-seminar.theme-novel .tagline{font-style:italic;letter-spacing:.3em;color:#e8a0b0aa}
+.page-seminar.theme-novel .meta-pill{border:none;border-bottom:1px solid #e8a0b055;background:none;border-radius:0;color:#d0a0a8;font-size:.75rem;padding:.2rem .4rem}
+.page-seminar.theme-novel .section-title,.page-seminar.theme-novel .pres-section-title{border:none;text-align:center;font-style:italic;letter-spacing:.2em;color:#e8a0b0}
+.page-seminar.theme-novel .section-title::before{display:none}
+.page-seminar.theme-novel .overview-box{background:rgba(30,12,16,.6);border:none;border-left:3px solid #e8a0b055;border-radius:0;padding:1.5rem;line-height:2;font-style:italic}
+.page-seminar.theme-novel .pres-list{display:flex;flex-direction:column;gap:1.25rem}
+.page-seminar.theme-novel .pres-card{background:rgba(20,10,12,.7);border:none;box-shadow:0 8px 32px rgba(0,0,0,.4);border-radius:2px;padding:1.5rem 1.4rem;opacity:0;transform:translateY(20px);transition:opacity .8s ease,transform .8s ease}
+.page-seminar.theme-novel .pres-card.in-view{opacity:1;transform:translateY(0)}
+.page-seminar.theme-novel .pres-title{font-style:italic;font-size:1.15rem;letter-spacing:.05em;line-height:1.7}
+.page-seminar.theme-novel .type-cursor::after{content:"▌";animation:typeCaret .9s step-end infinite;color:#e8a0b0;margin-left:2px}
+@keyframes typeCaret{50%{opacity:0}}
+.page-seminar.theme-novel .pres-overview{border-top:none;border-left:2px solid #e8a0b044;padding-left:1rem;margin-top:.75rem;line-height:1.9}
+.page-seminar.theme-novel .ink-blot{position:absolute;border-radius:40% 60% 55% 45%;background:rgba(232,160,176,.1);filter:blur(10px);pointer-events:none}

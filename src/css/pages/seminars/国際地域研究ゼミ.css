@@ -1,9 +1,17 @@
 @import url("/reitansai/src/css/pages/seminars/seminar-common.css");
-.page-seminar{--rt-accent:#5b9fd4;--rt-accent-soft:rgba(91,159,212,.18);--rt-lab:#7eb8e8}
-.seminar-hero{background:radial-gradient(ellipse 70% 80% at 70% 30%,rgba(91,159,212,.2),transparent 55%),radial-gradient(circle at 15% 80%,rgba(94,200,180,.1),transparent 40%),var(--rt-card);border-color:rgba(91,159,212,.4)}
-.globe-ring{position:absolute;right:8%;top:50%;width:120px;height:120px;margin-top:-60px;border:1px solid rgba(91,159,212,.25);border-radius:50%;animation:spinSlow 28s linear infinite;pointer-events:none}
-.globe-ring::before{content:"";position:absolute;inset:12px;border:1px dashed rgba(91,159,212,.2);border-radius:50%;animation:spinSlow 18s linear infinite reverse}
-.seminar-hero h1,.pres-title{font-family:var(--font-serif)!important}
-.pres-card{border-radius:2px 14px 2px 14px;border-color:rgba(91,159,212,.2)}
-.pres-card:hover{transform:translateY(-4px);border-color:rgba(91,159,212,.5)}
-.pres-form{border-radius:999px}
+.page-seminar.theme-intl{--rt-accent:#4da6e0;--rt-lab:#7ec4f0}
+.page-seminar.theme-intl .seminar-hero{background:radial-gradient(ellipse 80% 60% at 75% 40%,rgba(77,166,224,.2),transparent 55%),#0a1218;border:1px solid #4da6e044;border-radius:50% 50% 8px 8px/20% 20% 8px 8px;padding:3rem 1.5rem 2.5rem;overflow:hidden}
+.page-seminar.theme-intl .seminar-hero h1{font-family:"Shippori Mincho",serif;letter-spacing:.15em;color:#c8e4f8}
+.page-seminar.theme-intl .tagline{color:#4da6e0;letter-spacing:.2em}
+.page-seminar.theme-intl .meta-pill{background:#4da6e018;border:1px solid #4da6e044;border-radius:999px;color:#a0d0f0;font-size:.72rem;padding:.3rem .75rem}
+.page-seminar.theme-intl .section-title,.page-seminar.theme-intl .pres-section-title{border-left:3px solid #4da6e0;color:#7ec4f0;letter-spacing:.1em}
+.page-seminar.theme-intl .overview-box{background:#0c141a;border:1px solid #4da6e033;border-radius:12px;padding:1.4rem}
+.page-seminar.theme-intl .pres-list{display:flex;flex-direction:column;gap:.8rem}
+.page-seminar.theme-intl .pres-card{background:#0a1218;border:1px solid #1a3040;border-radius:4px 20px 4px 20px;padding:1.2rem;opacity:0;transform:translateX(20px);transition:opacity .5s,transform .5s,border-color .3s}
+.page-seminar.theme-intl .pres-card.in-view{opacity:1;transform:translateX(0)}
+.page-seminar.theme-intl .pres-card:hover{border-color:#4da6e0;transform:translateY(-3px)}
+.page-seminar.theme-intl .pres-title{font-family:"Shippori Mincho",serif}
+.page-seminar.theme-intl .pres-form{border-radius:999px;background:#4da6e033;border:1px solid #4da6e066;color:#7ec4f0}
+.page-seminar.theme-intl .globe-ring{position:absolute;right:5%;top:50%;width:100px;height:100px;margin-top:-50px;border:1px solid #4da6e033;border-radius:50%;animation:spinSlow 30s linear infinite;pointer-events:none}
+.page-seminar.theme-intl .globe-ring::before{content:"";position:absolute;inset:14px;border:1px dashed #4da6e022;border-radius:50%;animation:spinSlow 20s linear infinite reverse}
+@keyframes spinSlow{to{transform:rotate(360deg)}}

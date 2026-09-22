@@ -1,9 +1,17 @@
 @import url("/reitansai/src/css/pages/seminars/seminar-common.css");
-.page-seminar{--rt-accent:#a78bfa;--rt-accent-soft:rgba(167,139,250,.18);--rt-lab:#c4b0ff}
-.seminar-hero{background:linear-gradient(120deg,rgba(167,139,250,.18),transparent 50%),#100e18;border-color:rgba(167,139,250,.4);animation:flicker 6s ease-in-out infinite}
-.signal-line{height:2px;margin:.7rem 0;border-radius:1px;background:linear-gradient(90deg,transparent,var(--rt-accent),#5ec8c8,transparent);background-size:200% 100%;animation:signal 2s linear infinite}
-@keyframes signal{to{background-position:200% 0}}
-.pres-card{border-color:rgba(167,139,250,.25)}
-.pres-card:hover{box-shadow:0 0 30px rgba(167,139,250,.2);border-color:rgba(167,139,250,.55)}
-.pres-form{background:rgba(167,139,250,.2);border-color:rgba(167,139,250,.4)}
-.noise-overlay{position:absolute;inset:0;opacity:.04;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+.page-seminar.theme-media{--rt-accent:#b794f6;--rt-lab:#d6bcfa}
+.page-seminar.theme-media .seminar-hero{background:#0c0614;border:2px solid #b794f6;border-radius:4px;padding:2.5rem 1.25rem;position:relative;animation:mediaFlicker 5s ease-in-out infinite}
+@keyframes mediaFlicker{0%,100%{filter:none}48%{filter:none}50%{filter:brightness(1.15) saturate(1.2)}52%{filter:brightness(.9)}54%{filter:none}}
+.page-seminar.theme-media .seminar-hero h1{font-family:"Noto Sans JP",sans-serif;font-weight:900;letter-spacing:.15em;color:#e9d5ff;text-shadow:0 0 12px #b794f6,0 0 40px #b794f666}
+.page-seminar.theme-media .tagline{color:#b794f6;letter-spacing:.3em;font-weight:700;font-size:.75rem}
+.page-seminar.theme-media .meta-pill{background:#b794f622;border:1px solid #b794f655;color:#d6bcfa;font-size:.7rem;padding:.3rem .65rem;border-radius:2px}
+.page-seminar.theme-media .section-title,.page-seminar.theme-media .pres-section-title{border-left:3px solid #b794f6;color:#d6bcfa;letter-spacing:.12em}
+.page-seminar.theme-media .overview-box{background:#100818;border:1px solid #b794f633;border-radius:4px;padding:1.35rem}
+.page-seminar.theme-media .pres-list{display:flex;flex-direction:column;gap:.85rem}
+.page-seminar.theme-media .pres-card{background:#0e0a16;border:1px solid #2a1a40;border-radius:4px;padding:1.15rem 1.2rem;opacity:0;transform:translateY(15px);transition:opacity .45s,transform .45s,box-shadow .3s}
+.page-seminar.theme-media .pres-card.in-view{opacity:1;transform:translateY(0)}
+.page-seminar.theme-media .pres-card:hover{box-shadow:0 0 24px #b794f644;border-color:#b794f6}
+.page-seminar.theme-media .signal-line{height:2px;margin:.6rem 0;background:linear-gradient(90deg,transparent,#b794f6,#00e5ff,transparent);background-size:200% 100%;animation:sigMove 1.8s linear infinite}
+@keyframes sigMove{to{background-position:200% 0}}
+.page-seminar.theme-media .pres-form{background:#b794f6;color:#0c0614;border:none;font-weight:800}
+.page-seminar.theme-media .noise-overlay{position:absolute;inset:0;opacity:.05;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
