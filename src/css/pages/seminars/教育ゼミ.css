@@ -1,4 +1,9 @@
 @import url("/reitansai/src/css/pages/seminars/seminar-common.css");
-.page-seminar{--rt-accent:#9ab0c8;--rt-accent-soft:color-mix(in srgb,#9ab0c8 18%,transparent);--rt-lab:#9ab0c8}
-.pres-title,.seminar-hero h1{font-family:var(--font-serif)!important}
-.venue-note{display:inline-block;margin-top:.35rem;padding:.2rem .55rem;background:rgba(154,176,200,.15);border:1px solid rgba(154,176,200,.35);border-radius:3px;font-size:.78rem;color:var(--rt-lab)}
+.page-seminar{--rt-accent:#c4b896;--rt-accent-soft:rgba(196,184,150,.18);--rt-lab:#d4c8a8}
+.seminar-hero{background:repeating-linear-gradient(0deg,transparent,transparent 27px,rgba(255,255,255,.04) 28px),linear-gradient(180deg,#1a1e16 0%,#121610 100%);border:2px solid rgba(196,184,150,.3);box-shadow:inset 0 0 40px rgba(0,0,0,.3)}
+.seminar-hero h1{font-family:var(--font-serif);letter-spacing:.14em}
+.pres-card{background:#161a12;border:none;box-shadow:4px 4px 0 rgba(196,184,150,.2);border-radius:2px}
+.pres-card:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 rgba(196,184,150,.28)}
+.pres-title{font-family:var(--font-serif)}
+.venue-note{background:rgba(196,184,150,.12);border:1px solid rgba(196,184,150,.35)}
+.chalk-dust{position:absolute;width:3px;height:3px;background:rgba(255,255,255,.3);border-radius:50%;pointer-events:none;animation:floatY 3s ease-in-out infinite}

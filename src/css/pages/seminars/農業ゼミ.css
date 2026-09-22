@@ -1,4 +1,9 @@
 @import url("/reitansai/src/css/pages/seminars/seminar-common.css");
-.page-seminar{--rt-accent:#8fbc6b;--rt-accent-soft:color-mix(in srgb,#8fbc6b 18%,transparent);--rt-lab:#8fbc6b}
-.seminar-hero{background:radial-gradient(ellipse at bottom,rgba(143,188,107,.14),transparent 55%)}
-.pres-card{border-radius:12px 4px}
+.page-seminar{--rt-accent:#8fbc6b;--rt-accent-soft:rgba(143,188,107,.18);--rt-lab:#a8d080}
+.seminar-hero{background:radial-gradient(ellipse at 50% 120%,rgba(143,188,107,.2),transparent 55%),linear-gradient(180deg,#10180e,#0c120a);border-color:rgba(143,188,107,.35)}
+.seminar-hero .hero-emoji{animation:floatY 3s ease-in-out infinite}
+.pres-card{border-radius:16px 4px 16px 4px;border-bottom:3px solid rgba(143,188,107,.4);background:linear-gradient(180deg,var(--rt-card),rgba(143,188,107,.05))}
+.pres-card:hover{transform:translateY(-5px);border-bottom-color:#8fbc6b}
+.grow-leaf{display:inline-block;animation:sprout 1.2s ease forwards;transform-origin:bottom center}
+@keyframes sprout{from{transform:scaleY(0);opacity:0}to{transform:scaleY(1);opacity:1}}
+.leaf-fx{position:absolute;font-size:1rem;opacity:.3;animation:floatY 4s ease-in-out infinite;pointer-events:none}

@@ -1,4 +1,7 @@
 @import url("/reitansai/src/css/pages/seminars/seminar-common.css");
-.page-seminar{--rt-accent:#e0b050;--rt-accent-soft:color-mix(in srgb,#e0b050 18%,transparent);--rt-lab:#e0b050}
-.pres-time{color:#e0b050;font-weight:800}
-.seminar-hero .tagline{letter-spacing:.18em}
+.page-seminar{--rt-accent:#e8b84a;--rt-accent-soft:rgba(232,184,74,.16);--rt-lab:#f0c860}
+.seminar-hero{background:linear-gradient(135deg,rgba(232,184,74,.12),transparent 40%),repeating-linear-gradient(-45deg,transparent,transparent 12px,rgba(232,184,74,.03) 12px,rgba(232,184,74,.03) 13px),var(--rt-card);border:2px dashed rgba(232,184,74,.35)}
+.pres-time{color:#e8b84a;font-weight:800;letter-spacing:.04em}
+.pres-card{position:relative;overflow:visible}
+.stamp{position:absolute;top:.4rem;right:.5rem;width:44px;height:44px;border:2px dashed var(--rt-accent);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.58rem;font-weight:800;color:var(--rt-accent);opacity:0;transform:rotate(12deg) scale(.5);transition:opacity .4s,transform .5s var(--ease)}
+.pres-card.in-view .stamp{opacity:.65;transform:rotate(12deg) scale(1)}
