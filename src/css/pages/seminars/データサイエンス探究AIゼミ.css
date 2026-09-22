@@ -1,5 +1,13 @@
 @import url("/reitansai/src/css/pages/seminars/seminar-common.css");
-.page-seminar{--rt-accent:#5ec8c8;--rt-accent-soft:color-mix(in srgb,#5ec8c8 18%,transparent);--rt-lab:#5ec8c8}
-.pres-time,.pres-no,.meta-pill{font-family:ui-monospace,Menlo,Consolas,monospace!important}
-.seminar-hero{background:linear-gradient(160deg,rgba(94,200,200,.12),transparent 60%)}
-.pres-card{border-left:3px solid var(--rt-accent)}
+.page-seminar{--rt-accent:#3ee0d0;--rt-accent-soft:rgba(62,224,208,.15);--rt-lab:#3ee0d0}
+.seminar-hero{background:#0a1214;border-color:rgba(62,224,208,.4);box-shadow:0 0 60px rgba(62,224,208,.12),inset 0 0 80px rgba(62,224,208,.04)}
+.seminar-hero::before{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(62,224,208,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(62,224,208,.06) 1px,transparent 1px);background-size:24px 24px;animation:gridPulse 4s ease-in-out infinite;pointer-events:none;z-index:0}
+@keyframes gridPulse{0%,100%{opacity:.5}50%{opacity:1}}
+.seminar-hero>*{position:relative;z-index:1}
+.seminar-hero h1,.pres-time,.pres-no,.meta-pill{font-family:ui-monospace,Menlo,Consolas,monospace!important}
+.pres-card{border-left:3px solid #3ee0d0;background:linear-gradient(90deg,rgba(62,224,208,.06),var(--rt-card) 12%);font-variant-numeric:tabular-nums}
+.pres-card:hover{box-shadow:0 0 24px rgba(62,224,208,.15);transform:translateX(4px)}
+.data-bar{height:3px;background:rgba(62,224,208,.12);margin-top:.6rem;border-radius:1px;overflow:hidden}
+.data-bar span{display:block;height:100%;background:linear-gradient(90deg,#3ee0d0,#5ec8ff);width:0;transition:width 1.2s cubic-bezier(.22,1,.36,1)}
+.pres-card.in-view .data-bar span{width:var(--w,70%)}
+.scan-fx{position:absolute;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,#3ee0d0,transparent);animation:scanLine 5s linear infinite;pointer-events:none;opacity:.35}

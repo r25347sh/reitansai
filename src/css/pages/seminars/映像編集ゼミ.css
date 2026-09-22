@@ -1,4 +1,10 @@
 @import url("/reitansai/src/css/pages/seminars/seminar-common.css");
-.page-seminar{--rt-accent:#c07090;--rt-accent-soft:color-mix(in srgb,#c07090 18%,transparent);--rt-lab:#c07090}
-.seminar-hero{background:linear-gradient(135deg,rgba(192,112,144,.15),transparent 50%)}
-.pres-form{background:rgba(192,112,144,.2);padding:.15rem .5rem;border-radius:2px}
+.page-seminar{--rt-accent:#e07098;--rt-accent-soft:rgba(224,112,152,.18);--rt-lab:#f090b0}
+.seminar-hero{background:linear-gradient(135deg,rgba(224,112,152,.2),transparent 50%),#120a10;border-color:rgba(224,112,152,.4);position:relative}
+.seminar-hero::before,.seminar-hero::after{content:"";position:absolute;left:0;right:0;height:14px;background:repeating-linear-gradient(90deg,#0a0a0a 0 8px,#1a1a1a 8px 10px,#0a0a0a 10px 18px);opacity:.9}
+.seminar-hero::before{top:0}.seminar-hero::after{bottom:0}
+.pres-list{border-left:8px solid #0a0a0a;padding-left:.75rem;background:repeating-linear-gradient(0deg,transparent,transparent 10px,rgba(255,255,255,.025) 10px,rgba(255,255,255,.025) 12px);animation:filmRoll 2s linear infinite;background-size:100% 40px}
+.pres-form{background:rgba(224,112,152,.25);letter-spacing:.06em}
+.pres-card{border-radius:2px;background:rgba(18,10,16,.9)}
+.pres-card:hover{box-shadow:0 0 0 1px rgba(224,112,152,.5),0 8px 24px rgba(224,112,152,.15)}
+.play-icon{display:inline-block;width:0;height:0;border-style:solid;border-width:5px 0 5px 9px;border-color:transparent transparent transparent var(--rt-accent);margin-right:.35rem;vertical-align:middle}

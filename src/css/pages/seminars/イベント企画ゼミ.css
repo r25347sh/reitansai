@@ -1,3 +1,7 @@
 @import url("/reitansai/src/css/pages/seminars/seminar-common.css");
-.page-seminar{--rt-accent:#d4b840;--rt-accent-soft:color-mix(in srgb,#d4b840 18%,transparent);--rt-lab:#d4b840}
-.pres-card{box-shadow:0 0 20px rgba(212,184,64,.08)}
+.page-seminar{--rt-accent:#f0c040;--rt-accent-soft:rgba(240,192,64,.18);--rt-lab:#ffd860}
+.seminar-hero{background:radial-gradient(circle at 50% 0%,rgba(240,192,64,.25),transparent 50%),#141208;border:2px solid rgba(240,192,64,.45);box-shadow:0 0 50px rgba(240,192,64,.1)}
+.seminar-hero .hero-emoji{animation:floatY 2s ease-in-out infinite}
+.pres-card{border:1px solid rgba(240,192,64,.4);background:linear-gradient(145deg,var(--rt-card),rgba(240,192,64,.08));border-radius:8px}
+.pres-card:hover{box-shadow:0 0 32px rgba(240,192,64,.2);transform:translateY(-5px) scale(1.01)}
+.confetti{position:absolute;width:6px;height:6px;border-radius:1px;pointer-events:none;animation:confettiFall 2.5s ease-in infinite}

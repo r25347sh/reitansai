@@ -1,5 +1,8 @@
 @import url("/reitansai/src/css/pages/seminars/seminar-common.css");
-.page-seminar{--rt-accent:#e09070;--rt-accent-soft:color-mix(in srgb,#e09070 18%,transparent);--rt-lab:#e09070}
-.pres-card:hover{transform:translateY(-4px) rotate(-0.3deg)}
-.asobi-link-box{border-style:dashed}
-.seminar-hero .hero-emoji{font-size:3rem;filter:drop-shadow(0 0 12px rgba(224,144,112,.4))}
+.page-seminar{--rt-accent:#ff8f6b;--rt-accent-soft:rgba(255,143,107,.18);--rt-lab:#ffb090}
+.seminar-hero{background:radial-gradient(circle at 30% 20%,rgba(255,143,107,.2),transparent 45%),radial-gradient(circle at 80% 80%,rgba(255,200,100,.1),transparent 40%),#14100e;border:2px solid rgba(255,143,107,.4);border-radius:16px}
+.seminar-hero .hero-emoji{font-size:3.2rem;filter:drop-shadow(0 0 16px rgba(255,143,107,.5));animation:floatY 2.5s ease-in-out infinite}
+.pres-card{border-radius:12px;transition:transform .35s cubic-bezier(.34,1.56,.64,1),box-shadow .3s}
+.pres-card:hover{transform:translateY(-8px) rotate(-1deg) scale(1.02);box-shadow:0 16px 40px rgba(255,143,107,.2)}
+.asobi-link-box{border-style:dashed;border-width:2px;border-radius:12px;animation:pulseGlow 3s ease-in-out infinite}
+.spark{position:absolute;width:4px;height:4px;background:#ff8f6b;border-radius:50%;pointer-events:none;animation:confettiFall 2s ease-in forwards}

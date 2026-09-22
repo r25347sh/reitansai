@@ -1,3 +1,9 @@
 @import url("/reitansai/src/css/pages/seminars/seminar-common.css");
-.page-seminar{--rt-accent:#8b7ec8;--rt-accent-soft:color-mix(in srgb,#8b7ec8 18%,transparent);--rt-lab:#9b8ed8}
-.seminar-hero{background:linear-gradient(90deg,rgba(139,126,200,.12),transparent)}
+.page-seminar{--rt-accent:#a78bfa;--rt-accent-soft:rgba(167,139,250,.18);--rt-lab:#c4b0ff}
+.seminar-hero{background:linear-gradient(120deg,rgba(167,139,250,.18),transparent 50%),#100e18;border-color:rgba(167,139,250,.4);animation:flicker 6s ease-in-out infinite}
+.signal-line{height:2px;margin:.7rem 0;border-radius:1px;background:linear-gradient(90deg,transparent,var(--rt-accent),#5ec8c8,transparent);background-size:200% 100%;animation:signal 2s linear infinite}
+@keyframes signal{to{background-position:200% 0}}
+.pres-card{border-color:rgba(167,139,250,.25)}
+.pres-card:hover{box-shadow:0 0 30px rgba(167,139,250,.2);border-color:rgba(167,139,250,.55)}
+.pres-form{background:rgba(167,139,250,.2);border-color:rgba(167,139,250,.4)}
+.noise-overlay{position:absolute;inset:0;opacity:.04;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}

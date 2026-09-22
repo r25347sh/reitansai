@@ -1,5 +1,8 @@
 @import url("/reitansai/src/css/pages/seminars/seminar-common.css");
-.page-seminar{--rt-accent:#7dce9a;--rt-accent-soft:color-mix(in srgb,#7dce9a 18%,transparent);--rt-lab:#7dce9a}
-.seminar-hero{background:radial-gradient(circle at 80% 20%,rgba(125,206,154,.18),transparent 45%)}
-.pres-card{border:1px solid rgba(125,206,154,.25)}
-.pres-no{background:rgba(125,206,154,.15);border-radius:50%;width:1.8em;height:1.8em;display:inline-flex;align-items:center;justify-content:center}
+.page-seminar{--rt-accent:#6fe0a0;--rt-accent-soft:rgba(111,224,160,.16);--rt-lab:#8eecc0}
+.seminar-hero{background:radial-gradient(circle at 85% 15%,rgba(111,224,160,.22),transparent 42%),radial-gradient(circle at 10% 90%,rgba(100,200,255,.1),transparent 35%),#0c1410;border-color:rgba(111,224,160,.4);overflow:hidden}
+.bubble{position:absolute;border-radius:50%;background:radial-gradient(circle at 30% 30%,rgba(180,255,210,.5),rgba(111,224,160,.15));border:1px solid rgba(111,224,160,.25);pointer-events:none;animation:bubbleRise linear infinite}
+@keyframes bubbleRise{0%{transform:translateY(0) scale(.4);opacity:0}15%{opacity:.7}100%{transform:translateY(-140px) scale(1.15);opacity:0}}
+.pres-card{border:1px solid rgba(111,224,160,.22)}
+.pres-card:hover{border-color:rgba(111,224,160,.55);box-shadow:0 0 28px rgba(111,224,160,.12)}
+.pres-no{background:rgba(111,224,160,.18);border-radius:50%;width:1.9em;height:1.9em;display:inline-flex;align-items:center;justify-content:center}

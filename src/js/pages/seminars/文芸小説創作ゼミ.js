@@ -1,19 +1,7 @@
-(function () {
-  'use strict';
-  const cards = document.querySelectorAll('.pres-card');
-  if (cards.length) {
-    const io = new IntersectionObserver((entries) => {
-      entries.forEach((en) => {
-        if (en.isIntersecting) {
-          en.target.classList.add('in-view');
-          io.unobserve(en.target);
-        }
-      });
-    }, { threshold: 0.12, rootMargin: '0px 0px -20px 0px' });
-    cards.forEach((c, i) => {
-      c.style.transitionDelay = (i % 10) * 0.04 + 's';
-      io.observe(c);
-    });
-  }
-  document.querySelectorAll('.pres-title').forEach((t) => t.classList.add('type-cursor'));
+(function(){'use strict';
+var hero=document.querySelector('.seminar-hero');
+if(hero){for(var i=0;i<4;i++){var b=document.createElement('div');b.className='ink-blot';
+b.style.left=(10+Math.random()*70)+'%';b.style.top=(20+Math.random()*50)+'%';
+b.style.width=(30+Math.random()*40)+'px';b.style.height=(30+Math.random()*40)+'px';
+hero.appendChild(b);}}
 })();
