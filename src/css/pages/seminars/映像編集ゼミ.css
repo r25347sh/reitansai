@@ -1,6 +1,4 @@
 @import url("/reitansai/src/css/pages/seminars/seminar-common.css");
-.page-seminar {
-  --rt-accent: #c07090;
-  --rt-accent-soft: color-mix(in srgb, #c07090 18%, transparent);
-  --rt-lab: #c07090;
-}
+.page-seminar{--rt-accent:#c07090;--rt-accent-soft:color-mix(in srgb,#c07090 18%,transparent);--rt-lab:#c07090}
+.seminar-hero{background:linear-gradient(135deg,rgba(192,112,144,.15),transparent 50%)}
+.pres-form{background:rgba(192,112,144,.2);padding:.15rem .5rem;border-radius:2px}

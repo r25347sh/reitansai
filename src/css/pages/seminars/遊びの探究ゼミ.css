@@ -1,6 +1,5 @@
 @import url("/reitansai/src/css/pages/seminars/seminar-common.css");
-.page-seminar {
-  --rt-accent: #e09070;
-  --rt-accent-soft: color-mix(in srgb, #e09070 18%, transparent);
-  --rt-lab: #e09070;
-}
+.page-seminar{--rt-accent:#e09070;--rt-accent-soft:color-mix(in srgb,#e09070 18%,transparent);--rt-lab:#e09070}
+.pres-card:hover{transform:translateY(-4px) rotate(-0.3deg)}
+.asobi-link-box{border-style:dashed}
+.seminar-hero .hero-emoji{font-size:3rem;filter:drop-shadow(0 0 12px rgba(224,144,112,.4))}
