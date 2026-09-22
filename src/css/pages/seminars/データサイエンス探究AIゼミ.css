@@ -1,13 +1,27 @@
 @import url("/reitansai/src/css/pages/seminars/seminar-common.css");
-.page-seminar{--rt-accent:#3ee0d0;--rt-accent-soft:rgba(62,224,208,.15);--rt-lab:#3ee0d0}
-.seminar-hero{background:#0a1214;border-color:rgba(62,224,208,.4);box-shadow:0 0 60px rgba(62,224,208,.12),inset 0 0 80px rgba(62,224,208,.04)}
-.seminar-hero::before{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(62,224,208,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(62,224,208,.06) 1px,transparent 1px);background-size:24px 24px;animation:gridPulse 4s ease-in-out infinite;pointer-events:none;z-index:0}
-@keyframes gridPulse{0%,100%{opacity:.5}50%{opacity:1}}
-.seminar-hero>*{position:relative;z-index:1}
-.seminar-hero h1,.pres-time,.pres-no,.meta-pill{font-family:ui-monospace,Menlo,Consolas,monospace!important}
-.pres-card{border-left:3px solid #3ee0d0;background:linear-gradient(90deg,rgba(62,224,208,.06),var(--rt-card) 12%);font-variant-numeric:tabular-nums}
-.pres-card:hover{box-shadow:0 0 24px rgba(62,224,208,.15);transform:translateX(4px)}
-.data-bar{height:3px;background:rgba(62,224,208,.12);margin-top:.6rem;border-radius:1px;overflow:hidden}
-.data-bar span{display:block;height:100%;background:linear-gradient(90deg,#3ee0d0,#5ec8ff);width:0;transition:width 1.2s cubic-bezier(.22,1,.36,1)}
-.pres-card.in-view .data-bar span{width:var(--w,70%)}
-.scan-fx{position:absolute;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,#3ee0d0,transparent);animation:scanLine 5s linear infinite;pointer-events:none;opacity:.35}
+.page-seminar.theme-data{--rt-accent:#00ffc8;--rt-lab:#00ffc8;font-family:ui-monospace,Menlo,Consolas,monospace}
+.page-seminar.theme-data .main{max-width:920px}
+.page-seminar.theme-data .seminar-hero{background:#000;border:1px solid #00ffc8;border-radius:0;padding:2rem 1.25rem;text-align:left;box-shadow:0 0 0 1px #003d30,0 0 40px rgba(0,255,200,.15)}
+.page-seminar.theme-data .seminar-hero::before{content:"> boot seminar_data.exe";position:absolute;top:.5rem;left:.75rem;font-size:.65rem;color:#00ffc880}
+.page-seminar.theme-data .hero-emoji{display:none}
+.page-seminar.theme-data .seminar-hero h1{font-family:inherit;font-size:1.4rem;letter-spacing:.08em;color:#00ffc8;margin-top:1rem;animation:dataBlink 3s step-end infinite}
+@keyframes dataBlink{0%,100%{opacity:1}92%{opacity:1}93%{opacity:0}94%{opacity:1}}
+.page-seminar.theme-data .tagline{color:#7dffd0;font-size:.75rem;letter-spacing:.2em}
+.page-seminar.theme-data .meta-pill{border:1px solid #00ffc844;background:#00ffc810;color:#00ffc8;font-size:.7rem;padding:.25rem .6rem;border-radius:0}
+.page-seminar.theme-data .section-title,.page-seminar.theme-data .pres-section-title{font-family:inherit;font-size:.85rem;letter-spacing:.15em;color:#00ffc8;border-left:none;padding-left:0;border-bottom:1px dashed #00ffc844;padding-bottom:.4rem}
+.page-seminar.theme-data .section-title::before{display:none}
+.page-seminar.theme-data .overview-box{background:#001a14;border:1px solid #00ffc833;border-radius:0;padding:1.25rem;font-size:.85rem;line-height:1.7;color:#b8ffe8;box-shadow:none}
+.page-seminar.theme-data .pres-list{display:flex;flex-direction:column;gap:.5rem}
+.page-seminar.theme-data .pres-card{background:#000c0a;border:1px solid #00ffc828;border-radius:0;padding:1rem 1.1rem;opacity:0;transform:translateX(-20px);transition:opacity .5s,transform .5s,border-color .3s;box-shadow:none}
+.page-seminar.theme-data .pres-card.in-view{opacity:1;transform:translateX(0)}
+.page-seminar.theme-data .pres-card:hover{border-color:#00ffc8;box-shadow:inset 3px 0 0 #00ffc8}
+.page-seminar.theme-data .pres-title{font-family:inherit;font-size:.95rem;color:#e0fff5;font-weight:600}
+.page-seminar.theme-data .pres-time{color:#00ffc8}
+.page-seminar.theme-data .pres-form{background:transparent;border:1px solid #00ffc855;color:#00ffc8;border-radius:0}
+.page-seminar.theme-data .pres-speakers{color:#6a9e90;font-size:.78rem}
+.page-seminar.theme-data .pres-overview{border-top:1px solid #00ffc822;color:#9ecfc0;font-size:.8rem}
+.page-seminar.theme-data .data-bar{height:2px;background:#00ffc818;margin-top:.5rem}
+.page-seminar.theme-data .data-bar span{display:block;height:100%;background:#00ffc8;width:0;transition:width 1s cubic-bezier(.22,1,.36,1);box-shadow:0 0 8px #00ffc8}
+.page-seminar.theme-data .pres-card.in-view .data-bar span{width:var(--w,70%)}
+.page-seminar.theme-data .scan-fx{position:absolute;left:0;right:0;height:1px;background:#00ffc8;opacity:.4;animation:scanLine 4s linear infinite}
+@keyframes scanLine{0%{transform:translateY(-100%)}100%{transform:translateY(100vh)}}

@@ -1,8 +1,19 @@
 @import url("/reitansai/src/css/pages/seminars/seminar-common.css");
-.page-seminar{--rt-accent:#6fe0a0;--rt-accent-soft:rgba(111,224,160,.16);--rt-lab:#8eecc0}
-.seminar-hero{background:radial-gradient(circle at 85% 15%,rgba(111,224,160,.22),transparent 42%),radial-gradient(circle at 10% 90%,rgba(100,200,255,.1),transparent 35%),#0c1410;border-color:rgba(111,224,160,.4);overflow:hidden}
-.bubble{position:absolute;border-radius:50%;background:radial-gradient(circle at 30% 30%,rgba(180,255,210,.5),rgba(111,224,160,.15));border:1px solid rgba(111,224,160,.25);pointer-events:none;animation:bubbleRise linear infinite}
-@keyframes bubbleRise{0%{transform:translateY(0) scale(.4);opacity:0}15%{opacity:.7}100%{transform:translateY(-140px) scale(1.15);opacity:0}}
-.pres-card{border:1px solid rgba(111,224,160,.22)}
-.pres-card:hover{border-color:rgba(111,224,160,.55);box-shadow:0 0 28px rgba(111,224,160,.12)}
-.pres-no{background:rgba(111,224,160,.18);border-radius:50%;width:1.9em;height:1.9em;display:inline-flex;align-items:center;justify-content:center}
+.page-seminar.theme-chem{--rt-accent:#5dff9a;--rt-lab:#7dffb0}
+.page-seminar.theme-chem .seminar-hero{background:radial-gradient(circle at 50% 100%,rgba(93,255,154,.2),transparent 55%),linear-gradient(180deg,#061208,#0a1810);border:2px solid rgba(93,255,154,.35);border-radius:50% 50% 12px 12px/30% 30% 12px 12px;padding:3rem 1.5rem 2.5rem;text-align:center;animation:flaskGlow 4s ease-in-out infinite}
+@keyframes flaskGlow{0%,100%{box-shadow:0 0 30px rgba(93,255,154,.15)}50%{box-shadow:0 0 50px rgba(93,255,154,.3)}}
+.page-seminar.theme-chem .hero-emoji{font-size:3rem;filter:drop-shadow(0 0 12px #5dff9a)}
+.page-seminar.theme-chem .seminar-hero h1{font-family:"Noto Sans JP",sans-serif;letter-spacing:.2em;color:#b8ffd0}
+.page-seminar.theme-chem .tagline{color:#5dff9a;letter-spacing:.25em;font-size:.8rem}
+.page-seminar.theme-chem .meta-pill{background:rgba(93,255,154,.1);border:1px solid rgba(93,255,154,.3);border-radius:999px;color:#a0e8c0;font-size:.72rem;padding:.3rem .75rem}
+.page-seminar.theme-chem .section-title,.page-seminar.theme-chem .pres-section-title{text-align:center;border:none;padding:0;width:100%;color:#5dff9a;letter-spacing:.15em}
+.page-seminar.theme-chem .section-title::before{display:none}
+.page-seminar.theme-chem .overview-box{background:rgba(10,30,18,.8);border:1px solid rgba(93,255,154,.25);border-radius:20px;padding:1.5rem;line-height:1.85}
+.page-seminar.theme-chem .pres-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1rem}
+.page-seminar.theme-chem .pres-card{background:rgba(8,20,12,.9);border:1px solid rgba(93,255,154,.2);border-radius:16px;padding:1.25rem;opacity:0;transform:scale(.9);transition:opacity .5s,transform .5s cubic-bezier(.34,1.4,.64,1),box-shadow .3s}
+.page-seminar.theme-chem .pres-card.in-view{opacity:1;transform:scale(1)}
+.page-seminar.theme-chem .pres-card:hover{box-shadow:0 0 28px rgba(93,255,154,.2);border-color:#5dff9a}
+.page-seminar.theme-chem .pres-no{width:2em;height:2em;border-radius:50%;background:rgba(93,255,154,.2);display:inline-flex;align-items:center;justify-content:center;color:#5dff9a}
+.page-seminar.theme-chem .pres-title{font-family:"Noto Sans JP",sans-serif;font-size:1rem}
+.page-seminar.theme-chem .bubble{position:absolute;border-radius:50%;background:radial-gradient(circle at 30% 30%,rgba(200,255,220,.6),rgba(93,255,154,.15));border:1px solid rgba(93,255,154,.3);pointer-events:none;animation:bubbleRise linear infinite}
+@keyframes bubbleRise{0%{transform:translateY(0) scale(.3);opacity:0}20%{opacity:.8}100%{transform:translateY(-160px) scale(1.2);opacity:0}}
