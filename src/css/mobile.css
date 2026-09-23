@@ -1,0 +1,79 @@
+/* Mobile / responsive polish */
+@media (max-width: 860px) {
+  :root { --header-h: 60px; }
+  .site-header {
+    padding: 0 0.85rem;
+    height: var(--header-h);
+  }
+  .site-logo img { height: 34px; }
+  .site-logo .logo-text strong { font-size: 0.95rem; }
+  .site-logo .logo-text span { font-size: 0.55rem; }
+  .main {
+    width: min(100% - 1.25rem, 1080px);
+    padding: 1.25rem 0 6rem;
+  }
+  .hero {
+    padding: 2rem 0.5rem 1.75rem;
+    margin-bottom: 1.25rem;
+  }
+  .hero h1 {
+    letter-spacing: 0.08em;
+  }
+  .section { margin-bottom: 2.25rem; }
+  .section-title {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+  }
+  .card-grid {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+  .card {
+    padding: 1.1rem 1rem;
+  }
+  .info-item {
+    grid-template-columns: 1fr;
+    gap: 0.2rem;
+  }
+  .info-panel {
+    padding: 1.15rem 1rem;
+  }
+  .site-footer {
+    padding: 1.5rem 1rem calc(5.5rem + env(safe-area-inset-bottom));
+    font-size: 0.7rem;
+  }
+  .btn {
+    min-height: 44px;
+    padding: 0.65rem 1.15rem;
+  }
+  .hero-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .hero-actions .btn {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .site-logo .logo-text span { display: none; }
+  .hero-logo-img {
+    width: min(200px, 58vw) !important;
+  }
+  .pres-card {
+    padding: 1rem 0.9rem;
+  }
+  .meta-pills {
+    gap: 0.35rem;
+  }
+}
+
+/* Prevent horizontal scroll from radial labels / overflow */
+html, body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+img, video, iframe {
+  max-width: 100%;
+  height: auto;
+}
