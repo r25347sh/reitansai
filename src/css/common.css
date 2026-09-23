@@ -1,6 +1,7 @@
 /* Reitansai — adaptive site shell (weather + time driven) */
 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Noto+Sans+JP:wght@400;500;600;700&family=Shippori+Mincho:wght@500;600;700&display=swap');
 @import url('/reitansai/src/css/atmosphere.css');
+@import url('/reitansai/src/css/mobile.css');
 
 :root {
   --rt-hue: 210;
