@@ -9,7 +9,6 @@
   function getBase() {
     var p = location.pathname || '';
     if (p.indexOf('/reitansai/') === 0 || p === '/reitansai') return '/reitansai/';
-    // local preview without prefix
     if (location.protocol === 'file:') {
       var depth = (p.match(/\/pages\/seminars\//) ? 2 : p.match(/\/pages\//) ? 1 : 0);
       return depth === 2 ? '../../' : depth === 1 ? '../' : './';
@@ -23,7 +22,6 @@
     if (!path) return '#';
     if (/^https?:\/\//i.test(path)) return path;
     if (path.charAt(0) === '/') {
-      // already absolute from domain root
       return path.indexOf('/reitansai') === 0 ? path : '/reitansai' + path;
     }
     return BASE + path.replace(/^\.\//, '');
@@ -66,6 +64,33 @@
   var timer, startX, startY, isOpen = false, menuStack = [];
   var pieDisabled = false;
   var tapCount = 0, tapTimer = null;
+
+  /** Clear text highlight caused by long-press / triple-click */
+  function clearTextSelection() {
+    try {
+      var sel = window.getSelection && window.getSelection();
+      if (sel) {
+        if (typeof sel.removeAllRanges === 'function') sel.removeAllRanges();
+        else if (typeof sel.empty === 'function') sel.empty();
+      }
+      if (document.activeElement && document.activeElement.blur) {
+        var tag = (document.activeElement.tagName || '').toLowerCase();
+        if (tag !== 'input' && tag !== 'textarea' && tag !== 'select') {
+          document.activeElement.blur();
+        }
+      }
+    } catch (err) { /* ignore */ }
+  }
+
+  function clearTextSelectionSoon() {
+    clearTextSelection();
+    requestAnimationFrame(function () {
+      clearTextSelection();
+      setTimeout(clearTextSelection, 0);
+      setTimeout(clearTextSelection, 50);
+      setTimeout(clearTextSelection, 120);
+    });
+  }
 
   function shellConfig() {
     var w = window.innerWidth;
@@ -186,6 +211,7 @@
 
   function openMenu(x, y) {
     if (!menuEl) createMenuDOM();
+    clearTextSelectionSoon();
     var margin = shellConfig().margin;
     var cx = typeof x === 'number' ? x : window.innerWidth / 2;
     var cy = typeof y === 'number' ? y : window.innerHeight / 2;
@@ -252,7 +278,10 @@
         clearTimeout(timer);
         timer = null;
         tapCount = 0;
-        if (!pieDisabled) openMenu(startX, startY);
+        if (!pieDisabled) {
+          clearTextSelectionSoon();
+          openMenu(startX, startY);
+        }
         return;
       }
       tapTimer = setTimeout(function () { tapCount = 0; }, TRIPLE_TAP_DELAY_MS);
@@ -262,6 +291,7 @@
       timer = setTimeout(function () {
         if (pieDisabled) return;
         tapCount = 0;
+        clearTextSelectionSoon();
         openMenu(startX, startY);
       }, LONG_PRESS_MS);
     }, { passive: true });
@@ -286,6 +316,14 @@
       timer = null;
     }, { passive: true });
 
+    /* Suppress native selection gestures when menu is about to open / is open */
+    document.addEventListener('selectstart', function (e) {
+      if (isOpen || timer) {
+        e.preventDefault();
+        clearTextSelection();
+      }
+    });
+
     document.addEventListener('keydown', function (e) {
       if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
         e.preventDefault();
@@ -300,11 +338,7 @@
     });
 
     window.addEventListener('resize', function () {
-      if (isOpen) {
-        // re-layout if open
-        var level = menuStack.length ? null : buildMenuData();
-        if (!menuStack.length) renderMenuLevel(buildMenuData());
-      }
+      if (isOpen && !menuStack.length) renderMenuLevel(buildMenuData());
     });
   }
 
@@ -346,6 +380,7 @@
     ensureHamburgerUI();
     pieDisabled = true;
     closeMenu();
+    clearTextSelectionSoon();
     var list = document.getElementById('ham-list');
     list.innerHTML = '';
     buildMenuData().forEach(function (item) {
@@ -405,6 +440,7 @@
     open: openMenu,
     close: closeMenu,
     openHamburger: openHamburger,
-    closeHamburger: closeHamburger
+    closeHamburger: closeHamburger,
+    clearTextSelection: clearTextSelection
   };
 })();
