@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ページが見つかりません | 麗探祭 2026</title>
+  <meta name="robots" content="noindex">
+  <title>404 — ページが見つかりません | 麗探祭 2026</title>
   <link rel="stylesheet" href="/reitansai/src/css/common.css">
   <link rel="stylesheet" href="/reitansai/src/css/404.css">
   <link rel="stylesheet" href="/reitansai/MENU/MENU.css">
@@ -15,16 +16,38 @@
       <img src="/reitansai/sources/麗探祭ロゴ.png" alt="麗探祭" width="40" height="40">
       <span class="logo-text"><strong>麗探祭</strong><span>Reitaku Inquiry EXPO 2026</span></span>
     </a>
+    <nav class="nav-desktop">
+      <a href="/reitansai/index.html">ホーム</a>
+      <a href="/reitansai/pages/schedule.html">スケジュール</a>
+      <a href="/reitansai/pages/seminars/index.html">ゼミ一覧</a>
+      <a href="/reitansai/sitemap.html">サイトマップ</a>
+    </nav>
   </header>
-  <main class="main" style="text-align:center;padding:4rem 1rem">
-    <h1 style="font-family:var(--font-serif);letter-spacing:0.12em">404</h1>
-    <p style="color:var(--rt-text-muted);margin:1rem 0 2rem">お探しのページは見つかりませんでした。</p>
-    <a class="btn btn-primary" href="/reitansai/index.html">ホームへ戻る</a>
+
+  <main class="main error-main">
+    <section class="error-stage" aria-labelledby="error-title">
+      <div class="error-orbit" aria-hidden="true"></div>
+      <div class="error-orbit error-orbit--2" aria-hidden="true"></div>
+      <p class="error-code" aria-hidden="true">404</p>
+      <h1 id="error-title" class="error-title">この座標には、探究の跡がありません</h1>
+      <p class="error-lead">
+        指定されたページは移動したか、存在しない可能性があります。<br class="hide-sm">
+        メニューから目的のゼミやスケジュールへ戻れます。
+      </p>
+      <div class="error-actions">
+        <a class="btn btn-primary" href="/reitansai/index.html">ホームへ戻る</a>
+        <a class="btn btn-ghost" href="/reitansai/pages/seminars/index.html">ゼミ一覧</a>
+        <a class="btn btn-ghost" href="/reitansai/pages/schedule.html">スケジュール</a>
+      </div>
+      <p class="error-hint">右下の <strong>☰</strong>、画面の長押し、または三連続タップでもメニューを開けます。</p>
+    </section>
   </main>
+
   <footer class="site-footer">
     <p>© 2026 麗探祭 — Reitaku Inquiry EXPO / 麗澤高等学校</p>
     <p class="footer-credit">Site by 5G 佐藤 晴</p>
   </footer>
   <script src="/reitansai/MENU/MENU.js"></script>
+  <script src="/reitansai/src/js/404.js"></script>
 </body>
 </html>
