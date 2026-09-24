@@ -106,6 +106,31 @@
         hero.appendChild(g);
       }
     }
+
+    if (theme === 'theme-chem') {
+      var hero = document.querySelector('.seminar-hero');
+      if (hero && !hero.querySelector('.bubble-layer')) {
+        var layer = document.createElement('div');
+        layer.className = 'bubble-layer';
+        for (var b = 0; b < 8; b++) {
+          var bub = document.createElement('span');
+          bub.className = 'bubble';
+          bub.style.left = (10 + b * 11) + '%';
+          bub.style.width = bub.style.height = (8 + (b % 4) * 4) + 'px';
+          bub.style.animationDuration = (3 + (b % 5)) + 's';
+          bub.style.animationDelay = (b * 0.4) + 's';
+          layer.appendChild(bub);
+        }
+        hero.style.position = 'relative';
+        hero.appendChild(layer);
+      }
+    }
+    if (theme === 'theme-event') {
+      list.querySelectorAll('.pres-card').forEach(function (card, i) {
+        card.style.transitionDelay = (i * 0.06) + 's';
+      });
+    }
+
     if (theme === 'theme-media') {
       list.querySelectorAll('.pres-card').forEach(function (card) {
         var sig = document.createElement('div');
@@ -127,18 +152,30 @@
     list.innerHTML = data.presentations.map(function (p, i) {
       var no = esc(p.no || (i + 1));
       var start = esc(p.start || '');
+      var end = esc(p.end || '');
       var title = esc(p.title || '');
-      var form = p.form ? '<span class="pres-form">' + esc(p.form) + '</span>' : '';
-      var dur = p.duration ? '<span class="pres-duration">' + esc(p.duration) + '</span>' : '';
+      var form = p.form ? '<span class="pres-badge pres-form">' + esc(p.form) + '</span>' : '';
+      var dur = p.duration ? '<span class="pres-badge pres-duration">' + esc(p.duration) + (String(p.duration).indexOf('分') >= 0 || String(p.duration).indexOf('時間') >= 0 ? '' : '分') + '</span>' : '';
       var speakers = esc(p.speakers || '');
       var ov = p.overview ? '<div class="pres-overview">' + esc(p.overview) + '</div>' : '';
       var vn = p.venue_note ? '<div class="venue-note">会場: ' + esc(p.venue_note) + '</div>' : '';
+      var timeHtml = '';
+      if (start) {
+        timeHtml = '<div class="pres-time-block" title="発表時間">' +
+          '<span class="pres-meta-label">時間</span>' +
+          '<span class="pres-time-row">' +
+          '<span class="pres-time">' + start + '</span>' +
+          (end ? '<span class="pres-time-sep" aria-hidden="true">–</span><span class="pres-time-end">' + end + '</span>' : '') +
+          '</span></div>';
+      }
       return '<article class="pres-card">' +
-        '<div class="pres-head"><span class="pres-no">#' + no + '</span>' +
-        (start ? '<span class="pres-time">' + start + '</span>' : '') +
-        form + dur + '</div>' +
+        '<div class="pres-head">' +
+        '<div class="pres-no" title="通し番号"><span class="pres-meta-label">No.</span><span class="pres-no-val">' + no + '</span></div>' +
+        timeHtml +
+        '<div class="pres-badges">' + form + dur + '</div>' +
+        '</div>' +
         '<h3 class="pres-title">' + title + '</h3>' +
-        (speakers ? '<div class="pres-speakers">' + speakers + '</div>' : '') +
+        (speakers ? '<div class="pres-speakers"><span class="pres-meta-label">発表者</span> ' + speakers + '</div>' : '') +
         vn + ov + '</article>';
     }).join('');
     observeCards();
