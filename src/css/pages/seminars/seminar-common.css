@@ -1,10 +1,8 @@
-/* Seminar structural hooks ONLY — visual design is 100% per-seminar CSS */
-.seminar-hero { position: relative; overflow: hidden; }
-.pres-list { display: block; }
-.pres-card { position: relative; }
-.back-row { margin-top: 2.5rem; text-align: center; }
-.venue-note { font-size: 0.75rem; font-weight: 700; }
-.meta-pills { display: flex; flex-wrap: wrap; gap: 0.45rem; }
-.pres-head { display: flex; flex-wrap: wrap; gap: 0.35rem 0.8rem; align-items: baseline; margin-bottom: 0.4rem; }
-.pres-speakers { margin-bottom: 0.3rem; }
-.pres-overview { margin-top: 0.4rem; padding-top: 0.5rem; }
+@import url("/reitansai/src/css/pages/seminars/seminar-fx.css");
+/* Seminar structural hooks ONLY — visual design is 100% in each ゼミ.css file.
+   Do not put colors / decorative styles here. */
+.page-seminar .seminar-hero { margin-bottom: 2rem; }
+.page-seminar .meta-pills { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 1rem; justify-content: center; }
+.page-seminar .pres-list { display: flex; flex-direction: column; gap: 0.85rem; }
+.page-seminar .pres-card { position: relative; }
+.page-seminar .overview-box p + p { margin-top: 0.75rem; }
