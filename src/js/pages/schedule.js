@@ -45,6 +45,14 @@
     return mins < 0 ? -1 : Math.floor(mins / 60);
   }
 
+  /** Always display as HH:MM (half-width, zero-padded, no seconds). */
+  function formatTime(t) {
+    var mins = toMinutes(t);
+    if (mins < 0) return t || '—';
+    var h = Math.floor(mins / 60), m = mins % 60;
+    return (h < 10 ? '0' : '') + h + ':' + (m < 10 ? '0' : '') + m;
+  }
+
   function esc(s) {
     var d = document.createElement('div');
     d.textContent = s == null ? '' : String(s);
@@ -109,9 +117,9 @@
     countEl.textContent = String(rows.length);
     body.innerHTML = rows.map(function (r) {
       var venue = r.vn ? r.v + ' / ' + r.vn : r.v;
-      var endCell = r.e ? esc(r.e) : '—';
+      var endCell = r.e ? esc(formatTime(r.e)) : '—';
       return '<tr>' +
-        '<td class="t-time">' + esc(r.t) + '</td>' +
+        '<td class="t-time">' + esc(formatTime(r.t)) + '</td>' +
         '<td class="t-end">' + endCell + '</td>' +
         '<td class="t-seminar">' + esc(r.s) + '</td>' +
         '<td class="t-title">' + esc(r.title) + '</td>' +
