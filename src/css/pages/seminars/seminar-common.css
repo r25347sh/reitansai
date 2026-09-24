@@ -1,8 +1,119 @@
 @import url("/reitansai/src/css/pages/seminars/seminar-fx.css");
-/* Seminar structural hooks ONLY — visual design is 100% in each ゼミ.css file.
-   Do not put colors / decorative styles here. */
-.page-seminar .seminar-hero { margin-bottom: 2rem; }
-.page-seminar .meta-pills { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 1rem; justify-content: center; }
-.page-seminar .pres-list { display: flex; flex-direction: column; gap: 0.85rem; }
-.page-seminar .pres-card { position: relative; }
-.page-seminar .overview-box p + p { margin-top: 0.75rem; }
+/* Seminar structural hooks ONLY — visual design is 100% per-seminar CSS */
+.seminar-hero { position: relative; overflow: hidden; }
+.pres-list { display: block; }
+.pres-card { position: relative; }
+.back-row { margin-top: 2.5rem; text-align: center; }
+.venue-note { font-size: 0.75rem; font-weight: 700; }
+.meta-pills { display: flex; flex-wrap: wrap; gap: 0.45rem; }
+.pres-overview { margin-top: 0.4rem; padding-top: 0.5rem; }
+
+/* ---- 通し番号 / 時間 の視認性 ---- */
+.pres-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.55rem 0.85rem;
+  margin-bottom: 0.65rem;
+  padding-bottom: 0.55rem;
+  border-bottom: 1px solid color-mix(in srgb, var(--rt-border) 80%, transparent);
+}
+.pres-meta-label {
+  display: block;
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--rt-text-muted);
+  opacity: 0.85;
+  line-height: 1.2;
+  margin-bottom: 0.12rem;
+}
+.pres-no {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.75rem;
+  padding: 0.35rem 0.5rem;
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--rt-accent) 16%, transparent);
+  border: 1px solid color-mix(in srgb, var(--rt-accent) 35%, transparent);
+  flex-shrink: 0;
+}
+.pres-no-val {
+  font-size: 1.15rem;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  color: var(--rt-accent);
+  line-height: 1.1;
+  letter-spacing: 0.02em;
+}
+.pres-time-block {
+  display: flex;
+  flex-direction: column;
+  padding: 0.3rem 0.65rem;
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--rt-card-hover) 90%, transparent);
+  border: 1px solid var(--rt-border);
+  flex-shrink: 0;
+}
+.pres-time-block .pres-meta-label { margin-bottom: 0.08rem; }
+.pres-time-row {
+  display: flex;
+  align-items: baseline;
+  gap: 0.15rem;
+  font-variant-numeric: tabular-nums;
+}
+.pres-time,
+.pres-time-end {
+  font-size: 1.05rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.04em;
+  color: var(--rt-text);
+  line-height: 1.2;
+}
+.pres-time-sep {
+  margin: 0 0.15rem;
+  color: var(--rt-text-muted);
+  font-weight: 500;
+}
+.pres-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-left: auto;
+  align-items: center;
+}
+.pres-badge {
+  display: inline-block;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  padding: 0.22rem 0.55rem;
+  border-radius: 999px;
+  border: 1px solid var(--rt-border);
+  background: color-mix(in srgb, var(--rt-bg-soft) 80%, transparent);
+  color: var(--rt-text-muted);
+}
+.pres-badge.pres-form {
+  border-color: color-mix(in srgb, var(--rt-accent) 40%, transparent);
+  color: var(--rt-accent);
+  background: color-mix(in srgb, var(--rt-accent) 10%, transparent);
+}
+.pres-speakers .pres-meta-label {
+  display: inline;
+  margin-right: 0.35rem;
+  margin-bottom: 0;
+  vertical-align: middle;
+}
+.pres-speakers {
+  font-size: 0.88rem;
+  color: var(--rt-text-muted);
+  margin-bottom: 0.35rem;
+}
+@media (max-width: 480px) {
+  .pres-badges { margin-left: 0; width: 100%; }
+  .pres-time, .pres-time-end { font-size: 0.95rem; }
+}

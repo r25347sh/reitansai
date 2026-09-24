@@ -3,3 +3,19 @@
 @keyframes logoFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
 .hero-sub{font-family:var(--font-serif);font-size:clamp(1.1rem,3vw,1.45rem);letter-spacing:.2em;color:var(--rt-text-muted);margin-bottom:1rem}
 .visually-hidden{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0}
+
+/* ---- 開閉式目次（初期は閉） ---- */
+.home-toc{margin:0 0 2rem}
+.toc-details{border:1px solid var(--rt-border);border-radius:12px;background:color-mix(in srgb,var(--rt-card) 92%,transparent);overflow:hidden}
+.toc-summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:.85rem 1.15rem;font-weight:700;letter-spacing:.08em;color:var(--rt-text);user-select:none;transition:background .2s}
+.toc-summary::-webkit-details-marker{display:none}
+.toc-summary::after{content:'＋';font-size:1.1rem;font-weight:500;color:var(--rt-accent);transition:transform .25s}
+.toc-details[open] .toc-summary::after{content:'−'}
+.toc-summary:hover{background:color-mix(in srgb,var(--rt-accent) 8%,transparent)}
+.toc-summary-label{font-size:.95rem}
+.toc-summary-hint{font-size:.72rem;font-weight:500;color:var(--rt-text-muted);letter-spacing:.04em;margin-right:auto;margin-left:.75rem}
+.toc-details[open] .toc-summary-hint{opacity:0}
+.toc-list{margin:0;padding:.25rem 1.15rem 1rem 2.25rem;border-top:1px solid var(--rt-border)}
+.toc-list li{margin:.45rem 0;font-size:.92rem}
+.toc-list a{color:var(--rt-text);text-decoration:none;border-bottom:1px solid transparent;transition:color .2s,border-color .2s}
+.toc-list a:hover{color:var(--rt-accent);border-bottom-color:color-mix(in srgb,var(--rt-accent) 50%,transparent)}
