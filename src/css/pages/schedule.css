@@ -6,7 +6,12 @@
 }
 .filter-bar input{flex:1 1 200px;min-width:160px}
 .filter-bar select{flex:0 1 140px}
-.filter-meta{font-size:.8rem;color:var(--rt-text-muted);margin-bottom:1rem}
+.filter-meta{font-size:.8rem;color:var(--rt-text-muted);margin-bottom:.5rem}
+.sched-progress{margin-bottom:1rem;transition:opacity .4s ease,max-height .4s ease}
+.sched-progress.is-done{opacity:0;max-height:0;margin-bottom:0;overflow:hidden;pointer-events:none}
+.sched-progress-track{height:6px;border-radius:999px;background:rgba(201,162,39,.15);overflow:hidden}
+.sched-progress-bar{height:100%;width:0;border-radius:999px;background:linear-gradient(90deg,var(--rt-accent),var(--rt-lab,#c9a227));transition:width .25s ease}
+.sched-progress-label{margin:.4rem 0 0;font-size:.75rem;color:var(--rt-text-muted);letter-spacing:.02em}
 .table-wrap{overflow-x:auto;border:1px solid var(--rt-border);border-radius:var(--radius);background:var(--rt-card);box-shadow:var(--shadow)}
 .sched-table{width:100%;border-collapse:collapse;font-size:.82rem}
 .sched-table th,.sched-table td{padding:.65rem .7rem;text-align:left;border-bottom:1px solid var(--rt-border);vertical-align:top}

@@ -9,25 +9,26 @@
   ];
 
   var body = document.getElementById('sched-body');
-  var countEl = document.getElementById('sched-count');
-  var q = document.getElementById('sched-q');
+  var q = document.getElementById('q');
   var fS = document.getElementById('f-seminar');
   var fV = document.getElementById('f-venue');
   var fF = document.getElementById('f-form');
-  var fT = document.getElementById('f-hour');
-  var data = [];
+  var fT = document.getElementById('f-time');
+  var countEl = document.getElementById('result-count');
+  var progressWrap = document.getElementById('sched-progress');
+  var progressBar = document.getElementById('sched-progress-bar');
+  var progressLabel = document.getElementById('sched-progress-label');
   var sortKey = 't';
   var sortAsc = true;
+  var data = [];
 
   function uniq(arr) {
-    var s = {}, out = [];
-    arr.forEach(function (x) {
-      if (x && !s[x]) { s[x] = 1; out.push(x); }
-    });
-    return out.sort();
+    var o = {};
+    arr.forEach(function (x) { if (x) o[x] = 1; });
+    return Object.keys(o).sort();
   }
 
-  /** Convert various time formats to minutes from midnight. Returns -1 if invalid. */
+  /** Parse HH:MM (or messy string) → minutes from midnight. Returns -1 if invalid. */
   function toMinutes(t) {
     if (t == null || t === '') return -1;
     var s = String(t)
@@ -61,7 +62,24 @@
     return d.innerHTML;
   }
 
+  function setProgress(done, total, name) {
+    if (!progressWrap || !progressBar || !progressLabel) return;
+    var pct = total ? Math.round((done / total) * 100) : 0;
+    progressBar.style.width = pct + '%';
+    progressBar.setAttribute('aria-valuenow', String(pct));
+    if (done >= total) {
+      progressLabel.textContent = '読み込み完了（' + data.length + '件）';
+      setTimeout(function () {
+        progressWrap.classList.add('is-done');
+      }, 450);
+    } else {
+      progressLabel.textContent = '読み込み中… ' + done + '/' + total +
+        (name ? '（' + name + '）' : '');
+    }
+  }
+
   function fillFilters() {
+    if (!fS || !fV || !fF) return;
     fS.innerHTML = '<option value="">すべてのゼミ</option>';
     fV.innerHTML = '<option value="">すべての会場</option>';
     fF.innerHTML = '<option value="">すべての形式</option>';
@@ -81,8 +99,11 @@
   }
 
   function filtered() {
-    var qq = (q.value || '').trim().toLowerCase();
-    var ss = fS.value, vv = fV.value, ff = fF.value, th = fT.value;
+    var qq = (q && q.value || '').trim().toLowerCase();
+    var ss = fS ? fS.value : '';
+    var vv = fV ? fV.value : '';
+    var ff = fF ? fF.value : '';
+    var th = fT ? fT.value : '';
     return data.filter(function (r) {
       if (ss && r.s !== ss) return false;
       if (vv && r.v !== vv) return false;
@@ -115,6 +136,7 @@
   }
 
   function render() {
+    if (!body || !countEl) return;
     var rows = sortRows(filtered());
     countEl.textContent = String(rows.length);
     body.innerHTML = rows.map(function (r) {
@@ -161,12 +183,22 @@
   }
 
   async function boot() {
+    if (!body || !countEl) {
+      console.error('[schedule] required DOM elements missing');
+      return;
+    }
+    if (progressWrap) progressWrap.classList.remove('is-done');
     countEl.textContent = '読込中…';
+    setProgress(0, SEMINARS.length, '');
+
     for (var i = 0; i < SEMINARS.length; i++) {
       await loadSeminar(SEMINARS[i]);
+      setProgress(i + 1, SEMINARS.length, SEMINARS[i]);
     }
+
     fillFilters();
     [q, fS, fV, fF, fT].forEach(function (el) {
+      if (!el) return;
       el.addEventListener('input', render);
       el.addEventListener('change', render);
     });
@@ -181,5 +213,9 @@
     render();
   }
 
-  boot();
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', boot);
+  } else {
+    boot();
+  }
 })();

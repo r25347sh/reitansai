@@ -43,6 +43,12 @@
         </select>
       </div>
       <p class="filter-meta"><span id="result-count">—</span> 件表示</p>
+      <div id="sched-progress" class="sched-progress" role="status" aria-live="polite">
+        <div class="sched-progress-track">
+          <div id="sched-progress-bar" class="sched-progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" style="width:0%"></div>
+        </div>
+        <p id="sched-progress-label" class="sched-progress-label">読み込み準備中…</p>
+      </div>
     </section>
     <section class="section">
       <div class="table-wrap">
