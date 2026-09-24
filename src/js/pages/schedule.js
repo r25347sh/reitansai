@@ -25,9 +25,24 @@
     return Object.keys(o).sort();
   }
 
+  /** Parse HH:MM (or messy string) → minutes from midnight. Returns -1 if invalid. */
+  function toMinutes(t) {
+    if (t == null || t === '') return -1;
+    var s = String(t)
+      .replace(/[０-９]/g, function (c) { return String.fromCharCode(c.charCodeAt(0) - 0xFEE0); })
+      .replace(/[：．]/g, ':')
+      .replace(/[〜～~]/g, '~')
+      .trim();
+    var m = s.match(/(\d{1,2})\s*:\s*(\d{1,2})/);
+    if (m) return parseInt(m[1], 10) * 60 + parseInt(m[2], 10);
+    m = s.match(/^(\d{1,2})$/);
+    if (m) return parseInt(m[1], 10) * 60;
+    return -1;
+  }
+
   function timeHour(t) {
-    var m = String(t || '').match(/(\d{1,2})/);
-    return m ? parseInt(m[1], 10) : -1;
+    var mins = toMinutes(t);
+    return mins < 0 ? -1 : Math.floor(mins / 60);
   }
 
   function esc(s) {
@@ -74,9 +89,11 @@
   function sortRows(rows) {
     rows = rows.slice();
     rows.sort(function (a, b) {
-      if (sortKey === 't') {
-        var av = timeHour(a.t) * 100 + (parseInt((String(a.t).match(/:(\d+)/) || [])[1] || 0, 10));
-        var bv = timeHour(b.t) * 100 + (parseInt((String(b.t).match(/:(\d+)/) || [])[1] || 0, 10));
+      if (sortKey === 't' || sortKey === 'e') {
+        var av = toMinutes(sortKey === 't' ? a.t : a.e);
+        var bv = toMinutes(sortKey === 't' ? b.t : b.e);
+        if (av < 0) av = 99999;
+        if (bv < 0) bv = 99999;
         return sortAsc ? av - bv : bv - av;
       }
       var av = String(a[sortKey] || ''), bv = String(b[sortKey] || '');
@@ -92,9 +109,16 @@
     countEl.textContent = String(rows.length);
     body.innerHTML = rows.map(function (r) {
       var venue = r.vn ? r.v + ' / ' + r.vn : r.v;
-      return '<tr><td class="t-time">' + esc(r.t) + '</td><td class="t-seminar">' + esc(r.s) +
-        '</td><td class="t-title">' + esc(r.title) + '</td><td class="t-sp">' + esc(r.sp) +
-        '</td><td class="t-form">' + esc(r.form) + '</td><td class="t-venue">' + esc(venue) + '</td></tr>';
+      var endCell = r.e ? esc(r.e) : '—';
+      return '<tr>' +
+        '<td class="t-time">' + esc(r.t) + '</td>' +
+        '<td class="t-end">' + endCell + '</td>' +
+        '<td class="t-seminar">' + esc(r.s) + '</td>' +
+        '<td class="t-title">' + esc(r.title) + '</td>' +
+        '<td class="t-sp">' + esc(r.sp) + '</td>' +
+        '<td class="t-form">' + esc(r.form) + '</td>' +
+        '<td class="t-venue">' + esc(venue) + '</td>' +
+        '</tr>';
     }).join('');
   }
 
@@ -109,6 +133,7 @@
           d.presentations.forEach(function (p) {
             data.push({
               t: p.start || '',
+              e: p.end || '',
               s: d.name || name,
               title: p.title || '',
               sp: p.speakers || '',
