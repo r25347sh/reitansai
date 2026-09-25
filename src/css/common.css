@@ -2,6 +2,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Noto+Sans+JP:wght@400;500;600;700&family=Shippori+Mincho:wght@500;600;700&display=swap');
 @import url('/reitansai/src/css/atmosphere.css');
 @import url('/reitansai/src/css/mobile.css');
+@import url('/reitansai/src/css/theme-selector.css');
 
 :root {
   --rt-hue: 210;
@@ -34,7 +35,7 @@ body {
   color: var(--rt-text);
   line-height: 1.75;
   min-height: 100dvh;
-  transition: background-color 2.8s ease, color 2.8s ease;
+  transition: background-color 1.5s ease, color 1.5s ease, border-color 1.5s ease;
   -webkit-font-smoothing: antialiased;
 }
 body::before {
@@ -64,26 +65,25 @@ img { max-width: 100%; height: auto; display: block; }
   transition: background-color 2.5s ease, border-color 2.5s ease;
 }
 .site-logo {
-  display: flex; align-items: center; gap: 0.65rem;
-  color: var(--rt-text); font-weight: 700; font-size: 1.05rem; letter-spacing: 0.08em;
+  display: flex; align-items: center; gap: 0.7rem; color: var(--rt-text);
+  font-weight: 700; font-size: 1.05rem; letter-spacing: 0.08em;
 }
 .site-logo img {
-  height: 40px; width: auto; object-fit: contain;
+  width: 40px; height: 40px; border-radius: 8px;
   filter: drop-shadow(0 0 8px color-mix(in srgb, var(--rt-accent) 40%, transparent));
 }
-.site-logo .logo-text { display: flex; flex-direction: column; line-height: 1.2; }
-.site-logo .logo-text strong {
-  font-family: var(--font-serif); font-size: 1.05rem; font-weight: 700; letter-spacing: 0.12em;
-}
-.site-logo .logo-text span {
+.logo-text { display: flex; flex-direction: column; line-height: 1.15; }
+.logo-text strong { font-size: 1.05rem; letter-spacing: 0.12em; }
+.logo-text span {
   font-weight: 500; font-size: 0.62rem; color: var(--rt-text-muted);
-  letter-spacing: 0.1em; text-transform: uppercase;
+  letter-spacing: 0.06em;
 }
 .nav-desktop { display: none; gap: 0.25rem; }
 .nav-desktop a {
-  padding: 0.4rem 0.9rem; border-radius: var(--radius-sm);
-  font-size: 0.8rem; font-weight: 600; letter-spacing: 0.06em;
+  padding: 0.4rem 0.75rem; border-radius: var(--radius-sm);
   color: var(--rt-text-muted); border: 1px solid transparent;
+  font-size: 0.82rem; font-weight: 600; letter-spacing: 0.04em;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
 }
 .nav-desktop a:hover,
 .nav-desktop a.is-active {
@@ -92,32 +92,31 @@ img { max-width: 100%; height: auto; display: block; }
 }
 @media (min-width: 860px) { .nav-desktop { display: flex; } }
 
-.main { width: min(1080px, 100% - 2rem); margin: 0 auto; padding: 2rem 0 5.5rem; }
-.section { margin-bottom: 3.25rem; }
+.main { max-width: 1100px; margin: 0 auto; padding: 1.5rem 1.25rem 3rem; }
+.section { margin-bottom: 2.75rem; }
 .section-title {
-  font-family: var(--font-serif);
-  font-size: clamp(1.35rem, 3vw, 1.75rem);
-  font-weight: 700; margin-bottom: 1.35rem; letter-spacing: 0.08em;
+  font-family: var(--font-serif); font-size: 1.35rem; font-weight: 700;
   color: var(--rt-text); position: relative; display: inline-block; padding-left: 0.85rem;
+  margin-bottom: 1.1rem; letter-spacing: 0.06em;
 }
 .section-title::before {
   content: ''; position: absolute; left: 0; top: 0.15em; bottom: 0.15em; width: 3px;
   background: linear-gradient(180deg, var(--rt-accent), var(--rt-lab)); border-radius: 1px;
 }
-.card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 1rem; }
+.card-grid { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
 .card {
   background: var(--rt-card); border: 1px solid var(--rt-border); border-radius: var(--radius);
-  padding: 1.25rem 1.15rem; box-shadow: var(--shadow);
-  transition: transform 0.35s var(--ease), border-color 0.3s, box-shadow 0.3s, background 2.5s ease;
-  display: flex; flex-direction: column; gap: 0.4rem; color: inherit; position: relative; overflow: hidden;
+  padding: 1.15rem 1.2rem; transition: transform 0.25s var(--ease), border-color 0.25s, box-shadow 0.25s, background 0.25s;
+  color: inherit; text-decoration: none; display: block;
 }
 .card:hover {
   transform: translateY(-3px);
   border-color: color-mix(in srgb, var(--rt-accent) 40%, transparent);
   background: var(--rt-card-hover);
+  box-shadow: var(--shadow);
 }
-.card-emoji { font-size: 1.6rem; }
-.card h3 { font-family: var(--font-serif); font-size: 1.02rem; font-weight: 700; }
+.card-emoji { font-size: 1.6rem; display: block; margin-bottom: 0.45rem; }
+.card h3 { font-size: 1.02rem; font-weight: 700; }
 .card p { font-size: 0.82rem; color: var(--rt-text-muted); }
 .card.static:hover { transform: none; }
 
