@@ -1,7 +1,7 @@
 /**
- * Theme control — color mode (dark / light / system) + atmosphere toggle
+ * Theme control — dark / classic / green / system + atmosphere toggle
  * localStorage: rt-color-mode, rt-atmosphere
- * Injects sun icon + horizontal accordion into .site-header
+ * Instant switch (no long fade) to avoid visual discomfort
  */
 (function () {
   'use strict';
@@ -9,11 +9,13 @@
   var STORAGE_MODE = 'rt-color-mode';
   var STORAGE_ATM = 'rt-atmosphere';
   var ROOT = document.documentElement;
+  var VALID = { dark: 1, classic: 1, green: 1, system: 1 };
 
   function readMode() {
     try {
       var m = localStorage.getItem(STORAGE_MODE);
-      if (m === 'dark' || m === 'light' || m === 'system') return m;
+      if (m === 'light') return 'classic';
+      if (VALID[m]) return m;
     } catch (e) {}
     return 'dark';
   }
@@ -32,18 +34,28 @@
   }
 
   function resolveScheme(mode) {
-    if (mode === 'light') return 'light';
-    if (mode === 'system') return systemPrefersDark() ? 'dark' : 'light';
+    if (mode === 'classic') return 'classic';
+    if (mode === 'green') return 'green';
+    if (mode === 'system') return systemPrefersDark() ? 'dark' : 'classic';
     return 'dark';
   }
 
-  function applyShell(mode, atmosphereOn) {
+  function flashNoTransition() {
+    ROOT.classList.add('rt-theme-switching');
+    void ROOT.offsetHeight;
+    window.setTimeout(function () {
+      ROOT.classList.remove('rt-theme-switching');
+    }, 80);
+  }
+
+  function applyShell(mode, atmosphereOn, instant) {
+    if (instant !== false) flashNoTransition();
     var scheme = resolveScheme(mode);
     ROOT.setAttribute('data-color-mode', mode);
     ROOT.setAttribute('data-color-scheme', scheme);
     ROOT.setAttribute('data-atmosphere', atmosphereOn ? 'on' : 'off');
     try {
-      ROOT.style.colorScheme = scheme;
+      ROOT.style.colorScheme = scheme === 'dark' ? 'dark' : 'light';
     } catch (e) {}
     return scheme;
   }
@@ -60,7 +72,7 @@
     mode: readMode(),
     atmosphere: readAtmosphere()
   };
-  applyShell(state.mode, state.atmosphere);
+  applyShell(state.mode, state.atmosphere, false);
 
   function notifyThemeEngine() {
     if (window.ReitansaiTheme && typeof window.ReitansaiTheme.retick === 'function') {
@@ -78,10 +90,10 @@
   }
 
   function setMode(mode) {
-    if (mode !== 'dark' && mode !== 'light' && mode !== 'system') return;
+    if (!VALID[mode]) return;
     state.mode = mode;
     saveMode(mode);
-    applyShell(state.mode, state.atmosphere);
+    applyShell(state.mode, state.atmosphere, true);
     syncUI();
     notifyThemeEngine();
   }
@@ -89,7 +101,7 @@
   function setAtmosphere(on) {
     state.atmosphere = !!on;
     saveAtmosphere(state.atmosphere);
-    applyShell(state.mode, state.atmosphere);
+    applyShell(state.mode, state.atmosphere, true);
     syncUI();
     notifyThemeEngine();
   }
@@ -156,7 +168,8 @@
     panel.innerHTML =
       '<div class="rt-theme-modes" role="group" aria-label="カラーモード">' +
         '<button type="button" class="rt-theme-mode" data-mode="dark">ダーク</button>' +
-        '<button type="button" class="rt-theme-mode" data-mode="light">ライト</button>' +
+        '<button type="button" class="rt-theme-mode" data-mode="classic">クラシック</button>' +
+        '<button type="button" class="rt-theme-mode" data-mode="green">グリーン</button>' +
         '<button type="button" class="rt-theme-mode" data-mode="system">システム</button>' +
       '</div>' +
       '<div class="rt-theme-sep" aria-hidden="true"></div>' +
@@ -216,7 +229,7 @@
       var mq = window.matchMedia('(prefers-color-scheme: dark)');
       var onChange = function () {
         if (state.mode === 'system') {
-          applyShell(state.mode, state.atmosphere);
+          applyShell(state.mode, state.atmosphere, true);
           notifyThemeEngine();
         }
       };
