@@ -19,11 +19,18 @@
     glow: 'rgba(100, 180, 255, 0.22)', lab: '#5ec8c8', grain: 0.04,
     period: 'static', weather: 'off', isDay: false, temp: null
   };
-  var STATIC_LIGHT = {
-    hue: 210, bg: '#f4f6fa', bgSoft: '#eef1f6', card: '#ffffff', cardHover: '#f7f9fc',
-    text: '#1a2230', textMuted: '#5a6578', accent: '#a8841a',
-    accentSoft: 'rgba(168, 132, 26, 0.14)', border: 'rgba(30, 45, 70, 0.12)',
-    glow: 'rgba(100, 160, 220, 0.18)', lab: '#2a9a9a', grain: 0.02,
+  var STATIC_CLASSIC = {
+    hue: 36, bg: '#e4dcc8', bgSoft: '#ddd4bc', card: '#f0e9d8', cardHover: '#f5efe2',
+    text: '#2a2418', textMuted: '#5c5346', accent: '#8a6b1e',
+    accentSoft: 'rgba(138, 107, 30, 0.16)', border: 'rgba(60, 48, 28, 0.16)',
+    glow: 'rgba(180, 140, 60, 0.14)', lab: '#3d6b5c', grain: 0.02,
+    period: 'static', weather: 'off', isDay: true, temp: null
+  };
+  var STATIC_GREEN = {
+    hue: 145, bg: '#d5e2d6', bgSoft: '#c8d8ca', card: '#e8f0e9', cardHover: '#eef5ef',
+    text: '#1a2e22', textMuted: '#4a6354', accent: '#2d6a4f',
+    accentSoft: 'rgba(45, 106, 79, 0.16)', border: 'rgba(30, 60, 42, 0.16)',
+    glow: 'rgba(60, 140, 100, 0.16)', lab: '#1b6b5a', grain: 0.025,
     period: 'static', weather: 'off', isDay: true, temp: null
   };
 
@@ -31,7 +38,10 @@
     if (window.ReitansaiThemeControl && typeof window.ReitansaiThemeControl.getScheme === 'function') {
       return window.ReitansaiThemeControl.getScheme();
     }
-    return ROOT.getAttribute('data-color-scheme') === 'light' ? 'light' : 'dark';
+    var s = ROOT.getAttribute('data-color-scheme');
+    if (s === 'classic' || s === 'light') return 'classic';
+    if (s === 'green') return 'green';
+    return 'dark';
   }
   function atmosphereEnabled() {
     if (window.ReitansaiThemeControl && typeof window.ReitansaiThemeControl.isAtmosphereOn === 'function') {
@@ -124,60 +134,103 @@
     };
   }
 
-  function paletteLight(period, kind, isDay, temp) {
+  function paletteClassic(period, kind, isDay, temp) {
     var map = {
-      dawn: { hue: 22, sat: 48, bgL: 94, textL: 18, acc: 28, muted: 42 },
-      morning: { hue: 198, sat: 36, bgL: 96, textL: 16, acc: 200, muted: 40 },
-      noon: { hue: 210, sat: 28, bgL: 97, textL: 15, acc: 205, muted: 38 },
-      afternoon: { hue: 36, sat: 42, bgL: 95, textL: 17, acc: 32, muted: 40 },
-      dusk: { hue: 310, sat: 32, bgL: 93, textL: 18, acc: 320, muted: 42 },
-      night: { hue: 230, sat: 24, bgL: 92, textL: 16, acc: 210, muted: 40 },
-      late: { hue: 245, sat: 22, bgL: 91, textL: 15, acc: 220, muted: 38 }
+      dawn: { hue: 28, sat: 32, bgL: 88, textL: 16, acc: 32, muted: 40 },
+      morning: { hue: 40, sat: 28, bgL: 90, textL: 15, acc: 36, muted: 38 },
+      noon: { hue: 42, sat: 22, bgL: 91, textL: 14, acc: 38, muted: 36 },
+      afternoon: { hue: 32, sat: 30, bgL: 89, textL: 15, acc: 30, muted: 38 },
+      dusk: { hue: 20, sat: 28, bgL: 87, textL: 16, acc: 24, muted: 40 },
+      night: { hue: 30, sat: 20, bgL: 86, textL: 15, acc: 34, muted: 38 },
+      late: { hue: 28, sat: 18, bgL: 85, textL: 14, acc: 32, muted: 36 }
     };
     var b = map[period] || map.noon;
     var overlay = { hueShift: 0, satMul: 1, bgDelta: 0, glow: null, grain: 0.02, accShift: 0, textDelta: 0 };
     switch (kind) {
-      case 'clear': overlay = { hueShift: isDay ? 12 : -8, satMul: 1.25, bgDelta: isDay ? 1 : -2, glow: isDay ? 'rgba(255,200,100,0.35)' : 'rgba(120,150,220,0.22)', grain: 0.015, accShift: isDay ? 10 : -12 }; break;
-      case 'partly': overlay = { hueShift: 5, satMul: 1.05, bgDelta: 0, glow: 'rgba(140,175,230,0.22)', grain: 0.02, accShift: 4 }; break;
-      case 'cloudy': overlay = { hueShift: -6, satMul: 0.55, bgDelta: -2, glow: 'rgba(130,145,165,0.18)', grain: 0.03, accShift: -8, textDelta: 2 }; break;
-      case 'fog': overlay = { hueShift: -12, satMul: 0.3, bgDelta: -1, glow: 'rgba(190,195,205,0.28)', grain: 0.04, accShift: -10, textDelta: 3 }; break;
-      case 'rain': overlay = { hueShift: 40, satMul: 0.95, bgDelta: -3, glow: 'rgba(80,140,220,0.28)', grain: 0.035, accShift: 35, textDelta: 2 }; break;
-      case 'rain-heavy': overlay = { hueShift: 50, satMul: 0.9, bgDelta: -4, glow: 'rgba(60,110,210,0.32)', grain: 0.045, accShift: 45, textDelta: 3 }; break;
-      case 'snow': overlay = { hueShift: -25, satMul: 0.25, bgDelta: 1, glow: 'rgba(220,230,250,0.4)', grain: 0.02, accShift: -25 }; break;
-      case 'storm': overlay = { hueShift: 65, satMul: 1.15, bgDelta: -5, glow: 'rgba(130,90,230,0.28)', grain: 0.05, accShift: 70, textDelta: 4 }; break;
-      default: overlay = { hueShift: 0, satMul: 0.85, bgDelta: 0, glow: 'rgba(120,160,210,0.16)', grain: 0.02 };
+      case 'clear': overlay = { hueShift: isDay ? 6 : -4, satMul: 1.15, bgDelta: isDay ? 1 : -2, glow: isDay ? 'rgba(200,160,80,0.22)' : 'rgba(140,120,80,0.14)', grain: 0.015 }; break;
+      case 'partly': overlay = { hueShift: 3, satMul: 1.05, bgDelta: 0, glow: 'rgba(160,140,100,0.14)', grain: 0.02 }; break;
+      case 'cloudy': overlay = { hueShift: -4, satMul: 0.5, bgDelta: -2, glow: 'rgba(120,110,90,0.12)', grain: 0.03, textDelta: 2 }; break;
+      case 'fog': overlay = { hueShift: -6, satMul: 0.3, bgDelta: -1, glow: 'rgba(190,180,160,0.22)', grain: 0.04, textDelta: 3 }; break;
+      case 'rain': overlay = { hueShift: 20, satMul: 0.85, bgDelta: -3, glow: 'rgba(80,110,140,0.2)', grain: 0.035, textDelta: 2 }; break;
+      case 'rain-heavy': overlay = { hueShift: 25, satMul: 0.8, bgDelta: -4, glow: 'rgba(60,90,130,0.24)', grain: 0.045, textDelta: 3 }; break;
+      case 'snow': overlay = { hueShift: -10, satMul: 0.25, bgDelta: 1, glow: 'rgba(230,225,210,0.3)', grain: 0.02 }; break;
+      case 'storm': overlay = { hueShift: 30, satMul: 1.05, bgDelta: -5, glow: 'rgba(100,80,140,0.2)', grain: 0.05, textDelta: 4 }; break;
+      default: overlay = { hueShift: 0, satMul: 0.85, bgDelta: 0, glow: 'rgba(150,130,90,0.12)', grain: 0.02 };
     }
-    var tTint = 0;
-    if (typeof temp === 'number') {
-      if (temp >= 30) tTint = 14; else if (temp >= 25) tTint = 8; else if (temp >= 18) tTint = 3;
-      else if (temp <= 2) tTint = -20; else if (temp <= 8) tTint = -12; else if (temp <= 14) tTint = -6;
-    }
-    var hue = (b.hue + overlay.hueShift + tTint + 360) % 360;
-    var sat = Math.max(8, Math.min(48, b.sat * overlay.satMul));
-    var bgL = Math.max(86, Math.min(98, b.bgL + overlay.bgDelta));
-    var textL = Math.max(10, Math.min(28, b.textL + (overlay.textDelta || 0)));
-    var mutedL = Math.max(32, Math.min(52, b.muted + (overlay.textDelta || 0)));
+    var hue = (b.hue + overlay.hueShift + 360) % 360;
+    var sat = Math.max(8, Math.min(36, b.sat * overlay.satMul));
+    var bgL = Math.max(82, Math.min(92, b.bgL + overlay.bgDelta));
+    var textL = Math.max(10, Math.min(24, b.textL + (overlay.textDelta || 0)));
+    var mutedL = Math.max(30, Math.min(48, b.muted + (overlay.textDelta || 0)));
     var accHue = (b.acc + (overlay.accShift || 0) + 360) % 360;
-    var accSat = Math.min(72, 52 + sat * 0.3);
     return {
       hue: hue,
       bg: 'hsl(' + hue + ' ' + sat + '% ' + bgL + '%)',
-      bgSoft: 'hsl(' + hue + ' ' + Math.max(6, sat - 6) + '% ' + Math.max(88, bgL - 2) + '%)',
-      card: 'hsl(' + hue + ' ' + Math.max(5, sat - 8) + '% 99%)',
-      cardHover: 'hsl(' + hue + ' ' + Math.max(8, sat - 4) + '% ' + Math.max(92, bgL - 1) + '%)',
+      bgSoft: 'hsl(' + hue + ' ' + Math.max(6, sat - 4) + '% ' + Math.max(80, bgL - 3) + '%)',
+      card: 'hsl(' + hue + ' ' + Math.max(5, sat - 6) + '% ' + Math.min(95, bgL + 5) + '%)',
+      cardHover: 'hsl(' + hue + ' ' + Math.max(6, sat - 3) + '% ' + Math.min(96, bgL + 6) + '%)',
       text: 'hsl(' + hue + ' 28% ' + textL + '%)',
-      textMuted: 'hsl(' + hue + ' 14% ' + mutedL + '%)',
-      accent: 'hsl(' + accHue + ' ' + accSat + '% 40%)',
-      accentSoft: 'hsla(' + accHue + ' ' + accSat + '% 42% / 0.14)',
-      border: 'hsla(' + hue + ' 20% 30% / 0.12)',
-      glow: overlay.glow || 'hsla(' + hue + ' 50% 55% / 0.18)',
-      lab: 'hsl(' + ((hue + 155) % 360) + ' 48% 36%)',
+      textMuted: 'hsl(' + hue + ' 12% ' + mutedL + '%)',
+      accent: 'hsl(' + accHue + ' 48% 32%)',
+      accentSoft: 'hsla(' + accHue + ' 48% 32% / 0.15)',
+      border: 'hsla(' + hue + ' 18% 25% / 0.14)',
+      glow: overlay.glow || 'hsla(' + hue + ' 40% 40% / 0.14)',
+      lab: 'hsl(160 35% 32%)',
+      grain: overlay.grain, period: period, weather: kind, isDay: !!isDay, temp: temp
+    };
+  }
+
+  function paletteGreen(period, kind, isDay, temp) {
+    var map = {
+      dawn: { hue: 100, sat: 28, bgL: 88, textL: 16, acc: 140, muted: 38 },
+      morning: { hue: 145, sat: 26, bgL: 90, textL: 15, acc: 150, muted: 36 },
+      noon: { hue: 152, sat: 22, bgL: 91, textL: 14, acc: 155, muted: 35 },
+      afternoon: { hue: 125, sat: 28, bgL: 89, textL: 15, acc: 135, muted: 36 },
+      dusk: { hue: 160, sat: 24, bgL: 87, textL: 16, acc: 165, muted: 38 },
+      night: { hue: 150, sat: 20, bgL: 86, textL: 15, acc: 148, muted: 36 },
+      late: { hue: 155, sat: 18, bgL: 85, textL: 14, acc: 150, muted: 35 }
+    };
+    var b = map[period] || map.noon;
+    var overlay = { hueShift: 0, satMul: 1, bgDelta: 0, glow: null, grain: 0.025, accShift: 0, textDelta: 0 };
+    switch (kind) {
+      case 'clear': overlay = { hueShift: isDay ? 8 : -6, satMul: 1.2, bgDelta: isDay ? 1 : -2, glow: isDay ? 'rgba(120,180,100,0.28)' : 'rgba(60,120,90,0.2)', grain: 0.015 }; break;
+      case 'partly': overlay = { hueShift: 4, satMul: 1.05, bgDelta: 0, glow: 'rgba(100,160,120,0.2)', grain: 0.02 }; break;
+      case 'cloudy': overlay = { hueShift: -4, satMul: 0.55, bgDelta: -2, glow: 'rgba(100,120,110,0.16)', grain: 0.03, textDelta: 2 }; break;
+      case 'fog': overlay = { hueShift: -8, satMul: 0.3, bgDelta: -1, glow: 'rgba(180,195,185,0.26)', grain: 0.04, textDelta: 3 }; break;
+      case 'rain': overlay = { hueShift: 25, satMul: 0.9, bgDelta: -3, glow: 'rgba(60,120,160,0.26)', grain: 0.035, textDelta: 2 }; break;
+      case 'rain-heavy': overlay = { hueShift: 30, satMul: 0.85, bgDelta: -4, glow: 'rgba(50,100,150,0.3)', grain: 0.045, textDelta: 3 }; break;
+      case 'snow': overlay = { hueShift: -15, satMul: 0.25, bgDelta: 1, glow: 'rgba(220,235,225,0.35)', grain: 0.02 }; break;
+      case 'storm': overlay = { hueShift: 40, satMul: 1.1, bgDelta: -5, glow: 'rgba(80,70,140,0.26)', grain: 0.05, textDelta: 4 }; break;
+      default: overlay = { hueShift: 0, satMul: 0.9, bgDelta: 0, glow: 'rgba(90,140,110,0.16)', grain: 0.02 };
+    }
+    var hue = (b.hue + overlay.hueShift + 360) % 360;
+    var sat = Math.max(8, Math.min(40, b.sat * overlay.satMul));
+    var bgL = Math.max(82, Math.min(93, b.bgL + overlay.bgDelta));
+    var textL = Math.max(10, Math.min(24, b.textL + (overlay.textDelta || 0)));
+    var mutedL = Math.max(30, Math.min(48, b.muted + (overlay.textDelta || 0)));
+    var accHue = (b.acc + (overlay.accShift || 0) + 360) % 360;
+    var accSat = Math.min(55, 42 + sat * 0.25);
+    return {
+      hue: hue,
+      bg: 'hsl(' + hue + ' ' + sat + '% ' + bgL + '%)',
+      bgSoft: 'hsl(' + hue + ' ' + Math.max(6, sat - 4) + '% ' + Math.max(80, bgL - 3) + '%)',
+      card: 'hsl(' + hue + ' ' + Math.max(5, sat - 6) + '% ' + Math.min(96, bgL + 5) + '%)',
+      cardHover: 'hsl(' + hue + ' ' + Math.max(6, sat - 3) + '% ' + Math.min(97, bgL + 6) + '%)',
+      text: 'hsl(' + hue + ' 28% ' + textL + '%)',
+      textMuted: 'hsl(' + hue + ' 12% ' + mutedL + '%)',
+      accent: 'hsl(' + accHue + ' ' + accSat + '% 32%)',
+      accentSoft: 'hsla(' + accHue + ' ' + accSat + '% 32% / 0.15)',
+      border: 'hsla(' + hue + ' 18% 25% / 0.14)',
+      glow: overlay.glow || 'hsla(' + hue + ' 40% 40% / 0.16)',
+      lab: 'hsl(' + ((hue + 40) % 360) + ' 40% 32%)',
       grain: overlay.grain, period: period, weather: kind, isDay: !!isDay, temp: temp
     };
   }
 
   function palette(period, kind, isDay, temp) {
-    if (currentScheme() === 'light') return paletteLight(period, kind, isDay, temp);
+    var scheme = currentScheme();
+    if (scheme === 'classic') return paletteClassic(period, kind, isDay, temp);
+    if (scheme === 'green') return paletteGreen(period, kind, isDay, temp);
     return paletteDark(period, kind, isDay, temp);
   }
 
@@ -234,12 +287,12 @@
       if (BODY) {
         BODY.dataset.period = 'static';
         BODY.dataset.weather = 'off';
-        BODY.classList.toggle('is-day', scheme === 'light');
+        BODY.classList.toggle('is-day', scheme !== 'dark');
         BODY.classList.toggle('is-night', scheme === 'dark');
       }
       var layer = document.getElementById('rt-atmosphere');
       if (layer) { layer.className = 'rt-atmosphere wx-off'; layer.style.display = 'none'; }
-      return scheme === 'light' ? STATIC_LIGHT : STATIC_DARK;
+      return scheme === 'classic' ? STATIC_CLASSIC : (scheme === 'green' ? STATIC_GREEN : STATIC_DARK);
     }
     var j = getJST();
     var period = periodFromHours(j.hours);
