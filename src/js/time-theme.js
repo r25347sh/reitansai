@@ -1,8 +1,3 @@
-/**
- * Live atmosphere engine — 千葉県柏市光が丘2-1-1 (麗澤)
- * Combines JST clock + Open-Meteo weather into site-wide palette & body classes.
- * Updates continuously (time ~30s, weather ~10min).
- */
 (function () {
   'use strict';
   var ROOT = document.documentElement;
@@ -17,6 +12,34 @@
 
   var lastWeather = null;
 
+  var STATIC_DARK = {
+    hue: 210, bg: '#0b0e14', bgSoft: '#12161f', card: '#151a24', cardHover: '#1c2330',
+    text: '#e8eef7', textMuted: '#9aa8bc', accent: '#c9a227',
+    accentSoft: 'rgba(201, 162, 39, 0.18)', border: 'rgba(180, 200, 230, 0.14)',
+    glow: 'rgba(100, 180, 255, 0.22)', lab: '#5ec8c8', grain: 0.04,
+    period: 'static', weather: 'off', isDay: false, temp: null
+  };
+  var STATIC_LIGHT = {
+    hue: 210, bg: '#f4f6fa', bgSoft: '#eef1f6', card: '#ffffff', cardHover: '#f7f9fc',
+    text: '#1a2230', textMuted: '#5a6578', accent: '#a8841a',
+    accentSoft: 'rgba(168, 132, 26, 0.14)', border: 'rgba(30, 45, 70, 0.12)',
+    glow: 'rgba(100, 160, 220, 0.18)', lab: '#2a9a9a', grain: 0.02,
+    period: 'static', weather: 'off', isDay: true, temp: null
+  };
+
+  function currentScheme() {
+    if (window.ReitansaiThemeControl && typeof window.ReitansaiThemeControl.getScheme === 'function') {
+      return window.ReitansaiThemeControl.getScheme();
+    }
+    return ROOT.getAttribute('data-color-scheme') === 'light' ? 'light' : 'dark';
+  }
+  function atmosphereEnabled() {
+    if (window.ReitansaiThemeControl && typeof window.ReitansaiThemeControl.isAtmosphereOn === 'function') {
+      return window.ReitansaiThemeControl.isAtmosphereOn();
+    }
+    return ROOT.getAttribute('data-atmosphere') !== 'off';
+  }
+
   function getJST() {
     var fmt = new Intl.DateTimeFormat('en-US', {
       timeZone: 'Asia/Tokyo',
@@ -29,7 +52,6 @@
     var h = get('hour'), m = get('minute'), s = get('second');
     return { h: h, m: m, s: s, hours: h + m / 60 + s / 3600 };
   }
-
   function periodFromHours(hours) {
     if (hours >= 4.5 && hours < 6.5) return 'dawn';
     if (hours >= 6.5 && hours < 10) return 'morning';
@@ -39,7 +61,6 @@
     if (hours >= 19.5 && hours < 22.5) return 'night';
     return 'late';
   }
-
   function weatherKind(code, precip, cloud) {
     if (code == null) return 'unknown';
     if (code === 0) return 'clear';
@@ -53,52 +74,33 @@
     return 'cloudy';
   }
 
-  function palette(period, kind, isDay, temp) {
+  function paletteDark(period, kind, isDay, temp) {
     var map = {
-      dawn:      { hue: 18,  sat: 42, bgL: 8,  textL: 94, acc: 28 },
-      morning:   { hue: 195, sat: 38, bgL: 11, textL: 92, acc: 48 },
-      noon:      { hue: 205, sat: 32, bgL: 15, textL: 90, acc: 42 },
-      afternoon: { hue: 32,  sat: 40, bgL: 10, textL: 93, acc: 25 },
-      dusk:      { hue: 305, sat: 44, bgL: 7,  textL: 94, acc: 330 },
-      night:     { hue: 235, sat: 48, bgL: 5,  textL: 93, acc: 185 },
-      late:      { hue: 250, sat: 46, bgL: 4,  textL: 91, acc: 210 }
+      dawn: { hue: 18, sat: 42, bgL: 8, textL: 94, acc: 28 },
+      morning: { hue: 195, sat: 38, bgL: 11, textL: 92, acc: 48 },
+      noon: { hue: 205, sat: 32, bgL: 15, textL: 90, acc: 42 },
+      afternoon: { hue: 32, sat: 40, bgL: 10, textL: 93, acc: 25 },
+      dusk: { hue: 305, sat: 44, bgL: 7, textL: 94, acc: 330 },
+      night: { hue: 235, sat: 48, bgL: 5, textL: 93, acc: 185 },
+      late: { hue: 250, sat: 46, bgL: 4, textL: 91, acc: 210 }
     };
     var b = map[period] || map.night;
     var overlay = { hueShift: 0, satMul: 1, bgDelta: 0, glow: null, grain: 0.04, accShift: 0 };
     switch (kind) {
-      case 'clear':
-        overlay = { hueShift: isDay ? 22 : -14, satMul: 1.35, bgDelta: isDay ? 4 : -2, glow: isDay ? 'rgba(255,190,80,0.28)' : 'rgba(160,190,255,0.18)', grain: 0.02, accShift: isDay ? 15 : -20 };
-        break;
-      case 'partly':
-        overlay = { hueShift: 8, satMul: 1.1, bgDelta: 1, glow: 'rgba(140,180,230,0.16)', grain: 0.035, accShift: 5 };
-        break;
-      case 'cloudy':
-        overlay = { hueShift: -22, satMul: 0.55, bgDelta: -2, glow: 'rgba(110,130,155,0.12)', grain: 0.07, accShift: -15 };
-        break;
-      case 'fog':
-        overlay = { hueShift: 12, satMul: 0.3, bgDelta: 5, glow: 'rgba(210,220,235,0.28)', grain: 0.11, accShift: 10 };
-        break;
-      case 'rain':
-        overlay = { hueShift: 45, satMul: 1.05, bgDelta: -3, glow: 'rgba(60,130,220,0.28)', grain: 0.08, accShift: 40 };
-        break;
-      case 'rain-heavy':
-        overlay = { hueShift: 55, satMul: 1.0, bgDelta: -5, glow: 'rgba(40,90,200,0.35)', grain: 0.1, accShift: 50 };
-        break;
-      case 'snow':
-        overlay = { hueShift: -28, satMul: 0.28, bgDelta: 6, glow: 'rgba(230,240,255,0.32)', grain: 0.05, accShift: -30 };
-        break;
-      case 'storm':
-        overlay = { hueShift: 70, satMul: 1.45, bgDelta: -6, glow: 'rgba(140,70,255,0.38)', grain: 0.12, accShift: 80 };
-        break;
+      case 'clear': overlay = { hueShift: isDay ? 22 : -14, satMul: 1.35, bgDelta: isDay ? 4 : -2, glow: isDay ? 'rgba(255,190,80,0.28)' : 'rgba(160,190,255,0.18)', grain: 0.02, accShift: isDay ? 15 : -20 }; break;
+      case 'partly': overlay = { hueShift: 8, satMul: 1.1, bgDelta: 1, glow: 'rgba(140,180,230,0.16)', grain: 0.035, accShift: 5 }; break;
+      case 'cloudy': overlay = { hueShift: -8, satMul: 0.55, bgDelta: -1, glow: 'rgba(100,120,150,0.12)', grain: 0.06, accShift: -10 }; break;
+      case 'fog': overlay = { hueShift: -20, satMul: 0.35, bgDelta: 3, glow: 'rgba(180,190,200,0.22)', grain: 0.09, accShift: -15 }; break;
+      case 'unknown': overlay = { hueShift: 0, satMul: 0.9, bgDelta: 0, glow: 'rgba(100,140,200,0.14)', grain: 0.05, accShift: 0 }; break;
+      case 'rain': overlay = { hueShift: 45, satMul: 1.05, bgDelta: -3, glow: 'rgba(60,130,220,0.28)', grain: 0.08, accShift: 40 }; break;
+      case 'rain-heavy': overlay = { hueShift: 55, satMul: 1.0, bgDelta: -5, glow: 'rgba(40,90,200,0.35)', grain: 0.1, accShift: 50 }; break;
+      case 'snow': overlay = { hueShift: -28, satMul: 0.28, bgDelta: 6, glow: 'rgba(230,240,255,0.32)', grain: 0.05, accShift: -30 }; break;
+      case 'storm': overlay = { hueShift: 70, satMul: 1.45, bgDelta: -6, glow: 'rgba(140,70,255,0.38)', grain: 0.12, accShift: 80 }; break;
     }
     var tTint = 0;
     if (typeof temp === 'number') {
-      if (temp >= 30) tTint = 20;
-      else if (temp >= 25) tTint = 12;
-      else if (temp >= 18) tTint = 4;
-      else if (temp <= 2) tTint = -28;
-      else if (temp <= 8) tTint = -16;
-      else if (temp <= 14) tTint = -8;
+      if (temp >= 30) tTint = 20; else if (temp >= 25) tTint = 12; else if (temp >= 18) tTint = 4;
+      else if (temp <= 2) tTint = -28; else if (temp <= 8) tTint = -16; else if (temp <= 14) tTint = -8;
     }
     var hue = (b.hue + overlay.hueShift + tTint + 360) % 360;
     var sat = Math.max(12, Math.min(62, b.sat * overlay.satMul));
@@ -118,12 +120,65 @@
       border: 'hsla(' + hue + ' 30% 72% / 0.22)',
       glow: overlay.glow || 'hsla(' + hue + ' 55% 50% / 0.22)',
       lab: 'hsl(' + ((hue + 150) % 360) + ' 62% 58%)',
-      grain: overlay.grain,
-      period: period,
-      weather: kind,
-      isDay: !!isDay,
-      temp: temp
+      grain: overlay.grain, period: period, weather: kind, isDay: !!isDay, temp: temp
     };
+  }
+
+  function paletteLight(period, kind, isDay, temp) {
+    var map = {
+      dawn: { hue: 22, sat: 48, bgL: 94, textL: 18, acc: 28, muted: 42 },
+      morning: { hue: 198, sat: 36, bgL: 96, textL: 16, acc: 200, muted: 40 },
+      noon: { hue: 210, sat: 28, bgL: 97, textL: 15, acc: 205, muted: 38 },
+      afternoon: { hue: 36, sat: 42, bgL: 95, textL: 17, acc: 32, muted: 40 },
+      dusk: { hue: 310, sat: 32, bgL: 93, textL: 18, acc: 320, muted: 42 },
+      night: { hue: 230, sat: 24, bgL: 92, textL: 16, acc: 210, muted: 40 },
+      late: { hue: 245, sat: 22, bgL: 91, textL: 15, acc: 220, muted: 38 }
+    };
+    var b = map[period] || map.noon;
+    var overlay = { hueShift: 0, satMul: 1, bgDelta: 0, glow: null, grain: 0.02, accShift: 0, textDelta: 0 };
+    switch (kind) {
+      case 'clear': overlay = { hueShift: isDay ? 12 : -8, satMul: 1.25, bgDelta: isDay ? 1 : -2, glow: isDay ? 'rgba(255,200,100,0.35)' : 'rgba(120,150,220,0.22)', grain: 0.015, accShift: isDay ? 10 : -12 }; break;
+      case 'partly': overlay = { hueShift: 5, satMul: 1.05, bgDelta: 0, glow: 'rgba(140,175,230,0.22)', grain: 0.02, accShift: 4 }; break;
+      case 'cloudy': overlay = { hueShift: -6, satMul: 0.55, bgDelta: -2, glow: 'rgba(130,145,165,0.18)', grain: 0.03, accShift: -8, textDelta: 2 }; break;
+      case 'fog': overlay = { hueShift: -12, satMul: 0.3, bgDelta: -1, glow: 'rgba(190,195,205,0.28)', grain: 0.04, accShift: -10, textDelta: 3 }; break;
+      case 'rain': overlay = { hueShift: 40, satMul: 0.95, bgDelta: -3, glow: 'rgba(80,140,220,0.28)', grain: 0.035, accShift: 35, textDelta: 2 }; break;
+      case 'rain-heavy': overlay = { hueShift: 50, satMul: 0.9, bgDelta: -4, glow: 'rgba(60,110,210,0.32)', grain: 0.045, accShift: 45, textDelta: 3 }; break;
+      case 'snow': overlay = { hueShift: -25, satMul: 0.25, bgDelta: 1, glow: 'rgba(220,230,250,0.4)', grain: 0.02, accShift: -25 }; break;
+      case 'storm': overlay = { hueShift: 65, satMul: 1.15, bgDelta: -5, glow: 'rgba(130,90,230,0.28)', grain: 0.05, accShift: 70, textDelta: 4 }; break;
+      default: overlay = { hueShift: 0, satMul: 0.85, bgDelta: 0, glow: 'rgba(120,160,210,0.16)', grain: 0.02 };
+    }
+    var tTint = 0;
+    if (typeof temp === 'number') {
+      if (temp >= 30) tTint = 14; else if (temp >= 25) tTint = 8; else if (temp >= 18) tTint = 3;
+      else if (temp <= 2) tTint = -20; else if (temp <= 8) tTint = -12; else if (temp <= 14) tTint = -6;
+    }
+    var hue = (b.hue + overlay.hueShift + tTint + 360) % 360;
+    var sat = Math.max(8, Math.min(48, b.sat * overlay.satMul));
+    var bgL = Math.max(86, Math.min(98, b.bgL + overlay.bgDelta));
+    var textL = Math.max(10, Math.min(28, b.textL + (overlay.textDelta || 0)));
+    var mutedL = Math.max(32, Math.min(52, b.muted + (overlay.textDelta || 0)));
+    var accHue = (b.acc + (overlay.accShift || 0) + 360) % 360;
+    var accSat = Math.min(72, 52 + sat * 0.3);
+    return {
+      hue: hue,
+      bg: 'hsl(' + hue + ' ' + sat + '% ' + bgL + '%)',
+      bgSoft: 'hsl(' + hue + ' ' + Math.max(6, sat - 6) + '% ' + Math.max(88, bgL - 2) + '%)',
+      card: 'hsl(' + hue + ' ' + Math.max(5, sat - 8) + '% 99%)',
+      cardHover: 'hsl(' + hue + ' ' + Math.max(8, sat - 4) + '% ' + Math.max(92, bgL - 1) + '%)',
+      text: 'hsl(' + hue + ' 28% ' + textL + '%)',
+      textMuted: 'hsl(' + hue + ' 14% ' + mutedL + '%)',
+      accent: 'hsl(' + accHue + ' ' + accSat + '% 40%)',
+      accentSoft: 'hsla(' + accHue + ' ' + accSat + '% 42% / 0.14)',
+      border: 'hsla(' + hue + ' 20% 30% / 0.12)',
+      glow: overlay.glow || 'hsla(' + hue + ' 50% 55% / 0.18)',
+      lab: 'hsl(' + ((hue + 155) % 360) + ' 48% 36%)',
+      grain: overlay.grain, period: period, weather: kind, isDay: !!isDay, temp: temp
+    };
+  }
+
+  function palette(period, kind, isDay, temp) {
+    if (currentScheme() === 'light') return paletteLight(period, kind, isDay, temp);
+    return paletteDark(period, kind, isDay, temp);
   }
 
   function apply(p) {
@@ -142,7 +197,6 @@
     ROOT.style.setProperty('--rt-grain', p.grain);
     ROOT.style.setProperty('--rt-sat-boost', p.weather === 'clear' || p.weather === 'storm' ? '1.2' : '1');
     ROOT.style.setProperty('--rt-wx-opacity', p.weather === 'rain-heavy' || p.weather === 'storm' ? '0.85' : '0.55');
-    ROOT.dataset.theme = p.isDay ? 'day' : 'night';
     ROOT.dataset.period = p.period;
     ROOT.dataset.weather = p.weather;
     if (p.temp != null) ROOT.dataset.temp = String(Math.round(p.temp));
@@ -155,11 +209,38 @@
     }
     var layer = document.getElementById('rt-atmosphere');
     if (layer) {
-      layer.className = 'rt-atmosphere wx-' + p.weather + ' pd-' + p.period + (p.isDay ? ' day' : ' night');
+      if (!atmosphereEnabled() || p.weather === 'off') {
+        layer.className = 'rt-atmosphere wx-off';
+        layer.style.display = 'none';
+      } else {
+        layer.style.display = '';
+        layer.className = 'rt-atmosphere wx-' + p.weather + ' pd-' + p.period + (p.isDay ? ' day' : ' night');
+      }
     }
   }
 
+  function clearInlineVars() {
+    ['--rt-hue','--rt-bg','--rt-bg-soft','--rt-card','--rt-card-hover','--rt-text','--rt-text-muted','--rt-accent','--rt-accent-soft','--rt-border','--rt-glow','--rt-lab','--rt-grain','--rt-sat-boost','--rt-wx-opacity'].forEach(function (k) {
+      ROOT.style.removeProperty(k);
+    });
+  }
+
   function tickTime() {
+    if (!atmosphereEnabled()) {
+      var scheme = currentScheme();
+      clearInlineVars();
+      ROOT.dataset.period = 'static';
+      ROOT.dataset.weather = 'off';
+      if (BODY) {
+        BODY.dataset.period = 'static';
+        BODY.dataset.weather = 'off';
+        BODY.classList.toggle('is-day', scheme === 'light');
+        BODY.classList.toggle('is-night', scheme === 'dark');
+      }
+      var layer = document.getElementById('rt-atmosphere');
+      if (layer) { layer.className = 'rt-atmosphere wx-off'; layer.style.display = 'none'; }
+      return scheme === 'light' ? STATIC_LIGHT : STATIC_DARK;
+    }
     var j = getJST();
     var period = periodFromHours(j.hours);
     var w = lastWeather || {};
@@ -171,15 +252,14 @@
   }
 
   function fetchWeather() {
+    if (!atmosphereEnabled()) return Promise.resolve();
     return fetch(WEATHER_URL)
       .then(function (r) { return r.json(); })
       .then(function (data) {
         if (data && data.current) {
           lastWeather = data.current;
           tickTime();
-          try {
-            sessionStorage.setItem('rt-wx', JSON.stringify({ t: Date.now(), c: data.current }));
-          } catch (e) {}
+          try { sessionStorage.setItem('rt-wx', JSON.stringify({ t: Date.now(), c: data.current })); } catch (e) {}
         }
       })
       .catch(function () { tickTime(); });
@@ -210,6 +290,10 @@
     document.addEventListener('visibilitychange', function () {
       if (!document.hidden) { tickTime(); fetchWeather(); }
     });
+    document.addEventListener('rt-theme-change', function () {
+      tickTime();
+      if (atmosphereEnabled()) fetchWeather();
+    });
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
@@ -217,6 +301,7 @@
 
   window.ReitansaiTheme = {
     tick: tickTime,
+    retick: tickTime,
     fetchWeather: fetchWeather,
     getJST: getJST,
     coords: { lat: LAT, lon: LON, label: '千葉県柏市光が丘2-1-1' }
