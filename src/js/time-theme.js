@@ -274,25 +274,44 @@
     document.body.appendChild(el);
   }
 
+  function ensureThemeControl(done) {
+    if (window.ReitansaiThemeControl) { done(); return; }
+    var existing = document.querySelector('script[src*="theme-control.js"]');
+    if (existing) {
+      var wait = setInterval(function () {
+        if (window.ReitansaiThemeControl) { clearInterval(wait); done(); }
+      }, 20);
+      setTimeout(function () { clearInterval(wait); done(); }, 2000);
+      return;
+    }
+    var s = document.createElement('script');
+    s.src = '/reitansai/src/js/theme-control.js';
+    s.onload = function () { done(); };
+    s.onerror = function () { done(); };
+    document.head.appendChild(s);
+  }
+
   function boot() {
-    ensureAtmosphere();
-    try {
-      var cached = sessionStorage.getItem('rt-wx');
-      if (cached) {
-        var o = JSON.parse(cached);
-        if (o && o.c && Date.now() - o.t < 15 * 60 * 1000) lastWeather = o.c;
-      }
-    } catch (e) {}
-    tickTime();
-    fetchWeather();
-    setInterval(tickTime, 30000);
-    setInterval(fetchWeather, 10 * 60 * 1000);
-    document.addEventListener('visibilitychange', function () {
-      if (!document.hidden) { tickTime(); fetchWeather(); }
-    });
-    document.addEventListener('rt-theme-change', function () {
+    ensureThemeControl(function () {
+      ensureAtmosphere();
+      try {
+        var cached = sessionStorage.getItem('rt-wx');
+        if (cached) {
+          var o = JSON.parse(cached);
+          if (o && o.c && Date.now() - o.t < 15 * 60 * 1000) lastWeather = o.c;
+        }
+      } catch (e) {}
       tickTime();
-      if (atmosphereEnabled()) fetchWeather();
+      fetchWeather();
+      setInterval(tickTime, 30000);
+      setInterval(fetchWeather, 10 * 60 * 1000);
+      document.addEventListener('visibilitychange', function () {
+        if (!document.hidden) { tickTime(); fetchWeather(); }
+      });
+      document.addEventListener('rt-theme-change', function () {
+        tickTime();
+        if (atmosphereEnabled()) fetchWeather();
+      });
     });
   }
 
