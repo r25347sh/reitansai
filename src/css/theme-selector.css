@@ -172,9 +172,7 @@ html[data-color-scheme="green"] .btn-primary {
 }
 
 html[data-color-scheme="dark"] { color-scheme: dark; }
-html[data-color-scheme="classic"] .rt-atmosphere,
-html[data-color-scheme="green"] .rt-atmosphere,
-html[data-color-scheme="light"] .rt-atmosphere { opacity: 0.45; }
+/* atmosphere opacity: controlled by atmosphere.css (classic/green >= 0.88) */
 
 body {
   transition: background-color 0.35s ease, color 0.35s ease, border-color 0.35s ease;
