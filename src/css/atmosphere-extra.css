@@ -1,0 +1,61 @@
+/* atmosphere extras — richer weather motion */
+.rt-atmosphere.wx-clear.day::after{
+  opacity:.55;
+  background:conic-gradient(from 0deg at 78% -5%,transparent 0deg,rgba(255,220,120,.08) 8deg,transparent 16deg,rgba(255,230,140,.06) 24deg,transparent 32deg,rgba(255,210,100,.1) 40deg,transparent 50deg,rgba(255,220,130,.05) 60deg,transparent 70deg,rgba(255,200,90,.09) 80deg,transparent 90deg,rgba(255,230,150,.04) 100deg,transparent 360deg);
+  animation:sunRays 48s linear infinite;filter:blur(1px)
+}
+@keyframes sunRays{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+@keyframes sunPulseFull{0%,100%{filter:brightness(1) saturate(1)}50%{filter:brightness(1.18) saturate(1.22)}}
+.rt-atmosphere.wx-clear.day::before{animation:sunPulseFull 7s ease-in-out infinite}
+
+.rt-atmosphere.wx-clear.night::after{
+  opacity:.95;
+  background-image:radial-gradient(1.5px 1.5px at 8% 12%,#fff,transparent),radial-gradient(1px 1px at 22% 28%,rgba(255,255,255,.7),transparent),radial-gradient(2px 2px at 35% 8%,rgba(255,255,255,.9),transparent),radial-gradient(1px 1px at 48% 35%,rgba(220,230,255,.65),transparent),radial-gradient(1.5px 1.5px at 62% 18%,rgba(255,255,255,.85),transparent),radial-gradient(1px 1px at 75% 42%,rgba(255,255,255,.6),transparent),radial-gradient(2px 2px at 88% 15%,rgba(255,255,255,.9),transparent),radial-gradient(1px 1px at 12% 55%,rgba(200,220,255,.55),transparent),radial-gradient(1.5px 1.5px at 28% 68%,rgba(255,255,255,.75),transparent),radial-gradient(1px 1px at 52% 72%,rgba(255,255,255,.5),transparent),radial-gradient(2px 2px at 70% 58%,rgba(255,255,255,.8),transparent),radial-gradient(1px 1px at 92% 65%,rgba(220,230,255,.6),transparent);
+  background-size:100% 100%;
+  animation:starTwinkle 4.5s ease-in-out infinite alternate
+}
+@keyframes starTwinkle{0%{opacity:.75;filter:brightness(.9)}50%{opacity:1;filter:brightness(1.15)}100%{opacity:.85;filter:brightness(1)}}
+
+.rt-atmosphere.wx-partly::before{animation:cloudDrift 40s ease-in-out infinite alternate}
+.rt-atmosphere.wx-partly::after{
+  opacity:.4;
+  background:radial-gradient(ellipse 80% 35% at 60% 15%,rgba(180,195,220,.25),transparent 60%),radial-gradient(ellipse 60% 25% at 20% 25%,rgba(160,175,200,.18),transparent 55%);
+  filter:blur(8px);animation:cloudDrift2 55s ease-in-out infinite alternate
+}
+@keyframes cloudDrift{from{transform:translateX(-4%)}to{transform:translateX(5%) translateY(2%)}}
+@keyframes cloudDrift2{from{transform:translateX(3%)}to{transform:translateX(-6%)}}
+
+.rt-atmosphere.wx-cloudy::before{animation:cloudDrift 50s ease-in-out infinite alternate}
+.rt-atmosphere.wx-cloudy::after{
+  opacity:.5;
+  background:radial-gradient(ellipse 100% 40% at 55% 10%,rgba(130,145,170,.3),transparent 55%);
+  filter:blur(10px);animation:cloudDrift2 65s ease-in-out infinite alternate
+}
+
+.rt-atmosphere.wx-fog::before{animation:fogPulse 12s ease-in-out infinite alternate}
+.rt-atmosphere.wx-fog::after{
+  opacity:.7;
+  background:repeating-linear-gradient(0deg,transparent,transparent 28px,rgba(255,255,255,.05) 28px,rgba(255,255,255,.05) 56px);
+  animation:fogDrift 32s linear infinite
+}
+@keyframes fogDrift{to{transform:translateX(-12%)}}
+@keyframes fogPulse{from{opacity:.85;filter:blur(16px)}to{opacity:1;filter:blur(22px)}}
+
+.rt-atmosphere.wx-snow::after{
+  opacity:.95;
+  background-image:radial-gradient(3px 3px at 12% 15%,#fff,transparent),radial-gradient(2px 2px at 28% 42%,rgba(255,255,255,.8),transparent),radial-gradient(2.5px 2.5px at 45% 8%,rgba(255,255,255,.9),transparent),radial-gradient(1.5px 1.5px at 62% 55%,rgba(255,255,255,.7),transparent),radial-gradient(3px 3px at 78% 22%,rgba(255,255,255,.85),transparent),radial-gradient(2px 2px at 88% 68%,rgba(255,255,255,.75),transparent),radial-gradient(2.5px 2.5px at 18% 72%,rgba(255,255,255,.8),transparent),radial-gradient(1.5px 1.5px at 38% 88%,rgba(255,255,255,.65),transparent);
+  background-size:240px 240px,180px 180px,200px 200px,160px 160px,220px 220px,170px 170px,190px 190px,150px 150px;
+  animation:snowFall 14s linear infinite
+}
+@keyframes snowFall{0%{transform:translateY(0)}100%{transform:translateY(240px) translateX(50px)}}
+
+.rt-atm-lightning{position:absolute;inset:0;background:rgba(220,200,255,.55);opacity:0;pointer-events:none;z-index:2;mix-blend-mode:screen}
+.rt-atmosphere.wx-storm.lightning-active .rt-atm-lightning{animation:lightningBolt .35s ease-out}
+@keyframes lightningBolt{0%{opacity:0}15%{opacity:1}30%{opacity:.3}45%{opacity:.95}70%{opacity:.15}100%{opacity:0}}
+
+html[data-color-scheme="sakura"] .rt-atmosphere,
+html[data-color-scheme="ocean"] .rt-atmosphere{opacity:.62}
+
+@media (prefers-reduced-motion:reduce){
+  .rt-atmosphere::before,.rt-atmosphere::after{animation:none!important}
+}
