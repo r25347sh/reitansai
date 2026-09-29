@@ -146,7 +146,7 @@
     if (hint) {
       if (state.mode === 'system') {
         hint.hidden = false;
-        hint.textContent = systemPrefersDark() ? 'OS: \u30c0\u30fc\u30af \u2192 \u30c0\u30fc\u30af\u9069\u7528\u4e2d' : 'OS: \u30e9\u30a4\u30c8 \u2192 \u30af\u30e9\u30b7\u30c3\u30af\u9069\u7528\u4e2d';
+        hint.textContent = systemPrefersDark() ? 'OS: ダーク → ダーク適用中' : 'OS: ライト → クラシック適用中';
       } else {
         hint.hidden = true;
       }
@@ -182,10 +182,10 @@
     btn.type = 'button';
     btn.className = 'rt-theme-trigger';
     btn.id = 'rt-theme-trigger';
-    btn.setAttribute('aria-label', '\u30c6\u30fc\u30de\u8a2d\u5b9a');
+    btn.setAttribute('aria-label', 'テーマ設定');
     btn.setAttribute('aria-expanded', 'false');
     btn.setAttribute('aria-controls', 'rt-theme-panel');
-    btn.title = '\u30c6\u30fc\u30de\u8a2d\u5b9a';
+    btn.title = 'テーマ設定';
     btn.innerHTML = sunSVG();
     triggerEl = btn;
 
@@ -193,21 +193,21 @@
     panel.className = 'rt-theme-panel';
     panel.id = 'rt-theme-panel';
     panel.setAttribute('role', 'dialog');
-    panel.setAttribute('aria-label', '\u30ab\u30e9\u30fc\u30c6\u30fc\u30de');
+    panel.setAttribute('aria-label', 'カラーテーマ');
     panel.innerHTML =
-      '<div class="rt-theme-modes" role="group" aria-label="\u30ab\u30e9\u30fc\u30e2\u30fc\u30c9">' +
-        '<button type="button" class="rt-theme-mode" data-mode="dark" title="\u30c0\u30fc\u30af">\u30c0\u30fc\u30af</button>' +
-        '<button type="button" class="rt-theme-mode" data-mode="classic" title="\u30af\u30e9\u30b7\u30c3\u30af">\u30af\u30e9\u30b7</button>' +
-        '<button type="button" class="rt-theme-mode" data-mode="green" title="\u30b0\u30ea\u30fc\u30f3">\u30b0\u30ea\u30fc\u30f3</button>' +
-        '<button type="button" class="rt-theme-mode" data-mode="sakura" title="\u3055\u304f\u3089">\u3055\u304f\u3089</button>' +
-        '<button type="button" class="rt-theme-mode" data-mode="ocean" title="\u30aa\u30fc\u30b7\u30e3\u30f3">\u6d77</button>' +
-        '<button type="button" class="rt-theme-mode" data-mode="midnight" title="\u30df\u30c3\u30c9\u30ca\u30a4\u30c8">\u6df1\u591c</button>' +
-        '<button type="button" class="rt-theme-mode" data-mode="system" title="OS\u306e\u8a2d\u5b9a\u306b\u5408\u308f\u305b\u308b">\u30b7\u30b9\u30c6\u30e0</button>' +
+      '<div class="rt-theme-modes" role="group" aria-label="カラーモード">' +
+        '<button type="button" class="rt-theme-mode" data-mode="dark" title="ダーク">ダーク</button>' +
+        '<button type="button" class="rt-theme-mode" data-mode="classic" title="クラシック">クラシ</button>' +
+        '<button type="button" class="rt-theme-mode" data-mode="green" title="グリーン">グリーン</button>' +
+        '<button type="button" class="rt-theme-mode" data-mode="sakura" title="さくら">さくら</button>' +
+        '<button type="button" class="rt-theme-mode" data-mode="ocean" title="オーシャン">海</button>' +
+        '<button type="button" class="rt-theme-mode" data-mode="midnight" title="ミッドナイト">深夜</button>' +
+        '<button type="button" class="rt-theme-mode" data-mode="system" title="OSの設定に合わせる">システム</button>' +
       '</div>' +
       '<p class="rt-theme-system-hint" hidden></p>' +
       '<div class="rt-theme-sep" aria-hidden="true"></div>' +
       '<label class="rt-atm-toggle" for="rt-atm-check">' +
-        '<span class="rt-atm-toggle-label">\u6642\u9593\u30fb\u5929\u6c17\u9023\u52d5</span>' +
+        '<span class="rt-atm-toggle-label">時間・天気連動</span>' +
         '<span class="rt-atm-switch">' +
           '<input type="checkbox" id="rt-atm-check" />' +
           '<span class="rt-atm-track"><span class="rt-atm-thumb"></span></span>' +
