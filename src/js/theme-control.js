@@ -1,6 +1,9 @@
 /**
  * Theme control — dark / classic / green / system (default)
  * localStorage: rt-color-mode, rt-atmosphere
+ *
+ * Panel: dropdown below the trigger (right-aligned).
+ * Flips upward when there is not enough space below the header.
  */
 (function () {
   'use strict';
@@ -131,6 +134,7 @@
 
   var panelEl = null;
   var triggerEl = null;
+  var wrapEl = null;
 
   function sunSVG() {
     return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
@@ -160,6 +164,28 @@
     }
   }
 
+  /**
+   * Decide whether panel should open below or above the trigger
+   * based on available viewport space under the sticky header.
+   */
+  function positionPanel() {
+    if (!panelEl || !triggerEl) return;
+
+    var rect = triggerEl.getBoundingClientRect();
+    var vv = window.visualViewport;
+    var vh = (vv && vv.height > 0) ? vv.height : window.innerHeight;
+    var spaceBelow = vh - rect.bottom;
+    var spaceAbove = rect.top;
+    /* panel approx height: modes grid + atm row + padding ≈ 200px */
+    var need = 220;
+
+    if (spaceBelow < need && spaceAbove > spaceBelow) {
+      panelEl.setAttribute('data-placement', 'top');
+    } else {
+      panelEl.setAttribute('data-placement', 'bottom');
+    }
+  }
+
   function closePanel() {
     if (!panelEl || !triggerEl) return;
     panelEl.classList.remove('is-open');
@@ -168,6 +194,7 @@
 
   function openPanel() {
     if (!panelEl || !triggerEl) return;
+    positionPanel();
     panelEl.classList.add('is-open');
     triggerEl.setAttribute('aria-expanded', 'true');
     syncUI();
@@ -184,6 +211,7 @@
     var wrap = document.createElement('div');
     wrap.className = 'rt-theme-ctrl';
     wrap.id = 'rt-theme-ctrl';
+    wrapEl = wrap;
 
     var btn = document.createElement('button');
     btn.type = 'button';
@@ -192,6 +220,7 @@
     btn.setAttribute('aria-label', 'テーマ設定');
     btn.setAttribute('aria-expanded', 'false');
     btn.setAttribute('aria-controls', 'rt-theme-panel');
+    btn.setAttribute('aria-haspopup', 'dialog');
     btn.title = 'テーマ設定';
     btn.innerHTML = sunSVG();
     triggerEl = btn;
@@ -201,11 +230,12 @@
     panel.id = 'rt-theme-panel';
     panel.setAttribute('role', 'dialog');
     panel.setAttribute('aria-label', 'カラーテーマ');
+    panel.setAttribute('data-placement', 'bottom');
     panel.innerHTML =
       '<div class="rt-theme-modes" role="group" aria-label="カラーモード">' +
         '<button type="button" class="rt-theme-mode" data-mode="dark" title="ダーク">ダーク</button>' +
         '<button type="button" class="rt-theme-mode" data-mode="classic" title="クラシック">クラシック</button>' +
-        '<button type="button" class="rt-theme-mode" data-mode="green" title="グリーン">グリーン</button>' +
+        '<button type="button" class="rt-theme-mode" data-mode="green" title="グリーン（深緑）">グリーン</button>' +
         '<button type="button" class="rt-theme-mode" data-mode="system" title="OSの外観設定に合わせる">システム</button>' +
       '</div>' +
       '<p class="rt-theme-system-hint" hidden></p>' +
@@ -244,6 +274,7 @@
         e.preventDefault();
         e.stopPropagation();
         setMode(b.getAttribute('data-mode'));
+        /* 選択後もパネルは開いたまま（連続切替しやすい） */
       });
     });
 
@@ -260,9 +291,21 @@
     document.addEventListener('click', function (e) {
       if (!wrap.contains(e.target)) closePanel();
     });
+
     document.addEventListener('keydown', function (e) {
       if (e.key === 'Escape') closePanel();
     });
+
+    /* スクロール・リサイズ時は位置を再計算（開いているときのみ） */
+    var onViewportChange = function () {
+      if (panelEl && panelEl.classList.contains('is-open')) positionPanel();
+    };
+    window.addEventListener('resize', onViewportChange, { passive: true });
+    window.addEventListener('scroll', onViewportChange, { passive: true, capture: true });
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', onViewportChange);
+      window.visualViewport.addEventListener('scroll', onViewportChange);
+    }
 
     syncUI();
   }
