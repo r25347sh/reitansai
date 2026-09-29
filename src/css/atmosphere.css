@@ -1,1 +1,29 @@
-SEE_FILE
+/* Live atmosphere (Kashiwa) */
+.rt-atmosphere{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;transition:opacity 1.4s ease,filter 2s ease}
+.rt-atmosphere::before,.rt-atmosphere::after{content:'';position:absolute;inset:-15%;transition:opacity 1.8s ease,background 1.8s ease,filter 1.8s ease,transform 2.2s ease}
+.rt-atmosphere::before{background:radial-gradient(ellipse 80% 50% at 50% -10%,var(--rt-glow),transparent 55%);opacity:1}
+.rt-atmosphere::after{opacity:0}
+.rt-atm-particles{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1}
+.rt-atm-particle{position:absolute;border-radius:50%;pointer-events:none;will-change:transform,opacity}
+.rt-atmosphere.wx-clear.day::before{background:radial-gradient(ellipse 110% 75% at 78% -12%,rgba(255,210,90,.55),transparent 42%),radial-gradient(ellipse 50% 40% at 12% 95%,rgba(70,170,255,.22),transparent 50%);animation:sunPulse 7s ease-in-out infinite}
+.rt-atmosphere.wx-clear.night::before{background:radial-gradient(ellipse 70% 50% at 82% 6%,rgba(150,180,255,.32),transparent 48%),radial-gradient(circle at 16% 26%,rgba(255,255,235,.16),transparent 18%)}
+.rt-atmosphere.wx-partly::before{background:radial-gradient(ellipse 100% 55% at 25% -8%,rgba(140,160,190,.28),transparent 55%),radial-gradient(ellipse 70% 40% at 75% 5%,rgba(120,140,170,.22),transparent 50%);filter:blur(2.5px) saturate(.85)}
+.rt-atmosphere.wx-cloudy::before{background:radial-gradient(ellipse 130% 55% at 30% -5%,rgba(110,130,160,.42),transparent 52%),radial-gradient(ellipse 90% 45% at 85% 8%,rgba(90,110,140,.32),transparent 50%);filter:blur(4px) saturate(.65)}
+.rt-atmosphere.wx-fog::before{background:linear-gradient(180deg,rgba(200,210,225,.48) 0%,rgba(185,195,210,.28) 30%,transparent 80%);filter:blur(18px)}
+.rt-atmosphere.wx-rain::before,.rt-atmosphere.wx-rain-heavy::before{background:radial-gradient(ellipse 110% 65% at 50% -12%,rgba(40,90,170,.42),transparent 52%)}
+.rt-atmosphere.wx-rain::after{opacity:.78;background:repeating-linear-gradient(108deg,transparent 0,transparent 4px,rgba(140,180,255,.16) 5px,transparent 7px);background-size:16px 32px;animation:rainFall .42s linear infinite}
+.rt-atmosphere.wx-rain-heavy::after{opacity:.92;background:repeating-linear-gradient(110deg,transparent 0,transparent 3px,rgba(150,185,255,.22) 4px,transparent 6px);background-size:11px 20px;animation:rainFall .26s linear infinite}
+.rt-atmosphere.wx-snow::before{background:radial-gradient(ellipse 110% 55% at 50% -5%,rgba(200,220,255,.35),transparent 52%)}
+.rt-atmosphere.wx-storm::before{background:radial-gradient(ellipse 110% 75% at 35% -18%,rgba(90,50,190,.5),transparent 48%);animation:stormFlash 6.5s ease-in-out infinite}
+.rt-atmosphere.wx-storm::after{opacity:.88;background:repeating-linear-gradient(112deg,transparent 0,transparent 3px,rgba(180,160,255,.22) 4px,transparent 6px);background-size:10px 18px;animation:rainFall .2s linear infinite}
+@keyframes sunPulse{0%,100%{filter:brightness(1)}50%{filter:brightness(1.18)}}
+@keyframes rainFall{to{transform:translateY(36px) translateX(4px)}}
+@keyframes stormFlash{0%,86%,100%{filter:brightness(1)}88%{filter:brightness(2.1)}93%{filter:brightness(.85)}}
+/* portal-safe: do not put filter on body (breaks position:fixed) */
+html[data-weather="rain"] .site-header,html[data-weather="rain"] .main,html[data-weather="rain"] .site-footer,
+html[data-weather="rain-heavy"] .site-header,html[data-weather="rain-heavy"] .main,html[data-weather="rain-heavy"] .site-footer{filter:saturate(.92)}
+html[data-weather="fog"] .site-header,html[data-weather="fog"] .main,html[data-weather="fog"] .site-footer{filter:saturate(.78) contrast(.96)}
+html[data-weather="snow"] .site-header,html[data-weather="snow"] .main,html[data-weather="snow"] .site-footer{filter:saturate(.88) brightness(1.03)}
+html[data-weather="storm"] .site-header,html[data-weather="storm"] .main,html[data-weather="storm"] .site-footer{filter:saturate(1.08) contrast(1.04)}
+html[data-color-scheme="classic"] .rt-atmosphere,html[data-color-scheme="green"] .rt-atmosphere,html[data-color-scheme="light"] .rt-atmosphere{opacity:.62}
+@media (prefers-reduced-motion:reduce){.rt-atmosphere::before,.rt-atmosphere::after{animation:none!important}}
