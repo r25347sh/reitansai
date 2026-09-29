@@ -1,1 +1,19 @@
-PLACEHOLDER_ATM
+/* Live atmosphere (Kashiwa) — classic/green softer weather effects */
+.rt-atmosphere{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;transition:opacity 1.4s ease,filter 2s ease}
+.rt-atmosphere::before,.rt-atmosphere::after{content:'';position:absolute;inset:-15%;transition:opacity 1.8s ease,background 1.8s ease,filter 1.8s ease,transform 2.2s ease}
+/* NOTE: full atmosphere rules restored below via portal-safe filter targets */
+html[data-weather="rain"] .site-header,
+html[data-weather="rain"] .main,
+html[data-weather="rain"] .site-footer,
+html[data-weather="rain-heavy"] .site-header,
+html[data-weather="rain-heavy"] .main,
+html[data-weather="rain-heavy"] .site-footer{filter:saturate(.92)}
+html[data-weather="fog"] .site-header,
+html[data-weather="fog"] .main,
+html[data-weather="fog"] .site-footer{filter:saturate(.78) contrast(.96)}
+html[data-weather="snow"] .site-header,
+html[data-weather="snow"] .main,
+html[data-weather="snow"] .site-footer{filter:saturate(.88) brightness(1.03)}
+html[data-weather="storm"] .site-header,
+html[data-weather="storm"] .main,
+html[data-weather="storm"] .site-footer{filter:saturate(1.08) contrast(1.04)}
