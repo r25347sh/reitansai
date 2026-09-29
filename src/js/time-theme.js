@@ -6,15 +6,16 @@
   var WEATHER_URL = 'https://api.open-meteo.com/v1/forecast?latitude=' + LAT + '&longitude=' + LON +
     '&current=temperature_2m,relative_humidity_2m,apparent_temperature,is_day,precipitation,weather_code,cloud_cover,wind_speed_10m&timezone=Asia%2FTokyo';
   var lastWeather = null;
-  var FIXED = { sakura: 1, ocean: 1, midnight: 1 };
-  var LIGHT = { classic: 1, green: 1, sakura: 1, ocean: 1, light: 1 };
+  var FIXED = { classic: 1, green: 1 };
+  var LIGHT = { classic: 1, green: 1, light: 1 };
 
   function currentScheme() {
     if (window.ReitansaiThemeControl && window.ReitansaiThemeControl.getScheme)
       return window.ReitansaiThemeControl.getScheme();
     var s = ROOT.getAttribute('data-color-scheme') || 'dark';
     if (s === 'light') return 'classic';
-    return s;
+    if (s === 'classic' || s === 'green' || s === 'dark') return s;
+    return 'dark';
   }
   function atmosphereEnabled() {
     if (window.ReitansaiThemeControl && window.ReitansaiThemeControl.isAtmosphereOn)
@@ -48,9 +49,14 @@
   }
 
   function getJST() {
-    var fmt = new Intl.DateTimeFormat('en-US', { timeZone: 'Asia/Tokyo', hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: false });
+    var fmt = new Intl.DateTimeFormat('en-US', {
+      timeZone: 'Asia/Tokyo',
+      hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: false
+    });
     var parts = fmt.formatToParts(new Date());
-    var get = function (t) { return parseInt(parts.find(function (p) { return p.type === t; }).value, 10); };
+    var get = function (t) {
+      return parseInt(parts.find(function (p) { return p.type === t; }).value, 10);
+    };
     var h = get('hour'), m = get('minute'), s = get('second');
     return { h: h, m: m, s: s, hours: h + m / 60 + s / 3600 };
   }
@@ -78,13 +84,13 @@
 
   function paletteDark(period, kind, isDay) {
     var map = {
-      dawn: { hue: 18, sat: 42, bgL: 8, textL: 94, acc: 28 },
-      morning: { hue: 195, sat: 38, bgL: 11, textL: 92, acc: 48 },
-      noon: { hue: 205, sat: 32, bgL: 15, textL: 90, acc: 42 },
-      afternoon: { hue: 32, sat: 40, bgL: 10, textL: 93, acc: 25 },
-      dusk: { hue: 305, sat: 44, bgL: 7, textL: 94, acc: 330 },
-      night: { hue: 235, sat: 48, bgL: 5, textL: 93, acc: 185 },
-      late: { hue: 250, sat: 46, bgL: 4, textL: 91, acc: 210 }
+      dawn: { hue: 18, sat: 42, bgL: 8, acc: 28 },
+      morning: { hue: 195, sat: 38, bgL: 11, acc: 48 },
+      noon: { hue: 205, sat: 32, bgL: 15, acc: 42 },
+      afternoon: { hue: 32, sat: 40, bgL: 10, acc: 25 },
+      dusk: { hue: 305, sat: 44, bgL: 7, acc: 330 },
+      night: { hue: 235, sat: 48, bgL: 5, acc: 185 },
+      late: { hue: 250, sat: 46, bgL: 4, acc: 210 }
     };
     var b = map[period] || map.night;
     var hue = b.hue, sat = b.sat, bgL = b.bgL;
@@ -93,6 +99,7 @@
     if (kind === 'storm') { hue = (hue + 60) % 360; sat *= 1.3; }
     if (kind === 'fog') { sat *= 0.4; }
     if (kind === 'snow') { sat *= 0.3; bgL += 4; }
+    bgL = Math.max(4, Math.min(18, bgL));
     var accHue = (b.acc + 360) % 360;
     return {
       hue: hue,
@@ -100,13 +107,13 @@
       bgSoft: 'hsl(' + hue + ' ' + Math.max(10, sat - 4) + '% ' + (bgL + 4) + '%)',
       card: 'hsl(' + hue + ' ' + (sat + 4) + '% ' + (bgL + 6) + '%)',
       cardHover: 'hsl(' + hue + ' ' + (sat + 8) + '% ' + (bgL + 10) + '%)',
-      text: 'hsl(' + hue + ' 22% ' + b.textL + '%)',
-      textMuted: 'hsl(' + hue + ' 16% 60%)',
-      accent: 'hsl(' + accHue + ' 58% 54%)',
+      text: 'hsl(' + hue + ' 18% 94%)',
+      textMuted: 'hsl(' + hue + ' 14% 68%)',
+      accent: 'hsl(' + accHue + ' 62% 56%)',
       accentSoft: 'hsla(' + accHue + ' 58% 50% / 0.28)',
-      border: 'hsla(' + hue + ' 30% 72% / 0.22)',
+      border: 'hsla(' + hue + ' 28% 72% / 0.2)',
       glow: 'hsla(' + hue + ' 55% 50% / 0.22)',
-      lab: 'hsl(' + ((hue + 150) % 360) + ' 62% 58%)',
+      lab: 'hsl(' + ((hue + 150) % 360) + ' 58% 60%)',
       grain: 0.04, period: period, weather: kind, isDay: !!isDay
     };
   }
@@ -158,7 +165,7 @@
     var kind = weatherKind(w.weather_code, w.precipitation, w.cloud_cover);
     var isDay = w.is_day != null ? !!w.is_day : (j.hours >= 6 && j.hours < 18);
 
-    if (FIXED[scheme] || scheme === 'classic' || scheme === 'green') {
+    if (FIXED[scheme]) {
       clearInlineVars();
       ROOT.dataset.period = period;
       ROOT.dataset.weather = kind;
@@ -166,8 +173,8 @@
       if (BODY) {
         BODY.dataset.period = period;
         BODY.dataset.weather = kind;
-        BODY.classList.toggle('is-day', isLight(scheme));
-        BODY.classList.toggle('is-night', !isLight(scheme));
+        BODY.classList.toggle('is-day', true);
+        BODY.classList.toggle('is-night', false);
       }
       setLayer(kind, period, isDay);
       return;
