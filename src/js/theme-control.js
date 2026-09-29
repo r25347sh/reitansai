@@ -1,6 +1,5 @@
 /**
- * Theme control — dark / classic / green / sakura / ocean / midnight / system
- * + atmosphere toggle
+ * Theme control — dark / classic / green / system (default)
  * localStorage: rt-color-mode, rt-atmosphere
  */
 (function () {
@@ -9,24 +8,23 @@
   var STORAGE_MODE = 'rt-color-mode';
   var STORAGE_ATM = 'rt-atmosphere';
   var ROOT = document.documentElement;
-  var VALID = {
-    dark: 1,
-    classic: 1,
-    green: 1,
-    sakura: 1,
-    ocean: 1,
-    midnight: 1,
-    system: 1
+
+  var VALID = { dark: 1, classic: 1, green: 1, system: 1 };
+  var LIGHT_SCHEMES = { classic: 1, green: 1, light: 1 };
+  var LEGACY = {
+    light: 'classic',
+    sakura: 'classic',
+    ocean: 'classic',
+    midnight: 'dark'
   };
-  var LIGHT_SCHEMES = { classic: 1, green: 1, sakura: 1, ocean: 1 };
 
   function readMode() {
     try {
       var m = localStorage.getItem(STORAGE_MODE);
-      if (m === 'light') return 'classic';
+      if (m && LEGACY[m]) m = LEGACY[m];
       if (VALID[m]) return m;
     } catch (e) {}
-    return 'dark';
+    return 'system';
   }
 
   function readAtmosphere() {
@@ -40,7 +38,8 @@
 
   function systemPrefersDark() {
     try {
-      return !!(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+      if (!window.matchMedia) return true;
+      return window.matchMedia('(prefers-color-scheme: dark)').matches;
     } catch (e) {
       return true;
     }
@@ -50,7 +49,7 @@
     if (mode === 'system') {
       return systemPrefersDark() ? 'dark' : 'classic';
     }
-    if (VALID[mode] && mode !== 'system') return mode;
+    if (mode === 'classic' || mode === 'green' || mode === 'dark') return mode;
     return 'dark';
   }
 
@@ -90,6 +89,12 @@
     mode: readMode(),
     atmosphere: readAtmosphere()
   };
+
+  try {
+    var stored = localStorage.getItem(STORAGE_MODE);
+    if (stored && LEGACY[stored]) saveMode(state.mode);
+  } catch (e) {}
+
   applyShell(state.mode, state.atmosphere, false);
 
   function notifyThemeEngine() {
@@ -137,8 +142,7 @@
   function syncUI() {
     if (!panelEl) return;
     panelEl.querySelectorAll('.rt-theme-mode').forEach(function (btn) {
-      var m = btn.getAttribute('data-mode');
-      btn.classList.toggle('is-active', m === state.mode);
+      btn.classList.toggle('is-active', btn.getAttribute('data-mode') === state.mode);
     });
     var chk = panelEl.querySelector('#rt-atm-check');
     if (chk) chk.checked = state.atmosphere;
@@ -146,9 +150,12 @@
     if (hint) {
       if (state.mode === 'system') {
         hint.hidden = false;
-        hint.textContent = systemPrefersDark() ? 'OS: ダーク → ダーク適用中' : 'OS: ライト → クラシック適用中';
+        hint.textContent = systemPrefersDark()
+          ? 'OS設定: ダーク → ダークを適用中'
+          : 'OS設定: ライト → クラシックを適用中';
       } else {
         hint.hidden = true;
+        hint.textContent = '';
       }
     }
   }
@@ -197,12 +204,9 @@
     panel.innerHTML =
       '<div class="rt-theme-modes" role="group" aria-label="カラーモード">' +
         '<button type="button" class="rt-theme-mode" data-mode="dark" title="ダーク">ダーク</button>' +
-        '<button type="button" class="rt-theme-mode" data-mode="classic" title="クラシック">クラシ</button>' +
+        '<button type="button" class="rt-theme-mode" data-mode="classic" title="クラシック">クラシック</button>' +
         '<button type="button" class="rt-theme-mode" data-mode="green" title="グリーン">グリーン</button>' +
-        '<button type="button" class="rt-theme-mode" data-mode="sakura" title="さくら">さくら</button>' +
-        '<button type="button" class="rt-theme-mode" data-mode="ocean" title="オーシャン">海</button>' +
-        '<button type="button" class="rt-theme-mode" data-mode="midnight" title="ミッドナイト">深夜</button>' +
-        '<button type="button" class="rt-theme-mode" data-mode="system" title="OSの設定に合わせる">システム</button>' +
+        '<button type="button" class="rt-theme-mode" data-mode="system" title="OSの外観設定に合わせる">システム</button>' +
       '</div>' +
       '<p class="rt-theme-system-hint" hidden></p>' +
       '<div class="rt-theme-sep" aria-hidden="true"></div>' +
@@ -267,11 +271,10 @@
     try {
       var mq = window.matchMedia('(prefers-color-scheme: dark)');
       var onChange = function () {
-        if (state.mode === 'system') {
-          applyShell(state.mode, state.atmosphere, true);
-          syncUI();
-          notifyThemeEngine();
-        }
+        if (state.mode !== 'system') return;
+        applyShell(state.mode, state.atmosphere, true);
+        syncUI();
+        notifyThemeEngine();
       };
       if (mq.addEventListener) mq.addEventListener('change', onChange);
       else if (mq.addListener) mq.addListener(onChange);
