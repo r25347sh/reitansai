@@ -7,7 +7,14 @@
   <link rel="stylesheet" href="/reitansai/src/css/common.css">
   <link rel="stylesheet" href="/reitansai/src/css/pages/schedule.css">
   <link rel="stylesheet" href="/reitansai/MENU/MENU.css">
+  <script src="/reitansai/src/js/theme-control.js"></script>
   <script src="/reitansai/src/js/time-theme.js" defer></script>
+  <script src="/reitansai/src/js/user-id.js"></script>
+  <script src="/reitansai/src/js/supabase-client.js"></script>
+  <script src="/reitansai/src/js/analytics.js"></script>
+  <script src="/reitansai/src/js/schedule-id.js"></script>
+  <script src="/reitansai/src/js/my-schedule-store.js"></script>
+  <script src="/reitansai/src/js/consent-tutorial.js" defer></script>
 </head>
 <body class="page-schedule">
   <header class="site-header">
@@ -18,6 +25,7 @@
     <nav class="nav-desktop">
       <a href="/reitansai/index.html">ホーム</a>
       <a href="/reitansai/pages/schedule.html" class="is-active">スケジュール</a>
+      <a href="/reitansai/pages/my/my_schedule.html">Myスケジュール</a>
       <a href="/reitansai/pages/seminars/index.html">ゼミ一覧</a>
       <a href="/reitansai/pages/about_This_Site.html">About</a>
       <a href="/reitansai/sitemap.html">サイトマップ</a>
@@ -27,7 +35,7 @@
     <section class="hero hero-compact">
       <div class="hero-badge">TIMETABLE</div>
       <h1>発表タイムスケジュール</h1>
-      <p class="lead">2026年10月3日（土） 発表枠 9:30〜11:30 · 開始時刻で昇順ソート可能 · 終了時刻付き</p>
+      <p class="lead">2026年10月3日（土） 発表枠 9:30〜11:30 · 「保存」で Myスケジュール に追加</p>
     </section>
     <section class="section sched-filters">
       <div class="filter-bar">
@@ -42,7 +50,7 @@
           <option value="11">11時台</option>
         </select>
       </div>
-      <p class="filter-meta"><span id="result-count">—</span> 件表示</p>
+      <p class="filter-meta"><span id="result-count">—</span> 件表示 · <a href="/reitansai/pages/my/my_schedule.html">Myスケジュールへ</a></p>
       <div id="sched-progress" class="sched-progress" role="status" aria-live="polite">
         <div class="sched-progress-track">
           <div id="sched-progress-bar" class="sched-progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" style="width:0%"></div>
@@ -62,6 +70,7 @@
               <th data-sort="sp">発表者</th>
               <th data-sort="form">形式</th>
               <th data-sort="v">会場</th>
+              <th>保存</th>
             </tr>
           </thead>
           <tbody id="sched-body"></tbody>
