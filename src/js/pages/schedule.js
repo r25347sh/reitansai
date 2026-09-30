@@ -134,11 +134,15 @@
 
   function refreshSavedSet() {
     savedSet = {};
-    if (window.ReitansaiMySchedule) {
-      window.ReitansaiMySchedule.readCache().forEach(function (r) {
+    if (!window.ReitansaiMySchedule) return Promise.resolve();
+    return window.ReitansaiMySchedule.readCache().then(function (rows) {
+      savedSet = {};
+      (rows || []).forEach(function (r) {
         if (r.id) savedSet[r.id] = 1;
       });
-    }
+    }).catch(function () {
+      savedSet = {};
+    });
   }
 
   function ensureConflictCss() {
@@ -230,7 +234,7 @@
       if (result.already) toast('\u3059\u3067\u306b\u4fdd\u5b58\u6e08\u307f\u3067\u3059');
       else if (result.ok) toast('My\u30b9\u30b1\u30b8\u30e5\u30fc\u30eb\u306b\u4fdd\u5b58\u3057\u307e\u3057\u305f');
       else if (result.cancelled) toast('\u30ad\u30e3\u30f3\u30bb\u30eb\u3057\u307e\u3057\u305f');
-      refreshSavedSet();
+      await refreshSavedSet();
       render();
     } catch (err) {
       console.error(err);
@@ -314,7 +318,7 @@
       await loadSeminar(SEMINARS[i]);
       setProgress(i + 1, SEMINARS.length, SEMINARS[i]);
     }
-    refreshSavedSet();
+    await refreshSavedSet();
     fillFilters();
     [q, fS, fV, fF, fT].forEach(function (el) {
       if (!el) return;
