@@ -143,7 +143,8 @@
       form: candidate.form,
       v: candidate.v,
       vn: candidate.vn,
-      no: candidate.no
+      no: candidate.no,
+      saved_at: new Date().toISOString()
     };
 
     return chain
@@ -153,6 +154,16 @@
         }
       })
       .then(function () {
+        if (global.ReitansaiAnalytics && global.ReitansaiAnalytics.track) {
+          try {
+            global.ReitansaiAnalytics.track('schedule_save', {
+              schedule_id: candidate.id,
+              title: candidate.title,
+              seminar: candidate.s,
+              start: candidate.t
+            });
+          } catch (e) {}
+        }
         existing = readCache();
         if (!existing.some(function (r) { return r.id === candidate.id; })) {
           existing.push(meta);
