@@ -126,7 +126,7 @@
     try {
       if (U.isAdminMode && U.isAdminMode()) {
         U.ensureLocalId();
-        track('admin_session', {});
+        /* admin: no analytics */
         return;
       }
       if (U.hasConsented()) {
