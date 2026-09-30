@@ -1,11 +1,13 @@
 /**
  * My schedule: local cache + Supabase sync, conflict detection.
+ * Free-tier: remote list at most once per browser session (localStorage is source of truth).
  * Depends: user-id.js, schedule-id.js, supabase-client.js
  */
 (function (global) {
   'use strict';
 
   var CACHE_KEY = 'rt-my-schedule-cache';
+  var SESSION_FETCH_KEY = 'rt-ms-fetched';
 
   function toMinutes(t) {
     if (t == null || t === '') return -1;
@@ -40,7 +42,7 @@
   function rowFromMeta(meta, scheduleId) {
     var m = meta || {};
     return {
-      id: scheduleId || m.id,
+      id: String(scheduleId || m.id || ''),
       t: m.t || '',
       e: m.e || '',
       s: m.s || '',
@@ -49,7 +51,8 @@
       form: m.form || '',
       v: m.v || '',
       vn: m.vn || '',
-      no: m.no || ''
+      no: m.no || '',
+      saved_at: m.saved_at || null
     };
   }
 
@@ -80,15 +83,25 @@
     });
   }
 
-  function fetchRemote() {
+  function fetchRemote(force) {
     var localId = ensureUser();
     if (!localId || !global.ReitansaiSupabase) {
       return Promise.resolve(readCache());
+    }
+    if (!force) {
+      try {
+        if (sessionStorage.getItem(SESSION_FETCH_KEY) === '1') {
+          return Promise.resolve(readCache());
+        }
+      } catch (e) {}
     }
     return global.ReitansaiSupabase.listSavedSchedules(localId)
       .then(function (rows) {
         var mapped = serverToRows(rows);
         writeCache(mapped);
+        try {
+          sessionStorage.setItem(SESSION_FETCH_KEY, '1');
+        } catch (e) {}
         return mapped;
       })
       .catch(function () {
