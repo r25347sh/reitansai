@@ -142,12 +142,22 @@
   }
 
   function ensureConflictCss() {
-    if (document.getElementById('rt-consent-tutorial-css')) return;
-    var link = document.createElement('link');
-    link.id = 'rt-consent-tutorial-css';
-    link.rel = 'stylesheet';
-    link.href = '/reitansai/src/css/consent-tutorial.css';
-    document.head.appendChild(link);
+    if (document.getElementById('rt-conflict-css')) return;
+    var style = document.createElement('style');
+    style.id = 'rt-conflict-css';
+    style.textContent =
+      '.rt-overlay-root{position:fixed;inset:0;z-index:2147483000;display:flex;align-items:center;justify-content:center;background:rgba(5,8,14,.72);backdrop-filter:blur(8px);opacity:0;transition:opacity .25s;padding:1rem}' +
+      '.rt-overlay-root.is-open{opacity:1}' +
+      '.rt-modal{background:var(--rt-card,#151a24);color:var(--rt-text,#e8eef7);border:1px solid var(--rt-border,rgba(201,162,39,.35));border-radius:12px;padding:1.25rem 1.35rem;max-width:28rem;width:100%;box-shadow:0 16px 40px rgba(0,0,0,.45)}' +
+      '.rt-modal h2{margin:0 0 .6rem;font-size:1.05rem}' +
+      '.rt-modal p{margin:0 0 .55rem;font-size:.88rem;line-height:1.5}' +
+      '.rt-conflict-list{margin:.5rem 0 1rem;padding-left:1.1rem;font-size:.85rem}' +
+      '.rt-modal-actions{display:flex;flex-wrap:wrap;gap:.45rem;justify-content:flex-end;margin-top:1rem}' +
+      '.rt-btn{border-radius:6px;padding:.55rem .9rem;font:inherit;font-weight:700;font-size:.85rem;cursor:pointer;border:1px solid rgba(201,162,39,.4);background:#151a24;color:#e8eef7}' +
+      '.rt-btn-primary{background:#c9a227;color:#0b0e14;border-color:#c9a227}' +
+      '.rt-btn-ghost{background:transparent}' +
+      'body.rt-modal-open{overflow:hidden}';
+    document.head.appendChild(style);
   }
 
   function showConflictDialog(candidate, conflicts) {
@@ -207,13 +217,6 @@
   async function onSaveClick(r, btn) {
     if (!window.ReitansaiMySchedule) {
       toast('\u4fdd\u5b58\u6a5f\u80fd\u3092\u8aad\u307f\u8fbc\u307f\u4e2d\u3067\u3059');
-      return;
-    }
-    if (!window.ReitansaiUser || !window.ReitansaiUser.hasConsented()) {
-      toast('\u521d\u56de\u540c\u610f\u306e\u3042\u3068\u3067\u4fdd\u5b58\u3067\u304d\u307e\u3059');
-      if (window.ReitansaiOnboarding && window.ReitansaiOnboarding.showConsent) {
-        window.ReitansaiOnboarding.showConsent();
-      }
       return;
     }
     btn.disabled = true;
@@ -310,9 +313,6 @@
     for (var i = 0; i < SEMINARS.length; i++) {
       await loadSeminar(SEMINARS[i]);
       setProgress(i + 1, SEMINARS.length, SEMINARS[i]);
-    }
-    if (window.ReitansaiMySchedule) {
-      await window.ReitansaiMySchedule.fetchRemote();
     }
     refreshSavedSet();
     fillFilters();
