@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Myスケジュール — 保存した発表を時間順に表示。">
+  <title>Myスケジュール | 麗探祭 2026</title>
+  <link rel="stylesheet" href="/reitansai/src/css/common.css">
+  <link rel="stylesheet" href="/reitansai/src/css/pages/schedule.css">
+  <link rel="stylesheet" href="/reitansai/MENU/MENU.css">
+  <script src="/reitansai/src/js/theme-control.js"></script>
+  <script src="/reitansai/src/js/time-theme.js" defer></script>
+  <script src="/reitansai/src/js/user-id.js"></script>
+  <script src="/reitansai/src/js/supabase-client.js"></script>
+  <script src="/reitansai/src/js/schedule-id.js"></script>
+  <script src="/reitansai/src/js/my-schedule-store.js"></script>
+  <script src="/reitansai/src/js/consent-tutorial.js" defer></script>
+</head>
+<body class="page-schedule page-my-schedule">
+  <header class="site-header">
+    <a class="site-logo" href="/reitansai/index.html">
+      <img src="/reitansai/sources/麗探祭ロゴ.png" alt="麗探祭" width="40" height="40">
+      <span class="logo-text"><strong>麗探祭</strong><span>Reitaku Inquiry EXPO 2026</span></span>
+    </a>
+    <nav class="nav-desktop">
+      <a href="/reitansai/index.html">ホーム</a>
+      <a href="/reitansai/pages/schedule.html">スケジュール</a>
+      <a href="/reitansai/pages/my/my_schedule.html" class="is-active">Myスケジュール</a>
+      <a href="/reitansai/pages/seminars/index.html">ゼミ一覧</a>
+      <a href="/reitansai/pages/about_This_Site.html">About</a>
+    </nav>
+  </header>
+  <main class="main">
+    <section class="hero hero-compact">
+      <div class="hero-badge">MY TIMETABLE</div>
+      <h1>Myスケジュール</h1>
+      <p class="lead">スケジュール画面で「保存」した発表を、開始時刻の昇順で表示します。端末の識別IDに紐づけて同期されます。</p>
+    </section>
+    <section class="section">
+      <p class="filter-meta"><span id="my-count">—</span> 件 · <button type="button" id="my-refresh" class="sched-save-btn">再同期</button></p>
+      <div class="table-wrap">
+        <table class="sched-table">
+          <thead>
+            <tr>
+              <th>開始</th>
+              <th>終了</th>
+              <th>ゼミ</th>
+              <th>発表タイトル</th>
+              <th>発表者</th>
+              <th>形式</th>
+              <th>会場</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody id="my-sched-body">
+            <tr><td colspan="8">読み込み中…</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="section-lead" id="my-empty-hint" hidden>
+        まだ保存がありません。<a href="/reitansai/pages/schedule.html">スケジュール</a>から気になる発表を保存してください。
+      </p>
+    </section>
+  </main>
+  <footer class="site-footer">
+    <p>© 2026 麗探祭 — Reitaku Inquiry EXPO / 麗澤高等学校</p>
+    <p class="footer-credit">Site by 5G 佐藤 晴</p>
+  </footer>
+  <script src="/reitansai/MENU/MENU.js"></script>
+  <script src="/reitansai/src/js/pages/my-schedule.js"></script>
+</body>
+</html>
