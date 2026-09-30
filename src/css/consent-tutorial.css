@@ -1,0 +1,203 @@
+/* Consent + onboarding tutorial overlays */
+
+.rt-overlay-root {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background: rgba(4, 8, 12, 0.72);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.28s ease, visibility 0s linear 0.28s;
+}
+
+.rt-overlay-root.is-open {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transition: opacity 0.28s ease, visibility 0s linear 0s;
+}
+
+.rt-modal {
+  width: min(92vw, 440px);
+  max-height: min(88vh, 640px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  border-radius: 16px;
+  border: 1px solid var(--rt-border, rgba(180, 200, 230, 0.16));
+  background: color-mix(in srgb, var(--rt-bg-soft, #12161f) 96%, transparent);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
+  padding: 1.35rem 1.3rem 1.2rem;
+  color: var(--rt-text, #eef3fa);
+  font-family: var(--font-sans, system-ui, sans-serif);
+  transform: translateY(12px) scale(0.97);
+  transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.rt-overlay-root.is-open .rt-modal {
+  transform: translateY(0) scale(1);
+}
+
+.rt-modal h2 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  margin: 0 0 0.75rem;
+  line-height: 1.4;
+}
+
+.rt-modal p,
+.rt-modal li {
+  font-size: 0.82rem;
+  line-height: 1.7;
+  color: var(--rt-text-muted, #a8b6c9);
+  margin: 0 0 0.65rem;
+}
+
+.rt-modal strong {
+  color: var(--rt-text, #eef3fa);
+  font-weight: 700;
+}
+
+.rt-modal a {
+  color: var(--rt-accent, #d4ad2e);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.rt-modal-section {
+  margin: 0.9rem 0;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--rt-border, rgba(180, 200, 230, 0.16));
+}
+
+.rt-modal-section h3 {
+  font-size: 0.88rem;
+  font-weight: 700;
+  margin: 0 0 0.55rem;
+  color: var(--rt-text, #eef3fa);
+}
+
+.rt-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-bottom: 0.65rem;
+}
+
+.rt-field label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--rt-text-muted, #a8b6c9);
+  letter-spacing: 0.03em;
+}
+
+.rt-field select {
+  appearance: none;
+  border: 1px solid var(--rt-border, rgba(180, 200, 230, 0.16));
+  background: var(--rt-card, #151a24);
+  color: var(--rt-text, #eef3fa);
+  border-radius: 8px;
+  padding: 0.55rem 0.7rem;
+  font-size: 0.85rem;
+  font-family: inherit;
+  min-height: 42px;
+}
+
+.rt-field select:focus {
+  outline: 2px solid var(--rt-accent, #d4ad2e);
+  outline-offset: 1px;
+}
+
+.rt-modal-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1.1rem;
+  justify-content: flex-end;
+}
+
+.rt-btn {
+  appearance: none;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  padding: 0.55rem 1rem;
+  font-size: 0.82rem;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  min-height: 42px;
+  transition: background 0.15s, border-color 0.15s, transform 0.15s;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.rt-btn:active {
+  transform: scale(0.98);
+}
+
+.rt-btn-primary {
+  background: var(--rt-accent, #d4ad2e);
+  color: var(--rt-bg, #0b0e14);
+}
+
+.rt-btn-primary:hover {
+  filter: brightness(1.06);
+}
+
+.rt-btn-ghost {
+  background: transparent;
+  color: var(--rt-text-muted, #a8b6c9);
+  border-color: var(--rt-border, rgba(180, 200, 230, 0.16));
+}
+
+.rt-btn-ghost:hover {
+  color: var(--rt-text, #eef3fa);
+  border-color: var(--rt-accent, #d4ad2e);
+}
+
+.rt-tut-dots {
+  display: flex;
+  gap: 0.35rem;
+  justify-content: center;
+  margin: 0.5rem 0 0.85rem;
+}
+
+.rt-tut-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--rt-text-muted, #a8b6c9) 40%, transparent);
+}
+
+.rt-tut-dot.is-active {
+  background: var(--rt-accent, #d4ad2e);
+  transform: scale(1.25);
+}
+
+.rt-tut-step-icon {
+  font-size: 2rem;
+  text-align: center;
+  margin: 0.25rem 0 0.6rem;
+  line-height: 1;
+}
+
+.rt-tut-step-body {
+  min-height: 4.5rem;
+}
+
+.rt-conflict-list {
+  margin: 0.5rem 0 0;
+  padding-left: 1.1rem;
+  font-size: 0.78rem;
+  color: var(--rt-text-muted, #a8b6c9);
+}
+
+body.rt-modal-open {
+  overflow: hidden;
+}
