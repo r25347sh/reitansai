@@ -1,28 +1,29 @@
 /**
  * Usage analytics → Supabase analytics_events
- * Admin sessions are NEVER tracked.
+ * Free-tier conscious:
+ *  - admin never tracked
+ *  - page_view once per path per browser session
+ *  - batch + delayed flush (reduces API round-trips / egress)
+ *  - small queue, lean payloads
  */
 (function (global) {
   'use strict';
 
   var QUEUE_KEY = 'rt-analytics-queue';
+  var PV_KEY = 'rt-pv-session'; /* sessionStorage: paths already counted */
+  var FLUSH_MS = 2800;
+  var MAX_QUEUE = 40;
 
   function isAdmin() {
     try {
-      return window.ReitansaiUser && window.ReitansaiUser.isAdminMode && window.ReitansaiUser.isAdminMode();
+      return (
+        window.ReitansaiUser &&
+        window.ReitansaiUser.isAdminMode &&
+        window.ReitansaiUser.isAdminMode()
+      );
     } catch (e) {
       return false;
     }
-  }
-
-  function profileSnapshot() {
-    var U = global.ReitansaiUser;
-    var p = (U && U.getProfile && U.getProfile()) || {};
-    return {
-      age_band: p.age || null,
-      gender: p.gender || null,
-      role: p.role || null
-    };
   }
 
   function localId() {
@@ -47,18 +48,20 @@
 
   function writeQueue(arr) {
     try {
-      localStorage.setItem(QUEUE_KEY, JSON.stringify(arr.slice(-80)));
+      localStorage.setItem(QUEUE_KEY, JSON.stringify(arr.slice(-MAX_QUEUE)));
     } catch (e) {}
   }
 
   function track(eventName, props) {
     if (!eventName) return;
     if (isAdmin()) return;
+    var lid = localId();
+    if (!lid) return;
     var row = {
-      local_id: localId(),
-      event_name: String(eventName).slice(0, 64),
-      event_props: Object.assign({}, profileSnapshot(), props || {}),
-      path: (location.pathname || '') + (location.search || ''),
+      local_id: lid,
+      event_name: String(eventName).slice(0, 48),
+      event_props: props || {},
+      path: (location.pathname || '').slice(0, 120),
       created_at: new Date().toISOString()
     };
     var q = readQueue();
@@ -73,7 +76,7 @@
     flushTimer = setTimeout(function () {
       flushTimer = null;
       flush();
-    }, 400);
+    }, FLUSH_MS);
   }
 
   function flush() {
@@ -87,15 +90,21 @@
     if (!q.length) return Promise.resolve();
     writeQueue([]);
     return SB.insertAnalyticsEvents(q).catch(function () {
-      writeQueue(q.concat(readQueue()));
+      writeQueue(q.concat(readQueue()).slice(-MAX_QUEUE));
     });
   }
 
   function trackPageView() {
-    track('page_view', {
-      title: document.title || '',
-      referrer: document.referrer ? String(document.referrer).slice(0, 200) : ''
-    });
+    if (isAdmin()) return;
+    var path = location.pathname || '/';
+    try {
+      var raw = sessionStorage.getItem(PV_KEY);
+      var seen = raw ? JSON.parse(raw) : {};
+      if (seen[path]) return; /* once per path / session */
+      seen[path] = 1;
+      sessionStorage.setItem(PV_KEY, JSON.stringify(seen));
+    } catch (e) {}
+    track('page_view', {});
   }
 
   function boot() {
