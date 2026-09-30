@@ -1,7 +1,7 @@
 /**
  * Local visitor ID + profile
- * - Normal: random long ID in localStorage (rt-local-id)
- * - Admin:  ?user=admin  → fixed ID "admin" (no random)
+ * - Normal: random long ID (rt-local-id)
+ * - Admin: ?user=admin → ID "admin", flag rt-is-admin=1 persisted in localStorage
  */
 (function (global) {
   'use strict';
@@ -10,6 +10,7 @@
   var KEY_PROFILE = 'rt-visitor-profile';
   var KEY_TUTORIAL = 'rt-tutorial-done';
   var KEY_CONSENT = 'rt-consent-done';
+  var KEY_ADMIN = 'rt-is-admin';
   var ADMIN_ID = 'admin';
 
   var ALPHABET =
@@ -25,8 +26,52 @@
     }
   }
 
+  function getLocalId() {
+    try {
+      return localStorage.getItem(KEY_ID) || null;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function setLocalId(id) {
+    try {
+      localStorage.setItem(KEY_ID, id);
+    } catch (e) {}
+  }
+
+  function setAdminFlag(on) {
+    try {
+      if (on) localStorage.setItem(KEY_ADMIN, '1');
+      else localStorage.removeItem(KEY_ADMIN);
+    } catch (e) {}
+  }
+
+  function readAdminFlag() {
+    try {
+      return localStorage.getItem(KEY_ADMIN) === '1';
+    } catch (e) {
+      return false;
+    }
+  }
+
   function isAdminMode() {
-    return queryUserParam() === 'admin' || getLocalId() === ADMIN_ID;
+    if (queryUserParam() === 'admin') return true;
+    if (readAdminFlag()) return true;
+    if (getLocalId() === ADMIN_ID) return true;
+    return false;
+  }
+
+  function activateAdmin() {
+    setLocalId(ADMIN_ID);
+    setAdminFlag(true);
+    setConsented();
+    setTutorialDone();
+    var p = getProfile() || {};
+    p.role = 'admin';
+    if (!p.consentedAt) p.consentedAt = new Date().toISOString();
+    setProfile(p);
+    return ADMIN_ID;
   }
 
   function randomLocalId() {
@@ -45,24 +90,9 @@
     return 'rt_' + Date.now().toString(36) + '_' + out;
   }
 
-  function getLocalId() {
-    try {
-      return localStorage.getItem(KEY_ID) || null;
-    } catch (e) {
-      return null;
-    }
-  }
-
-  function setLocalId(id) {
-    try {
-      localStorage.setItem(KEY_ID, id);
-    } catch (e) {}
-  }
-
   function ensureLocalId() {
-    if (queryUserParam() === 'admin') {
-      setLocalId(ADMIN_ID);
-      return ADMIN_ID;
+    if (queryUserParam() === 'admin' || readAdminFlag() || getLocalId() === ADMIN_ID) {
+      return activateAdmin();
     }
     var id = getLocalId();
     if (id && id.length >= 3) return id;
@@ -72,7 +102,7 @@
   }
 
   function hasConsented() {
-    if (queryUserParam() === 'admin') return true;
+    if (isAdminMode()) return true;
     try {
       return localStorage.getItem(KEY_CONSENT) === '1';
     } catch (e) {
@@ -87,7 +117,7 @@
   }
 
   function hasTutorialDone() {
-    if (queryUserParam() === 'admin') return true;
+    if (isAdminMode()) return true;
     try {
       return localStorage.getItem(KEY_TUTORIAL) === '1';
     } catch (e) {
@@ -118,21 +148,19 @@
   }
 
   function isFirstVisit() {
-    if (queryUserParam() === 'admin') return false;
+    if (isAdminMode()) return false;
     return !hasConsented();
   }
 
   if (queryUserParam() === 'admin') {
-    setLocalId(ADMIN_ID);
-    setConsented();
-    setTutorialDone();
-    if (!getProfile()) {
-      setProfile({ age: null, gender: null, role: 'admin', consentedAt: new Date().toISOString() });
-    }
+    activateAdmin();
+  } else if (readAdminFlag() || getLocalId() === ADMIN_ID) {
+    activateAdmin();
   }
 
   global.ReitansaiUser = {
     KEY_ID: KEY_ID,
+    KEY_ADMIN: KEY_ADMIN,
     ADMIN_ID: ADMIN_ID,
     getLocalId: getLocalId,
     ensureLocalId: ensureLocalId,
@@ -144,6 +172,7 @@
     setProfile: setProfile,
     isFirstVisit: isFirstVisit,
     isAdminMode: isAdminMode,
+    activateAdmin: activateAdmin,
     randomLocalId: randomLocalId
   };
 })(typeof window !== 'undefined' ? window : this);

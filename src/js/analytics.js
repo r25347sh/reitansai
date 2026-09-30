@@ -1,10 +1,19 @@
 /**
- * Lightweight usage analytics → Supabase analytics_events
+ * Usage analytics → Supabase analytics_events
+ * Admin sessions are NEVER tracked.
  */
 (function (global) {
   'use strict';
 
   var QUEUE_KEY = 'rt-analytics-queue';
+
+  function isAdmin() {
+    try {
+      return window.ReitansaiUser && window.ReitansaiUser.isAdminMode && window.ReitansaiUser.isAdminMode();
+    } catch (e) {
+      return false;
+    }
+  }
 
   function profileSnapshot() {
     var U = global.ReitansaiUser;
@@ -42,14 +51,9 @@
     } catch (e) {}
   }
 
-  function enqueue(row) {
-    var q = readQueue();
-    q.push(row);
-    writeQueue(q);
-  }
-
   function track(eventName, props) {
     if (!eventName) return;
+    if (isAdmin()) return;
     var row = {
       local_id: localId(),
       event_name: String(eventName).slice(0, 64),
@@ -57,7 +61,9 @@
       path: (location.pathname || '') + (location.search || ''),
       created_at: new Date().toISOString()
     };
-    enqueue(row);
+    var q = readQueue();
+    q.push(row);
+    writeQueue(q);
     flushSoon();
   }
 
@@ -71,6 +77,10 @@
   }
 
   function flush() {
+    if (isAdmin()) {
+      writeQueue([]);
+      return Promise.resolve();
+    }
     var SB = global.ReitansaiSupabase;
     if (!SB || typeof SB.insertAnalyticsEvents !== 'function') return Promise.resolve();
     var q = readQueue();
@@ -89,6 +99,7 @@
   }
 
   function boot() {
+    if (isAdmin()) return;
     trackPageView();
     document.addEventListener('visibilitychange', function () {
       if (document.visibilityState === 'hidden') flush();
