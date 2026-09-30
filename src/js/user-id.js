@@ -1,7 +1,7 @@
 /**
- * Local visitor ID + profile (localStorage only for ID; profile also mirrored to Supabase).
- * Key: rt-local-id
- * Profile: rt-visitor-profile { age, gender, consentedAt }
+ * Local visitor ID + profile
+ * - Normal: random long ID in localStorage (rt-local-id)
+ * - Admin:  ?user=admin  → fixed ID "admin" (no random)
  */
 (function (global) {
   'use strict';
@@ -10,10 +10,24 @@
   var KEY_PROFILE = 'rt-visitor-profile';
   var KEY_TUTORIAL = 'rt-tutorial-done';
   var KEY_CONSENT = 'rt-consent-done';
+  var ADMIN_ID = 'admin';
 
-  /** 48 chars: A-Z a-z 0-9 and safe symbols (no quotes/backslash) */
   var ALPHABET =
     'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*_+-=~';
+
+  function queryUserParam() {
+    try {
+      var q = new URLSearchParams(location.search || '');
+      var u = (q.get('user') || '').trim().toLowerCase();
+      return u || null;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function isAdminMode() {
+    return queryUserParam() === 'admin' || getLocalId() === ADMIN_ID;
+  }
 
   function randomLocalId() {
     var out = '';
@@ -39,17 +53,26 @@
     }
   }
 
-  function ensureLocalId() {
-    var id = getLocalId();
-    if (id && id.length >= 20) return id;
-    id = randomLocalId();
+  function setLocalId(id) {
     try {
       localStorage.setItem(KEY_ID, id);
     } catch (e) {}
+  }
+
+  function ensureLocalId() {
+    if (queryUserParam() === 'admin') {
+      setLocalId(ADMIN_ID);
+      return ADMIN_ID;
+    }
+    var id = getLocalId();
+    if (id && id.length >= 3) return id;
+    id = randomLocalId();
+    setLocalId(id);
     return id;
   }
 
   function hasConsented() {
+    if (queryUserParam() === 'admin') return true;
     try {
       return localStorage.getItem(KEY_CONSENT) === '1';
     } catch (e) {
@@ -64,6 +87,7 @@
   }
 
   function hasTutorialDone() {
+    if (queryUserParam() === 'admin') return true;
     try {
       return localStorage.getItem(KEY_TUTORIAL) === '1';
     } catch (e) {
@@ -94,11 +118,22 @@
   }
 
   function isFirstVisit() {
-    return !getLocalId() && !hasConsented();
+    if (queryUserParam() === 'admin') return false;
+    return !hasConsented();
+  }
+
+  if (queryUserParam() === 'admin') {
+    setLocalId(ADMIN_ID);
+    setConsented();
+    setTutorialDone();
+    if (!getProfile()) {
+      setProfile({ age: null, gender: null, role: 'admin', consentedAt: new Date().toISOString() });
+    }
   }
 
   global.ReitansaiUser = {
     KEY_ID: KEY_ID,
+    ADMIN_ID: ADMIN_ID,
     getLocalId: getLocalId,
     ensureLocalId: ensureLocalId,
     hasConsented: hasConsented,
@@ -108,6 +143,7 @@
     getProfile: getProfile,
     setProfile: setProfile,
     isFirstVisit: isFirstVisit,
+    isAdminMode: isAdminMode,
     randomLocalId: randomLocalId
   };
 })(typeof window !== 'undefined' ? window : this);
