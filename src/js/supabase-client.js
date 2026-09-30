@@ -1,16 +1,10 @@
 /**
  * Minimal Supabase REST client (anon / publishable key only).
- * NEVER embed the service_role key in frontend code.
- *
- * Env (hard-coded for this project site):
- *   URL:  https://zpdbigdzyktilsxpsvip.supabase.co
- *   Key:  publishable (sb_publishable_…)
  */
 (function (global) {
   'use strict';
 
   var SUPABASE_URL = 'https://zpdbigdzyktilsxpsvip.supabase.co';
-  /* Public publishable key — safe for browser when RLS is configured */
   var SUPABASE_ANON_KEY = 'sb_publishable_9qdYvZCsiExGZMUPSUqjaA_6AmIrTx4';
 
   function headers(extra) {
@@ -39,11 +33,7 @@
       return res.text().then(function (text) {
         var data = null;
         if (text) {
-          try {
-            data = JSON.parse(text);
-          } catch (e) {
-            data = { raw: text };
-          }
+          try { data = JSON.parse(text); } catch (e) { data = { raw: text }; }
         }
         if (!res.ok) {
           var err = new Error(
@@ -61,24 +51,21 @@
 
   function upsertVisitorProfile(localId, profile) {
     if (!localId) return Promise.reject(new Error('local_id required'));
-    var row = {
-      local_id: localId,
-      age_band: (profile && profile.age) || null,
-      gender: (profile && profile.gender) || null,
-      updated_at: new Date().toISOString()
-    };
     return rest('visitor_profiles?on_conflict=local_id', {
       method: 'POST',
       headers: { Prefer: 'resolution=merge-duplicates,return=representation' },
-      body: row
+      body: {
+        local_id: localId,
+        age_band: (profile && profile.age) || null,
+        gender: (profile && profile.gender) || null,
+        updated_at: new Date().toISOString()
+      }
     });
   }
 
   function listSavedSchedules(localId) {
     if (!localId) return Promise.resolve([]);
-    var q =
-      'saved_schedules?local_id=eq.' +
-      encodeURIComponent(localId) +
+    var q = 'saved_schedules?local_id=eq.' + encodeURIComponent(localId) +
       '&select=*&order=created_at.asc';
     return rest(q).then(function (rows) {
       return Array.isArray(rows) ? rows : [];
@@ -102,11 +89,8 @@
   }
 
   function removeSchedule(localId, scheduleId) {
-    var q =
-      'saved_schedules?local_id=eq.' +
-      encodeURIComponent(localId) +
-      '&schedule_id=eq.' +
-      encodeURIComponent(scheduleId);
+    var q = 'saved_schedules?local_id=eq.' + encodeURIComponent(localId) +
+      '&schedule_id=eq.' + encodeURIComponent(scheduleId);
     return rest(q, { method: 'DELETE', headers: { Prefer: 'return=minimal' } });
   }
 
@@ -114,11 +98,18 @@
     if (!scheduleIds || !scheduleIds.length) return Promise.resolve();
     var chain = Promise.resolve();
     scheduleIds.forEach(function (sid) {
-      chain = chain.then(function () {
-        return removeSchedule(localId, sid);
-      });
+      chain = chain.then(function () { return removeSchedule(localId, sid); });
     });
     return chain;
+  }
+
+  function insertAnalyticsEvents(rows) {
+    if (!rows || !rows.length) return Promise.resolve([]);
+    return rest('analytics_events', {
+      method: 'POST',
+      headers: { Prefer: 'return=minimal' },
+      body: rows
+    });
   }
 
   global.ReitansaiSupabase = {
@@ -127,6 +118,7 @@
     listSavedSchedules: listSavedSchedules,
     saveSchedule: saveSchedule,
     removeSchedule: removeSchedule,
-    removeSchedules: removeSchedules
+    removeSchedules: removeSchedules,
+    insertAnalyticsEvents: insertAnalyticsEvents
   };
 })(typeof window !== 'undefined' ? window : this);
