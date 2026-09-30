@@ -3,18 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Myスケジュール — 保存した発表を時間順に表示。">
+  <meta name="description" content="Myスケジュール — 保存した発表を時間順に表示（この端末の localStorage に保存）。">
   <title>Myスケジュール | 麗探祭 2026</title>
   <link rel="stylesheet" href="/reitansai/src/css/common.css">
   <link rel="stylesheet" href="/reitansai/src/css/pages/schedule.css">
   <link rel="stylesheet" href="/reitansai/MENU/MENU.css">
   <script src="/reitansai/src/js/theme-control.js"></script>
   <script src="/reitansai/src/js/time-theme.js" defer></script>
-  <script src="/reitansai/src/js/user-id.js"></script>
-  <script src="/reitansai/src/js/supabase-client.js"></script>
   <script src="/reitansai/src/js/schedule-id.js"></script>
   <script src="/reitansai/src/js/my-schedule-store.js"></script>
-  <script src="/reitansai/src/js/consent-tutorial.js" defer></script>
 </head>
 <body class="page-schedule page-my-schedule">
   <header class="site-header">
@@ -34,10 +31,10 @@
     <section class="hero hero-compact">
       <div class="hero-badge">MY TIMETABLE</div>
       <h1>Myスケジュール</h1>
-      <p class="lead">スケジュール画面で「保存」した発表を、開始時刻の昇順で表示します。端末の識別IDに紐づけて同期されます。</p>
+      <p class="lead">スケジュール画面で「保存」した発表を、開始時刻の昇順で表示します。データはこの端末のブラウザ（localStorage）にのみ保存されます。</p>
     </section>
     <section class="section">
-      <p class="filter-meta"><span id="my-count">—</span> 件 · <button type="button" id="my-refresh" class="sched-save-btn">再同期</button></p>
+      <p class="filter-meta"><span id="my-count">—</span> 件 · <button type="button" id="my-refresh" class="sched-save-btn">再表示</button></p>
       <div class="table-wrap">
         <table class="sched-table">
           <thead>

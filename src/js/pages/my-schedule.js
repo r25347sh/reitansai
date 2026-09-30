@@ -14,7 +14,8 @@
   function formatTime(t) {
     var mins = toMinutes(t);
     if (mins < 0) return t || '—';
-    var h = Math.floor(mins / 60), m = mins % 60;
+    var h = Math.floor(mins / 60),
+      m = mins % 60;
     return (h < 10 ? '0' : '') + h + ':' + (m < 10 ? '0' : '') + m;
   }
 
@@ -96,13 +97,14 @@
     });
   }
 
-  async function load() {
+  function load() {
     if (!window.ReitansaiMySchedule) {
-      body.innerHTML = '<tr><td colspan="8">モジュールの読み込みに失敗しました</td></tr>';
-      return;
+      if (body) body.innerHTML = '<tr><td colspan="8">モジュールの読み込みに失敗しました</td></tr>';
+      return Promise.resolve();
     }
-    var rows = await window.ReitansaiMySchedule.fetchRemote();
+    var rows = window.ReitansaiMySchedule.readCache();
     render(rows);
+    return Promise.resolve();
   }
 
   if (refreshBtn) {

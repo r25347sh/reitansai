@@ -1,13 +1,12 @@
 /**
- * My schedule: local cache + Supabase sync, conflict detection.
- * Free-tier: remote list at most once per browser session (localStorage is source of truth).
- * Depends: user-id.js, schedule-id.js, supabase-client.js
+ * My schedule — localStorage only (no server / no Supabase).
+ * Key: rt-my-schedule-cache
+ * Depends: schedule-id.js (optional, for rangesOverlap)
  */
 (function (global) {
   'use strict';
 
   var CACHE_KEY = 'rt-my-schedule-cache';
-  var SESSION_FETCH_KEY = 'rt-ms-fetched';
 
   function toMinutes(t) {
     if (t == null || t === '') return -1;
@@ -39,23 +38,6 @@
     } catch (e) {}
   }
 
-  function rowFromMeta(meta, scheduleId) {
-    var m = meta || {};
-    return {
-      id: String(scheduleId || m.id || ''),
-      t: m.t || '',
-      e: m.e || '',
-      s: m.s || '',
-      title: m.title || '',
-      sp: m.sp || '',
-      form: m.form || '',
-      v: m.v || '',
-      vn: m.vn || '',
-      no: m.no || '',
-      saved_at: m.saved_at || null
-    };
-  }
-
   function findConflicts(candidate, existing) {
     var cs = toMinutes(candidate.t);
     var ce = toMinutes(candidate.e);
@@ -70,52 +52,13 @@
     });
   }
 
-  function ensureUser() {
-    var U = global.ReitansaiUser;
-    if (!U) return null;
-    if (!U.hasConsented()) return null;
-    return U.ensureLocalId();
-  }
-
-  function serverToRows(serverRows) {
-    return (serverRows || []).map(function (r) {
-      return rowFromMeta(r.meta, r.schedule_id);
-    });
-  }
-
-  function fetchRemote(force) {
-    var localId = ensureUser();
-    if (!localId || !global.ReitansaiSupabase) {
-      return Promise.resolve(readCache());
-    }
-    if (!force) {
-      try {
-        if (sessionStorage.getItem(SESSION_FETCH_KEY) === '1') {
-          return Promise.resolve(readCache());
-        }
-      } catch (e) {}
-    }
-    return global.ReitansaiSupabase.listSavedSchedules(localId)
-      .then(function (rows) {
-        var mapped = serverToRows(rows);
-        writeCache(mapped);
-        try {
-          sessionStorage.setItem(SESSION_FETCH_KEY, '1');
-        } catch (e) {}
-        return mapped;
-      })
-      .catch(function () {
-        return readCache();
-      });
-  }
-
+  /**
+   * @param {object} candidate - row with id, t, e, s, title, sp, form, v, vn, no
+   * @param {object} [options] - { force: 'replace' | 'ok' | 'cancel' }
+   * @returns {Promise<{ok, already?, conflicts?, cancelled?, rows?}>}
+   */
   function save(candidate, options) {
     options = options || {};
-    var localId = ensureUser();
-    if (!localId) {
-      return Promise.reject(new Error('同意後に利用できます。ページを再読み込みしてください。'));
-    }
-
     var existing = readCache();
     var already = existing.some(function (r) {
       return r.id === candidate.id;
@@ -132,7 +75,6 @@
       return Promise.resolve({ ok: false, cancelled: true });
     }
 
-    var chain = Promise.resolve();
     if (options.force === 'replace' && conflicts.length) {
       var ids = conflicts.map(function (c) {
         return c.id;
@@ -140,10 +82,6 @@
       existing = existing.filter(function (r) {
         return ids.indexOf(r.id) < 0;
       });
-      writeCache(existing);
-      if (global.ReitansaiSupabase) {
-        chain = global.ReitansaiSupabase.removeSchedules(localId, ids);
-      }
     }
 
     var meta = {
@@ -160,45 +98,20 @@
       saved_at: new Date().toISOString()
     };
 
-    return chain
-      .then(function () {
-        if (global.ReitansaiSupabase) {
-          return global.ReitansaiSupabase.saveSchedule(localId, candidate.id, meta);
-        }
-      })
-      .then(function () {
-        if (global.ReitansaiAnalytics && global.ReitansaiAnalytics.track) {
-          try {
-            global.ReitansaiAnalytics.track('schedule_save', {
-              schedule_id: candidate.id,
-              title: candidate.title,
-              seminar: candidate.s,
-              start: candidate.t
-            });
-          } catch (e) {}
-        }
-        existing = readCache();
-        if (!existing.some(function (r) { return r.id === candidate.id; })) {
-          existing.push(meta);
-          writeCache(existing);
-        }
-        return { ok: true, saved: true, rows: existing };
-      });
+    if (!existing.some(function (r) {
+      return r.id === candidate.id;
+    })) {
+      existing.push(meta);
+    }
+    writeCache(existing);
+    return Promise.resolve({ ok: true, saved: true, rows: existing });
   }
 
   function remove(scheduleId) {
-    var localId = ensureUser();
     var existing = readCache().filter(function (r) {
       return r.id !== scheduleId;
     });
     writeCache(existing);
-    if (localId && global.ReitansaiSupabase) {
-      return global.ReitansaiSupabase.removeSchedule(localId, scheduleId).then(function () {
-        return existing;
-      }).catch(function () {
-        return existing;
-      });
-    }
     return Promise.resolve(existing);
   }
 
@@ -206,6 +119,11 @@
     return readCache().some(function (r) {
       return r.id === scheduleId;
     });
+  }
+
+  /** Compatibility: previously fetched remote; now just returns local cache. */
+  function fetchRemote() {
+    return Promise.resolve(readCache());
   }
 
   global.ReitansaiMySchedule = {
