@@ -1,3 +1,6 @@
+/**
+ * My schedule page — list / remove (IndexedDB via ReitansaiMySchedule)
+ */
 (function () {
   'use strict';
 
@@ -6,27 +9,40 @@
   var hint = document.getElementById('my-empty-hint');
   var refreshBtn = document.getElementById('my-refresh');
 
-  function toMinutes(t) {
-    if (window.ReitansaiMySchedule) return window.ReitansaiMySchedule.toMinutes(t);
-    return -1;
+  function esc(s) {
+    return String(s == null ? '' : s)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
   }
 
   function formatTime(t) {
-    var mins = toMinutes(t);
-    if (mins < 0) return t || '—';
-    var h = Math.floor(mins / 60),
-      m = mins % 60;
-    return (h < 10 ? '0' : '') + h + ':' + (m < 10 ? '0' : '') + m;
+    if (t == null || t === '') return '—';
+    var s = String(t).trim();
+    var m = s.match(/(\d{1,2})\s*[:：]\s*(\d{1,2})/);
+    if (m) {
+      return (
+        String(parseInt(m[1], 10)).padStart(2, '0') +
+        ':' +
+        String(parseInt(m[2], 10)).padStart(2, '0')
+      );
+    }
+    return s;
   }
 
-  function esc(s) {
-    var d = document.createElement('div');
-    d.textContent = s == null ? '' : String(s);
-    return d.innerHTML;
+  function toMinutes(t) {
+    if (window.ReitansaiMySchedule && window.ReitansaiMySchedule.toMinutes) {
+      return window.ReitansaiMySchedule.toMinutes(t);
+    }
+    if (t == null || t === '') return -1;
+    var m = String(t).match(/(\d{1,2})\s*[:：]\s*(\d{1,2})/);
+    if (m) return parseInt(m[1], 10) * 60 + parseInt(m[2], 10);
+    return -1;
   }
 
   function sortByTime(rows) {
-    return rows.slice().sort(function (a, b) {
+    return (rows || []).slice().sort(function (a, b) {
       var av = toMinutes(a.t);
       var bv = toMinutes(b.t);
       if (av < 0) av = 99999;
@@ -92,6 +108,8 @@
         btn.disabled = true;
         window.ReitansaiMySchedule.remove(id).then(function (next) {
           render(next);
+        }).catch(function () {
+          btn.disabled = false;
         });
       });
     });
@@ -102,9 +120,19 @@
       if (body) body.innerHTML = '<tr><td colspan="8">モジュールの読み込みに失敗しました</td></tr>';
       return Promise.resolve();
     }
-    var rows = window.ReitansaiMySchedule.readCache();
-    render(rows);
-    return Promise.resolve();
+    return window.ReitansaiMySchedule.readCache()
+      .then(function (rows) {
+        render(rows);
+      })
+      .catch(function (err) {
+        console.error(err);
+        if (body) {
+          body.innerHTML =
+            '<tr><td colspan="8">読み込みに失敗しました（' +
+            esc(err && err.message ? err.message : 'エラー') +
+            '）</td></tr>';
+        }
+      });
   }
 
   if (refreshBtn) {

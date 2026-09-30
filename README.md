@@ -12,7 +12,7 @@ GitHub Pages: `https://r25347sh.github.io/reitansai/`
 |------|------|
 | `/` | ホーム |
 | `/pages/schedule.html` | スケジュール |
-| `/pages/my/my_schedule.html` | Myスケジュール（localStorage） |
+| `/pages/my/my_schedule.html` | Myスケジュール（IndexedDB） |
 | `/pages/seminars/index.html` | ゼミ一覧 |
 | `/pages/seminars/*.html` | 各ゼミ詳細（16） |
 | `/sitemap.html` | サイトマップ |
@@ -22,7 +22,7 @@ GitHub Pages: `https://r25347sh.github.io/reitansai/`
 
 - **時間連動カラー**: JST の時刻に応じて配色が変化
 - **MENU**: 長押し / トリプルタップ / 右下 FAB（ラジアル・ハンバーガー）
-- **Myスケジュール**: 発表を「保存」すると端末の localStorage に記録（サーバー送信なし）
+- **Myスケジュール**: 発表を「保存」すると端末の IndexedDB に記録（サーバー送信なし）
 - **各ゼミページ**: 専用デザインと動的アクション
 
 ## データ

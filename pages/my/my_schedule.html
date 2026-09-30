@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Myスケジュール — 保存した発表を時間順に表示（この端末の localStorage に保存）。">
+  <meta name="description" content="Myスケジュール — 保存した発表を時間順に表示（この端末の IndexedDB に保存）。">
   <title>Myスケジュール | 麗探祭 2026</title>
   <link rel="stylesheet" href="/reitansai/src/css/common.css">
   <link rel="stylesheet" href="/reitansai/src/css/pages/schedule.css">
@@ -31,7 +31,7 @@
     <section class="hero hero-compact">
       <div class="hero-badge">MY TIMETABLE</div>
       <h1>Myスケジュール</h1>
-      <p class="lead">スケジュール画面で「保存」した発表を、開始時刻の昇順で表示します。データはこの端末のブラウザ（localStorage）にのみ保存されます。</p>
+      <p class="lead">スケジュール画面で「保存」した発表を、開始時刻の昇順で表示します。データはこの端末のブラウザ（IndexedDB）にのみ保存されます。</p>
     </section>
     <section class="section">
       <p class="filter-meta"><span id="my-count">—</span> 件 · <button type="button" id="my-refresh" class="sched-save-btn">再表示</button></p>
