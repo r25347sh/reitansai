@@ -10,7 +10,18 @@
   "/reitansai/index": ["/reitansai/src/css/index.css", "/reitansai/src/js/index.js"],
   "/reitansai/404": ["/reitansai/src/css/404.css"],
   "/reitansai/sitemap": ["/reitansai/src/css/sitemap.css"],
-  "/reitansai/pages/schedule": ["/reitansai/src/css/pages/schedule.css", "/reitansai/src/js/pages/schedule.js"],
+  "/reitansai/pages/schedule": [
+    "/reitansai/src/css/pages/schedule.css",
+    "/reitansai/src/js/schedule-id.js",
+    "/reitansai/src/js/my-schedule-store.js",
+    "/reitansai/src/js/pages/schedule.js"
+  ],
+  "/reitansai/pages/my/my_schedule": [
+    "/reitansai/src/css/pages/schedule.css",
+    "/reitansai/src/js/schedule-id.js",
+    "/reitansai/src/js/my-schedule-store.js",
+    "/reitansai/src/js/pages/my-schedule.js"
+  ],
   "/reitansai/pages/about_This_Site": ["/reitansai/src/css/pages/about_This_Site.css", "/reitansai/src/js/pages/about_This_Site.js"],
   "/reitansai/pages/seminars/index": ["/reitansai/src/css/pages/seminars/index.css", "/reitansai/src/js/pages/seminars/index.js"]
 }
