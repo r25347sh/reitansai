@@ -1,13 +1,10 @@
+/**
+ * Schedule page — loads src/json/schedule.json, filters, save to My schedule
+ */
 (function () {
   'use strict';
 
-  var SEMINARS = [
-    'データサイエンス探究AIゼミ', '教育ゼミ', '国際地域研究ゼミ', '文芸小説創作ゼミ',
-    '化学ゼミ', '文学ゼミ', 'メディアゼミ', '社会ゼミ', '農業ゼミ', '観光ゼミ',
-    '語学ゼミ', '遊びの探究ゼミ', 'デジタルコンテンツ制作ゼミ', '映像編集ゼミ',
-    'イベント企画ゼミ', '道徳ゼミ'
-  ];
-
+  var SCHEDULE_JSON = '/reitansai/src/json/schedule.json';
   var body = document.getElementById('sched-body');
   var q = document.getElementById('q');
   var fS = document.getElementById('f-seminar');
@@ -22,11 +19,14 @@
   var sortAsc = true;
   var data = [];
   var savedSet = {};
+  var seminarMap = {};
 
   function uniq(arr) {
     var o = {};
     arr.forEach(function (x) { if (x) o[x] = 1; });
-    return Object.keys(o).sort();
+    return Object.keys(o).sort(function (a, b) {
+      return String(a).localeCompare(String(b), 'ja');
+    });
   }
 
   function toMinutes(t) {
@@ -34,25 +34,30 @@
     var s = String(t)
       .replace(/[０-９]/g, function (c) { return String.fromCharCode(c.charCodeAt(0) - 0xFEE0); })
       .replace(/[：．]/g, ':')
-      .replace(/[〜～~]/g, '~')
       .trim();
     var m = s.match(/(\d{1,2})\s*:\s*(\d{1,2})/);
     if (m) return parseInt(m[1], 10) * 60 + parseInt(m[2], 10);
-    m = s.match(/^(\d{1,2})$/);
-    if (m) return parseInt(m[1], 10) * 60;
     return -1;
+  }
+
+  function formatTime(t) {
+    var mins = toMinutes(t);
+    if (mins < 0) return t || '—';
+    var h = Math.floor(mins / 60), m = mins % 60;
+    return (h < 10 ? '0' : '') + h + ':' + (m < 10 ? '0' : '') + m;
+  }
+
+  function addMinutes(t, dur) {
+    var m = toMinutes(t);
+    if (m < 0) return '';
+    var n = m + (parseInt(dur, 10) || 0);
+    var h = Math.floor(n / 60), mm = n % 60;
+    return (h < 10 ? '0' : '') + h + ':' + (mm < 10 ? '0' : '') + mm;
   }
 
   function timeHour(t) {
     var mins = toMinutes(t);
     return mins < 0 ? -1 : Math.floor(mins / 60);
-  }
-
-  function formatTime(t) {
-    var mins = toMinutes(t);
-    if (mins < 0) return t || '\u2014';
-    var h = Math.floor(mins / 60), m = mins % 60;
-    return (h < 10 ? '0' : '') + h + ':' + (m < 10 ? '0' : '') + m;
   }
 
   function esc(s) {
@@ -61,279 +66,230 @@
     return d.innerHTML;
   }
 
-  function setProgress(done, total, name) {
+  function setProgress(done, total, label) {
     if (!progressWrap || !progressBar || !progressLabel) return;
-    var pct = total ? Math.round((done / total) * 100) : 0;
+    var pct = total ? Math.round((done / total) * 100) : 100;
     progressBar.style.width = pct + '%';
     progressBar.setAttribute('aria-valuenow', String(pct));
     if (done >= total) {
-      progressLabel.textContent = '\u8aad\u307f\u8fbc\u307f\u5b8c\u4e86\uff08' + data.length + '\u4ef6\uff09';
-      setTimeout(function () { progressWrap.classList.add('is-done'); }, 450);
+      progressLabel.textContent = '読み込み完了（' + data.length + '件）';
+      setTimeout(function () { progressWrap.classList.add('is-done'); }, 400);
     } else {
-      progressLabel.textContent = '\u8aad\u307f\u8fbc\u307f\u4e2d\u2026 ' + done + '/' + total +
-        (name ? '\uff08' + name + '\uff09' : '');
+      progressLabel.textContent = label || ('読み込み中… ' + done + '/' + total);
     }
   }
 
   function fillFilters() {
     if (!fS || !fV || !fF) return;
-    fS.innerHTML = '<option value="">\u3059\u3079\u3066\u306e\u30bc\u30df</option>';
-    fV.innerHTML = '<option value="">\u3059\u3079\u3066\u306e\u4f1a\u5834</option>';
-    fF.innerHTML = '<option value="">\u3059\u3079\u3066\u306e\u5f62\u5f0f</option>';
+    fS.innerHTML = '<option value="">すべてのゼミ</option>';
+    fV.innerHTML = '<option value="">すべての会場</option>';
+    fF.innerHTML = '<option value="">すべての形式</option>';
     uniq(data.map(function (r) { return r.s; })).forEach(function (s) {
       var o = document.createElement('option');
       o.value = s; o.textContent = s; fS.appendChild(o);
     });
-    uniq(data.map(function (r) { return r.v; })).forEach(function (v) {
+    uniq(data.map(function (r) { return r.v; })).forEach(function (s) {
       var o = document.createElement('option');
-      o.value = v; o.textContent = v; fV.appendChild(o);
+      o.value = s; o.textContent = s; fV.appendChild(o);
     });
-    uniq(data.map(function (r) { return r.form; })).forEach(function (f) {
-      if (!f) return;
+    uniq(data.map(function (r) { return r.form; })).forEach(function (s) {
       var o = document.createElement('option');
-      o.value = f; o.textContent = f; fF.appendChild(o);
+      o.value = s; o.textContent = s; fF.appendChild(o);
     });
   }
 
   function filtered() {
-    var qq = (q && q.value || '').trim().toLowerCase();
+    var qq = (q && q.value ? q.value.trim() : '').toLowerCase();
     var ss = fS ? fS.value : '';
     var vv = fV ? fV.value : '';
     var ff = fF ? fF.value : '';
-    var th = fT ? fT.value : '';
+    var tt = fT ? fT.value : '';
     return data.filter(function (r) {
       if (ss && r.s !== ss) return false;
       if (vv && r.v !== vv) return false;
       if (ff && r.form !== ff) return false;
-      if (th && String(timeHour(r.t)) !== th) return false;
+      if (tt) {
+        var h = timeHour(r.t);
+        if (String(h) !== tt) return false;
+      }
       if (qq) {
-        var hay = (r.title + ' ' + r.sp + ' ' + r.s + ' ' + r.v + ' ' + r.form).toLowerCase();
-        if (hay.indexOf(qq) < 0) return false;
+        var blob = (r.title + ' ' + r.sp + ' ' + r.s + ' ' + (r.ov || '')).toLowerCase();
+        if (blob.indexOf(qq) < 0) return false;
       }
       return true;
     });
   }
 
   function sortRows(rows) {
-    rows = rows.slice();
-    rows.sort(function (a, b) {
+    return rows.slice().sort(function (a, b) {
+      var av, bv;
       if (sortKey === 't' || sortKey === 'e') {
-        var av = toMinutes(sortKey === 't' ? a.t : a.e);
-        var bv = toMinutes(sortKey === 't' ? b.t : b.e);
-        if (av < 0) av = 99999;
-        if (bv < 0) bv = 99999;
-        return sortAsc ? av - bv : bv - av;
+        av = toMinutes(a[sortKey]); bv = toMinutes(b[sortKey]);
+        if (av < 0) av = 99999; if (bv < 0) bv = 99999;
+        if (av !== bv) return sortAsc ? av - bv : bv - av;
+      } else {
+        av = String(a[sortKey] || ''); bv = String(b[sortKey] || '');
+        var cmp = av.localeCompare(bv, 'ja');
+        if (cmp !== 0) return sortAsc ? cmp : -cmp;
       }
-      var av = String(a[sortKey] || ''), bv = String(b[sortKey] || '');
-      if (av < bv) return sortAsc ? -1 : 1;
-      if (av > bv) return sortAsc ? 1 : -1;
-      return 0;
+      return toMinutes(a.t) - toMinutes(b.t);
     });
-    return rows;
+  }
+
+  function render() {
+    if (!body) return;
+    var rows = sortRows(filtered());
+    if (countEl) countEl.textContent = String(rows.length);
+    if (!rows.length) {
+      body.innerHTML = '<tr><td colspan="8">該当する発表がありません</td></tr>';
+      return;
+    }
+    body.innerHTML = rows.map(function (r) {
+      var saved = !!savedSet[r.id];
+      var venue = r.vn ? r.v + ' / ' + r.vn : (r.v || '—');
+      return (
+        '<tr data-sid="' + esc(r.id) + '">' +
+        '<td class="t-time">' + esc(formatTime(r.t)) + '</td>' +
+        '<td class="t-end">' + esc(formatTime(r.e)) + '</td>' +
+        '<td class="t-seminar">' + esc(r.s) + '</td>' +
+        '<td class="t-title">' + esc(r.title) +
+        (r.ov ? '<div class="t-overview">' + esc(r.ov) + '</div>' : '') +
+        '</td>' +
+        '<td class="t-sp">' + esc(r.sp) + '</td>' +
+        '<td class="t-form">' + esc(r.form) + '</td>' +
+        '<td class="t-venue">' + esc(venue) + '</td>' +
+        '<td class="t-act">' +
+        '<button type="button" class="sched-save-btn' + (saved ? ' is-saved' : '') +
+        '" data-id="' + esc(r.id) + '">' + (saved ? '保存済' : '保存') + '</button>' +
+        '</td></tr>'
+      );
+    }).join('');
   }
 
   function refreshSavedSet() {
-    savedSet = {};
     if (!window.ReitansaiMySchedule) return Promise.resolve();
     return window.ReitansaiMySchedule.readCache().then(function (rows) {
       savedSet = {};
       (rows || []).forEach(function (r) {
-        if (r.id) savedSet[r.id] = 1;
+        if (r.id) savedSet[String(r.id)] = 1;
       });
-    }).catch(function () {
-      savedSet = {};
-    });
+    }).catch(function () { savedSet = {}; });
   }
 
-  function ensureConflictCss() {
-    if (document.getElementById('rt-conflict-css')) return;
-    var style = document.createElement('style');
-    style.id = 'rt-conflict-css';
-    style.textContent =
-      '.rt-overlay-root{position:fixed;inset:0;z-index:2147483000;display:flex;align-items:center;justify-content:center;background:rgba(5,8,14,.72);backdrop-filter:blur(8px);opacity:0;transition:opacity .25s;padding:1rem}' +
-      '.rt-overlay-root.is-open{opacity:1}' +
-      '.rt-modal{background:var(--rt-card,#151a24);color:var(--rt-text,#e8eef7);border:1px solid var(--rt-border,rgba(201,162,39,.35));border-radius:12px;padding:1.25rem 1.35rem;max-width:28rem;width:100%;box-shadow:0 16px 40px rgba(0,0,0,.45)}' +
-      '.rt-modal h2{margin:0 0 .6rem;font-size:1.05rem}' +
-      '.rt-modal p{margin:0 0 .55rem;font-size:.88rem;line-height:1.5}' +
-      '.rt-conflict-list{margin:.5rem 0 1rem;padding-left:1.1rem;font-size:.85rem}' +
-      '.rt-modal-actions{display:flex;flex-wrap:wrap;gap:.45rem;justify-content:flex-end;margin-top:1rem}' +
-      '.rt-btn{border-radius:6px;padding:.55rem .9rem;font:inherit;font-weight:700;font-size:.85rem;cursor:pointer;border:1px solid rgba(201,162,39,.4);background:#151a24;color:#e8eef7}' +
-      '.rt-btn-primary{background:#c9a227;color:#0b0e14;border-color:#c9a227}' +
-      '.rt-btn-ghost{background:transparent}' +
-      'body.rt-modal-open{overflow:hidden}';
-    document.head.appendChild(style);
-  }
-
-  function showConflictDialog(candidate, conflicts) {
-    return new Promise(function (resolve) {
-      ensureConflictCss();
-      var root = document.createElement('div');
-      root.className = 'rt-overlay-root is-open';
-      var list = conflicts.map(function (c) {
-        return '<li><strong>' + esc(formatTime(c.t)) +
-          (c.e ? '\u2013' + esc(formatTime(c.e)) : '') +
-          '</strong> ' + esc(c.title || '') + '\uff08' + esc(c.s || '') + '\uff09</li>';
-      }).join('');
-      root.innerHTML =
-        '<div class="rt-modal" role="dialog" aria-modal="true">' +
-        '<h2>\u6642\u9593\u304c\u91cd\u306a\u3063\u3066\u3044\u307e\u3059</h2>' +
-        '<p>\u4fdd\u5b58\u3057\u3088\u3046\u3068\u3057\u3066\u3044\u308b\u767a\u8868\u3068\u3001\u3059\u3067\u306b My\u30b9\u30b1\u30b8\u30e5\u30fc\u30eb \u306b\u3042\u308b\u767a\u8868\u306e\u6642\u9593\u304c\u91cd\u306a\u3063\u3066\u3044\u307e\u3059\u3002</p>' +
-        '<p><strong>\u8ffd\u52a0\u5019\u88dc:</strong> ' + esc(formatTime(candidate.t)) +
-        (candidate.e ? '\u2013' + esc(formatTime(candidate.e)) : '') + ' ' + esc(candidate.title) + '</p>' +
-        '<ul class="rt-conflict-list">' + list + '</ul>' +
-        '<div class="rt-modal-actions">' +
-        '<button type="button" class="rt-btn rt-btn-ghost" data-act="cancel">\u30ad\u30e3\u30f3\u30bb\u30eb</button>' +
-        '<button type="button" class="rt-btn rt-btn-ghost" data-act="ok">\u305d\u306e\u307e\u307e\u4fdd\u5b58</button>' +
-        '<button type="button" class="rt-btn rt-btn-primary" data-act="replace">\u7f6e\u304d\u63db\u3048</button>' +
-        '</div></div>';
-      document.documentElement.appendChild(root);
-      document.body.classList.add('rt-modal-open');
-      function finish(act) {
-        document.body.classList.remove('rt-modal-open');
-        if (root.parentNode) root.parentNode.removeChild(root);
-        resolve(act);
-      }
-      root.querySelectorAll('[data-act]').forEach(function (btn) {
-        btn.addEventListener('click', function () { finish(btn.getAttribute('data-act')); });
-      });
-    });
-  }
-
-  function toast(msg) {
-    var el = document.getElementById('rt-sched-toast');
-    if (!el) {
-      el = document.createElement('div');
-      el.id = 'rt-sched-toast';
-      el.setAttribute('role', 'status');
-      el.style.cssText =
-        'position:fixed;bottom:5.5rem;left:50%;transform:translateX(-50%);z-index:9000;' +
-        'padding:0.55rem 1rem;border-radius:999px;font-size:0.78rem;font-weight:700;' +
-        'background:var(--rt-card);color:var(--rt-text);border:1px solid var(--rt-border);' +
-        'box-shadow:var(--shadow);opacity:0;transition:opacity 0.25s;pointer-events:none;max-width:90vw;';
-      document.body.appendChild(el);
+  function onSaveClick(ev) {
+    var btn = ev.target.closest('.sched-save-btn');
+    if (!btn || !window.ReitansaiMySchedule) return;
+    var id = btn.getAttribute('data-id');
+    if (!id) return;
+    var row = null;
+    for (var i = 0; i < data.length; i++) {
+      if (String(data[i].id) === String(id)) { row = data[i]; break; }
     }
-    el.textContent = msg;
-    el.style.opacity = '1';
-    clearTimeout(el._t);
-    el._t = setTimeout(function () { el.style.opacity = '0'; }, 2200);
-  }
-
-  async function onSaveClick(r, btn) {
-    if (!window.ReitansaiMySchedule) {
-      toast('\u4fdd\u5b58\u6a5f\u80fd\u3092\u8aad\u307f\u8fbc\u307f\u4e2d\u3067\u3059');
-      return;
-    }
-    btn.disabled = true;
-    try {
-      var result = await window.ReitansaiMySchedule.save(r);
-      if (!result.ok && result.conflicts) {
-        var act = await showConflictDialog(r, result.conflicts);
-        if (act === 'cancel') { toast('\u30ad\u30e3\u30f3\u30bb\u30eb\u3057\u307e\u3057\u305f'); return; }
-        result = await window.ReitansaiMySchedule.save(r, { force: act });
-      }
-      if (result.already) toast('\u3059\u3067\u306b\u4fdd\u5b58\u6e08\u307f\u3067\u3059');
-      else if (result.ok) toast('My\u30b9\u30b1\u30b8\u30e5\u30fc\u30eb\u306b\u4fdd\u5b58\u3057\u307e\u3057\u305f');
-      else if (result.cancelled) toast('\u30ad\u30e3\u30f3\u30bb\u30eb\u3057\u307e\u3057\u305f');
-      await refreshSavedSet();
-      render();
-    } catch (err) {
-      console.error(err);
-      toast(err && err.message ? err.message : '\u4fdd\u5b58\u306b\u5931\u6557\u3057\u307e\u3057\u305f');
-    } finally {
-      btn.disabled = false;
-    }
-  }
-
-  function render() {
-    if (!body || !countEl) return;
-    var rows = sortRows(filtered());
-    countEl.textContent = String(rows.length);
-    body.innerHTML = rows.map(function (r) {
-      var venue = r.vn ? r.v + ' / ' + r.vn : r.v;
-      var endCell = r.e ? esc(formatTime(r.e)) : '\u2014';
-      var isSaved = !!(r.id && savedSet[r.id]);
-      var saveBtn =
-        '<button type="button" class="sched-save-btn' + (isSaved ? ' is-saved' : '') +
-        '" data-id="' + esc(r.id) + '" title="' +
-        (isSaved ? '\u4fdd\u5b58\u6e08\u307f' : 'My\u30b9\u30b1\u30b8\u30e5\u30fc\u30eb\u306b\u4fdd\u5b58') + '">' +
-        (isSaved ? '\u4fdd\u5b58\u6e08' : '\u4fdd\u5b58') + '</button>';
-      return '<tr data-sid="' + esc(r.id) + '">' +
-        '<td class="t-time">' + esc(formatTime(r.t)) + '</td>' +
-        '<td class="t-end">' + endCell + '</td>' +
-        '<td class="t-seminar">' + esc(r.s) + '</td>' +
-        '<td class="t-title">' + esc(r.title) + '</td>' +
-        '<td class="t-sp">' + esc(r.sp) + '</td>' +
-        '<td class="t-form">' + esc(r.form) + '</td>' +
-        '<td class="t-venue">' + esc(venue) + '</td>' +
-        '<td class="t-save">' + saveBtn + '</td></tr>';
-    }).join('');
-    body.querySelectorAll('.sched-save-btn').forEach(function (btn) {
-      btn.addEventListener('click', function (e) {
-        e.preventDefault();
-        e.stopPropagation();
-        var id = btn.getAttribute('data-id');
-        var row = data.find(function (r) { return r.id === id; });
-        if (row) onSaveClick(row, btn);
-      });
-    });
-  }
-
-  function loadSeminar(name) {
-    return new Promise(function (resolve) {
-      window.SEMINAR_DATA = undefined;
-      var s = document.createElement('script');
-      s.src = '/reitansai/src/data/' + encodeURIComponent(name) + '.data.js?t=' + Date.now();
-      s.onload = function () {
-        var d = window.SEMINAR_DATA;
-        if (d && d.presentations) {
-          d.presentations.forEach(function (p) {
-            var row = {
-              t: p.start || '', e: p.end || '', s: d.name || name,
-              title: p.title || '', sp: p.speakers || '', form: p.form || '',
-              v: d.venue || '', vn: p.venue_note || '',
-              no: p.no != null ? String(p.no) : ''
-            };
-            if (window.ReitansaiScheduleId) {
-              row.id = window.ReitansaiScheduleId.makeScheduleId(row);
-            }
-            data.push(row);
-          });
-        }
-        resolve();
-      };
-      s.onerror = function () { resolve(); };
-      document.head.appendChild(s);
-    });
-  }
-
-  async function boot() {
-    if (!body || !countEl) {
-      console.error('[schedule] required DOM elements missing');
-      return;
-    }
-    if (progressWrap) progressWrap.classList.remove('is-done');
-    countEl.textContent = '\u8aad\u8fbc\u4e2d\u2026';
-    setProgress(0, SEMINARS.length, '');
-    for (var i = 0; i < SEMINARS.length; i++) {
-      await loadSeminar(SEMINARS[i]);
-      setProgress(i + 1, SEMINARS.length, SEMINARS[i]);
-    }
-    await refreshSavedSet();
-    fillFilters();
-    [q, fS, fV, fF, fT].forEach(function (el) {
-      if (!el) return;
-      el.addEventListener('input', render);
-      el.addEventListener('change', render);
-    });
-    document.querySelectorAll('.sched-table th[data-sort]').forEach(function (th) {
-      th.addEventListener('click', function () {
-        var k = th.getAttribute('data-sort');
-        if (sortKey === k) sortAsc = !sortAsc;
-        else { sortKey = k; sortAsc = true; }
+    if (!row) return;
+    if (savedSet[id]) {
+      window.ReitansaiMySchedule.remove(id).then(function () {
+        delete savedSet[id];
         render();
+      }).catch(function (e) { alert(e.message || '削除に失敗しました'); });
+      return;
+    }
+    var payload = {
+      id: String(row.id),
+      t: row.t,
+      e: row.e,
+      s: row.s,
+      title: row.title,
+      sp: row.sp,
+      form: row.form,
+      v: row.v,
+      vn: row.vn || '',
+      ov: row.ov || '',
+      duration: row.duration,
+      seminarId: row.seminarId
+    };
+    function doSave(force) {
+      return window.ReitansaiMySchedule.save(payload, force ? { force: force } : {}).then(function (result) {
+        if (result && result.conflicts && result.conflicts.length && !force) {
+          var msg = '時間が重なる発表が Myスケジュール にあります。\n置き換えて保存しますか？';
+          if (window.confirm(msg)) return doSave('replace');
+          return null;
+        }
+        if (result && result.ok === false && result.cancelled) return null;
+        savedSet[id] = 1;
+        render();
+        return result;
       });
+    }
+    doSave().catch(function (e) {
+      alert((e && e.message) || '保存に失敗しました');
     });
-    render();
+  }
+
+  function mapJsonToRows(json) {
+    seminarMap = {};
+    (json.seminars || []).forEach(function (s) {
+      seminarMap[s.id] = s;
+    });
+    return (json.schedules || []).map(function (sc) {
+      var sem = seminarMap[sc.seminarId] || {};
+      var start = sc.start || '';
+      var dur = sc.duration || 0;
+      return {
+        id: String(sc.scheduleId),
+        scheduleId: sc.scheduleId,
+        seminarId: sc.seminarId,
+        t: start,
+        e: addMinutes(start, dur),
+        duration: dur,
+        s: sem.name || '',
+        title: sc.title || '',
+        sp: sc.speakers || '',
+        form: sc.form || '',
+        v: sem.venue || '',
+        vn: sc.venueNote || '',
+        ov: sc.overview || ''
+      };
+    });
+  }
+
+  function boot() {
+    if (!body) return;
+    if (progressWrap) progressWrap.classList.remove('is-done');
+    if (countEl) countEl.textContent = '読込中…';
+    setProgress(0, 1, 'schedule.json を読み込み中…');
+    fetch(SCHEDULE_JSON + '?t=' + Date.now())
+      .then(function (res) {
+        if (!res.ok) throw new Error('schedule.json の取得に失敗しました');
+        return res.json();
+      })
+      .then(function (json) {
+        data = mapJsonToRows(json);
+        setProgress(1, 1, '');
+        return refreshSavedSet();
+      })
+      .then(function () {
+        fillFilters();
+        [q, fS, fV, fF, fT].forEach(function (el) {
+          if (!el) return;
+          el.addEventListener('input', render);
+          el.addEventListener('change', render);
+        });
+        document.querySelectorAll('.sched-table th[data-sort]').forEach(function (th) {
+          th.addEventListener('click', function () {
+            var k = th.getAttribute('data-sort');
+            if (sortKey === k) sortAsc = !sortAsc;
+            else { sortKey = k; sortAsc = true; }
+            render();
+          });
+        });
+        body.addEventListener('click', onSaveClick);
+        render();
+      })
+      .catch(function (err) {
+        console.error(err);
+        if (countEl) countEl.textContent = 'エラー';
+        body.innerHTML = '<tr><td colspan="8">スケジュールデータの読み込みに失敗しました</td></tr>';
+      });
   }
 
   if (document.readyState === 'loading') {
