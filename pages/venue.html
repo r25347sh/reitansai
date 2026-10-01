@@ -3,11 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="麗探祭 2026 会場マップと会場一覧。各会場の発表はスケジュールへリンク。">
   <title>会場マップ | 麗探祭 2026</title>
-  <link rel="icon" type="image/png" href="/reitansai/sources/favicon.png" sizes="32x32">
-  <link rel="manifest" href="/reitansai/manifest.webmanifest">
-  <meta name="theme-color" content="#0b0e14">
   <link rel="stylesheet" href="/reitansai/src/css/common.css">
   <link rel="stylesheet" href="/reitansai/MENU/MENU.css">
   <script src="/reitansai/src/js/theme-control.js"></script>
@@ -32,49 +28,6 @@
       opacity: 0.85;
       line-height: 1.6;
     }
-    .venue-list {
-      max-width: 960px;
-      margin: 0 auto 2.5rem;
-      padding: 0 1rem;
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-      gap: 0.75rem;
-    }
-    .venue-card {
-      display: block;
-      padding: 0.85rem 1rem;
-      border-radius: 10px;
-      border: 1px solid var(--rt-border, rgba(201,162,39,.3));
-      background: var(--rt-card, #151a24);
-      color: inherit;
-      text-decoration: none;
-      transition: border-color .15s, background .15s;
-    }
-    .venue-card:hover {
-      border-color: var(--rt-accent, #c9a227);
-      background: color-mix(in srgb, var(--rt-card) 85%, var(--rt-accent) 8%);
-    }
-    .venue-card:focus-visible {
-      outline: 2px solid var(--rt-accent);
-      outline-offset: 2px;
-    }
-    .venue-card .vc-name {
-      font-weight: 700;
-      color: var(--rt-lab, #c9a227);
-      margin-bottom: 0.25rem;
-    }
-    .venue-card .vc-sem {
-      font-size: 0.8rem;
-      color: var(--rt-text-muted, rgba(255,255,255,.7));
-      line-height: 1.4;
-    }
-    .venue-list-title {
-      max-width: 960px;
-      margin: 0 auto 0.75rem;
-      padding: 0 1rem;
-      font-size: 1rem;
-      color: var(--rt-accent);
-    }
   </style>
 </head>
 <body class="page-venue">
@@ -96,7 +49,7 @@
     <section class="hero hero-compact">
       <div class="hero-badge">VENUE</div>
       <h1>会場マップ</h1>
-      <p class="lead">発表会場の配置です。画像を拡大表示してご確認ください。下のカードから各会場の発表一覧へジャンプできます。</p>
+      <p class="lead">発表会場の配置です。画像を拡大表示してご確認ください。</p>
     </section>
     <section class="section venue-map-wrap">
       <a href="/reitansai/sources/会場一覧.png" target="_blank" rel="noopener">
@@ -104,76 +57,11 @@
       </a>
       <p class="venue-note">タップ／クリックで原寸表示できます。各発表の会場は <a href="/reitansai/pages/schedule.html">スケジュール</a> の「会場」列でも確認できます。</p>
     </section>
-    <h2 class="venue-list-title">会場からスケジュールを開く</h2>
-    <div class="venue-list" id="venue-list" role="list">
-      <p style="opacity:.7;padding:0 1rem">読み込み中…</p>
-    </div>
   </main>
   <footer class="site-footer">
     <p>© 2026 麗探祭 — Reitaku Inquiry EXPO / 麗澤高等学校</p>
     <p class="footer-credit">Site by 5G 佐藤 晴</p>
   </footer>
   <script src="/reitansai/MENU/MENU.js"></script>
-  <script>
-  (function () {
-    var listEl = document.getElementById('venue-list');
-    if (!listEl) return;
-    var LOCAL = '/reitansai/src/json/schedule.json';
-    var FALLBACK = 'https://raw.githubusercontent.com/r25347sh/reitansai/6b054f10fd26ed968ddb66c595169c782eb077fc/src/json/schedule.json';
-
-    function load() {
-      return fetch(LOCAL + '?t=' + Date.now())
-        .then(function (r) { return r.ok ? r.json() : Promise.reject(); })
-        .then(function (j) {
-          if (!j || !j.seminars || !j.seminars.length) throw new Error('empty');
-          return j;
-        })
-        .catch(function () {
-          return fetch(FALLBACK + '?t=' + Date.now()).then(function (r) {
-            if (!r.ok) throw new Error('fail');
-            return r.json();
-          });
-        });
-    }
-
-    load()
-      .then(function (json) {
-        var byVenue = {};
-        (json.seminars || []).forEach(function (s) {
-          var v = s.venue || '（会場未設定）';
-          if (!byVenue[v]) byVenue[v] = [];
-          byVenue[v].push(s.name || '');
-        });
-        var keys = Object.keys(byVenue).sort(function (a, b) {
-          return a.localeCompare(b, 'ja');
-        });
-        listEl.innerHTML = keys
-          .map(function (v) {
-            var semis = byVenue[v].filter(Boolean).join(' / ');
-            var href =
-              '/reitansai/pages/schedule.html?venue=' + encodeURIComponent(v);
-            return (
-              '<a class="venue-card" role="listitem" href="' +
-              href +
-              '">' +
-              '<div class="vc-name">' +
-              v.replace(/</g, '&lt;') +
-              '</div>' +
-              '<div class="vc-sem">' +
-              semis.replace(/</g, '&lt;') +
-              '</div></a>'
-            );
-          })
-          .join('');
-      })
-      .catch(function () {
-        listEl.innerHTML =
-          '<p style="opacity:.8;padding:0 1rem">会場一覧の読み込みに失敗しました。<a href="/reitansai/pages/schedule.html">スケジュール</a>からご確認ください。</p>';
-      });
-  })();
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/reitansai/sw.js').catch(function () {});
-  }
-  </script>
 </body>
 </html>

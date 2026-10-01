@@ -3,13 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Myスケジュール — 保存した発表を時間順に表示（この端末の IndexedDB に保存）。エクスポート・次の発表カウントダウン対応。">
+  <meta name="description" content="Myスケジュール — 保存した発表を時間順に表示（この端末の IndexedDB に保存）。">
   <title>Myスケジュール | 麗探祭 2026</title>
   <link rel="icon" type="image/png" href="/reitansai/sources/favicon.png" sizes="32x32">
   <link rel="icon" type="image/png" href="/reitansai/sources/favicon.png" sizes="192x192">
   <link rel="apple-touch-icon" href="/reitansai/sources/favicon.png" sizes="180x180">
-  <link rel="manifest" href="/reitansai/manifest.webmanifest">
-  <meta name="theme-color" content="#0b0e14">
   <link rel="stylesheet" href="/reitansai/src/css/common.css">
   <link rel="stylesheet" href="/reitansai/src/css/pages/schedule.css">
   <link rel="stylesheet" href="/reitansai/MENU/MENU.css">
@@ -85,29 +83,15 @@
         <span class="mew-times"><span id="my-event-start">09:30</span> 〜 <span id="my-event-end">11:30</span></span>
         <span class="mew-note">麗探祭の発表時間帯です（開催 9:00〜12:00）。保存した発表はこの枠内で並びます。</span>
       </div>
-
-      <div id="my-next-card" class="my-next-card" hidden>
-        <div class="mnc-label">次の発表</div>
-        <div class="mnc-title">—</div>
-        <div class="mnc-meta">—</div>
-        <div class="mnc-countdown">—</div>
-      </div>
-
-      <div id="my-conflict-warn" class="my-conflict-warn" hidden role="status"></div>
-
       <p class="my-range-bar" id="my-personal-range" hidden>
         あなたの予定：<strong id="my-range-start">—</strong> 〜 <strong id="my-range-end">—</strong>
       </p>
-
       <div class="my-toolbar">
         <span class="filter-meta" style="margin:0"><span id="my-count">—</span> 件</span>
         <button type="button" id="my-refresh" class="sched-save-btn">再表示</button>
-        <button type="button" id="my-export-text" class="sched-save-btn">テキストコピー</button>
-        <button type="button" id="my-export-csv" class="sched-save-btn">CSVダウンロード</button>
         <button type="button" id="my-print" class="sched-save-btn">印刷</button>
         <a href="/reitansai/pages/schedule.html" class="sched-save-btn" style="text-decoration:none;display:inline-flex;align-items:center">スケジュールへ</a>
       </div>
-
       <div class="table-wrap">
         <table class="sched-table">
           <thead>
@@ -139,11 +123,5 @@
   </footer>
   <script src="/reitansai/MENU/MENU.js"></script>
   <script src="/reitansai/src/js/pages/my-schedule.js"></script>
-  <script src="/reitansai/src/js/pages/my-schedule-extra.js"></script>
-  <script>
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/reitansai/sw.js').catch(function () {});
-    }
-  </script>
 </body>
 </html>
