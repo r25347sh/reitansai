@@ -4,9 +4,40 @@
  *
  * Panel: dropdown below the trigger (right-aligned).
  * Flips upward when there is not enough space below the header.
+ *
+ * Also injects site favicon / apple-touch-icon from sources/favicon.png
+ * so every page that loads this script gets consistent icons.
  */
 (function () {
   'use strict';
+
+  /* ---- Favicon / site icon (all pages) ---- */
+  (function ensureFavicons() {
+    try {
+      var href = '/reitansai/sources/favicon.png';
+      var head = document.head || document.getElementsByTagName('head')[0];
+      if (!head) return;
+      function addLink(rel, sizes) {
+        if (document.querySelector('link[rel="' + rel + '"][href*="favicon"]')) return;
+        var link = document.createElement('link');
+        link.rel = rel;
+        link.type = 'image/png';
+        link.href = href;
+        if (sizes) link.setAttribute('sizes', sizes);
+        head.appendChild(link);
+      }
+      addLink('icon', '32x32');
+      addLink('icon', '192x192');
+      addLink('apple-touch-icon', '180x180');
+      if (!document.querySelector('link[rel="shortcut icon"]')) {
+        var sc = document.createElement('link');
+        sc.rel = 'shortcut icon';
+        sc.type = 'image/png';
+        sc.href = href;
+        head.appendChild(sc);
+      }
+    } catch (e) { /* ignore */ }
+  })();
 
   var STORAGE_MODE = 'rt-color-mode';
   var STORAGE_ATM = 'rt-atmosphere';
@@ -164,21 +195,14 @@
     }
   }
 
-  /**
-   * Decide whether panel should open below or above the trigger
-   * based on available viewport space under the sticky header.
-   */
   function positionPanel() {
     if (!panelEl || !triggerEl) return;
-
     var rect = triggerEl.getBoundingClientRect();
     var vv = window.visualViewport;
     var vh = (vv && vv.height > 0) ? vv.height : window.innerHeight;
     var spaceBelow = vh - rect.bottom;
     var spaceAbove = rect.top;
-    /* panel approx height: modes grid + atm row + padding ≈ 200px */
     var need = 220;
-
     if (spaceBelow < need && spaceAbove > spaceBelow) {
       panelEl.setAttribute('data-placement', 'top');
     } else {
@@ -207,12 +231,10 @@
 
   function injectUI() {
     if (document.getElementById('rt-theme-ctrl')) return;
-
     var wrap = document.createElement('div');
     wrap.className = 'rt-theme-ctrl';
     wrap.id = 'rt-theme-ctrl';
     wrapEl = wrap;
-
     var btn = document.createElement('button');
     btn.type = 'button';
     btn.className = 'rt-theme-trigger';
@@ -224,7 +246,6 @@
     btn.title = 'テーマ設定';
     btn.innerHTML = sunSVG();
     triggerEl = btn;
-
     var panel = document.createElement('div');
     panel.className = 'rt-theme-panel';
     panel.id = 'rt-theme-panel';
@@ -244,14 +265,12 @@
         '<span class="rt-atm-toggle-label">時間・天気連動</span>' +
         '<span class="rt-atm-switch">' +
           '<input type="checkbox" id="rt-atm-check" />' +
-          '<span class="rt-atm-track"><span class="rt-atm-thumb"></span></span>' +
+          '<span class="rt-atm-track"><span class="rt-atm-thumb"></span>' +
         '</span>' +
       '</label>';
     panelEl = panel;
-
     wrap.appendChild(btn);
     wrap.appendChild(panel);
-
     var header = document.querySelector('.site-header');
     if (header) {
       header.appendChild(wrap);
@@ -262,22 +281,18 @@
       wrap.style.zIndex = '1200';
       document.body.appendChild(wrap);
     }
-
     btn.addEventListener('click', function (e) {
       e.preventDefault();
       e.stopPropagation();
       togglePanel();
     });
-
     panel.querySelectorAll('.rt-theme-mode').forEach(function (b) {
       b.addEventListener('click', function (e) {
         e.preventDefault();
         e.stopPropagation();
         setMode(b.getAttribute('data-mode'));
-        /* 選択後もパネルは開いたまま（連続切替しやすい） */
       });
     });
-
     var chk = panel.querySelector('#rt-atm-check');
     if (chk) {
       chk.addEventListener('change', function () {
@@ -287,16 +302,12 @@
         e.stopPropagation();
       });
     }
-
     document.addEventListener('click', function (e) {
       if (!wrap.contains(e.target)) closePanel();
     });
-
     document.addEventListener('keydown', function (e) {
       if (e.key === 'Escape') closePanel();
     });
-
-    /* スクロール・リサイズ時は位置を再計算（開いているときのみ） */
     var onViewportChange = function () {
       if (panelEl && panelEl.classList.contains('is-open')) positionPanel();
     };
@@ -306,7 +317,6 @@
       window.visualViewport.addEventListener('resize', onViewportChange);
       window.visualViewport.addEventListener('scroll', onViewportChange);
     }
-
     syncUI();
   }
 
