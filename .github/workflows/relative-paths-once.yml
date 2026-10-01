@@ -18,49 +18,48 @@ jobs:
       - name: Convert absolute paths
         run: |
           python3 - <<'PY'
-          import os, re
+          import os
           from pathlib import Path
 
-          ROOT = Path(".").resolve()
-          ABS = re.compile(r"/reitansai/([^\s\"\\'\\`\\)\\]]+)")
-
-          def rel_to(from_file, target_under_root):
-              target = (ROOT / target_under_root.lstrip("/")).resolve()
-              start = from_file.parent.resolve()
-              return os.path.relpath(target, start).replace("\\", "/")
-
-          text_exts = {".html", ".css", ".js", ".json", ".webmanifest"}
+          ROOT = Path('.').resolve()
+          text_exts = {'.html', '.css', '.js', '.json', '.webmanifest'}
           changed = []
+
           for dirpath, _, files in os.walk(ROOT):
-              if "/.git" in dirpath or "/sources/" in (dirpath + "/"):
+              if '/.git' in dirpath or '/sources/' in (dirpath + '/'):
                   continue
               for name in files:
                   p = Path(dirpath) / name
                   if p.suffix.lower() not in text_exts:
                       continue
                   try:
-                      text = p.read_text(encoding="utf-8")
+                      text = p.read_text(encoding='utf-8')
                   except Exception:
                       continue
-                  if "/reitansai/" not in text:
+                  if '/reitansai/' not in text:
                       continue
-                  new = ABS.sub(lambda m: rel_to(p, m.group(1)), text)
+                  # depth of file under repo root
+                  rel = p.relative_to(ROOT)
+                  depth = len(rel.parts) - 1
+                  prefix = '../' * depth if depth else ''
+                  new = text.replace('/reitansai/', prefix)
                   if new != text:
-                      p.write_text(new, encoding="utf-8")
-                      changed.append(str(p.relative_to(ROOT)))
-          print("Updated", len(changed), "files")
+                      p.write_text(new, encoding='utf-8')
+                      changed.append(str(rel))
+
+          print('Updated', len(changed), 'files')
           for c in changed:
-              print(" ", c)
+              print(' ', c)
           PY
 
       - name: Commit
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add -A
           if git diff --cached --quiet; then
-            echo "No changes"
+            echo 'No changes'
           else
-            git commit -m "refactor: convert /reitansai/ absolute paths to relative"
+            git commit -m 'refactor: convert /reitansai/ absolute paths to relative'
             git push
           fi
