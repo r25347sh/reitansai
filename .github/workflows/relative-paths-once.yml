@@ -1,6 +1,9 @@
-name: Convert paths to relative (once)
+name: Convert paths to relative
 
 on:
+  push:
+    paths:
+      - '.github/workflows/relative-paths-once.yml'
   workflow_dispatch:
 
 permissions:
@@ -57,13 +60,12 @@ jobs:
         run: |
           python3 << 'PY'
           from pathlib import Path
+          import re
           p = Path('MENU/MENU.js')
           t = p.read_text(encoding='utf-8')
           if 'auto-detect' in t:
               print('MENU already patched')
           else:
-              # Replace getBase function body to auto-detect site root
-              import re
               new_fn = '''  function getBase() {
     try {
       var scripts = document.getElementsByTagName('script');
@@ -95,7 +97,6 @@ jobs:
                   count=1,
               )
               if n:
-                  # Also fix url() for non-GH root
                   t2 = t2.replace(
                       "return path.indexOf('/reitansai') === 0 ? path : '/reitansai' + path;",
                       "if (BASE.indexOf('/reitansai') !== -1) { return path.indexOf('/reitansai') === 0 ? path : '/reitansai' + path; } return path;"
