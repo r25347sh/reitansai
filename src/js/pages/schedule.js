@@ -1,10 +1,28 @@
 /**
- * Schedule page — loads src/json/schedule.json (flat array), filters, My schedule
+ * Schedule page — builds rows from each seminar SEMINAR_DATA, filters, My schedule
  */
 (function () {
   'use strict';
 
-  var SCHEDULE_JSON = '/reitansai/src/json/schedule.json';
+  var SEMINAR_FILES = [
+    'データサイエンス探究AIゼミ',
+    '教育ゼミ',
+    '国際地域研究ゼミ',
+    '文芸小説創作ゼミ',
+    '化学ゼミ',
+    '文学ゼミ',
+    'メディアゼミ',
+    '社会ゼミ',
+    '農業ゼミ',
+    '観光ゼミ',
+    '語学ゼミ',
+    '遊びの探究ゼミ',
+    '映像編集ゼミ',
+    'デジタルコンテンツ制作ゼミ',
+    'イベント企画ゼミ',
+    '道徳ゼミ'
+  ];
+
   var body = document.getElementById('sched-body');
   var q = document.getElementById('q');
   var fS = document.getElementById('f-seminar');
@@ -220,70 +238,94 @@
     });
   }
 
-  function mapJsonToRows(json) {
-    if (Array.isArray(json)) {
-      return json.map(function (p, idx) {
-        var start = p.start || p.t || '';
-        var end = p.end || p.e || '';
-        var dur = p.duration || '';
-        if (!end && start && dur) {
-          var m = String(dur).match(/(\d+)/);
-          if (m) end = addMinutes(start, parseInt(m[1], 10));
-        }
-        return {
-          id: String(p.no != null ? p.no : idx + 1),
-          scheduleId: p.no,
-          seminarId: p.seminar || '',
-          no: p.no != null ? p.no : '',
-          t: start, e: end, duration: dur,
-          s: p.seminar || '', title: p.title || '',
-          sp: p.speakers || '', form: p.form || '',
-          v: p.venue || '', vn: p.venue_note || p.vn || '',
-          ov: p.overview || ''
-        };
-      });
-    }
-    return [];
+  function loadSeminarScript(name) {
+    return new Promise(function (resolve) {
+      var prev = window.SEMINAR_DATA;
+      window.SEMINAR_DATA = null;
+      var s = document.createElement('script');
+      s.src = '/reitansai/src/data/' + encodeURIComponent(name) + '.data.js?t=' + Date.now();
+      s.onload = function () {
+        var d = window.SEMINAR_DATA;
+        window.SEMINAR_DATA = prev;
+        resolve(d || null);
+      };
+      s.onerror = function () {
+        window.SEMINAR_DATA = prev;
+        resolve(null);
+      };
+      document.head.appendChild(s);
+    });
+  }
+
+  function flattenSeminar(sem) {
+    if (!sem || !sem.presentations) return [];
+    var venue = sem.venue || '';
+    return sem.presentations.map(function (p) {
+      var start = p.start || '';
+      var end = p.end || '';
+      var dur = p.duration || '';
+      if (!end && start && dur) {
+        var m = String(dur).match(/(\d+)/);
+        if (m) end = addMinutes(start, parseInt(m[1], 10));
+      }
+      return {
+        id: String(p.no != null ? p.no : ''),
+        scheduleId: p.no,
+        seminarId: sem.key || sem.name || '',
+        no: p.no != null ? p.no : '',
+        t: start,
+        e: end,
+        duration: dur,
+        s: sem.name || sem.key || '',
+        title: p.title || '',
+        sp: p.speakers || '',
+        form: p.form || '',
+        v: venue,
+        vn: p.venue_note || '',
+        ov: p.overview || ''
+      };
+    });
   }
 
   function boot() {
     if (!body) return;
     if (progressWrap) progressWrap.classList.remove('is-done');
     if (countEl) countEl.textContent = '読込中…';
-    setProgress(0, 1, 'schedule.json を読み込み中…');
-    fetch(SCHEDULE_JSON + '?t=' + Date.now())
-      .then(function (res) {
-        if (!res.ok) throw new Error('schedule.json の取得に失敗しました');
-        return res.json();
-      })
-      .then(function (json) {
-        data = mapJsonToRows(json);
-        setProgress(1, 1, '');
-        return refreshSavedSet();
-      })
-      .then(function () {
-        fillFilters();
-        [q, fS, fV, fF, fT].forEach(function (el) {
-          if (!el) return;
-          el.addEventListener('input', render);
-          el.addEventListener('change', render);
-        });
-        if (body) body.addEventListener('click', onSaveClick);
-        document.querySelectorAll('[data-sort]').forEach(function (th) {
-          th.addEventListener('click', function () {
-            var k = th.getAttribute('data-sort');
-            if (sortKey === k) sortAsc = !sortAsc;
-            else { sortKey = k; sortAsc = true; }
-            render();
-          });
-        });
-        render();
-      })
-      .catch(function (err) {
-        if (countEl) countEl.textContent = '0';
-        if (body) body.innerHTML = '<tr><td colspan="9">読み込みに失敗しました: ' + esc(err.message || err) + '</td></tr>';
-        setProgress(1, 1, 'エラー');
+    setProgress(0, SEMINAR_FILES.length, 'ゼミデータを読み込み中…');
+    var loaded = 0;
+    var all = [];
+    Promise.all(SEMINAR_FILES.map(function (name) {
+      return loadSeminarScript(name).then(function (sem) {
+        loaded++;
+        setProgress(loaded, SEMINAR_FILES.length, name);
+        if (sem) all = all.concat(flattenSeminar(sem));
       });
+    })).then(function () {
+      data = all;
+      setProgress(SEMINAR_FILES.length, SEMINAR_FILES.length, '');
+      return refreshSavedSet();
+    }).then(function () {
+      fillFilters();
+      [q, fS, fV, fF, fT].forEach(function (el) {
+        if (!el) return;
+        el.addEventListener('input', render);
+        el.addEventListener('change', render);
+      });
+      if (body) body.addEventListener('click', onSaveClick);
+      document.querySelectorAll('[data-sort]').forEach(function (th) {
+        th.addEventListener('click', function () {
+          var k = th.getAttribute('data-sort');
+          if (sortKey === k) sortAsc = !sortAsc;
+          else { sortKey = k; sortAsc = true; }
+          render();
+        });
+      });
+      render();
+    }).catch(function (err) {
+      if (countEl) countEl.textContent = '0';
+      if (body) body.innerHTML = '<tr><td colspan="9">読み込みに失敗しました: ' + esc(err.message || err) + '</td></tr>';
+      setProgress(1, 1, 'エラー');
+    });
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
