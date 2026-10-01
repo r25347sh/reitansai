@@ -267,34 +267,11 @@
     var nosPromise = fetch('/reitansai/src/json/schedule-nos.json?t=' + Date.now())
       .then(function (res) { return res.ok ? res.json() : {}; })
       .catch(function () { return {}; });
-    function loadSchedule() {
-      var ctrl = typeof AbortController !== 'undefined' ? new AbortController() : null;
-      var timer = setTimeout(function () { if (ctrl) ctrl.abort(); }, 10000);
-      var urls = [
-        '/reitansai/src/json/schedule.json',
-        SCHEDULE_JSON,
-        'https://raw.githubusercontent.com/r25347sh/reitansai/6b054f10fd26ed968ddb66c595169c782eb077fc/src/json/schedule.json'
-      ];
-      function tryOne(i) {
-        if (i >= urls.length) return Promise.reject(new Error('schedule.json の取得に失敗しました'));
-        return fetch(urls[i] + (urls[i].indexOf('?') >= 0 ? '&' : '?') + 't=' + Date.now(), ctrl ? { signal: ctrl.signal } : undefined)
-          .then(function (res) {
-            if (!res.ok) throw new Error('fail');
-            return res.json();
-          })
-          .then(function (json) {
-            if (!json || !json.schedules || !json.schedules.length) throw new Error('empty');
-            clearTimeout(timer);
-            return json;
-          })
-          .catch(function () { return tryOne(i + 1); });
-      }
-      return tryOne(0).catch(function (e) {
-        clearTimeout(timer);
-        throw e;
-      });
-    }
-    loadSchedule()
+    fetch(SCHEDULE_JSON + '?t=' + Date.now())
+      .then(function (res) {
+        if (!res.ok) throw new Error('schedule.json の取得に失敗しました');
+        return res.json();
+      })
       .then(function (json) {
         return nosPromise.then(function (nos) {
           data = mapJsonToRows(json);
