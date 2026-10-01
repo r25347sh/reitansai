@@ -1,4 +1,4 @@
-/* First-visit splash — black bg + logo expand/fade */
+/* First-visit splash — black bg + favicon main / logo sub + soft expand/fade */
 
 #rt-splash {
   position: fixed;
@@ -11,11 +11,6 @@
   background: #000;
   pointer-events: none;
   opacity: 1;
-  transition: opacity 0.01s linear;
-}
-
-#rt-splash.is-exiting {
-  /* driven by JS transform + opacity on inner */
 }
 
 #rt-splash .rt-splash-inner {
@@ -23,33 +18,48 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: 1.1rem;
   transform-origin: center center;
   will-change: transform, opacity;
   transition: none;
 }
 
-#rt-splash .rt-splash-logo {
+/* Main: favicon — screen-fitting */
+#rt-splash .rt-splash-icon {
   display: block;
-  width: min(72vmin, 420px);
+  width: min(58vmin, 340px);
   height: auto;
-  max-width: 90vw;
-  max-height: 70vh;
+  max-width: 88vw;
+  max-height: 52vh;
   object-fit: contain;
   user-select: none;
   -webkit-user-drag: none;
 }
 
+/* Sub: logo — smaller under icon */
+#rt-splash .rt-splash-logo {
+  display: block;
+  width: min(36vmin, 200px);
+  height: auto;
+  max-width: 70vw;
+  max-height: 18vh;
+  object-fit: contain;
+  opacity: 0.92;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
 #rt-splash .rt-splash-credit {
-  margin-top: 1.25rem;
+  margin-top: 0.35rem;
   font-family: system-ui, -apple-system, "Segoe UI", "Hiragino Sans", "Noto Sans JP", sans-serif;
-  font-size: clamp(0.7rem, 2.2vw, 0.85rem);
+  font-size: clamp(0.68rem, 2vw, 0.82rem);
   font-weight: 500;
   letter-spacing: 0.06em;
-  color: rgba(255, 255, 255, 0.55);
+  color: rgba(255, 255, 255, 0.5);
   text-align: center;
   opacity: 0;
-  transform: translateY(6px);
-  transition: opacity 0.45s ease, transform 0.45s ease;
+  transform: translateY(8px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
 }
 
 #rt-splash.is-ready .rt-splash-credit {
@@ -57,7 +67,7 @@
   transform: translateY(0);
 }
 
-/* While splash is active, hide page chrome to avoid flash */
+/* FOUC guard */
 html.rt-splash-pending body > *:not(#rt-splash) {
   visibility: hidden !important;
 }
