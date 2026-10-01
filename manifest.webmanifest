@@ -1,7 +1,7 @@
 {
   "name": "麗探祭 2026",
   "short_name": "麗探祭",
-  "start_url": "/reitansai/index.html",
+  "start_url": "index.html",
   "display": "browser",
   "background_color": "#0b0e14",
   "theme_color": "#0b0e14"
