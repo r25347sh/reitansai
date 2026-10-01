@@ -3,7 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="麗探祭 2026 発表タイムスケジュール。いま見られる発表の絞り込み・Myスケジュール保存。">
   <title>スケジュール | 麗探祭 2026</title>
+  <link rel="icon" type="image/png" href="/reitansai/sources/favicon.png" sizes="32x32">
+  <link rel="manifest" href="/reitansai/manifest.webmanifest">
+  <meta name="theme-color" content="#0b0e14">
   <link rel="stylesheet" href="/reitansai/src/css/common.css">
   <link rel="stylesheet" href="/reitansai/src/css/pages/schedule.css">
   <link rel="stylesheet" href="/reitansai/MENU/MENU.css">
@@ -22,6 +26,7 @@
       <a href="/reitansai/index.html">ホーム</a>
       <a href="/reitansai/pages/schedule.html" class="is-active">スケジュール</a>
       <a href="/reitansai/pages/my/my_schedule.html">Myスケジュール</a>
+      <a href="/reitansai/pages/venue.html">会場マップ</a>
       <a href="/reitansai/pages/seminars/index.html">ゼミ一覧</a>
       <a href="/reitansai/pages/about_This_Site.html">About</a>
       <a href="/reitansai/sitemap.html">サイトマップ</a>
@@ -32,18 +37,26 @@
       <div class="hero-badge">TIMETABLE</div>
       <h1>発表タイムスケジュール</h1>
       <p class="lead">2026年10月3日（土） 発表枠 9:30〜11:30 · 「保存」で Myスケジュール に追加（この端末に保存）</p>
+      <p id="live-status" class="live-status" role="status" aria-live="polite">JST —</p>
     </section>
     <section class="section sched-filters">
       <div class="filter-bar">
-        <input type="search" id="q" placeholder="タイトル・発表者・ゼミ名で検索…" autocomplete="off">
-        <select id="f-seminar"><option value="">すべてのゼミ</option></select>
-        <select id="f-venue"><option value="">すべての会場</option></select>
-        <select id="f-form"><option value="">すべての形式</option></select>
-        <select id="f-time">
+        <input type="search" id="q" placeholder="タイトル・発表者・ゼミ名で検索…" autocomplete="off" aria-label="キーワード検索">
+        <select id="f-seminar" aria-label="ゼミで絞り込み"><option value="">すべてのゼミ</option></select>
+        <select id="f-venue" aria-label="会場で絞り込み"><option value="">すべての会場</option></select>
+        <select id="f-form" aria-label="形式で絞り込み"><option value="">すべての形式</option></select>
+        <select id="f-time" aria-label="時間帯で絞り込み">
           <option value="">すべての時間</option>
           <option value="9">9時台</option>
           <option value="10">10時台</option>
           <option value="11">11時台</option>
+        </select>
+        <select id="f-live" aria-label="進行状況で絞り込み">
+          <option value="">すべての進行状況</option>
+          <option value="live">🔴 いま見られる（進行中）</option>
+          <option value="soon">🟡 まもなく＋進行中（30分以内）</option>
+          <option value="upcoming">これから（未終了）</option>
+          <option value="past">終了済み</option>
         </select>
       </div>
       <p class="filter-meta"><span id="result-count">—</span> 件表示 · <a href="/reitansai/pages/my/my_schedule.html">Myスケジュールへ</a></p>
@@ -59,15 +72,15 @@
         <table class="sched-table">
           <thead>
             <tr>
-              <th data-sort="no">通しNo.</th>
-              <th data-sort="t">開始</th>
-              <th data-sort="e">終了</th>
-              <th data-sort="s">ゼミ</th>
-              <th data-sort="title">発表タイトル</th>
-              <th data-sort="sp">発表者</th>
-              <th data-sort="form">形式</th>
-              <th data-sort="v">会場</th>
-              <th>保存</th>
+              <th data-sort="no" scope="col">通しNo.</th>
+              <th data-sort="t" scope="col">開始</th>
+              <th data-sort="e" scope="col">終了</th>
+              <th data-sort="s" scope="col">ゼミ</th>
+              <th data-sort="title" scope="col">発表タイトル</th>
+              <th data-sort="sp" scope="col">発表者</th>
+              <th data-sort="form" scope="col">形式</th>
+              <th data-sort="v" scope="col">会場</th>
+              <th scope="col">保存</th>
             </tr>
           </thead>
           <tbody id="sched-body"></tbody>
@@ -81,5 +94,10 @@
   </footer>
   <script src="/reitansai/MENU/MENU.js"></script>
   <script src="/reitansai/src/js/pages/schedule.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/reitansai/sw.js').catch(function () {});
+    }
+  </script>
 </body>
 </html>
