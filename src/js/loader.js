@@ -12,7 +12,7 @@
 
   const pageKeyFromLocation = () => {
     const path = normalizePath(window.location.pathname);
-    const noTrailingSlash = path === "/" ? "/reitansai/" : `${BASE_PATH}${path}`;
+    const noTrailingSlash = path === "/" ? "../../" : `${BASE_PATH}${path}`;
     const htmlPath = noTrailingSlash.replace(/\.html$/, "");
 
     if (htmlPath.endsWith("/index")) {

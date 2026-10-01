@@ -1,4 +1,4 @@
-@import url("/reitansai/src/css/pages/seminars/seminar-common.css");
+@import url("../../../../src/css/pages/seminars/seminar-common.css");
 .page-seminar.theme-chem{--rt-accent:#5dff9a;--rt-lab:#7dffb0}
 .page-seminar.theme-chem .seminar-hero{background:radial-gradient(circle at 50% 100%,rgba(93,255,154,.2),transparent 55%),linear-gradient(180deg,#061208,#0a1810);border:2px solid rgba(93,255,154,.35);border-radius:50% 50% 12px 12px/30% 30% 12px 12px;padding:3rem 1.5rem 2.5rem;text-align:center;animation:flaskGlow 4s ease-in-out infinite}
 @keyframes flaskGlow{0%,100%{box-shadow:0 0 30px rgba(93,255,154,.15)}50%{box-shadow:0 0 50px rgba(93,255,154,.3)}}

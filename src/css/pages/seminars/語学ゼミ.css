@@ -1,4 +1,4 @@
-@import url("/reitansai/src/css/pages/seminars/seminar-common.css");
+@import url("../../../../src/css/pages/seminars/seminar-common.css");
 .page-seminar.theme-lang{--rt-accent:#26c6da;--rt-lab:#4dd0e1}
 .page-seminar.theme-lang .seminar-hero{background:linear-gradient(180deg,rgba(38,198,218,.12),transparent 60%),#0a1214;border:1px solid #26c6da44;border-radius:16px;padding:2.5rem 1.5rem}
 .page-seminar.theme-lang .seminar-hero h1{font-family:"Noto Sans JP",sans-serif;letter-spacing:.1em;color:#b2ebf2}

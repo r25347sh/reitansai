@@ -12,8 +12,8 @@
   var DB_VERSION = 1;
   var STORE = 'flags';
   var KEY = 'firstVisitDone';
-  var ICON_SRC = '/reitansai/sources/favicon.png';
-  var LOGO_SRC = '/reitansai/sources/\u9e97\u63a2\u796d\u30ed\u30b4.png';
+  var ICON_SRC = '../../sources/favicon.png';
+  var LOGO_SRC = '../../sources/\u9e97\u63a2\u796d\u30ed\u30b4.png';
   var HOLD_MS = 2000;
   var EXIT_MS = 1400;
   /* milder acceleration than before */

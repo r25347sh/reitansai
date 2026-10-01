@@ -1,4 +1,4 @@
-@import url("/reitansai/src/css/pages/seminars/seminar-common.css");
+@import url("../../../../src/css/pages/seminars/seminar-common.css");
 .page-seminar.theme-media{--rt-accent:#b794f6;--rt-lab:#d6bcfa}
 .page-seminar.theme-media .seminar-hero{background:#0c0614;border:2px solid #b794f6;border-radius:4px;padding:2.5rem 1.25rem;position:relative;animation:mediaFlicker 5s ease-in-out infinite}
 @keyframes mediaFlicker{0%,100%{filter:none}48%{filter:none}50%{filter:brightness(1.15) saturate(1.2)}52%{filter:brightness(.9)}54%{filter:none}}

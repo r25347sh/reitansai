@@ -5,7 +5,7 @@
 (function () {
   'use strict';
 
-  var SCHEDULE_JSON = '/reitansai/src/json/schedule.json';
+  var SCHEDULE_JSON = '../../../src/json/schedule.json';
   /** Overall presentation window (defaults shown even with zero saved items) */
   var EVENT_START = '09:30';
   var EVENT_END = '11:30';

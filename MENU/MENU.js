@@ -1,6 +1,6 @@
 /**
  * Reitansai Radial Menu + Hamburger FAB
- * Base path: always /reitansai/ on GitHub Pages
+ * Base path: always ../ on GitHub Pages
  */
 (function () {
   'use strict';
@@ -8,12 +8,12 @@
   /** Site root under GitHub Pages project site */
   function getBase() {
     var p = location.pathname || '';
-    if (p.indexOf('/reitansai/') === 0 || p === '/reitansai') return '/reitansai/';
+    if (p.indexOf('../') === 0 || p === '/reitansai') return '../';
     if (location.protocol === 'file:') {
       var depth = (p.match(/\/pages\/seminars\//) ? 2 : p.match(/\/pages\//) ? 1 : 0);
       return depth === 2 ? '../../' : depth === 1 ? '../' : './';
     }
-    return '/reitansai/';
+    return '../';
   }
 
   var BASE = getBase();

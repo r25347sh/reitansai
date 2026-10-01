@@ -1,4 +1,4 @@
-@import url("/reitansai/src/css/pages/seminars/seminar-fx.css");
+@import url("../../../../src/css/pages/seminars/seminar-fx.css");
 /* Seminar structural hooks ONLY — visual design is 100% per-seminar CSS */
 .seminar-hero { position: relative; overflow: hidden; }
 .pres-list { display: block; }

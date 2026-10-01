@@ -14,7 +14,7 @@
   /* ---- Favicon / site icon (all pages) ---- */
   (function ensureFavicons() {
     try {
-      var href = '/reitansai/sources/favicon.png';
+      var href = '../../sources/favicon.png';
       var head = document.head || document.getElementsByTagName('head')[0];
       if (!head) return;
       function addLink(rel, sizes) {

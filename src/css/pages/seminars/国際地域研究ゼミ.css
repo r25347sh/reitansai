@@ -1,4 +1,4 @@
-@import url("/reitansai/src/css/pages/seminars/seminar-common.css");
+@import url("../../../../src/css/pages/seminars/seminar-common.css");
 .page-seminar.theme-intl{--rt-accent:#4da6e0;--rt-lab:#7ec4f0}
 .page-seminar.theme-intl .seminar-hero{background:radial-gradient(ellipse 80% 60% at 75% 40%,rgba(77,166,224,.2),transparent 55%),#0a1218;border:1px solid #4da6e044;border-radius:50% 50% 8px 8px/20% 20% 8px 8px;padding:3rem 1.5rem 2.5rem;overflow:hidden}
 .page-seminar.theme-intl .seminar-hero h1{font-family:"Shippori Mincho",serif;letter-spacing:.15em;color:#c8e4f8}

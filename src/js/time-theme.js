@@ -116,7 +116,7 @@
     if (document.getElementById('rt-header-nav-js')) return;
     var s = document.createElement('script');
     s.id = 'rt-header-nav-js';
-    s.src = '/reitansai/src/js/header-nav.js';
+    s.src = '../../src/js/header-nav.js';
     document.head.appendChild(s);
   })();
 

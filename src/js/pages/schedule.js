@@ -243,7 +243,7 @@
       var prev = window.SEMINAR_DATA;
       window.SEMINAR_DATA = null;
       var s = document.createElement('script');
-      s.src = '/reitansai/src/data/' + encodeURIComponent(name) + '.data.js?t=' + Date.now();
+      s.src = '../../../src/data/' + encodeURIComponent(name) + '.data.js?t=' + Date.now();
       s.onload = function () {
         var d = window.SEMINAR_DATA;
         window.SEMINAR_DATA = prev;

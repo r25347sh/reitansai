@@ -1,27 +1,27 @@
 {
   "ALL": [
-    "/reitansai/src/css/common.css",
-    "/reitansai/src/js/time-theme.js",
-    "/reitansai/MENU/MENU.css",
-    "/reitansai/MENU/MENU.js"
+    "../../src/css/common.css",
+    "../../src/js/time-theme.js",
+    "../../MENU/MENU.css",
+    "../../MENU/MENU.js"
   ],
-  "/reitansai/": ["/reitansai/src/css/index.css", "/reitansai/src/js/index.js"],
-  "/reitansai": ["/reitansai/src/css/index.css", "/reitansai/src/js/index.js"],
-  "/reitansai/index": ["/reitansai/src/css/index.css", "/reitansai/src/js/index.js"],
-  "/reitansai/404": ["/reitansai/src/css/404.css"],
-  "/reitansai/sitemap": ["/reitansai/src/css/sitemap.css"],
-  "/reitansai/pages/schedule": [
-    "/reitansai/src/css/pages/schedule.css",
-    "/reitansai/src/js/schedule-id.js",
-    "/reitansai/src/js/my-schedule-store.js",
-    "/reitansai/src/js/pages/schedule.js"
+  "../../": ["../../src/css/index.css", "../../src/js/index.js"],
+  "/reitansai": ["../../src/css/index.css", "../../src/js/index.js"],
+  "../../index": ["../../src/css/index.css", "../../src/js/index.js"],
+  "../../404": ["../../src/css/404.css"],
+  "../../sitemap": ["../../src/css/sitemap.css"],
+  "../../pages/schedule": [
+    "../../src/css/pages/schedule.css",
+    "../../src/js/schedule-id.js",
+    "../../src/js/my-schedule-store.js",
+    "../../src/js/pages/schedule.js"
   ],
-  "/reitansai/pages/my/my_schedule": [
-    "/reitansai/src/css/pages/schedule.css",
-    "/reitansai/src/js/schedule-id.js",
-    "/reitansai/src/js/my-schedule-store.js",
-    "/reitansai/src/js/pages/my-schedule.js"
+  "../../pages/my/my_schedule": [
+    "../../src/css/pages/schedule.css",
+    "../../src/js/schedule-id.js",
+    "../../src/js/my-schedule-store.js",
+    "../../src/js/pages/my-schedule.js"
   ],
-  "/reitansai/pages/about_This_Site": ["/reitansai/src/css/pages/about_This_Site.css", "/reitansai/src/js/pages/about_This_Site.js"],
-  "/reitansai/pages/seminars/index": ["/reitansai/src/css/pages/seminars/index.css", "/reitansai/src/js/pages/seminars/index.js"]
+  "../../pages/about_This_Site": ["../../src/css/pages/about_This_Site.css", "../../src/js/pages/about_This_Site.js"],
+  "../../pages/seminars/index": ["../../src/css/pages/seminars/index.css", "../../src/js/pages/seminars/index.js"]
 }

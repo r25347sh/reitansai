@@ -1,4 +1,4 @@
-@import url("/reitansai/src/css/pages/seminars/seminar-common.css");
+@import url("../../../../src/css/pages/seminars/seminar-common.css");
 .page-seminar.theme-event{--rt-accent:#ffd54f;--rt-lab:#ffe082}
 .page-seminar.theme-event .seminar-hero{background:radial-gradient(circle at 50% -10%,rgba(255,213,79,.3),transparent 50%),#121008;border:3px solid #ffd54f88;border-radius:20px;padding:2.8rem 1.5rem;box-shadow:0 0 40px rgba(255,213,79,.12)}
 .page-seminar.theme-event .hero-emoji{font-size:3.2rem;animation:floatY 2s ease-in-out infinite;filter:drop-shadow(0 0 12px #ffd54f)}

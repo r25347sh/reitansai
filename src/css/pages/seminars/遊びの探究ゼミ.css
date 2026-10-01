@@ -1,4 +1,4 @@
-@import url("/reitansai/src/css/pages/seminars/seminar-common.css");
+@import url("../../../../src/css/pages/seminars/seminar-common.css");
 .page-seminar.theme-play{--rt-accent:#ff6b4a;--rt-lab:#ffb347}
 .page-seminar.theme-play .seminar-hero{background:linear-gradient(135deg,#1a0e0a,#0f0a08 50%,#1a1208);border:3px solid #ff6b4a;border-radius:24px;padding:2.5rem 1.5rem;text-align:center;animation:playBounce 3s ease-in-out infinite}
 @keyframes playBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
