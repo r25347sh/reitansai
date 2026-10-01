@@ -1,22 +1,35 @@
 /**
  * My schedule — resolve saved scheduleId against schedule.json for full row display
+ * Default event window: 09:30–11:30 (presentation slot)
  */
 (function () {
   'use strict';
 
   var SCHEDULE_JSON = '/reitansai/src/json/schedule.json';
+  /** Overall presentation window (defaults shown even with zero saved items) */
+  var EVENT_START = '09:30';
+  var EVENT_END = '11:30';
+
   var body = document.getElementById('my-sched-body');
   var countEl = document.getElementById('my-count');
   var hint = document.getElementById('my-empty-hint');
   var refreshBtn = document.getElementById('my-refresh');
+  var rangeWrap = document.getElementById('my-personal-range');
+  var rangeStartEl = document.getElementById('my-range-start');
+  var rangeEndEl = document.getElementById('my-range-end');
+  var eventStartEl = document.getElementById('my-event-start');
+  var eventEndEl = document.getElementById('my-event-end');
   var catalog = null;
+
+  if (eventStartEl) eventStartEl.textContent = EVENT_START;
+  if (eventEndEl) eventEndEl.textContent = EVENT_END;
 
   function esc(s) {
     return String(s == null ? '' : s)
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;');
+      .replace(/&/g, '&')
+      .replace(/</g, '<')
+      .replace(/>/g, '>')
+      .replace(/"/g, '"');
   }
 
   function toMinutes(t) {
@@ -99,11 +112,39 @@
     });
   }
 
+  function updatePersonalRange(rows) {
+    if (!rangeWrap) return;
+    if (!rows || !rows.length) {
+      rangeWrap.hidden = true;
+      return;
+    }
+    var minS = 99999, maxE = -1;
+    rows.forEach(function (r) {
+      var s = toMinutes(r.t);
+      var e = toMinutes(r.e);
+      if (e < 0 && s >= 0) e = s;
+      if (s >= 0 && s < minS) minS = s;
+      if (e >= 0 && e > maxE) maxE = e;
+    });
+    if (minS >= 99999) {
+      rangeWrap.hidden = true;
+      return;
+    }
+    function minsToStr(m) {
+      var h = Math.floor(m / 60), mm = m % 60;
+      return (h < 10 ? '0' : '') + h + ':' + (mm < 10 ? '0' : '') + mm;
+    }
+    if (rangeStartEl) rangeStartEl.textContent = minsToStr(minS);
+    if (rangeEndEl) rangeEndEl.textContent = maxE >= 0 ? minsToStr(maxE) : '—';
+    rangeWrap.hidden = false;
+  }
+
   function render(rows) {
     if (!body) return;
     rows = sortByTime(rows || []);
     if (countEl) countEl.textContent = String(rows.length);
     if (hint) hint.hidden = rows.length > 0;
+    updatePersonalRange(rows);
     if (!rows.length) {
       body.innerHTML = '<tr><td colspan="8">保存された発表はありません</td></tr>';
       return;
