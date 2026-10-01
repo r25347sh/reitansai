@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Myスケジュール — 保存した発表を時間順に表示（この端末の IndexedDB に保存）。">
   <title>Myスケジュール | 麗探祭 2026</title>
+  <link rel="icon" type="image/png" href="/reitansai/sources/favicon.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="/reitansai/sources/favicon.png" sizes="192x192">
+  <link rel="apple-touch-icon" href="/reitansai/sources/favicon.png" sizes="180x180">
   <link rel="stylesheet" href="/reitansai/src/css/common.css">
   <link rel="stylesheet" href="/reitansai/src/css/pages/schedule.css">
   <link rel="stylesheet" href="/reitansai/MENU/MENU.css">
@@ -12,6 +15,46 @@
   <script src="/reitansai/src/js/time-theme.js" defer></script>
   <script src="/reitansai/src/js/schedule-id.js"></script>
   <script src="/reitansai/src/js/my-schedule-store.js"></script>
+  <style>
+    .my-event-window {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem 1.25rem;
+      align-items: center;
+      margin: 0 0 1rem;
+      padding: 0.85rem 1rem;
+      border-radius: 10px;
+      border: 1px solid rgba(201, 162, 39, 0.35);
+      background: color-mix(in srgb, var(--rt-card, #151a24) 92%, transparent);
+    }
+    .my-event-window .mew-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      color: var(--rt-accent, #c9a227);
+      text-transform: uppercase;
+    }
+    .my-event-window .mew-times {
+      font-variant-numeric: tabular-nums;
+      font-weight: 700;
+      font-size: 1.05rem;
+      color: var(--rt-lab, #c9a227);
+    }
+    .my-event-window .mew-note {
+      font-size: 0.8rem;
+      opacity: 0.8;
+      flex: 1 1 12rem;
+    }
+    .my-range-bar {
+      margin: 0 0 0.75rem;
+      font-size: 0.85rem;
+      color: var(--rt-text-muted, rgba(255,255,255,0.7));
+    }
+    .my-range-bar strong {
+      color: var(--rt-lab, #c9a227);
+      font-variant-numeric: tabular-nums;
+    }
+  </style>
 </head>
 <body class="page-schedule page-my-schedule">
   <header class="site-header">
@@ -34,6 +77,14 @@
       <p class="lead">スケジュール画面で「保存」した発表を、開始時刻の昇順で表示します。データはこの端末のブラウザ（IndexedDB）にのみ保存されます。</p>
     </section>
     <section class="section">
+      <div class="my-event-window" id="my-event-window" aria-label="全体の発表時間枠">
+        <span class="mew-label">全体の発表枠</span>
+        <span class="mew-times"><span id="my-event-start">09:30</span> 〜 <span id="my-event-end">11:30</span></span>
+        <span class="mew-note">麗探祭の発表時間帯です（開催 9:00〜12:00）。保存した発表はこの枠内で並びます。</span>
+      </div>
+      <p class="my-range-bar" id="my-personal-range" hidden>
+        あなたの予定：<strong id="my-range-start">—</strong> 〜 <strong id="my-range-end">—</strong>
+      </p>
       <p class="filter-meta"><span id="my-count">—</span> 件 · <button type="button" id="my-refresh" class="sched-save-btn">再表示</button></p>
       <div class="table-wrap">
         <table class="sched-table">
