@@ -1,10 +1,10 @@
 name: Convert paths to relative
 
 on:
+  workflow_dispatch:
   push:
     paths:
-      - '.github/workflows/relative-paths-once.yml'
-  workflow_dispatch:
+      - ".github/workflows/relative-paths-once.yml"
 
 permissions:
   contents: write
@@ -15,110 +15,52 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Convert absolute /reitansai/ paths to relative
+      - name: Convert absolute paths
         run: |
-          set -euo pipefail
-          python3 << 'PY'
+          python3 - <<'PY'
           import os, re
           from pathlib import Path
 
-          ROOT = Path('.').resolve()
-          ABS = re.compile(r'/reitansai/([^\s"\'\`\)\]]+)')
+          ROOT = Path(".").resolve()
+          ABS = re.compile(r"/reitansai/([^\s\"\\'\\`\\)\\]]+)")
 
-          def rel_to(from_file: Path, target_under_root: str) -> str:
-              target = (ROOT / target_under_root.lstrip('/')).resolve()
+          def rel_to(from_file, target_under_root):
+              target = (ROOT / target_under_root.lstrip("/")).resolve()
               start = from_file.parent.resolve()
-              return os.path.relpath(target, start).replace('\\', '/')
+              return os.path.relpath(target, start).replace("\\", "/")
 
-          text_exts = {'.html', '.css', '.js', '.json', '.webmanifest'}
+          text_exts = {".html", ".css", ".js", ".json", ".webmanifest"}
           changed = []
           for dirpath, _, files in os.walk(ROOT):
-              if '/.git' in dirpath or '/sources/' in (dirpath + '/'):
+              if "/.git" in dirpath or "/sources/" in (dirpath + "/"):
                   continue
               for name in files:
                   p = Path(dirpath) / name
                   if p.suffix.lower() not in text_exts:
                       continue
                   try:
-                      text = p.read_text(encoding='utf-8')
+                      text = p.read_text(encoding="utf-8")
                   except Exception:
                       continue
-                  if '/reitansai/' not in text:
+                  if "/reitansai/" not in text:
                       continue
-                  def repl(m):
-                      return rel_to(p, m.group(1))
-                  new = ABS.sub(repl, text)
+                  new = ABS.sub(lambda m: rel_to(p, m.group(1)), text)
                   if new != text:
-                      p.write_text(new, encoding='utf-8')
+                      p.write_text(new, encoding="utf-8")
                       changed.append(str(p.relative_to(ROOT)))
-          print('Updated', len(changed), 'files')
+          print("Updated", len(changed), "files")
           for c in changed:
-              print(' ', c)
+              print(" ", c)
           PY
 
-      - name: Patch MENU.js getBase for root deploys
+      - name: Commit
         run: |
-          python3 << 'PY'
-          from pathlib import Path
-          import re
-          p = Path('MENU/MENU.js')
-          t = p.read_text(encoding='utf-8')
-          if 'auto-detect' in t:
-              print('MENU already patched')
-          else:
-              new_fn = '''  function getBase() {
-    try {
-      var scripts = document.getElementsByTagName('script');
-      for (var i = scripts.length - 1; i >= 0; i--) {
-        var abs = scripts[i].src || '';
-        var markers = ['/src/js/', '/MENU/'];
-        for (var m = 0; m < markers.length; m++) {
-          var idx = abs.indexOf(markers[m]);
-          if (idx !== -1) return abs.substring(0, idx + 1);
-        }
-      }
-    } catch (e) {}
-    var p = location.pathname || '';
-    if (p.indexOf('/reitansai/') === 0 || p === '/reitansai') {
-      return (location.origin || '') + '/reitansai/';
-    }
-    if (location.protocol === 'file:') {
-      var depth = /\\/pages\\/seminars\\//.test(p) ? 2 : /\\/pages\\//.test(p) ? 1 : 0;
-      return depth === 2 ? '../../' : depth === 1 ? '../' : './';
-    }
-    if (/\\/pages\\/seminars\\//.test(p)) return '../../';
-    if (/\\/pages\\//.test(p)) return '../';
-    return './';
-  }'''
-              t2, n = re.subn(
-                  r'  function getBase\(\) \{[\s\S]*?\n  \}\n',
-                  new_fn + '\n',
-                  t,
-                  count=1,
-              )
-              if n:
-                  t2 = t2.replace(
-                      "return path.indexOf('/reitansai') === 0 ? path : '/reitansai' + path;",
-                      "if (BASE.indexOf('/reitansai') !== -1) { return path.indexOf('/reitansai') === 0 ? path : '/reitansai' + path; } return path;"
-                  )
-                  t2 = t2.replace(
-                      'Base path: always /reitansai/ on GitHub Pages',
-                      'Base path: auto-detect (GitHub Pages / Vercel / Cloudflare / local)',
-                  )
-                  p.write_text(t2, encoding='utf-8')
-                  print('MENU patched', n)
-              else:
-                  print('MENU pattern not found')
-          PY
-
-      - name: Commit if changed
-        run: |
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A
           if git diff --cached --quiet; then
-            echo 'No changes'
+            echo "No changes"
           else
-            git commit -m 'refactor: convert /reitansai/ absolute paths to relative for Vercel/Cloudflare'
+            git commit -m "refactor: convert /reitansai/ absolute paths to relative"
             git push
           fi
