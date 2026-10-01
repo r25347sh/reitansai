@@ -1,6 +1,9 @@
 /**
  * First-visit splash (IndexedDB)
- * Heavy images disabled for performance (favicon was ~3.8MB).
+ * - Main: favicon.png (screen-fitting)
+ * - Sub: 麗探祭ロゴ.png
+ * - Soft expand + fade out (longer, milder acceleration)
+ * - Prevents page flash until decision is made
  */
 (function () {
   'use strict';
@@ -9,10 +12,11 @@
   var DB_VERSION = 1;
   var STORE = 'flags';
   var KEY = 'firstVisitDone';
-  var ICON_SRC = ''; /* was 3.8MB favicon — skip heavy splash image */
-  var LOGO_SRC = '';
-  var HOLD_MS = 400;
-  var EXIT_MS = 300;
+  var ICON_SRC = '/reitansai/sources/favicon.png';
+  var LOGO_SRC = '/reitansai/sources/\u9e97\u63a2\u796d\u30ed\u30b4.png';
+  var HOLD_MS = 2000;
+  var EXIT_MS = 1400;
+  /* milder acceleration than before */
   var EASE = 'cubic-bezier(0.33, 0.0, 0.45, 1)';
 
   function openDB() {
@@ -69,10 +73,6 @@
 
   function preloadImage(src) {
     return new Promise(function (resolve) {
-      if (!src) {
-        resolve(null);
-        return;
-      }
       var img = new Image();
       img.onload = function () {
         resolve(img);
@@ -101,7 +101,9 @@
       destroySplash(el);
       return;
     }
+
     el.classList.add('is-exiting');
+
     inner.style.transition =
       'transform ' + EXIT_MS + 'ms ' + EASE + ', ' +
       'opacity ' + EXIT_MS + 'ms ' + EASE;
@@ -110,6 +112,7 @@
     inner.style.opacity = '0';
     el.style.transition = 'opacity ' + Math.round(EXIT_MS * 0.9) + 'ms ' + EASE;
     el.style.opacity = '0';
+
     var done = false;
     function finish() {
       if (done) return;
@@ -126,29 +129,53 @@
     root.setAttribute('aria-hidden', 'true');
     root.innerHTML =
       '<div class="rt-splash-inner">' +
+      '<img class="rt-splash-icon" src="' + ICON_SRC + '" alt="" width="340" height="340" decoding="async">' +
+      '<img class="rt-splash-logo" src="' + LOGO_SRC + '" alt="" width="200" height="200" decoding="async">' +
       '<p class="rt-splash-credit">Created by 5G10 Haru Sato</p>' +
       '</div>';
+
     document.body.insertBefore(root, document.body.firstChild);
-    root.classList.add('is-ready');
-    setTimeout(function () {
-      setFlag().catch(function () {});
-      runExit(root);
-    }, HOLD_MS);
+
+    var icon = root.querySelector('.rt-splash-icon');
+    var started = false;
+    var startHold = function () {
+      if (started) return;
+      started = true;
+      root.classList.add('is-ready');
+      setTimeout(function () {
+        setFlag().catch(function () { /* ignore */ });
+        runExit(root);
+      }, HOLD_MS);
+    };
+
+    if (icon.complete && icon.naturalWidth) {
+      startHold();
+    } else {
+      icon.addEventListener('load', startHold, { once: true });
+      icon.addEventListener('error', startHold, { once: true });
+      setTimeout(startHold, 4000);
+    }
   }
 
   function init() {
     document.documentElement.classList.add('rt-splash-pending');
-    getFlag()
-      .catch(function () {
-        return true;
-      })
-      .then(function (visited) {
+
+    Promise.all([
+      getFlag().catch(function () { return true; }),
+      preloadImage(ICON_SRC),
+      preloadImage(LOGO_SRC)
+    ])
+      .then(function (results) {
+        var visited = results[0];
         if (visited) {
           removePending();
           return;
         }
-        if (document.body) showSplash();
-        else document.addEventListener('DOMContentLoaded', showSplash, { once: true });
+        if (document.body) {
+          showSplash();
+        } else {
+          document.addEventListener('DOMContentLoaded', showSplash, { once: true });
+        }
       })
       .catch(function () {
         removePending();
