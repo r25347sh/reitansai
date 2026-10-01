@@ -6,7 +6,6 @@
 }
 .filter-bar input{flex:1 1 200px;min-width:160px}
 .filter-bar select{flex:0 1 140px}
-.filter-bar select#f-live{flex:0 1 200px;border-color:rgba(201,162,39,.45)}
 .filter-meta{font-size:.8rem;color:var(--rt-text-muted);margin-bottom:.5rem}
 .sched-progress{margin-bottom:1rem;transition:opacity .4s ease,max-height .4s ease}
 .sched-progress.is-done{opacity:0;max-height:0;margin-bottom:0;overflow:hidden;pointer-events:none}
@@ -40,8 +39,8 @@
 .sched-save-btn:hover{border-color:var(--rt-accent);background:var(--rt-accent-soft)}
 .sched-save-btn.is-saved{color:var(--rt-bg);background:var(--rt-accent);border-color:var(--rt-accent)}
 .sched-save-btn:disabled{opacity:.55;cursor:wait}
-.sched-save-btn:focus-visible{outline:2px solid var(--rt-accent);outline-offset:2px}
 
+/* Overview under title */
 .sched-table .t-overview {
   margin-top: 0.35em;
   font-size: 0.82em;
@@ -52,117 +51,3 @@
   white-space: pre-wrap;
 }
 .sched-table .t-no{font-variant-numeric:tabular-nums;font-weight:700;color:var(--rt-accent);white-space:nowrap;text-align:center;min-width:3.2em}
-
-.live-status{
-  margin:.6rem 0 0;
-  font-size:.85rem;
-  color:var(--rt-text-muted);
-  font-variant-numeric:tabular-nums;
-}
-.live-status .live-badge-inline{
-  color:#ff6b6b;
-  font-weight:700;
-}
-.status-badge{
-  display:inline-block;
-  font-size:.62rem;
-  font-weight:800;
-  letter-spacing:.04em;
-  padding:.12rem .35rem;
-  border-radius:4px;
-  vertical-align:middle;
-  margin-right:.25rem;
-  line-height:1.2;
-}
-.status-live{
-  background:#c62828;
-  color:#fff;
-  animation:live-pulse 1.6s ease-in-out infinite;
-}
-.status-soon{
-  background:rgba(201,162,39,.25);
-  color:var(--rt-lab,#c9a227);
-  border:1px solid rgba(201,162,39,.5);
-}
-.status-past{
-  background:rgba(255,255,255,.08);
-  color:var(--rt-text-muted);
-}
-@keyframes live-pulse{
-  0%,100%{opacity:1}
-  50%{opacity:.72}
-}
-.sched-table tr.row-live td{
-  background:rgba(198,40,40,.1);
-}
-.sched-table tr.row-live:hover td{
-  background:rgba(198,40,40,.16);
-}
-.sched-table tr.row-soon td{
-  background:rgba(201,162,39,.08);
-}
-.sched-table tr.row-past td{
-  opacity:.62;
-}
-.sched-table tr.row-past .t-title{
-  text-decoration:none;
-}
-
-.my-toolbar{
-  display:flex;
-  flex-wrap:wrap;
-  gap:.5rem;
-  align-items:center;
-  margin:0 0 1rem;
-}
-.my-toolbar .sched-save-btn{min-height:36px;padding:.4rem .75rem;font-size:.75rem}
-.my-next-card{
-  margin:0 0 1rem;
-  padding:.9rem 1rem;
-  border-radius:10px;
-  border:1px solid rgba(201,162,39,.4);
-  background:color-mix(in srgb,var(--rt-card,#151a24) 88%,transparent);
-}
-.my-next-card .mnc-label{
-  font-size:.72rem;
-  font-weight:700;
-  letter-spacing:.08em;
-  color:var(--rt-accent);
-  text-transform:uppercase;
-  margin-bottom:.25rem;
-}
-.my-next-card .mnc-title{
-  font-family:var(--font-serif,Georgia,serif);
-  font-size:1.05rem;
-  font-weight:700;
-  margin:.15rem 0;
-}
-.my-next-card .mnc-meta{
-  font-size:.82rem;
-  color:var(--rt-text-muted);
-  font-variant-numeric:tabular-nums;
-}
-.my-next-card .mnc-countdown{
-  font-weight:800;
-  color:var(--rt-lab,#c9a227);
-  font-size:1rem;
-  margin-top:.35rem;
-}
-.my-conflict-warn{
-  margin:0 0 .75rem;
-  padding:.65rem .85rem;
-  border-radius:8px;
-  border:1px solid rgba(255,100,80,.45);
-  background:rgba(198,40,40,.12);
-  font-size:.82rem;
-  color:#ffb4a8;
-}
-
-@media print{
-  .site-header,.site-footer,.my-toolbar,.filter-bar,.sched-progress,#live-status,
-  .sched-save-btn,.menu-fab,button[data-remove]{display:none!important}
-  .sched-table{font-size:10pt}
-  .sched-table tr.row-past td{opacity:1}
-  body{background:#fff;color:#111}
-  .t-overview{color:#444}
-}
