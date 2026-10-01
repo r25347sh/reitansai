@@ -53,50 +53,61 @@ jobs:
               print(' ', c)
           PY
 
-      - name: Patch JS base-path detection
+      - name: Patch MENU.js getBase for root deploys
         run: |
           python3 << 'PY'
           from pathlib import Path
-          import re
-
-          # MENU.js getBase
-          menu = Path('MENU/MENU.js')
-          t = menu.read_text(encoding='utf-8')
-          if 'auto-detect' not in t:
-              old = '''/**\n * Reitansai Radial Menu + Hamburger FAB\n * Base path: always /reitansai/ on GitHub Pages\n */\n(function () {\n  \'use strict\';\n\n  /** Site root under GitHub Pages project site */\n  function getBase() {\n    var p = location.pathname || \'\';\n    if (p.indexOf(\'/reitansai/\') === 0 || p === \'/reitansai\') return \'/reitansai/\';\n    if (location.protocol === \'file:\') {\n      var depth = (p.match(/\\/pages\\/seminars\\//) ? 2 : p.match(/\\/pages\\//) ? 1 : 0);\n      return depth === 2 ? \'../../\' : depth === 1 ? \'../\' : \'./\';\n    }\n    return \'/reitansai/\';\n  }\n\n  var BASE = getBase();\n\n  function url(path) {\n    if (!path) return \'#\';\n    if (/^https?:\\/\\//i.test(path)) return path;\n    if (path.charAt(0) === \'/'\') {\n      return path.indexOf(\'/reitansai\') === 0 ? path : \'/reitansai\' + path;\n    }\n    return BASE + path.replace(/^\\.\\//, \'\');\n  }\n'''
-              print('MENU pattern check skipped if already patched')
-          print('MENU done check')
-
-          # theme-control favicon
-          p = Path('src/js/theme-control.js')
+          p = Path('MENU/MENU.js')
           t = p.read_text(encoding='utf-8')
-          t2 = t.replace(
-              "var href = '/reitansai/sources/favicon.png';",
-              "var href = (function(){try{var s=document.getElementsByTagName('script');for(var i=s.length-1;i>=0;i--){var a=s[i].src||'';var k=a.indexOf('/src/js/');if(k!==-1)return a.substring(0,k+1)+'sources/favicon.png';}}catch(e){}var p=location.pathname||'';if(p.indexOf('/reitansai/')===0||p==='/reitansai')return'/reitansai/sources/favicon.png';if(/\\/pages\\/seminars\\//.test(p))return'../../sources/favicon.png';if(/\\/pages\\//.test(p))return'../sources/favicon.png';return'sources/favicon.png';})();"
-          )
-          if t2 != t:
-              p.write_text(t2, encoding='utf-8')
-              print('theme-control patched')
-
-          # time-theme header-nav
-          p = Path('src/js/time-theme.js')
-          t = p.read_text(encoding='utf-8')
-          t2 = t.replace(
-              "s.src = '/reitansai/src/js/header-nav.js';",
-              "s.src = (function(){try{var list=document.getElementsByTagName('script');for(var i=list.length-1;i>=0;i--){var a=list[i].src||'';var k=a.indexOf('/src/js/');if(k!==-1)return a.substring(0,k+1)+'src/js/header-nav.js';}}catch(e){}var p=location.pathname||'';if(p.indexOf('/reitansai/')===0||p==='/reitansai')return'/reitansai/src/js/header-nav.js';if(/\\/pages\\/seminars\\//.test(p))return'../../src/js/header-nav.js';if(/\\/pages\\//.test(p))return'../src/js/header-nav.js';return'src/js/header-nav.js';})();"
-          )
-          if t2 != t:
-              p.write_text(t2, encoding='utf-8')
-              print('time-theme patched')
-
-          # splash
-          p = Path('src/js/splash.js')
-          t = p.read_text(encoding='utf-8')
-          t2 = re.sub(r"var ICON_SRC = [^;]+;", "var ICON_SRC = (function(){try{var list=document.getElementsByTagName('script');for(var i=list.length-1;i>=0;i--){var a=list[i].src||'';var k=a.indexOf('/src/js/');if(k!==-1)return a.substring(0,k+1)+'sources/favicon.png';}}catch(e){}return'sources/favicon.png';})();", t, count=1)
-          t2 = re.sub(r"var LOGO_SRC = [^;]+;", "var LOGO_SRC = (function(){try{var list=document.getElementsByTagName('script');for(var i=list.length-1;i>=0;i--){var a=list[i].src||'';var k=a.indexOf('/src/js/');if(k!==-1)return a.substring(0,k+1)+'sources/\\u9e97\\u63a2\\u796d\\u30ed\\u30b4.png';}}catch(e){}return'sources/\\u9e97\\u63a2\\u796d\\u30ed\\u30b4.png';})();", t2, count=1)
-          if t2 != t:
-              p.write_text(t2, encoding='utf-8')
-              print('splash patched')
+          if 'auto-detect' in t:
+              print('MENU already patched')
+          else:
+              # Replace getBase function body to auto-detect site root
+              import re
+              new_fn = '''  function getBase() {
+    try {
+      var scripts = document.getElementsByTagName('script');
+      for (var i = scripts.length - 1; i >= 0; i--) {
+        var abs = scripts[i].src || '';
+        var markers = ['/src/js/', '/MENU/'];
+        for (var m = 0; m < markers.length; m++) {
+          var idx = abs.indexOf(markers[m]);
+          if (idx !== -1) return abs.substring(0, idx + 1);
+        }
+      }
+    } catch (e) {}
+    var p = location.pathname || '';
+    if (p.indexOf('/reitansai/') === 0 || p === '/reitansai') {
+      return (location.origin || '') + '/reitansai/';
+    }
+    if (location.protocol === 'file:') {
+      var depth = /\\/pages\\/seminars\\//.test(p) ? 2 : /\\/pages\\//.test(p) ? 1 : 0;
+      return depth === 2 ? '../../' : depth === 1 ? '../' : './';
+    }
+    if (/\\/pages\\/seminars\\//.test(p)) return '../../';
+    if (/\\/pages\\//.test(p)) return '../';
+    return './';
+  }'''
+              t2, n = re.subn(
+                  r'  function getBase\(\) \{[\s\S]*?\n  \}\n',
+                  new_fn + '\n',
+                  t,
+                  count=1,
+              )
+              if n:
+                  # Also fix url() for non-GH root
+                  t2 = t2.replace(
+                      "return path.indexOf('/reitansai') === 0 ? path : '/reitansai' + path;",
+                      "if (BASE.indexOf('/reitansai') !== -1) { return path.indexOf('/reitansai') === 0 ? path : '/reitansai' + path; } return path;"
+                  )
+                  t2 = t2.replace(
+                      'Base path: always /reitansai/ on GitHub Pages',
+                      'Base path: auto-detect (GitHub Pages / Vercel / Cloudflare / local)',
+                  )
+                  p.write_text(t2, encoding='utf-8')
+                  print('MENU patched', n)
+              else:
+                  print('MENU pattern not found')
           PY
 
       - name: Commit if changed
