@@ -1,0 +1,112 @@
+name: Convert paths to relative (once)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  convert:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Convert absolute /reitansai/ paths to relative
+        run: |
+          set -euo pipefail
+          python3 << 'PY'
+          import os, re
+          from pathlib import Path
+
+          ROOT = Path('.').resolve()
+          ABS = re.compile(r'/reitansai/([^\s"\'\`\)\]]+)')
+
+          def rel_to(from_file: Path, target_under_root: str) -> str:
+              target = (ROOT / target_under_root.lstrip('/')).resolve()
+              start = from_file.parent.resolve()
+              return os.path.relpath(target, start).replace('\\', '/')
+
+          text_exts = {'.html', '.css', '.js', '.json', '.webmanifest'}
+          changed = []
+          for dirpath, _, files in os.walk(ROOT):
+              if '/.git' in dirpath or '/sources/' in (dirpath + '/'):
+                  continue
+              for name in files:
+                  p = Path(dirpath) / name
+                  if p.suffix.lower() not in text_exts:
+                      continue
+                  try:
+                      text = p.read_text(encoding='utf-8')
+                  except Exception:
+                      continue
+                  if '/reitansai/' not in text:
+                      continue
+                  def repl(m):
+                      return rel_to(p, m.group(1))
+                  new = ABS.sub(repl, text)
+                  if new != text:
+                      p.write_text(new, encoding='utf-8')
+                      changed.append(str(p.relative_to(ROOT)))
+          print('Updated', len(changed), 'files')
+          for c in changed:
+              print(' ', c)
+          PY
+
+      - name: Patch JS base-path detection
+        run: |
+          python3 << 'PY'
+          from pathlib import Path
+          import re
+
+          # MENU.js getBase
+          menu = Path('MENU/MENU.js')
+          t = menu.read_text(encoding='utf-8')
+          if 'auto-detect' not in t:
+              old = '''/**\n * Reitansai Radial Menu + Hamburger FAB\n * Base path: always /reitansai/ on GitHub Pages\n */\n(function () {\n  \'use strict\';\n\n  /** Site root under GitHub Pages project site */\n  function getBase() {\n    var p = location.pathname || \'\';\n    if (p.indexOf(\'/reitansai/\') === 0 || p === \'/reitansai\') return \'/reitansai/\';\n    if (location.protocol === \'file:\') {\n      var depth = (p.match(/\\/pages\\/seminars\\//) ? 2 : p.match(/\\/pages\\//) ? 1 : 0);\n      return depth === 2 ? \'../../\' : depth === 1 ? \'../\' : \'./\';\n    }\n    return \'/reitansai/\';\n  }\n\n  var BASE = getBase();\n\n  function url(path) {\n    if (!path) return \'#\';\n    if (/^https?:\\/\\//i.test(path)) return path;\n    if (path.charAt(0) === \'/'\') {\n      return path.indexOf(\'/reitansai\') === 0 ? path : \'/reitansai\' + path;\n    }\n    return BASE + path.replace(/^\\.\\//, \'\');\n  }\n'''
+              print('MENU pattern check skipped if already patched')
+          print('MENU done check')
+
+          # theme-control favicon
+          p = Path('src/js/theme-control.js')
+          t = p.read_text(encoding='utf-8')
+          t2 = t.replace(
+              "var href = '/reitansai/sources/favicon.png';",
+              "var href = (function(){try{var s=document.getElementsByTagName('script');for(var i=s.length-1;i>=0;i--){var a=s[i].src||'';var k=a.indexOf('/src/js/');if(k!==-1)return a.substring(0,k+1)+'sources/favicon.png';}}catch(e){}var p=location.pathname||'';if(p.indexOf('/reitansai/')===0||p==='/reitansai')return'/reitansai/sources/favicon.png';if(/\\/pages\\/seminars\\//.test(p))return'../../sources/favicon.png';if(/\\/pages\\//.test(p))return'../sources/favicon.png';return'sources/favicon.png';})();"
+          )
+          if t2 != t:
+              p.write_text(t2, encoding='utf-8')
+              print('theme-control patched')
+
+          # time-theme header-nav
+          p = Path('src/js/time-theme.js')
+          t = p.read_text(encoding='utf-8')
+          t2 = t.replace(
+              "s.src = '/reitansai/src/js/header-nav.js';",
+              "s.src = (function(){try{var list=document.getElementsByTagName('script');for(var i=list.length-1;i>=0;i--){var a=list[i].src||'';var k=a.indexOf('/src/js/');if(k!==-1)return a.substring(0,k+1)+'src/js/header-nav.js';}}catch(e){}var p=location.pathname||'';if(p.indexOf('/reitansai/')===0||p==='/reitansai')return'/reitansai/src/js/header-nav.js';if(/\\/pages\\/seminars\\//.test(p))return'../../src/js/header-nav.js';if(/\\/pages\\//.test(p))return'../src/js/header-nav.js';return'src/js/header-nav.js';})();"
+          )
+          if t2 != t:
+              p.write_text(t2, encoding='utf-8')
+              print('time-theme patched')
+
+          # splash
+          p = Path('src/js/splash.js')
+          t = p.read_text(encoding='utf-8')
+          t2 = re.sub(r"var ICON_SRC = [^;]+;", "var ICON_SRC = (function(){try{var list=document.getElementsByTagName('script');for(var i=list.length-1;i>=0;i--){var a=list[i].src||'';var k=a.indexOf('/src/js/');if(k!==-1)return a.substring(0,k+1)+'sources/favicon.png';}}catch(e){}return'sources/favicon.png';})();", t, count=1)
+          t2 = re.sub(r"var LOGO_SRC = [^;]+;", "var LOGO_SRC = (function(){try{var list=document.getElementsByTagName('script');for(var i=list.length-1;i>=0;i--){var a=list[i].src||'';var k=a.indexOf('/src/js/');if(k!==-1)return a.substring(0,k+1)+'sources/\\u9e97\\u63a2\\u796d\\u30ed\\u30b4.png';}}catch(e){}return'sources/\\u9e97\\u63a2\\u796d\\u30ed\\u30b4.png';})();", t2, count=1)
+          if t2 != t:
+              p.write_text(t2, encoding='utf-8')
+              print('splash patched')
+          PY
+
+      - name: Commit if changed
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          if git diff --cached --quiet; then
+            echo 'No changes'
+          else
+            git commit -m 'refactor: convert /reitansai/ absolute paths to relative for Vercel/Cloudflare'
+            git push
+          fi
