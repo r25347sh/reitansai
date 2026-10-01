@@ -106,15 +106,7 @@
       tickTime();
       if (atmosphereEnabled()) fetchWeather();
     });
-    setInterval(function () {
-      var layer = document.getElementById('rt-atmosphere');
-      if (!layer || !layer.classList.contains('wx-storm')) return;
-      if (Math.random() > 0.28) return;
-      layer.classList.remove('lightning-active');
-      void layer.offsetWidth;
-      layer.classList.add('lightning-active');
-      setTimeout(function () { layer.classList.remove('lightning-active'); }, 420);
-    }, 3200);
+    /* lightning animation disabled for performance */
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
