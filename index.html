@@ -13,8 +13,7 @@
   <link rel="stylesheet" href="/reitansai/src/css/common.css">
   <link rel="stylesheet" href="/reitansai/src/css/index.css">
   <link rel="stylesheet" href="/reitansai/MENU/MENU.css">
-  <link rel="preload" href="/reitansai/sources/favicon.png" as="image">
-  <link rel="preload" href="/reitansai/sources/麗探祭ロゴ.png" as="image">
+  <script src="/reitansai/src/js/sw-cleanup.js"></script>
   <script src="/reitansai/src/js/splash.js"></script>
   <script src="/reitansai/src/js/theme-control.js"></script>
   <script src="/reitansai/src/js/time-theme.js" defer></script>
@@ -49,26 +48,16 @@
 任意の場所を<strong>トリプルクリック</strong>または<strong>長押し</strong>でメニューが開けます。右下の「<strong>≡</strong>」からも開けます。</p>
       <div class="hero-actions">
         <a class="btn btn-primary" href="/reitansai/pages/schedule.html">スケジュールを見る</a>
-        <a class="btn btn-ghost" href="/reitansai/pages/seminars/index.html">ゼミ一覧へ</a>
+        <a class="btn btn-ghost" href="/reitansai/pages/my/my_schedule.html">Myスケジュール</a>
       </div>
     </section>
-    <nav class="home-toc" aria-label="目次">
-      <details class="toc-details">
-        <summary class="toc-summary">
-          <span class="toc-summary-label">目次</span>
-          <span class="toc-summary-hint">タップして開く</span>
-        </summary>
-        <ol class="toc-list">
-          <li><a href="#sec-overview">開催概要</a></li>
-          <li><a href="#sec-seminars">探究ゼミ（16ゼミ）</a></li>
-          <li><a href="#sec-visitors">来場の皆様へ</a></li>
-          <li><a href="/reitansai/pages/feedback.html">振り返りフォーム</a></li>
-          <li><a href="/reitansai/pages/schedule.html">スケジュール</a></li>
-          <li><a href="/reitansai/pages/my/my_schedule.html">Myスケジュール</a></li>
-          <li><a href="/reitansai/pages/seminars/index.html">ゼミ一覧ページ</a></li>
-          <li><a href="/reitansai/pages/about_This_Site.html">このサイトについて</a></li>
-        </ol>
-      </details>
+    <nav class="home-toc section" aria-label="ページ内目次">
+      <h2 class="section-title">目次</h2>
+      <ul class="toc-list">
+        <li><a href="#sec-overview">開催概要</a></li>
+        <li><a href="#sec-seminars">ゼミ一覧</a></li>
+        <li><a href="#sec-visitors">来場の皆様へ</a></li>
+      </ul>
     </nav>
     <section class="section" id="sec-overview">
       <h2 class="section-title">開催概要</h2>
@@ -78,19 +67,13 @@
         <div class="info-item"><span class="info-label">会場</span><span class="info-value">麗澤高等学校 校内各会場</span></div>
         <div class="info-item"><span class="info-label">発表</span><span class="info-value">全16ゼミ・約100件（団体・個人）</span></div>
         <div class="info-item"><span class="info-label">形式</span><span class="info-value">プレゼン・ポスター・実演・展示・動画上映・ワークショップ等</span></div>
-        <div class="info-item"><span class="info-label">登校</span><span class="info-value">4年生・5年生のみ（他学年は休講日）</span></div>
-        <div class="info-item"><span class="info-label">閉会式講評</span><span class="info-value">慶應義塾大学名誉教授 田中茂範 先生</span></div>
       </div>
     </section>
     <section class="section" id="sec-seminars">
-      <h2 class="section-title">探究ゼミ</h2>
-      <p class="section-lead">各ゼミの発表内容・会場・時間は詳細ページでご確認ください。</p>
-      <div class="card-grid seminars-grid">
-        <a class="card" href="/reitansai/pages/seminars/データサイエンス探究AIゼミ.html"><span class="card-emoji">📊</span><h3>データサイエンス探究AI</h3><p>iHub教室 · 野口先生</p></a>
-        <a class="card" href="/reitansai/pages/seminars/教育ゼミ.html"><span class="card-emoji">📚</span><h3>教育ゼミ</h3><p>4E / 4G教室 · 秋元先生</p></a>
-        <a class="card" href="/reitansai/pages/seminars/国際地域研究ゼミ.html"><span class="card-emoji">🌍</span><h3>国際地域研究</h3><p>4A教室 · 近藤先生</p></a>
-        <a class="card" href="/reitansai/pages/seminars/文芸小説創作ゼミ.html"><span class="card-emoji">✍️</span><h3>文芸小説創作</h3><p>4C教室 · 加藤先生</p></a>
-        <a class="card" href="/reitansai/pages/seminars/化学ゼミ.html"><span class="card-emoji">⚗️</span><h3>化学ゼミ</h3><p>理科教室B · 平井先生</p></a>
+      <h2 class="section-title">ゼミ一覧</h2>
+      <div class="card-grid">
+        <a class="card" href="/reitansai/pages/seminars/データサイエンス探究AIゼミ.html"><span class="card-emoji">🤖</span><h3>データサイエンス探究AI</h3><p>iHub教室 · 担当</p></a>
+        <a class="card" href="/reitansai/pages/seminars/生命科学ゼミ.html"><span class="card-emoji">🧬</span><h3>生命科学ゼミ</h3><p>理科教室B · 平井先生</p></a>
         <a class="card" href="/reitansai/pages/seminars/文学ゼミ.html"><span class="card-emoji">📖</span><h3>文学ゼミ</h3><p>5C教室 · 竹内先生</p></a>
         <a class="card" href="/reitansai/pages/seminars/メディアゼミ.html"><span class="card-emoji">📡</span><h3>メディアゼミ</h3><p>D21教室 · 佐々木先生</p></a>
         <a class="card" href="/reitansai/pages/seminars/社会ゼミ.html"><span class="card-emoji">🏛️</span><h3>社会ゼミ</h3><p>4I教室 · 須藤先生</p></a>
