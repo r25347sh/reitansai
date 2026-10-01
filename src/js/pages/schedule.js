@@ -4,7 +4,7 @@
 (function () {
   'use strict';
 
-  var SCHEDULE_JSON = '/reitansai/src/json/schedule.json';
+  var SCHEDULE_JSON = 'https://raw.githubusercontent.com/r25347sh/reitansai/6b054f10fd26ed968ddb66c595169c782eb077fc/src/json/schedule.json';
   var body = document.getElementById('sched-body');
   var q = document.getElementById('q');
   var fS = document.getElementById('f-seminar');
@@ -127,6 +127,10 @@
         av = toMinutes(a[sortKey]); bv = toMinutes(b[sortKey]);
         if (av < 0) av = 99999; if (bv < 0) bv = 99999;
         if (av !== bv) return sortAsc ? av - bv : bv - av;
+      } else if (sortKey === 'no') {
+        av = parseInt(a.no, 10); bv = parseInt(b.no, 10);
+        if (isNaN(av)) av = 99999; if (isNaN(bv)) bv = 99999;
+        if (av !== bv) return sortAsc ? av - bv : bv - av;
       } else {
         av = String(a[sortKey] || ''); bv = String(b[sortKey] || '');
         var cmp = av.localeCompare(bv, 'ja');
@@ -141,7 +145,7 @@
     var rows = sortRows(filtered());
     if (countEl) countEl.textContent = String(rows.length);
     if (!rows.length) {
-      body.innerHTML = '<tr><td colspan="8">該当する発表がありません</td></tr>';
+      body.innerHTML = '<tr><td colspan="9">該当する発表がありません</td></tr>';
       return;
     }
     body.innerHTML = rows.map(function (r) {
@@ -149,6 +153,7 @@
       var venue = r.vn ? r.v + ' / ' + r.vn : (r.v || '—');
       return (
         '<tr data-sid="' + esc(r.id) + '">' +
+        '<td class="t-no">' + esc(r.no != null && r.no !== '' ? r.no : '—') + '</td>' +
         '<td class="t-time">' + esc(formatTime(r.t)) + '</td>' +
         '<td class="t-end">' + esc(formatTime(r.e)) + '</td>' +
         '<td class="t-seminar">' + esc(r.s) + '</td>' +
@@ -195,6 +200,7 @@
     }
     var payload = {
       id: String(row.id),
+      no: row.no,
       t: row.t,
       e: row.e,
       s: row.s,
@@ -238,6 +244,7 @@
         id: String(sc.scheduleId),
         scheduleId: sc.scheduleId,
         seminarId: sc.seminarId,
+        no: sc.no != null ? sc.no : '',
         t: start,
         e: addMinutes(start, dur),
         duration: dur,
@@ -257,15 +264,23 @@
     if (progressWrap) progressWrap.classList.remove('is-done');
     if (countEl) countEl.textContent = '読込中…';
     setProgress(0, 1, 'schedule.json を読み込み中…');
+    var nosPromise = fetch('/reitansai/src/json/schedule-nos.json?t=' + Date.now())
+      .then(function (res) { return res.ok ? res.json() : {}; })
+      .catch(function () { return {}; });
     fetch(SCHEDULE_JSON + '?t=' + Date.now())
       .then(function (res) {
         if (!res.ok) throw new Error('schedule.json の取得に失敗しました');
         return res.json();
       })
       .then(function (json) {
-        data = mapJsonToRows(json);
-        setProgress(1, 1, '');
-        return refreshSavedSet();
+        return nosPromise.then(function (nos) {
+          data = mapJsonToRows(json);
+          data.forEach(function (r) {
+            if (nos && nos[String(r.scheduleId)] != null) r.no = nos[String(r.scheduleId)];
+          });
+          setProgress(1, 1, '');
+          return refreshSavedSet();
+        });
       })
       .then(function () {
         fillFilters();
@@ -288,7 +303,7 @@
       .catch(function (err) {
         console.error(err);
         if (countEl) countEl.textContent = 'エラー';
-        body.innerHTML = '<tr><td colspan="8">スケジュールデータの読み込みに失敗しました</td></tr>';
+        body.innerHTML = '<tr><td colspan="9">スケジュールデータの読み込みに失敗しました</td></tr>';
       });
   }
 
