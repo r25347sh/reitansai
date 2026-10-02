@@ -38,7 +38,7 @@
     </section>
     <section class="section sched-filters">
       <div class="filter-bar">
-        <input type="search" id="q" placeholder="タイトル・発表者・ゼミ名で検索…" autocomplete="off">
+        <input type="search" id="q" placeholder="タイトル・発表者・ゼミ名で検索…" autocomplete="off" enterkeyhint="search">
         <select id="f-seminar"><option value="">すべてのゼミ</option></select>
         <select id="f-venue"><option value="">すべての会場</option></select>
         <select id="f-form"><option value="">すべての形式</option></select>
@@ -57,6 +57,7 @@
         </select>
       </div>
       <p class="filter-meta"><span id="result-count">—</span> 件表示 · <a href="../pages/my/my_schedule.html">Myスケジュールへ</a></p>
+      <p class="sched-mobile-hint">スマホではカード表示です。上の絞り込みはスクロール中も固定されます。</p>
       <div id="sched-progress" class="sched-progress" role="status" aria-live="polite">
         <div class="sched-progress-track">
           <div id="sched-progress-bar" class="sched-progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" style="width:0%"></div>
