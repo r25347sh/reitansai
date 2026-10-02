@@ -1,5 +1,7 @@
 /**
  * Schedule page — builds rows from each seminar SEMINAR_DATA, filters, My schedule
+ * Data source: src/data/*.data.js (NOT schedule.json)
+ * Paths are relative to pages/schedule.html
  */
 (function () {
   'use strict';
@@ -22,6 +24,9 @@
     'イベント企画ゼミ',
     '道徳ゼミ'
   ];
+
+  /* Relative to pages/schedule.html */
+  var DATA_BASE = '../src/data/';
 
   var body = document.getElementById('sched-body');
   var q = document.getElementById('q');
@@ -243,18 +248,29 @@
       var prev = window.SEMINAR_DATA;
       window.SEMINAR_DATA = null;
       var s = document.createElement('script');
-      s.src = '../../../src/data/' + encodeURIComponent(name) + '.data.js?t=' + Date.now();
+      /* pages/schedule.html -> ../src/data/<name>.data.js */
+      s.src = DATA_BASE + encodeURIComponent(name) + '.data.js?t=' + Date.now();
       s.onload = function () {
         var d = window.SEMINAR_DATA;
         window.SEMINAR_DATA = prev;
+        if (s.parentNode) s.parentNode.removeChild(s);
         resolve(d || null);
       };
       s.onerror = function () {
         window.SEMINAR_DATA = prev;
+        if (s.parentNode) s.parentNode.removeChild(s);
+        console.warn('[schedule] failed to load', name);
         resolve(null);
       };
       document.head.appendChild(s);
     });
+  }
+
+  function makeId(row) {
+    if (window.ReitansaiScheduleId && window.ReitansaiScheduleId.makeScheduleId) {
+      return window.ReitansaiScheduleId.makeScheduleId(row);
+    }
+    return String(row.seminarId || row.s || '') + '#' + String(row.no != null ? row.no : '') + '#' + String(row.t || '');
   }
 
   function flattenSeminar(sem) {
@@ -268,9 +284,7 @@
         var m = String(dur).match(/(\d+)/);
         if (m) end = addMinutes(start, parseInt(m[1], 10));
       }
-      return {
-        id: String(p.no != null ? p.no : ''),
-        scheduleId: p.no,
+      var row = {
         seminarId: sem.key || sem.name || '',
         no: p.no != null ? p.no : '',
         t: start,
@@ -284,6 +298,9 @@
         vn: p.venue_note || '',
         ov: p.overview || ''
       };
+      row.id = makeId(row);
+      row.scheduleId = row.id;
+      return row;
     });
   }
 
