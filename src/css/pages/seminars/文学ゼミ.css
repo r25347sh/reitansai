@@ -1,4 +1,5 @@
 @import url("../../../../src/css/pages/seminars/seminar-common.css");
+/* 文学ゼミ — Open book / Parchment / Sepia */
 .page-seminar.theme-lit{
   --rt-accent:#c4a574;--rt-lab:#d8c098;
   font-family:"Shippori Mincho","Noto Serif JP",serif;
@@ -11,9 +12,7 @@
 .page-seminar.theme-lit .seminar-hero h1{
   letter-spacing:.28em;color:#f0e4d0;font-size:1.7rem;font-weight:700;
 }
-.page-seminar.theme-lit .tagline{
-  color:#c4a574;letter-spacing:.35em;font-size:.7rem;margin-top:.6rem;
-}
+.page-seminar.theme-lit .tagline{color:#c4a574;letter-spacing:.35em;font-size:.7rem;margin-top:.6rem}
 .page-seminar.theme-lit .meta-pill{
   background:transparent;border:1px solid #c4a57444;color:#c4a574;
   border-radius:0;font-size:.7rem;letter-spacing:.08em;
@@ -39,3 +38,57 @@
 .page-seminar.theme-lit .pres-title{color:#f4ead8;font-size:1.05rem;letter-spacing:.06em}
 .page-seminar.theme-lit .pres-no{background:transparent;border:1px solid #c4a57455;border-radius:0}
 .page-seminar.theme-lit .pres-no-val{color:#c4a574}
+
+/* LIGHT — deep sepia on cream */
+html[data-color-scheme="classic"] .page-seminar.theme-lit,
+html[data-color-scheme="green"] .page-seminar.theme-lit,
+html[data-color-scheme="light"] .page-seminar.theme-lit{--rt-accent:#6a5030;--rt-lab:#4a3818}
+html[data-color-scheme="classic"] .page-seminar.theme-lit .seminar-hero,
+html[data-color-scheme="green"] .page-seminar.theme-lit .seminar-hero,
+html[data-color-scheme="light"] .page-seminar.theme-lit .seminar-hero{
+  background:transparent !important;border:none !important;
+  border-bottom:2px double #6a503066 !important;color:#1f1a12 !important;box-shadow:none !important;
+}
+html[data-color-scheme="classic"] .page-seminar.theme-lit .seminar-hero h1,
+html[data-color-scheme="green"] .page-seminar.theme-lit .seminar-hero h1,
+html[data-color-scheme="light"] .page-seminar.theme-lit .seminar-hero h1{
+  color:#3a2a14 !important;background:none !important;text-shadow:none !important;
+}
+html[data-color-scheme="classic"] .page-seminar.theme-lit .tagline,
+html[data-color-scheme="green"] .page-seminar.theme-lit .tagline,
+html[data-color-scheme="light"] .page-seminar.theme-lit .tagline{color:#6a5030 !important}
+html[data-color-scheme="classic"] .page-seminar.theme-lit .meta-pill,
+html[data-color-scheme="green"] .page-seminar.theme-lit .meta-pill,
+html[data-color-scheme="light"] .page-seminar.theme-lit .meta-pill{
+  border:1px solid #6a503055 !important;color:#4a3818 !important;background:transparent !important;
+}
+html[data-color-scheme="classic"] .page-seminar.theme-lit .section-title,
+html[data-color-scheme="classic"] .page-seminar.theme-lit .pres-section-title,
+html[data-color-scheme="green"] .page-seminar.theme-lit .section-title,
+html[data-color-scheme="green"] .page-seminar.theme-lit .pres-section-title,
+html[data-color-scheme="light"] .page-seminar.theme-lit .section-title,
+html[data-color-scheme="light"] .page-seminar.theme-lit .pres-section-title{color:#6a5030 !important}
+html[data-color-scheme="classic"] .page-seminar.theme-lit .overview-box,
+html[data-color-scheme="green"] .page-seminar.theme-lit .overview-box,
+html[data-color-scheme="light"] .page-seminar.theme-lit .overview-box{
+  background:transparent !important;border-top:1px solid #6a503033 !important;
+  border-bottom:1px solid #6a503033 !important;color:#2a2210 !important;
+}
+html[data-color-scheme="classic"] .page-seminar.theme-lit .pres-card,
+html[data-color-scheme="green"] .page-seminar.theme-lit .pres-card,
+html[data-color-scheme="light"] .page-seminar.theme-lit .pres-card{
+  background:transparent !important;border-bottom:1px solid #6a503022 !important;
+  color:#1f1a12 !important;opacity:1 !important;
+}
+html[data-color-scheme="classic"] .page-seminar.theme-lit .pres-title,
+html[data-color-scheme="green"] .page-seminar.theme-lit .pres-title,
+html[data-color-scheme="light"] .page-seminar.theme-lit .pres-title{color:#1f1a12 !important}
+html[data-color-scheme="classic"] .page-seminar.theme-lit .pres-no-val,
+html[data-color-scheme="green"] .page-seminar.theme-lit .pres-no-val,
+html[data-color-scheme="light"] .page-seminar.theme-lit .pres-no-val{color:#6a5030 !important}
+html[data-color-scheme="classic"] .page-seminar.theme-lit .pres-speakers,
+html[data-color-scheme="classic"] .page-seminar.theme-lit .pres-overview,
+html[data-color-scheme="green"] .page-seminar.theme-lit .pres-speakers,
+html[data-color-scheme="green"] .page-seminar.theme-lit .pres-overview,
+html[data-color-scheme="light"] .page-seminar.theme-lit .pres-speakers,
+html[data-color-scheme="light"] .page-seminar.theme-lit .pres-overview{color:#4a4336 !important}
