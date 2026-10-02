@@ -1,6 +1,6 @@
 /* Mobile / responsive polish */
 @media (max-width: 860px) {
-  :root { --header-h: 60px; }
+  :root { --header-h: 56px; }
   .site-header {
     padding: 0 0.85rem;
     height: var(--header-h);
@@ -8,6 +8,12 @@
   .site-logo img { height: 34px; }
   .site-logo .logo-text strong { font-size: 0.95rem; }
   .site-logo .logo-text span { font-size: 0.55rem; }
+
+  /* スマホではヘッダー内ナビを出さない */
+  .nav-desktop {
+    display: none !important;
+  }
+
   .main {
     width: min(100% - 1.25rem, 1080px);
     padding: 1.25rem 0 6rem;

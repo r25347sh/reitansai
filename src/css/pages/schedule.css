@@ -17,17 +17,31 @@
 .sched-progress-track{height:6px;border-radius:999px;background:rgba(201,162,39,.15);overflow:hidden}
 .sched-progress-bar{height:100%;width:0;border-radius:999px;background:linear-gradient(90deg,var(--rt-accent),var(--rt-lab,#c9a227));transition:width .25s ease}
 .sched-progress-label{margin:.4rem 0 0;font-size:.75rem;color:var(--rt-text-muted);letter-spacing:.02em}
-.table-wrap{overflow-x:auto;border:1px solid var(--rt-border);border-radius:var(--radius);background:var(--rt-card);box-shadow:var(--shadow);-webkit-overflow-scrolling:touch}
-.sched-table{width:100%;border-collapse:collapse;font-size:.82rem}
-.sched-table th,.sched-table td{padding:.65rem .7rem;text-align:left;border-bottom:1px solid var(--rt-border);vertical-align:top}
-.sched-table th{position:sticky;top:0;background:var(--rt-bg-soft);color:var(--rt-accent);font-weight:700;letter-spacing:.04em;cursor:pointer;white-space:nowrap;z-index:2}
+
+.table-wrap{
+  overflow-x:auto;
+  border:1px solid var(--rt-border);
+  border-radius:var(--radius);
+  background:var(--rt-card);
+  box-shadow:var(--shadow);
+  -webkit-overflow-scrolling:touch;
+  overscroll-behavior-x:contain;
+}
+.sched-table{width:100%;border-collapse:collapse;font-size:.82rem;min-width:720px}
+.sched-table th,.sched-table td{
+  padding:.65rem .7rem;text-align:left;border-bottom:1px solid var(--rt-border);vertical-align:top;
+}
+.sched-table th{
+  position:sticky;top:0;background:var(--rt-bg-soft);color:var(--rt-accent);
+  font-weight:700;letter-spacing:.04em;cursor:pointer;white-space:nowrap;z-index:3;
+}
 .sched-table th:hover{color:var(--rt-lab)}
 .sched-table tr:hover td{background:rgba(201,162,39,.06)}
 .sched-table .t-time,.sched-table .t-end{font-variant-numeric:tabular-nums;font-weight:700;color:var(--rt-lab);white-space:nowrap}
 .sched-table .t-end{color:var(--rt-text-muted);font-weight:600}
 .sched-table .t-seminar{font-weight:600;white-space:nowrap}
-.sched-table .t-title{font-family:var(--font-serif);line-height:1.45;min-width:12em}
-.sched-table .t-sp{color:var(--rt-text-muted);min-width:8em}
+.sched-table .t-title{font-family:var(--font-serif);line-height:1.45;min-width:10em}
+.sched-table .t-sp{color:var(--rt-text-muted);min-width:6em}
 .sched-table .t-form{font-size:.75rem;color:var(--rt-accent)}
 .sched-table .t-venue{font-size:.78rem;color:var(--rt-text-muted);white-space:nowrap}
 .footer-credit{margin-top:.35rem;font-size:.72rem;letter-spacing:.08em;opacity:.85}
@@ -46,18 +60,16 @@
 .sched-save-btn.is-saved{color:var(--rt-bg);background:var(--rt-accent);border-color:var(--rt-accent)}
 .sched-save-btn:disabled{opacity:.55;cursor:wait}
 
-.sched-table .t-overview {
-  margin-top: 0.35em;
-  font-size: 0.82em;
-  font-weight: 400;
-  line-height: 1.5;
-  color: var(--rt-text-muted, rgba(255,255,255,0.72));
-  font-family: var(--font-sans, system-ui, sans-serif);
-  white-space: pre-wrap;
+.sched-table .t-overview{
+  margin-top:0.35em;font-size:0.82em;font-weight:400;line-height:1.5;
+  color:var(--rt-text-muted, rgba(255,255,255,0.72));
+  font-family:var(--font-sans, system-ui, sans-serif);white-space:pre-wrap;
 }
-.sched-table .t-no{font-variant-numeric:tabular-nums;font-weight:700;color:var(--rt-accent);white-space:nowrap;text-align:center;min-width:3.2em}
-
-.sched-table .t-status{white-space:nowrap;min-width:4.5em}
+.sched-table .t-no{
+  font-variant-numeric:tabular-nums;font-weight:700;color:var(--rt-accent);
+  white-space:nowrap;text-align:center;min-width:3.2em;
+}
+.sched-table .t-status{white-space:nowrap;min-width:4.2em}
 .status-badge{
   display:inline-flex;flex-direction:column;align-items:flex-start;gap:.15rem;
   font-size:.68rem;font-weight:700;letter-spacing:.04em;
@@ -78,209 +90,66 @@
 }
 
 @media (max-width: 720px) {
-  .hero-compact{padding:1.25rem .85rem 1rem}
-  .hero-compact h1{font-size:1.35rem}
-  .hero-compact .lead{font-size:.85rem;line-height:1.55}
+  .hero-compact{padding:1.15rem .75rem .85rem}
+  .hero-compact h1{font-size:1.3rem}
+  .hero-compact .lead{font-size:.85rem;line-height:1.5}
 
   .section.sched-filters{
     position:sticky;
     top:0;
-    z-index:30;
+    z-index:40;
     margin:0;
-    padding:.65rem .85rem .55rem;
-    background:color-mix(in srgb, var(--rt-bg, #0a1018) 92%, transparent);
-    backdrop-filter:blur(10px);
-    -webkit-backdrop-filter:blur(10px);
+    padding:.55rem .75rem .45rem;
+    background:color-mix(in srgb, var(--rt-bg, #0a1018) 94%, transparent);
+    backdrop-filter:blur(12px);
+    -webkit-backdrop-filter:blur(12px);
     border-bottom:1px solid var(--rt-border, rgba(140,180,255,.15));
   }
-  .filter-bar{
-    flex-direction:column;
-    gap:.45rem;
-    margin-bottom:.5rem;
+  .filter-bar{gap:.4rem;margin-bottom:.4rem}
+  .filter-bar input{
+    flex:1 1 100%;min-width:0;min-height:42px;font-size:16px;border-radius:10px;
   }
-  .filter-bar input,
   .filter-bar select{
-    width:100%;
-    flex:none;
-    min-width:0;
-    min-height:44px;
-    font-size:16px;
-    border-radius:10px;
+    flex:1 1 calc(50% - .25rem);min-width:0;min-height:42px;font-size:16px;border-radius:10px;
   }
-  .filter-meta{font-size:.75rem;margin-bottom:.25rem}
+  .filter-meta{font-size:.72rem;margin-bottom:.15rem}
 
   .table-wrap{
-    border:none;
-    box-shadow:none;
-    background:transparent;
-    overflow:visible;
-    padding:0 .85rem 1.5rem;
+    margin:0 .5rem 1.25rem;
+    border-radius:12px;
   }
 
-  .sched-table,
-  .sched-table tbody{
-    display:block;
-    width:100%;
-  }
-  .sched-table thead{display:none}
+  .sched-table{min-width:640px;font-size:.78rem}
+  .sched-table th,.sched-table td{padding:.5rem .45rem}
 
-  .sched-table tr{
-    display:grid;
-    grid-template-columns:auto 1fr auto;
-    grid-template-areas:
-      "no status act"
-      "time end end"
-      "title title title"
-      "seminar seminar form"
-      "sp sp sp"
-      "venue venue venue"
-      "ov ov ov";
-    gap:.4rem .55rem;
-    margin-bottom:.75rem;
-    padding:1rem 1rem;
-    border:1px solid var(--rt-border, rgba(140,180,255,.16));
-    border-radius:16px;
-    background:var(--rt-card, #121a28);
-    box-shadow:0 4px 18px rgba(0,0,0,.18);
-  }
-  .sched-table tr:hover td{background:transparent}
+  .sched-table th[data-sort="no"],
+  .sched-table td.t-no,
+  .sched-table th[data-sort="form"],
+  .sched-table td.t-form{display:none}
+  .sched-table .t-overview{display:none}
 
-  .sched-table td{
-    border:none;
-    padding:0;
-    min-width:0 !important;
-    white-space:normal;
-  }
+  .sched-table .t-title{min-width:8em;font-size:.82rem}
+  .sched-table .t-sp{min-width:4.5em;font-size:.75rem}
+  .sched-table .t-venue{font-size:.72rem}
 
-  .sched-table .t-no{
-    grid-area:no;
-    text-align:left;
-    font-size:.78rem;
-    min-width:0;
-    align-self:center;
+  .sched-table th[data-sort="t"],
+  .sched-table td.t-time{
+    position:sticky;left:0;z-index:2;
+    background:var(--rt-bg-soft, #12161f);
+    box-shadow:2px 0 6px rgba(0,0,0,.18);
   }
-  .sched-table .t-no::before{
-    content:"No.";
-    margin-right:.25rem;
-    opacity:.65;
-    font-weight:600;
+  .sched-table td.t-time{background:var(--rt-card, #151a24)}
+  .sched-table tr:hover td.t-time{
+    background:color-mix(in srgb, var(--rt-card, #151a24) 92%, rgba(201,162,39,.12));
   }
+  .sched-row.status-soon td.t-time{background:color-mix(in srgb, var(--rt-card) 90%, rgba(255,154,60,.12))}
+  .sched-row.status-live td.t-time{background:color-mix(in srgb, var(--rt-card) 90%, rgba(61,214,195,.12))}
 
-  .sched-table .t-status{
-    grid-area:status;
-    align-self:center;
-  }
-  .status-badge{font-size:.7rem;padding:.3rem .5rem}
-
-  .sched-table .t-act,
-  .sched-table .t-save{
-    grid-area:act;
-    width:auto;
-    text-align:right;
-    align-self:center;
-  }
-  .sched-save-btn{
-    min-height:40px;
-    min-width:4.5rem;
-    padding:.45rem .7rem;
-    font-size:.75rem;
-    border-radius:8px;
-  }
-
-  .sched-table .t-time{
-    grid-area:time;
-    font-size:1.08rem;
-    align-self:baseline;
-  }
-  .sched-table .t-end{
-    grid-area:end;
-    font-size:.95rem;
-    opacity:.95;
-    align-self:baseline;
-  }
-  .sched-table .t-end::before{
-    content:"〜 ";
-    font-weight:600;
-  }
-
-  .sched-table .t-seminar{
-    grid-area:seminar;
-    font-size:.78rem;
-    color:var(--rt-accent, #c9a227);
-    white-space:normal;
-  }
-  .sched-table .t-form{
-    grid-area:form;
-    justify-self:end;
-    font-size:.72rem;
-    opacity:.9;
-    align-self:center;
-  }
-
-  .sched-table .t-title{
-    grid-area:title;
-    font-size:.98rem;
-    font-weight:600;
-    line-height:1.4;
-    min-width:0;
-  }
-
-  .sched-table .t-sp{
-    grid-area:sp;
-    font-size:.82rem;
-    min-width:0;
-  }
-  .sched-table .t-sp::before{
-    content:"発表者  ";
-    font-size:.68rem;
-    font-weight:700;
-    letter-spacing:.04em;
-    color:var(--rt-text-muted,#9eb0cc);
-    margin-right:.25rem;
-  }
-
-  .sched-table .t-venue{
-    grid-area:venue;
-    font-size:.8rem;
-    white-space:normal;
-  }
-  .sched-table .t-venue::before{
-    content:"会場  ";
-    font-size:.68rem;
-    font-weight:700;
-    letter-spacing:.04em;
-    color:var(--rt-text-muted,#9eb0cc);
-    margin-right:.25rem;
-  }
-
-  .sched-table .t-overview{
-    grid-area:ov;
-    margin-top:.15rem;
-    font-size:.78rem;
-    max-height:4.5em;
-    overflow:hidden;
-  }
-
-  .sched-row.status-soon{
-    border-color:rgba(255,154,60,.45);
-    box-shadow:0 0 0 1px rgba(255,154,60,.2), 0 4px 18px rgba(0,0,0,.18);
-  }
-  .sched-row.status-live{
-    border-color:rgba(61,214,195,.5);
-    box-shadow:0 0 0 1px rgba(61,214,195,.25), 0 4px 18px rgba(0,0,0,.18);
-  }
-  .sched-row.status-after{opacity:.78}
-  .sched-row.status-after:hover{opacity:1}
-
-  .sched-row.status-soon td,
-  .sched-row.status-live td{background:transparent}
+  .sched-save-btn{min-height:40px;min-width:3.6rem;padding:.4rem .5rem;font-size:.7rem}
+  .status-badge{font-size:.62rem;padding:.22rem .35rem}
 }
 
-@media (max-width: 380px) {
-  .sched-table tr{
-    padding:.75rem .7rem;
-    gap:.3rem .4rem;
-  }
-  .sched-table .t-title{font-size:.92rem}
-  .sched-save-btn{min-width:3.8rem;font-size:.7rem}
+@media (max-width: 420px) {
+  .sched-table{min-width:560px;font-size:.74rem}
+  .filter-bar select{flex:1 1 100%}
 }
