@@ -4,6 +4,9 @@
  * - Sub: 麗探祭ロゴ.png
  * - Soft expand + fade out (longer, milder acceleration)
  * - Prevents page flash until decision is made
+ *
+ * Image paths are relative to the HTML document (index.html at site root),
+ * not to this JS file. ../../sources would break on GitHub Pages.
  */
 (function () {
   'use strict';
@@ -12,8 +15,8 @@
   var DB_VERSION = 1;
   var STORE = 'flags';
   var KEY = 'firstVisitDone';
-  var ICON_SRC = '../../sources/favicon.png';
-  var LOGO_SRC = '../../sources/\u9e97\u63a2\u796d\u30ed\u30b4.png';
+  var ICON_SRC = 'sources/favicon.png';
+  var LOGO_SRC = 'sources/\u9e97\u63a2\u796d\u30ed\u30b4.png';
   var HOLD_MS = 2800;
   var EXIT_MS = 1800;
   /* milder acceleration than before */
