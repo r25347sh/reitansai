@@ -4,7 +4,6 @@
 .hero-sub{font-family:var(--font-serif);font-size:clamp(1.1rem,3vw,1.45rem);letter-spacing:.2em;color:var(--rt-text-muted);margin-bottom:1rem}
 .visually-hidden{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0}
 
-/* ---- 開閉式目次（初期は閉） ---- */
 .home-toc{margin:0 0 2rem}
 .toc-details{border:1px solid var(--rt-border);border-radius:12px;background:color-mix(in srgb,var(--rt-card) 92%,transparent);overflow:hidden}
 .toc-summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:.85rem 1.15rem;font-weight:700;letter-spacing:.08em;color:var(--rt-text);user-select:none;transition:background .2s}
@@ -19,3 +18,21 @@
 .toc-list li{margin:.45rem 0;font-size:.92rem}
 .toc-list a{color:var(--rt-text);text-decoration:none;border-bottom:1px solid transparent;transition:color .2s,border-color .2s}
 .toc-list a:hover{color:var(--rt-accent);border-bottom-color:color-mix(in srgb,var(--rt-accent) 50%,transparent)}
+
+.hero .lead {
+  max-width: 36em;
+  margin-left: auto;
+  margin-right: auto;
+  line-height: 1.85;
+  color: color-mix(in srgb, var(--rt-text) 88%, var(--rt-text-muted));
+}
+.hero-actions {
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+.card-grid .card h3 {
+  letter-spacing: 0.04em;
+}
+.card-emoji {
+  filter: drop-shadow(0 2px 8px rgba(0,0,0,0.25));
+}

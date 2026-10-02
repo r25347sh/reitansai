@@ -30,6 +30,7 @@
   }
   .card {
     padding: 1.1rem 1rem;
+    border-radius: 14px;
   }
   .info-item {
     grid-template-columns: 1fr;
@@ -53,6 +54,7 @@
   .hero-actions .btn {
     width: 100%;
   }
+  .hero .lead { font-size: 0.92rem; }
 }
 
 @media (max-width: 480px) {
@@ -68,7 +70,6 @@
   }
 }
 
-/* Prevent horizontal scroll from radial labels / overflow */
 html, body {
   max-width: 100%;
   overflow-x: hidden;
