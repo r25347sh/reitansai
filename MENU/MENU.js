@@ -1,19 +1,30 @@
 /**
  * Reitansai Radial Menu + Hamburger FAB
- * Base path: always ../ on GitHub Pages
+ * Base path: auto-detect (GitHub Pages / Vercel / Cloudflare / local)
  */
 (function () {
   'use strict';
 
   /** Site root under GitHub Pages project site */
   function getBase() {
+    try {
+      var scripts = document.getElementsByTagName('script');
+      for (var i = scripts.length - 1; i >= 0; i--) {
+        var abs = scripts[i].src || '';
+        var markers = ['/src/js/', '/MENU/'];
+        for (var m = 0; m < markers.length; m++) {
+          var idx = abs.indexOf(markers[m]);
+          if (idx !== -1) return abs.substring(0, idx + 1);
+        }
+      }
+    } catch (e) {}
     var p = location.pathname || '';
-    if (p.indexOf('../') === 0 || p === '/reitansai') return '../';
-    if (location.protocol === 'file:') {
-      var depth = (p.match(/\/pages\/seminars\//) ? 2 : p.match(/\/pages\//) ? 1 : 0);
-      return depth === 2 ? '../../' : depth === 1 ? '../' : './';
+    if (p.indexOf('/reitansai/') === 0 || p === '/reitansai') {
+      return (location.origin || '') + '/reitansai/';
     }
-    return '../';
+    if (/\/pages\/seminars\//.test(p)) return '../../';
+    if (/\/pages\//.test(p)) return '../';
+    return './';
   }
 
   var BASE = getBase();
@@ -22,7 +33,7 @@
     if (!path) return '#';
     if (/^https?:\/\//i.test(path)) return path;
     if (path.charAt(0) === '/') {
-      return path.indexOf('/reitansai') === 0 ? path : '/reitansai' + path;
+      if (BASE.indexOf('/reitansai') !== -1) { return path.indexOf('/reitansai') === 0 ? path : '/reitansai' + path; } return path;
     }
     return BASE + path.replace(/^\.\//, '');
   }
