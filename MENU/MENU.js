@@ -475,8 +475,43 @@
     document.body.style.overflow = '';
   }
 
+  /** Unify desktop header nav across all pages */
+  function syncDesktopNav() {
+    var nav = document.querySelector('nav.nav-desktop');
+    if (!nav) return;
+    var path = (location.pathname || '').replace(/\/+$/, '') || '/';
+    function isActive(href) {
+      try {
+        var u = new URL(href, location.href);
+        var p = (u.pathname || '').replace(/\/+$/, '') || '/';
+        if (p === path) return true;
+        if (/\/pages\/seminars\//.test(path) && /\/pages\/seminars\/index\.html$/.test(p)) return true;
+        return false;
+      } catch (e) { return false; }
+    }
+    var items = [
+      { label: 'ホーム', href: url('index.html') },
+      { label: 'スケジュール', href: url('pages/schedule.html') },
+      { label: 'Myスケジュール', href: url('pages/my/my_schedule.html') },
+      { label: '会場マップ', href: url('pages/venue.html') },
+      { label: 'ゼミ一覧', href: url('pages/seminars/index.html') },
+      { label: '振り返り', href: url('pages/feedback.html') },
+      { label: 'サイトFB', href: url('pages/site-feedback.html') },
+      { label: 'About', href: url('pages/about_This_Site.html') }
+    ];
+    nav.innerHTML = '';
+    items.forEach(function (it) {
+      var a = document.createElement('a');
+      a.href = it.href;
+      a.textContent = it.label;
+      if (isActive(it.href)) a.className = 'is-active';
+      nav.appendChild(a);
+    });
+  }
+
   function boot() {
     BASE = getBase();
+    syncDesktopNav();
     createMenuDOM();
     initEvents();
     mountFab();
