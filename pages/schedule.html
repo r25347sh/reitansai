@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>スケジュール | 麗探祭 2026</title>
+  <link rel="stylesheet" href="../src/css/common.css">
+  <link rel="stylesheet" href="../src/css/pages/schedule.css">
+  <link rel="stylesheet" href="../MENU/MENU.css">
+  <script src="../src/js/theme-control.js"></script>
+  <script src="../src/js/time-theme.js" defer></script>
+  <script src="../src/js/schedule-id.js"></script>
+  <script src="../src/js/my-schedule-store.js"></script>
+  <script src="../src/js/live-status.js" defer></script>
+</head>
+<body class="page-schedule">
+  <header class="site-header">
+    <a class="site-logo" href="../index.html">
+      <img src="../sources/麗探祭ロゴ.png" alt="麗探祭" width="40" height="40">
+      <span class="logo-text"><strong>麗探祭</strong><span>Reitaku Inquiry EXPO 2026</span></span>
+    </a>
+    <nav class="nav-desktop">
+      <a href="../index.html">ホーム</a>
+      <a href="../pages/schedule.html" class="is-active">スケジュール</a>
+      <a href="../pages/my/my_schedule.html">Myスケジュール</a>
+      <a href="../pages/venue.html">会場マップ</a>
+      <a href="../pages/seminars/index.html">ゼミ一覧</a>
+      <a href="../pages/feedback.html">振り返り</a>
+      <a href="../pages/site-feedback.html">サイトFB</a>
+      <a href="../pages/about_This_Site.html">About</a>
+    </nav>
+  </header>
+  <main class="main">
+    <section class="hero hero-compact">
+      <div class="hero-badge">TIMETABLE</div>
+      <h1>発表タイムスケジュール</h1>
+      <p class="lead">2026年10月3日（土） 発表枠 9:30〜11:30 · 「保存」で Myスケジュール に追加（この端末に保存）</p>
+    </section>
+    <section class="section sched-filters">
+      <div class="filter-bar">
+        <input type="search" id="q" placeholder="タイトル・発表者・ゼミ名で検索…" autocomplete="off">
+        <select id="f-seminar"><option value="">すべてのゼミ</option></select>
+        <select id="f-venue"><option value="">すべての会場</option></select>
+        <select id="f-form"><option value="">すべての形式</option></select>
+        <select id="f-time">
+          <option value="">すべての時間</option>
+          <option value="9">9時台</option>
+          <option value="10">10時台</option>
+          <option value="11">11時台</option>
+        </select>
+        <select id="f-status" title="発表ステータス（リアルタイム）">
+          <option value="">すべてのステータス</option>
+          <option value="soon">発表間近</option>
+          <option value="live">発表中</option>
+          <option value="before">発表前</option>
+          <option value="after">発表後</option>
+        </select>
+      </div>
+      <p class="filter-meta"><span id="result-count">—</span> 件表示 · <a href="../pages/my/my_schedule.html">Myスケジュールへ</a></p>
+      <div id="sched-progress" class="sched-progress" role="status" aria-live="polite">
+        <div class="sched-progress-track">
+          <div id="sched-progress-bar" class="sched-progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" style="width:0%"></div>
+        </div>
+        <p id="sched-progress-label" class="sched-progress-label">読み込み準備中…</p>
+      </div>
+    </section>
+    <section class="section">
+      <div class="table-wrap">
+        <table class="sched-table">
+          <thead>
+            <tr>
+              <th data-sort="no">通しNo.</th>
+              <th>状態</th>
+              <th data-sort="t">開始</th>
+              <th data-sort="e">終了</th>
+              <th data-sort="s">ゼミ</th>
+              <th data-sort="title">発表タイトル</th>
+              <th data-sort="sp">発表者</th>
+              <th data-sort="form">形式</th>
+              <th data-sort="v">会場</th>
+              <th>保存</th>
+            </tr>
+          </thead>
+          <tbody id="sched-body"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+  <footer class="site-footer">
+    <p>© 2026 麗探祭 — Reitaku Inquiry EXPO / 麗澤高等学校</p>
+    <p class="footer-credit">Site by 5G 佐藤 晴</p>
+  </footer>
+  <script src="../MENU/MENU.js"></script>
+  <script src="../src/js/pages/schedule.js"></script>
+</body>
+</html>
