@@ -14,8 +14,8 @@
   var KEY = 'firstVisitDone';
   var ICON_SRC = '../../sources/favicon.png';
   var LOGO_SRC = '../../sources/\u9e97\u63a2\u796d\u30ed\u30b4.png';
-  var HOLD_MS = 2000;
-  var EXIT_MS = 1400;
+  var HOLD_MS = 2800;
+  var EXIT_MS = 1800;
   /* milder acceleration than before */
   var EASE = 'cubic-bezier(0.33, 0.0, 0.45, 1)';
 
