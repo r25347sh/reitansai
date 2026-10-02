@@ -55,7 +55,7 @@
   font-size: clamp(0.68rem, 2vw, 0.82rem);
   font-weight: 500;
   letter-spacing: 0.06em;
-  color: rgba(255, 255, 255, 0.5);
+  color: rgba(255, 255, 255, 0.55);
   text-align: center;
   opacity: 0;
   transform: translateY(8px);
@@ -67,6 +67,31 @@
   transform: translateY(0);
 }
 
+/* Animated gradient bold name */
+#rt-splash .rt-splash-author {
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  background: linear-gradient(
+    110deg,
+    #c9a227 0%,
+    #f5e6a3 25%,
+    #7eb8ff 50%,
+    #e8a0ff 75%,
+    #c9a227 100%
+  );
+  background-size: 220% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  animation: rt-author-flow 3.2s linear infinite;
+}
+
+@keyframes rt-author-flow {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 220% 50%; }
+}
+
 /* FOUC guard */
 html.rt-splash-pending body > *:not(#rt-splash) {
   visibility: hidden !important;
@@ -74,4 +99,167 @@ html.rt-splash-pending body > *:not(#rt-splash) {
 
 html.rt-splash-pending {
   background: #000;
+}
+
+/* ===== First-visit guide (pseudo window) ===== */
+#rt-guide {
+  position: fixed;
+  inset: 0;
+  z-index: 100000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.25rem;
+  background: rgba(5, 8, 14, 0.72);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  opacity: 0;
+  transition: opacity 0.28s ease;
+  pointer-events: none;
+}
+
+#rt-guide.is-open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+#rt-guide .rt-guide-window {
+  width: min(420px, 100%);
+  max-height: min(88vh, 640px);
+  display: flex;
+  flex-direction: column;
+  background: #0f131a;
+  border: 1px solid rgba(201, 162, 39, 0.45);
+  border-radius: 12px;
+  box-shadow:
+    0 24px 64px rgba(0, 0, 0, 0.55),
+    0 0 0 1px rgba(255, 255, 255, 0.04) inset;
+  overflow: hidden;
+  transform: translateY(12px) scale(0.97);
+  transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+  color: #e8eef7;
+  font-family: system-ui, -apple-system, "Segoe UI", "Hiragino Sans", "Noto Sans JP", sans-serif;
+}
+
+#rt-guide.is-open .rt-guide-window {
+  transform: translateY(0) scale(1);
+}
+
+#rt-guide .rt-guide-titlebar {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.7rem 0.85rem;
+  background: linear-gradient(180deg, #1a2030 0%, #12161f 100%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+#rt-guide .rt-guide-dots {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+#rt-guide .rt-guide-dots i {
+  display: block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #3a4254;
+}
+
+#rt-guide .rt-guide-dots i:nth-child(1) { background: #ff5f57; }
+#rt-guide .rt-guide-dots i:nth-child(2) { background: #febc2e; }
+#rt-guide .rt-guide-dots i:nth-child(3) { background: #28c840; }
+
+#rt-guide .rt-guide-title {
+  flex: 1;
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: #f0f4fa;
+}
+
+#rt-guide .rt-guide-x {
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.65);
+  font-size: 1rem;
+  cursor: pointer;
+  line-height: 1;
+}
+
+#rt-guide .rt-guide-x:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+}
+
+#rt-guide .rt-guide-body {
+  padding: 1rem 1.1rem 0.5rem;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+#rt-guide .rt-guide-sec {
+  margin-bottom: 1rem;
+}
+
+#rt-guide .rt-guide-sec h3 {
+  margin: 0 0 0.45rem;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: #c9a227;
+  text-transform: none;
+}
+
+#rt-guide .rt-guide-sec ul {
+  margin: 0;
+  padding: 0 0 0 1.05rem;
+  list-style: disc;
+}
+
+#rt-guide .rt-guide-sec li {
+  margin: 0.35rem 0;
+  font-size: 0.84rem;
+  line-height: 1.55;
+  color: rgba(232, 238, 247, 0.92);
+}
+
+#rt-guide .rt-guide-sec strong {
+  color: #f5e6a3;
+  font-weight: 700;
+}
+
+#rt-guide .rt-guide-footer {
+  padding: 0.75rem 1.1rem 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  display: flex;
+  justify-content: flex-end;
+}
+
+#rt-guide .rt-guide-ok {
+  appearance: none;
+  border: 1px solid rgba(201, 162, 39, 0.55);
+  background: linear-gradient(180deg, #c9a227 0%, #a8841a 100%);
+  color: #0b0e14;
+  font-weight: 800;
+  font-size: 0.88rem;
+  letter-spacing: 0.06em;
+  padding: 0.55rem 1.35rem;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(201, 162, 39, 0.25);
+}
+
+#rt-guide .rt-guide-ok:hover {
+  filter: brightness(1.06);
+}
+
+#rt-guide .rt-guide-ok:active {
+  transform: translateY(1px);
 }
