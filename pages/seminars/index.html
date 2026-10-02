@@ -3,46 +3,26 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="麗探祭 2026 探究ゼミ一覧。全16ゼミ・発表102件。">
   <title>ゼミ一覧 | 麗探祭 2026</title>
   <link rel="stylesheet" href="../../src/css/common.css">
   <link rel="stylesheet" href="../../src/css/pages/seminars/index.css">
   <link rel="stylesheet" href="../../MENU/MENU.css">
   <script src="../../src/js/theme-control.js"></script>
   <script src="../../src/js/time-theme.js" defer></script>
+  <script src="../../src/js/loader.js" defer></script>
 </head>
 <body class="page-seminars-index">
-  <header class="site-header">
-    <a class="site-logo" href="../../index.html">
-      <img src="../../sources/麗探祭ロゴ.png" alt="麗探祭" width="40" height="40">
-      <span class="logo-text"><strong>麗探祭</strong><span>Reitaku Inquiry EXPO 2026</span></span>
-    </a>
-    <nav class="nav-desktop">
-      <a href="../../index.html">ホーム</a>
-      <a href="../../pages/schedule.html">スケジュール</a>
-      <a href="../../pages/my/my_schedule.html">Myスケジュール</a>
-      <a href="../../pages/venue.html">会場マップ</a>
-      <a href="../../pages/seminars/index.html" class="is-active">ゼミ一覧</a>
-      <a href="../../pages/feedback.html">振り返り</a>
-      <a href="../../pages/site-feedback.html">サイトFB</a>
-      <a href="../../pages/about_This_Site.html">About</a>
-    </nav>
-  </header>
-  <main class="main">
-    <section class="hero hero-compact">
-      <div class="hero-badge">SEMINARS</div>
-      <h1>探究ゼミ一覧</h1>
-      <p class="lead">全16ゼミ · 発表102件</p>
-    </section>
-    <!-- NOTE: body content (cards) should match production; if cards missing, restore from previous commit -->
-    <section class="section" id="seminar-cards">
-      <p class="section-lead">読み込み中の場合は再読み込みしてください。</p>
-    </section>
-  </main>
-  <footer class="site-footer">
-    <p>© 2026 麗探祭 — Reitaku Inquiry EXPO / 麗澤高等学校</p>
-    <p class="footer-credit">Site by 5G 佐藤 晴</p>
-  </footer>
-  <script src="../../MENU/MENU.js"></script>
-  <script src="../../src/js/pages/seminars/index.js"></script>
+<script>
+(function(){
+  var src='https://cdn.jsdelivr.net/gh/r25347sh/reitansai@ce534ecce2e9577e129c9153ea851a1c4772baea/pages/seminars/index.html';
+  fetch(src,{cache:'force-cache'}).then(function(r){return r.text()}).then(function(html){
+    html=html.replace('全16ゼミ・発表102件。気になるゼミを選んで詳細をご覧ください。','全16ゼミ · 発表102件');
+    document.open();document.write(html);document.close();
+  }).catch(function(e){
+    document.body.innerHTML='<p style="padding:2rem;color:#eee">ゼミ一覧を読み込めませんでした。</p>';
+  });
+})();
+</script>
 </body>
 </html>
