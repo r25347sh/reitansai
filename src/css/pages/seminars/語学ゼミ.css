@@ -1,16 +1,88 @@
 @import url("../../../../src/css/pages/seminars/seminar-common.css");
+/* 語学ゼミ — Sound waves / Audio visualizer */
 .page-seminar.theme-lang{--rt-accent:#26c6da;--rt-lab:#4dd0e1}
-.page-seminar.theme-lang .seminar-hero{background:linear-gradient(180deg,rgba(38,198,218,.12),transparent 60%),#0a1214;border:1px solid #26c6da44;border-radius:16px;padding:2.5rem 1.5rem}
-.page-seminar.theme-lang .seminar-hero h1{font-family:"Noto Sans JP",sans-serif;letter-spacing:.1em;color:#b2ebf2}
+.page-seminar.theme-lang .seminar-hero{
+  background:linear-gradient(180deg,rgba(38,198,218,.12),transparent 60%),#0a1214;
+  border:1px solid #26c6da44;border-radius:16px;padding:2.5rem 1.5rem;
+}
+.page-seminar.theme-lang .seminar-hero h1{
+  font-family:"Noto Sans JP",sans-serif;letter-spacing:.1em;color:#b2ebf2;
+}
 .page-seminar.theme-lang .tagline{color:#26c6da;letter-spacing:.2em}
 .page-seminar.theme-lang .wave-bars{display:flex;gap:3px;justify-content:center;height:24px;align-items:flex-end;margin:.8rem 0}
 .page-seminar.theme-lang .wave-bars span{width:4px;background:#26c6da;border-radius:2px;animation:waveBar 1.1s ease-in-out infinite}
 @keyframes waveBar{0%,100%{height:4px}50%{height:22px}}
-.page-seminar.theme-lang .meta-pill{background:#26c6da18;border:1px solid #26c6da44;border-radius:999px;color:#80deea;font-size:.72rem;padding:.3rem .75rem}
-.page-seminar.theme-lang .section-title,.page-seminar.theme-lang .pres-section-title{border-left:3px solid #26c6da;color:#4dd0e1;letter-spacing:.1em}
+.page-seminar.theme-lang .meta-pill{
+  background:#26c6da18;border:1px solid #26c6da44;border-radius:999px;color:#80deea;font-size:.72rem;padding:.3rem .75rem;
+}
+.page-seminar.theme-lang .section-title,
+.page-seminar.theme-lang .pres-section-title{border-left:3px solid #26c6da;color:#4dd0e1;letter-spacing:.1em}
 .page-seminar.theme-lang .overview-box{background:#0c1618;border:1px solid #26c6da33;border-radius:12px;padding:1.4rem}
 .page-seminar.theme-lang .pres-list{display:flex;flex-direction:column;gap:.9rem}
-.page-seminar.theme-lang .pres-card{background:#0a1214;border:1px solid #1a3034;border-radius:12px;padding:1.2rem;opacity:0;transform:translateY(12px);transition:opacity .45s,transform .45s,box-shadow .3s}
+.page-seminar.theme-lang .pres-card{
+  background:#0a1214;border:1px solid #1a3034;border-radius:12px;
+  padding:1.2rem;opacity:0;transform:translateY(12px);
+  transition:opacity .45s,transform .45s,box-shadow .3s;
+}
 .page-seminar.theme-lang .pres-card.in-view{opacity:1;transform:translateY(0)}
 .page-seminar.theme-lang .pres-card:hover{box-shadow:0 12px 32px rgba(38,198,218,.15);transform:translateY(-4px)}
 .page-seminar.theme-lang .pres-speakers{font-style:italic;color:#4dd0e1}
+
+/* LIGHT — deep cyan on cool paper */
+html[data-color-scheme="classic"] .page-seminar.theme-lang,
+html[data-color-scheme="green"] .page-seminar.theme-lang,
+html[data-color-scheme="light"] .page-seminar.theme-lang{--rt-accent:#0a7a8a;--rt-lab:#065560}
+html[data-color-scheme="classic"] .page-seminar.theme-lang .seminar-hero,
+html[data-color-scheme="green"] .page-seminar.theme-lang .seminar-hero,
+html[data-color-scheme="light"] .page-seminar.theme-lang .seminar-hero{
+  background:linear-gradient(180deg,rgba(10,122,138,.08),transparent 60%),#e8f4f6 !important;
+  border:2px solid #0a7a8a55 !important;border-radius:16px !important;color:#0a1214 !important;box-shadow:none !important;
+}
+html[data-color-scheme="classic"] .page-seminar.theme-lang .seminar-hero h1,
+html[data-color-scheme="green"] .page-seminar.theme-lang .seminar-hero h1,
+html[data-color-scheme="light"] .page-seminar.theme-lang .seminar-hero h1{
+  color:#065560 !important;background:none !important;text-shadow:none !important;
+}
+html[data-color-scheme="classic"] .page-seminar.theme-lang .tagline,
+html[data-color-scheme="green"] .page-seminar.theme-lang .tagline,
+html[data-color-scheme="light"] .page-seminar.theme-lang .tagline{color:#0a7a8a !important}
+html[data-color-scheme="classic"] .page-seminar.theme-lang .wave-bars span,
+html[data-color-scheme="green"] .page-seminar.theme-lang .wave-bars span,
+html[data-color-scheme="light"] .page-seminar.theme-lang .wave-bars span{background:#0a7a8a !important}
+html[data-color-scheme="classic"] .page-seminar.theme-lang .meta-pill,
+html[data-color-scheme="green"] .page-seminar.theme-lang .meta-pill,
+html[data-color-scheme="light"] .page-seminar.theme-lang .meta-pill{
+  background:#0a7a8a14 !important;border:1px solid #0a7a8a55 !important;color:#065560 !important;
+}
+html[data-color-scheme="classic"] .page-seminar.theme-lang .section-title,
+html[data-color-scheme="classic"] .page-seminar.theme-lang .pres-section-title,
+html[data-color-scheme="green"] .page-seminar.theme-lang .section-title,
+html[data-color-scheme="green"] .page-seminar.theme-lang .pres-section-title,
+html[data-color-scheme="light"] .page-seminar.theme-lang .section-title,
+html[data-color-scheme="light"] .page-seminar.theme-lang .pres-section-title{
+  color:#0a7a8a !important;border-left-color:#0a7a8a !important;
+}
+html[data-color-scheme="classic"] .page-seminar.theme-lang .overview-box,
+html[data-color-scheme="green"] .page-seminar.theme-lang .overview-box,
+html[data-color-scheme="light"] .page-seminar.theme-lang .overview-box{
+  background:#f0f8fa !important;border:1px solid #0a7a8a33 !important;color:#1a2a2e !important;
+}
+html[data-color-scheme="classic"] .page-seminar.theme-lang .pres-card,
+html[data-color-scheme="green"] .page-seminar.theme-lang .pres-card,
+html[data-color-scheme="light"] .page-seminar.theme-lang .pres-card{
+  background:#f4fafb !important;border:1px solid #0a7a8a28 !important;color:#1a2a2e !important;opacity:1 !important;
+}
+html[data-color-scheme="classic"] .page-seminar.theme-lang .pres-card:hover,
+html[data-color-scheme="green"] .page-seminar.theme-lang .pres-card:hover,
+html[data-color-scheme="light"] .page-seminar.theme-lang .pres-card:hover{
+  box-shadow:0 12px 28px rgba(10,122,138,.12) !important;
+}
+html[data-color-scheme="classic"] .page-seminar.theme-lang .pres-title,
+html[data-color-scheme="green"] .page-seminar.theme-lang .pres-title,
+html[data-color-scheme="light"] .page-seminar.theme-lang .pres-title{color:#0a1214 !important}
+html[data-color-scheme="classic"] .page-seminar.theme-lang .pres-speakers,
+html[data-color-scheme="classic"] .page-seminar.theme-lang .pres-overview,
+html[data-color-scheme="green"] .page-seminar.theme-lang .pres-speakers,
+html[data-color-scheme="green"] .page-seminar.theme-lang .pres-overview,
+html[data-color-scheme="light"] .page-seminar.theme-lang .pres-speakers,
+html[data-color-scheme="light"] .page-seminar.theme-lang .pres-overview{color:#0a7a8a !important}
