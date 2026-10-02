@@ -106,7 +106,6 @@
       tickTime();
       if (atmosphereEnabled()) fetchWeather();
     });
-    /* lightning animation disabled for performance */
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
@@ -116,7 +115,7 @@
     if (document.getElementById('rt-header-nav-js')) return;
     var s = document.createElement('script');
     s.id = 'rt-header-nav-js';
-    s.src = '../../src/js/header-nav.js';
+    s.src = (function(){try{var list=document.getElementsByTagName('script');for(var i=list.length-1;i>=0;i--){var a=list[i].src||'';var k=a.indexOf('/src/js/');if(k!==-1)return a.substring(0,k+1)+'src/js/header-nav.js';}}catch(e){}var p=location.pathname||'';if(/\/pages\/seminars\//.test(p))return'../../src/js/header-nav.js';if(/\/pages\//.test(p))return'../src/js/header-nav.js';return'src/js/header-nav.js';})();
     document.head.appendChild(s);
   })();
 
