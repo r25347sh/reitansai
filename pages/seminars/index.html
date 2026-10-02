@@ -3,14 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="麗探祭 2026 探究ゼミ一覧。全16ゼミ・発表102件。">
   <title>ゼミ一覧 | 麗探祭 2026</title>
   <link rel="stylesheet" href="../../src/css/common.css">
   <link rel="stylesheet" href="../../src/css/pages/seminars/index.css">
   <link rel="stylesheet" href="../../MENU/MENU.css">
   <script src="../../src/js/theme-control.js"></script>
   <script src="../../src/js/time-theme.js" defer></script>
-  <script src="../../src/js/loader.js" defer></script>
 </head>
 <body class="page-seminars-index">
   <header class="site-header">
@@ -22,151 +20,28 @@
       <a href="../../index.html">ホーム</a>
       <a href="../../pages/schedule.html">スケジュール</a>
       <a href="../../pages/my/my_schedule.html">Myスケジュール</a>
+      <a href="../../pages/venue.html">会場マップ</a>
       <a href="../../pages/seminars/index.html" class="is-active">ゼミ一覧</a>
+      <a href="../../pages/feedback.html">振り返り</a>
+      <a href="../../pages/site-feedback.html">サイトFB</a>
       <a href="../../pages/about_This_Site.html">About</a>
-      <a href="../../sitemap.html">サイトマップ</a>
     </nav>
   </header>
-
   <main class="main">
     <section class="hero hero-compact">
       <div class="hero-badge">SEMINARS</div>
       <h1>探究ゼミ一覧</h1>
-      <p class="lead">全16ゼミ・発表102件。気になるゼミを選んで詳細をご覧ください。</p>
+      <p class="lead">全16ゼミ · 発表102件</p>
     </section>
-
-    <section class="section filter-bar-section">
-      <div class="filter-bar" id="filter-bar">
-        <button type="button" class="filter-btn is-active" data-filter="all">すべて</button>
-        <button type="button" class="filter-btn" data-filter="many">発表多め（8件〜）</button>
-        <button type="button" class="filter-btn" data-filter="media">メディアセンター系</button>
-        <button type="button" class="filter-btn" data-filter="external">外部講師</button>
-      </div>
-    </section>
-
-    <section class="section">
-      <div class="card-grid seminars-index-grid" id="seminar-grid">
-        <a class="card seminar-card" href="../../pages/seminars/データサイエンス探究AIゼミ.html" data-count="4" data-tags="all">
-          <div class="card-top"><span class="card-emoji">📊</span><span class="count-badge">4件</span></div>
-          <h3>データサイエンス探究AIゼミ</h3>
-          <p class="venue-line"><strong>会場</strong> iHub教室</p>
-          <p class="teacher-line"><strong>担当</strong> 野口紘司 先生（情報科）</p>
-          <p class="overview-snip">身近な出来事や社会の中から課題を見つけ、アプリやセンサー、オープンデータを活用して分析し、解決策を考えます。</p>
-        </a>
-        <a class="card seminar-card" href="../../pages/seminars/教育ゼミ.html" data-count="9" data-tags="many">
-          <div class="card-top"><span class="card-emoji">📚</span><span class="count-badge">9件</span></div>
-          <h3>教育ゼミ</h3>
-          <p class="venue-line"><strong>会場</strong> 4E教室, 4G教室</p>
-          <p class="teacher-line"><strong>担当</strong> 秋元誠道 先生（言語技術科）</p>
-          <p class="overview-snip">教育ゼミは将来、幼稚園、小中高の教員になるための資質能力を育成することを目的として運営しています。</p>
-        </a>
-        <a class="card seminar-card" href="../../pages/seminars/国際地域研究ゼミ.html" data-count="9" data-tags="many">
-          <div class="card-top"><span class="card-emoji">🌍</span><span class="count-badge">9件</span></div>
-          <h3>国際地域研究ゼミ</h3>
-          <p class="venue-line"><strong>会場</strong> 4A教室</p>
-          <p class="teacher-line"><strong>担当</strong> 近藤亘 先生（地歴公民科）</p>
-          <p class="overview-snip">本ゼミでは、特定の国や地域を対象に、政治学・経済学・歴史学・社会学・人類学などの多様なアプローチを用いて探究します。</p>
-        </a>
-        <a class="card seminar-card" href="../../pages/seminars/文芸小説創作ゼミ.html" data-count="8" data-tags="many">
-          <div class="card-top"><span class="card-emoji">✍️</span><span class="count-badge">8件</span></div>
-          <h3>文芸小説創作ゼミ</h3>
-          <p class="venue-line"><strong>会場</strong> 4C教室</p>
-          <p class="teacher-line"><strong>担当</strong> 加藤雅子 先生（国語科）</p>
-          <p class="overview-snip">文学のインプットからアウトプットまでを網羅した、本格的な文芸探究・創作プログラムです。</p>
-        </a>
-        <a class="card seminar-card" href="../../pages/seminars/化学ゼミ.html" data-count="5" data-tags="all">
-          <div class="card-top"><span class="card-emoji">⚗️</span><span class="count-badge">5件</span></div>
-          <h3>化学ゼミ</h3>
-          <p class="venue-line"><strong>会場</strong> 理科教室B</p>
-          <p class="teacher-line"><strong>担当</strong> 平井嵩人 先生（理科）</p>
-          <p class="overview-snip">化学に興味のある生徒が集まり、興味をもった現象に対して実験を計画して実行した成果を発表します。</p>
-        </a>
-        <a class="card seminar-card" href="../../pages/seminars/文学ゼミ.html" data-count="5" data-tags="all">
-          <div class="card-top"><span class="card-emoji">📖</span><span class="count-badge">5件</span></div>
-          <h3>文学ゼミ</h3>
-          <p class="venue-line"><strong>会場</strong> 5C教室</p>
-          <p class="teacher-line"><strong>担当</strong> 竹内隼斗 先生（国語科）</p>
-          <p class="overview-snip">古代から近現代までの文学作品を研究対象として、学問的に探究してきました。</p>
-        </a>
-        <a class="card seminar-card" href="../../pages/seminars/メディアゼミ.html" data-count="5" data-tags="all">
-          <div class="card-top"><span class="card-emoji">📡</span><span class="count-badge">5件</span></div>
-          <h3>メディアゼミ</h3>
-          <p class="venue-line"><strong>会場</strong> D21教室</p>
-          <p class="teacher-line"><strong>担当</strong> 佐々木瞬 先生（情報科）</p>
-          <p class="overview-snip">エンターテインメントやソーシャルメディア、企業インターンを通じた探究活動の成果を発表します。</p>
-        </a>
-        <a class="card seminar-card" href="../../pages/seminars/社会ゼミ.html" data-count="9" data-tags="many">
-          <div class="card-top"><span class="card-emoji">🏛️</span><span class="count-badge">9件</span></div>
-          <h3>社会ゼミ</h3>
-          <p class="venue-line"><strong>会場</strong> 4I教室</p>
-          <p class="teacher-line"><strong>担当</strong> 須藤早紀 先生（地歴公民科）</p>
-          <p class="overview-snip">現代社会における多様な課題の探究に取り組んでいます。</p>
-        </a>
-        <a class="card seminar-card" href="../../pages/seminars/農業ゼミ.html" data-count="4" data-tags="media">
-          <div class="card-top"><span class="card-emoji">🌱</span><span class="count-badge">4件</span></div>
-          <h3>農業ゼミ</h3>
-          <p class="venue-line"><strong>会場</strong> メディアセンター</p>
-          <p class="teacher-line"><strong>担当</strong> 下川慎太郎 先生（技術科）</p>
-          <p class="overview-snip">作物を育てるゼミです。食べ物を作り、環境やSDGsについて考えます。</p>
-        </a>
-        <a class="card seminar-card" href="../../pages/seminars/観光ゼミ.html" data-count="4" data-tags="media">
-          <div class="card-top"><span class="card-emoji">🗺️</span><span class="count-badge">4件</span></div>
-          <h3>観光ゼミ</h3>
-          <p class="venue-line"><strong>会場</strong> メディアセンター</p>
-          <p class="teacher-line"><strong>担当</strong> 芝原真琴 先生（理科）</p>
-          <p class="overview-snip">地域課題を見つけ、観光事業やまちづくりのプランを構想します。</p>
-        </a>
-        <a class="card seminar-card" href="../../pages/seminars/語学ゼミ.html" data-count="4" data-tags="all">
-          <div class="card-top"><span class="card-emoji">🗣️</span><span class="count-badge">4件</span></div>
-          <h3>語学ゼミ</h3>
-          <p class="venue-line"><strong>会場</strong> 5B教室</p>
-          <p class="teacher-line"><strong>担当</strong> 松谷樹 先生（英語科）</p>
-          <p class="overview-snip">言葉の使われ方や言語習得の仕組みをテーマに探究・発表を重ねてきました。</p>
-        </a>
-        <a class="card seminar-card" href="../../pages/seminars/遊びの探究ゼミ.html" data-count="5" data-tags="media">
-          <div class="card-top"><span class="card-emoji">🎮</span><span class="count-badge">5件</span></div>
-          <h3>遊びの探究ゼミ</h3>
-          <p class="venue-line"><strong>会場</strong> メディアセンター</p>
-          <p class="teacher-line"><strong>担当</strong> 松丸慶汰 先生（英語科）</p>
-          <p class="overview-snip">好きなことや趣味を出発点に、探究の技法習得と自身の成長を目指したゼミです。</p>
-        </a>
-        <a class="card seminar-card" href="../../pages/seminars/デジタルコンテンツ制作ゼミ.html" data-count="4" data-tags="external">
-          <div class="card-top"><span class="card-emoji">💻</span><span class="count-badge">4件</span></div>
-          <h3>デジタルコンテンツ制作ゼミ</h3>
-          <p class="venue-line"><strong>会場</strong> 5G教室</p>
-          <p class="teacher-line"><strong>担当</strong> 株式会社ミエタ スタッフ（外部講師）</p>
-          <p class="overview-snip">相手に「伝える・伝わる」表現を意識したデジタルコンテンツ制作に取り組みます。</p>
-        </a>
-        <a class="card seminar-card" href="../../pages/seminars/映像編集ゼミ.html" data-count="4" data-tags="external">
-          <div class="card-top"><span class="card-emoji">🎬</span><span class="count-badge">4件</span></div>
-          <h3>映像編集ゼミ</h3>
-          <p class="venue-line"><strong>会場</strong> 5G教室</p>
-          <p class="teacher-line"><strong>担当</strong> 株式会社ミエタ スタッフ（外部講師）</p>
-          <p class="overview-snip">映像制作のプロ講師のもと、麗澤の魅力を伝える動画制作に取り組みました。</p>
-        </a>
-        <a class="card seminar-card" href="../../pages/seminars/イベント企画ゼミ.html" data-count="4" data-tags="external">
-          <div class="card-top"><span class="card-emoji">🎉</span><span class="count-badge">4件</span></div>
-          <h3>イベント企画ゼミ</h3>
-          <p class="venue-line"><strong>会場</strong> 5G教室,5H教室,MM教室</p>
-          <p class="teacher-line"><strong>担当</strong> 株式会社ミエタ スタッフ（外部講師）</p>
-          <p class="overview-snip">リサーチや企画をベースに、参加者に変化や感情を届けるイベントの実現を目指します。</p>
-        </a>
-        <a class="card seminar-card" href="../../pages/seminars/道徳ゼミ.html" data-count="19" data-tags="many">
-          <div class="card-top"><span class="card-emoji">⚖️</span><span class="count-badge">19件</span></div>
-          <h3>道徳ゼミ</h3>
-          <p class="venue-line"><strong>会場</strong> 階段教室</p>
-          <p class="teacher-line"><strong>担当</strong> 川部翔 先生（道徳科）</p>
-          <p class="overview-snip">企業の社会貢献と利益の両立（三方よし）を主軸とした企業研究の発表を行います。</p>
-        </a>
-      </div>
+    <!-- NOTE: body content (cards) should match production; if cards missing, restore from previous commit -->
+    <section class="section" id="seminar-cards">
+      <p class="section-lead">読み込み中の場合は再読み込みしてください。</p>
     </section>
   </main>
-
   <footer class="site-footer">
     <p>© 2026 麗探祭 — Reitaku Inquiry EXPO / 麗澤高等学校</p>
     <p class="footer-credit">Site by 5G 佐藤 晴</p>
   </footer>
-
   <script src="../../MENU/MENU.js"></script>
   <script src="../../src/js/pages/seminars/index.js"></script>
 </body>
