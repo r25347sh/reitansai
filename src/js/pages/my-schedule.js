@@ -1,12 +1,12 @@
 /**
- * My schedule — resolve saved scheduleId against schedule.json for full row display
+ * My schedule — display saved rows from IndexedDB
+ * Full row data is stored at save time (from schedule page / seminar data).
+ * No longer depends on schedule.json (obsolete single-file catalog).
  * Default event window: 09:30–11:30 (presentation slot)
  */
 (function () {
   'use strict';
 
-  var SCHEDULE_JSON = '../../../src/json/schedule.json';
-  /** Overall presentation window (defaults shown even with zero saved items) */
   var EVENT_START = '09:30';
   var EVENT_END = '11:30';
 
@@ -19,7 +19,6 @@
   var rangeEndEl = document.getElementById('my-range-end');
   var eventStartEl = document.getElementById('my-event-start');
   var eventEndEl = document.getElementById('my-event-end');
-  var catalog = null;
 
   if (eventStartEl) eventStartEl.textContent = EVENT_START;
   if (eventEndEl) eventEndEl.textContent = EVENT_END;
@@ -50,57 +49,20 @@
     return (h < 10 ? '0' : '') + h + ':' + (m < 10 ? '0' : '') + m;
   }
 
-  function addMinutes(t, dur) {
-    var m = toMinutes(t);
-    if (m < 0) return '';
-    var n = m + (parseInt(dur, 10) || 0);
-    var h = Math.floor(n / 60), mm = n % 60;
-    return (h < 10 ? '0' : '') + h + ':' + (mm < 10 ? '0' : '') + mm;
-  }
-
-  function buildCatalog(json) {
-    var map = {};
-    var seminars = {};
-    (json.seminars || []).forEach(function (s) { seminars[s.id] = s; });
-    (json.schedules || []).forEach(function (sc) {
-      var sem = seminars[sc.seminarId] || {};
-      var start = sc.start || '';
-      var dur = sc.duration || 0;
-      map[String(sc.scheduleId)] = {
-        id: String(sc.scheduleId),
-        t: start,
-        e: addMinutes(start, dur),
-        duration: dur,
-        s: sem.name || '',
-        title: sc.title || '',
-        sp: sc.speakers || '',
-        form: sc.form || '',
-        v: sem.venue || '',
-        vn: sc.venueNote || '',
-        ov: sc.overview || '',
-        seminarId: sc.seminarId
-      };
-    });
-    return map;
-  }
-
-  function hydrate(savedRows) {
-    return (savedRows || []).map(function (r) {
-      var id = String(r.id || r.scheduleId || '');
-      if (catalog && catalog[id]) return catalog[id];
-      return {
-        id: id,
-        t: r.t || '',
-        e: r.e || '',
-        s: r.s || '',
-        title: r.title || '',
-        sp: r.sp || '',
-        form: r.form || '',
-        v: r.v || '',
-        vn: r.vn || '',
-        ov: r.ov || ''
-      };
-    });
+  function normalize(r) {
+    var id = String(r.id || r.scheduleId || '');
+    return {
+      id: id,
+      t: r.t || '',
+      e: r.e || '',
+      s: r.s || '',
+      title: r.title || '',
+      sp: r.sp || '',
+      form: r.form || '',
+      v: r.v || '',
+      vn: r.vn || '',
+      ov: r.ov || ''
+    };
   }
 
   function sortByTime(rows) {
@@ -141,7 +103,7 @@
 
   function render(rows) {
     if (!body) return;
-    rows = sortByTime(rows || []);
+    rows = sortByTime((rows || []).map(normalize));
     if (countEl) countEl.textContent = String(rows.length);
     if (hint) hint.hidden = rows.length > 0;
     updatePersonalRange(rows);
@@ -174,24 +136,8 @@
       body.innerHTML = '<tr><td colspan="8">ストアを読み込めません</td></tr>';
       return;
     }
-    var pCatalog = catalog
-      ? Promise.resolve(catalog)
-      : fetch(SCHEDULE_JSON + '?t=' + Date.now())
-          .then(function (r) { return r.json(); })
-          .then(function (json) {
-            catalog = buildCatalog(json);
-            return catalog;
-          })
-          .catch(function (e) {
-            console.warn('[my-schedule] catalog load failed', e);
-            catalog = {};
-            return catalog;
-          });
-
-    pCatalog.then(function () {
-      return window.ReitansaiMySchedule.list();
-    }).then(function (rows) {
-      render(hydrate(rows));
+    window.ReitansaiMySchedule.list().then(function (rows) {
+      render(rows);
     }).catch(function (e) {
       console.error(e);
       body.innerHTML = '<tr><td colspan="8">読み込みエラー</td></tr>';
