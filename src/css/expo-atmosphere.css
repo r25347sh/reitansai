@@ -1,0 +1,145 @@
+/* ═══════════════════════════════════════════════════════════
+   Light schemes — extra seminar readability (gradient text,
+   hard-coded pastels, speakers, overview, links)
+   ═══════════════════════════════════════════════════════════ */
+html[data-color-scheme="classic"] .page-seminar .seminar-hero h1,
+html[data-color-scheme="green"] .page-seminar .seminar-hero h1,
+html[data-color-scheme="light"] .page-seminar .seminar-hero h1 {
+  background: none !important;
+  -webkit-background-clip: unset !important;
+  background-clip: unset !important;
+  color: var(--rt-text) !important;
+  animation: none !important;
+}
+
+html[data-color-scheme="classic"] .page-seminar,
+html[data-color-scheme="green"] .page-seminar,
+html[data-color-scheme="light"] .page-seminar {
+  color: var(--rt-text);
+}
+
+html[data-color-scheme="classic"] .page-seminar .pres-speakers,
+html[data-color-scheme="classic"] .page-seminar .pres-overview,
+html[data-color-scheme="classic"] .page-seminar .pres-time,
+html[data-color-scheme="classic"] .page-seminar .pres-meta-label,
+html[data-color-scheme="classic"] .page-seminar .overview-box,
+html[data-color-scheme="classic"] .page-seminar .venue-note,
+html[data-color-scheme="green"] .page-seminar .pres-speakers,
+html[data-color-scheme="green"] .page-seminar .pres-overview,
+html[data-color-scheme="green"] .page-seminar .pres-time,
+html[data-color-scheme="green"] .page-seminar .pres-meta-label,
+html[data-color-scheme="green"] .page-seminar .overview-box,
+html[data-color-scheme="green"] .page-seminar .venue-note,
+html[data-color-scheme="light"] .page-seminar .pres-speakers,
+html[data-color-scheme="light"] .page-seminar .pres-overview,
+html[data-color-scheme="light"] .page-seminar .pres-time,
+html[data-color-scheme="light"] .page-seminar .pres-meta-label,
+html[data-color-scheme="light"] .page-seminar .overview-box,
+html[data-color-scheme="light"] .page-seminar .venue-note {
+  color: var(--rt-text-muted) !important;
+}
+
+html[data-color-scheme="classic"] .page-seminar a,
+html[data-color-scheme="green"] .page-seminar a,
+html[data-color-scheme="light"] .page-seminar a {
+  color: var(--rt-accent) !important;
+}
+
+html[data-color-scheme="classic"] .page-seminar .pres-card,
+html[data-color-scheme="green"] .page-seminar .pres-card,
+html[data-color-scheme="light"] .page-seminar .pres-card {
+  opacity: 1 !important;
+}
+
+html[data-color-scheme="classic"] .page-seminar .pres-title,
+html[data-color-scheme="green"] .page-seminar .pres-title,
+html[data-color-scheme="light"] .page-seminar .pres-title {
+  color: var(--rt-text) !important;
+}
+
+html[data-color-scheme="classic"] .page-seminar .meta-pill,
+html[data-color-scheme="green"] .page-seminar .meta-pill,
+html[data-color-scheme="light"] .page-seminar .meta-pill {
+  background: color-mix(in srgb, var(--rt-accent) 12%, transparent) !important;
+  border: 1px solid color-mix(in srgb, var(--rt-accent) 40%, transparent) !important;
+  color: var(--rt-accent) !important;
+}
+
+html[data-color-scheme="classic"] .page-seminar .pres-form,
+html[data-color-scheme="green"] .page-seminar .pres-form,
+html[data-color-scheme="light"] .page-seminar .pres-form {
+  background: color-mix(in srgb, var(--rt-accent) 14%, transparent) !important;
+  border: 1px solid color-mix(in srgb, var(--rt-accent) 45%, transparent) !important;
+  color: var(--rt-accent) !important;
+}
+
+html[data-color-scheme="classic"] .page-seminar .section-title,
+html[data-color-scheme="classic"] .page-seminar .pres-section-title,
+html[data-color-scheme="green"] .page-seminar .section-title,
+html[data-color-scheme="green"] .page-seminar .pres-section-title,
+html[data-color-scheme="light"] .page-seminar .section-title,
+html[data-color-scheme="light"] .page-seminar .pres-section-title {
+  color: var(--rt-accent) !important;
+  border-color: color-mix(in srgb, var(--rt-accent) 35%, transparent) !important;
+}
+
+html[data-color-scheme="classic"] .page-seminar *,
+html[data-color-scheme="green"] .page-seminar *,
+html[data-color-scheme="light"] .page-seminar * {
+  text-shadow: none !important;
+}
+
+html[data-color-scheme="classic"] .page-seminar .seminar-hero,
+html[data-color-scheme="green"] .page-seminar .seminar-hero,
+html[data-color-scheme="light"] .page-seminar .seminar-hero {
+  border-width: 1px !important;
+  box-shadow: var(--shadow) !important;
+  filter: none !important;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   Expo-window atmosphere intensity (dark + time-linked only)
+   ═══════════════════════════════════════════════════════════ */
+html[data-color-scheme="dark"][data-expo="1"] .rt-atmosphere::before {
+  opacity: 1;
+  filter: saturate(1.25) brightness(1.08);
+  transition: background 2s ease, opacity 1.5s ease, filter 1.5s ease;
+}
+html[data-color-scheme="dark"][data-expo="1"] body {
+  transition: background-color 2s ease, color 1.2s ease, border-color 1.2s ease;
+}
+html[data-color-scheme="dark"][data-expo-phase="expo-open"] .rt-atmosphere::before {
+  background:
+    radial-gradient(ellipse 110% 70% at 20% -10%, rgba(80, 160, 255, 0.45), transparent 50%),
+    radial-gradient(ellipse 60% 40% at 90% 80%, rgba(100, 180, 255, 0.2), transparent 55%);
+}
+html[data-color-scheme="dark"][data-expo-phase="expo-amber"] .rt-atmosphere::before {
+  background:
+    radial-gradient(ellipse 100% 65% at 70% -5%, rgba(255, 160, 50, 0.42), transparent 48%),
+    radial-gradient(ellipse 50% 35% at 15% 90%, rgba(255, 200, 80, 0.18), transparent 50%);
+}
+html[data-color-scheme="dark"][data-expo-phase="expo-teal"] .rt-atmosphere::before {
+  background:
+    radial-gradient(ellipse 100% 60% at 40% -8%, rgba(40, 220, 200, 0.38), transparent 48%),
+    radial-gradient(ellipse 55% 40% at 85% 85%, rgba(60, 180, 220, 0.2), transparent 50%);
+}
+html[data-color-scheme="dark"][data-expo-phase="expo-violet"] .rt-atmosphere::before {
+  background:
+    radial-gradient(ellipse 100% 65% at 55% -8%, rgba(180, 100, 255, 0.4), transparent 48%),
+    radial-gradient(ellipse 50% 35% at 10% 90%, rgba(220, 120, 255, 0.18), transparent 50%);
+}
+html[data-color-scheme="dark"][data-expo-phase="expo-late"] .rt-atmosphere::before {
+  background:
+    radial-gradient(ellipse 100% 60% at 75% -5%, rgba(255, 120, 70, 0.4), transparent 48%),
+    radial-gradient(ellipse 50% 35% at 20% 90%, rgba(255, 160, 100, 0.16), transparent 50%);
+}
+html[data-color-scheme="dark"][data-expo-phase="expo-close"] .rt-atmosphere::before {
+  background:
+    radial-gradient(ellipse 100% 55% at 50% -5%, rgba(140, 100, 255, 0.32), transparent 50%),
+    radial-gradient(ellipse 45% 30% at 80% 85%, rgba(160, 120, 220, 0.14), transparent 50%);
+}
+
+html[data-color-scheme="dark"] body {
+  background-color: var(--rt-bg);
+  color: var(--rt-text);
+}
