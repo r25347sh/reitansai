@@ -1,1 +1,0 @@
-window.SEMINARS_ALL = {"データサイエンス探究AIゼミ":{"key":"データサイエンス探究AIゼミ","name":"データサイエンス探究AIゼミ","theme":"theme-data","emoji":"📊","teacher":"野口紘司 先生（情報科）","venue":"iHub教室","time_slot":"9:30〜11:30","overview":"placeholder - see individual files","presentations":[]}};
