@@ -45,6 +45,7 @@
       { label: 'Myスケジュール', icon: '⭐', url: url('pages/my/my_schedule.html') },
       { label: '会場マップ', icon: '🗺️', url: url('pages/venue.html') },
       { label: '振り返り', icon: '📝', url: url('pages/feedback.html') },
+      { label: 'サイトFB', icon: '💬', url: url('pages/site-feedback.html') },
       {
         label: 'ゼミ一覧', icon: '🎓', items: [
           { label: 'データサイエンス探究AI', icon: '📊', url: url('pages/seminars/データサイエンス探究AIゼミ.html') },
@@ -227,9 +228,9 @@
     menuEl.appendChild(itemsContainer);
     coreBtn = document.createElement('button');
     coreBtn.type = 'button';
-    coreBtn.className = 'rm-core-btn';
     coreBtn.innerHTML = '←';
     coreBtn.setAttribute('aria-label', '一つ戻る');
+    coreBtn.className = 'rm-core-btn';
     coreBtn.addEventListener('click', function (e) {
       e.stopPropagation();
       if (menuStack.length) renderMenuLevel(menuStack.pop());
