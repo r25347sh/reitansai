@@ -27,7 +27,7 @@ GitHub Pages: `https://r25347sh.github.io/reitansai/`
 
 ## データ
 
-発表内容は `sources/` の公開用シート・実施要項に基づきます。
+発表内容は `src/data/` の各ゼミ用JSデータに基づきます。
 
 ## 注意
 
