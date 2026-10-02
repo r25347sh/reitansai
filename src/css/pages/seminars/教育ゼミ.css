@@ -1,4 +1,5 @@
 @import url("../../../../src/css/pages/seminars/seminar-common.css");
+/* 教育ゼミ — Chalkboard / Classroom */
 .page-seminar.theme-edu{--rt-accent:#e8d5a3;--rt-lab:#f0e4c0}
 .page-seminar.theme-edu .seminar-hero{
   background:
@@ -41,3 +42,76 @@
 }
 .page-seminar.theme-edu .pres-no{background:#e8d5a318;border-color:#e8d5a344;border-radius:2px}
 .page-seminar.theme-edu .pres-no-val{color:#e8d5a3}
+html[data-color-scheme="classic"] .page-seminar.theme-edu,
+html[data-color-scheme="green"] .page-seminar.theme-edu,
+html[data-color-scheme="light"] .page-seminar.theme-edu{--rt-accent:#5c4a1e;--rt-lab:#3d3428}
+html[data-color-scheme="classic"] .page-seminar.theme-edu .seminar-hero,
+html[data-color-scheme="green"] .page-seminar.theme-edu .seminar-hero,
+html[data-color-scheme="light"] .page-seminar.theme-edu .seminar-hero{
+  background:
+    repeating-linear-gradient(0deg,transparent,transparent 27px,rgba(60,50,30,.06) 28px),
+    linear-gradient(160deg,#f5f0e4 0%,#ebe4d4 100%) !important;
+  border:10px solid #5c4a28 !important;border-radius:6px !important;
+  box-shadow:inset 0 0 40px rgba(60,40,20,.06),4px 6px 0 #3d3428 !important;
+  color:#1f1a12 !important;
+}
+html[data-color-scheme="classic"] .page-seminar.theme-edu .seminar-hero h1,
+html[data-color-scheme="green"] .page-seminar.theme-edu .seminar-hero h1,
+html[data-color-scheme="light"] .page-seminar.theme-edu .seminar-hero h1{
+  color:#2a2210 !important;text-shadow:1px 1px 0 #fff !important;
+  background:none !important;-webkit-background-clip:unset !important;
+}
+html[data-color-scheme="classic"] .page-seminar.theme-edu .tagline,
+html[data-color-scheme="green"] .page-seminar.theme-edu .tagline,
+html[data-color-scheme="light"] .page-seminar.theme-edu .tagline{color:#5c4a1e !important}
+html[data-color-scheme="classic"] .page-seminar.theme-edu .meta-pill,
+html[data-color-scheme="green"] .page-seminar.theme-edu .meta-pill,
+html[data-color-scheme="light"] .page-seminar.theme-edu .meta-pill{
+  background:#5c4a1e14 !important;border:1px solid #5c4a1e55 !important;color:#3d3428 !important;
+}
+html[data-color-scheme="classic"] .page-seminar.theme-edu .section-title,
+html[data-color-scheme="classic"] .page-seminar.theme-edu .pres-section-title,
+html[data-color-scheme="green"] .page-seminar.theme-edu .section-title,
+html[data-color-scheme="green"] .page-seminar.theme-edu .pres-section-title,
+html[data-color-scheme="light"] .page-seminar.theme-edu .section-title,
+html[data-color-scheme="light"] .page-seminar.theme-edu .pres-section-title{
+  color:#5c4a1e !important;border-bottom:2px solid #5c4a1e55 !important;
+}
+html[data-color-scheme="classic"] .page-seminar.theme-edu .overview-box,
+html[data-color-scheme="green"] .page-seminar.theme-edu .overview-box,
+html[data-color-scheme="light"] .page-seminar.theme-edu .overview-box{
+  background:#faf6ec !important;border:2px solid #5c4a2855 !important;color:#2a2210 !important;
+}
+html[data-color-scheme="classic"] .page-seminar.theme-edu .pres-card,
+html[data-color-scheme="green"] .page-seminar.theme-edu .pres-card,
+html[data-color-scheme="light"] .page-seminar.theme-edu .pres-card{
+  background:#fbf8f0 !important;box-shadow:5px 5px 0 #5c4a1e33 !important;
+  color:#1f1a12 !important;opacity:1 !important;
+}
+html[data-color-scheme="classic"] .page-seminar.theme-edu .pres-card:hover,
+html[data-color-scheme="green"] .page-seminar.theme-edu .pres-card:hover,
+html[data-color-scheme="light"] .page-seminar.theme-edu .pres-card:hover{
+  box-shadow:7px 7px 0 #5c4a1e55 !important;
+}
+html[data-color-scheme="classic"] .page-seminar.theme-edu .pres-title,
+html[data-color-scheme="green"] .page-seminar.theme-edu .pres-title,
+html[data-color-scheme="light"] .page-seminar.theme-edu .pres-title{color:#1f1a12 !important}
+html[data-color-scheme="classic"] .page-seminar.theme-edu .pres-no-val,
+html[data-color-scheme="green"] .page-seminar.theme-edu .pres-no-val,
+html[data-color-scheme="light"] .page-seminar.theme-edu .pres-no-val{color:#5c4a1e !important}
+html[data-color-scheme="classic"] .page-seminar.theme-edu .pres-no,
+html[data-color-scheme="green"] .page-seminar.theme-edu .pres-no,
+html[data-color-scheme="light"] .page-seminar.theme-edu .pres-no{
+  background:#5c4a1e14 !important;border-color:#5c4a1e44 !important;
+}
+html[data-color-scheme="classic"] .page-seminar.theme-edu .venue-note,
+html[data-color-scheme="green"] .page-seminar.theme-edu .venue-note,
+html[data-color-scheme="light"] .page-seminar.theme-edu .venue-note{
+  background:#5c4a1e18 !important;border:1px solid #5c4a1e55 !important;color:#3d3428 !important;
+}
+html[data-color-scheme="classic"] .page-seminar.theme-edu .pres-speakers,
+html[data-color-scheme="classic"] .page-seminar.theme-edu .pres-overview,
+html[data-color-scheme="green"] .page-seminar.theme-edu .pres-speakers,
+html[data-color-scheme="green"] .page-seminar.theme-edu .pres-overview,
+html[data-color-scheme="light"] .page-seminar.theme-edu .pres-speakers,
+html[data-color-scheme="light"] .page-seminar.theme-edu .pres-overview{color:#4a4336 !important}
