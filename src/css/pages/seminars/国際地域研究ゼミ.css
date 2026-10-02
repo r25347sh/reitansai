@@ -1,17 +1,52 @@
 @import url("../../../../src/css/pages/seminars/seminar-common.css");
-.page-seminar.theme-intl{--rt-accent:#4da6e0;--rt-lab:#7ec4f0}
-.page-seminar.theme-intl .seminar-hero{background:radial-gradient(ellipse 80% 60% at 75% 40%,rgba(77,166,224,.2),transparent 55%),#0a1218;border:1px solid #4da6e044;border-radius:50% 50% 8px 8px/20% 20% 8px 8px;padding:3rem 1.5rem 2.5rem;overflow:hidden}
-.page-seminar.theme-intl .seminar-hero h1{font-family:"Shippori Mincho",serif;letter-spacing:.15em;color:#c8e4f8}
-.page-seminar.theme-intl .tagline{color:#4da6e0;letter-spacing:.2em}
-.page-seminar.theme-intl .meta-pill{background:#4da6e018;border:1px solid #4da6e044;border-radius:999px;color:#a0d0f0;font-size:.72rem;padding:.3rem .75rem}
-.page-seminar.theme-intl .section-title,.page-seminar.theme-intl .pres-section-title{border-left:3px solid #4da6e0;color:#7ec4f0;letter-spacing:.1em}
-.page-seminar.theme-intl .overview-box{background:#0c141a;border:1px solid #4da6e033;border-radius:12px;padding:1.4rem}
-.page-seminar.theme-intl .pres-list{display:flex;flex-direction:column;gap:.8rem}
-.page-seminar.theme-intl .pres-card{background:#0a1218;border:1px solid #1a3040;border-radius:4px 20px 4px 20px;padding:1.2rem;opacity:0;transform:translateX(20px);transition:opacity .5s,transform .5s,border-color .3s}
-.page-seminar.theme-intl .pres-card.in-view{opacity:1;transform:translateX(0)}
-.page-seminar.theme-intl .pres-card:hover{border-color:#4da6e0;transform:translateY(-3px)}
-.page-seminar.theme-intl .pres-title{font-family:"Shippori Mincho",serif}
-.page-seminar.theme-intl .pres-form{border-radius:999px;background:#4da6e033;border:1px solid #4da6e066;color:#7ec4f0}
-.page-seminar.theme-intl .globe-ring{position:absolute;right:5%;top:50%;width:100px;height:100px;margin-top:-50px;border:1px solid #4da6e033;border-radius:50%;animation:spinSlow 30s linear infinite;pointer-events:none}
-.page-seminar.theme-intl .globe-ring::before{content:"";position:absolute;inset:14px;border:1px dashed #4da6e022;border-radius:50%;animation:spinSlow 20s linear infinite reverse}
-@keyframes spinSlow{to{transform:rotate(360deg)}}
+.page-seminar.theme-intl{--rt-accent:#40b4c8;--rt-lab:#7ad4e0}
+.page-seminar.theme-intl .seminar-hero{
+  background:
+    radial-gradient(circle at 70% 40%,rgba(64,180,200,.15),transparent 45%),
+    linear-gradient(180deg,#0a1620 0%,#0e1c28 100%);
+  border:1px solid #40b4c844;border-radius:50% 50% 12px 12px / 18% 18% 12px 12px;
+  padding:2.8rem 1.6rem 2rem;text-align:center;
+  box-shadow:0 0 60px rgba(64,180,200,.12);
+}
+.page-seminar.theme-intl .seminar-hero h1{
+  font-family:"Shippori Mincho",serif;letter-spacing:.18em;color:#c8eef4;
+  font-size:1.65rem;
+}
+.page-seminar.theme-intl .tagline{color:#40b4c8;letter-spacing:.2em;font-size:.75rem}
+.page-seminar.theme-intl .meta-pill{
+  background:rgba(64,180,200,.1);border:1px solid #40b4c855;
+  color:#7ad4e0;border-radius:999px;font-size:.7rem;padding:.28rem .75rem;
+}
+.page-seminar.theme-intl .section-title,
+.page-seminar.theme-intl .pres-section-title{
+  color:#40b4c8;border:none;letter-spacing:.12em;
+  border-bottom:1px solid #40b4c833;padding-bottom:.35rem;
+}
+.page-seminar.theme-intl .section-title::before{display:none}
+.page-seminar.theme-intl .overview-box{
+  background:#0c1822;border:1px solid #40b4c833;border-radius:16px;
+  padding:1.4rem;color:#c8e0e8;line-height:1.85;
+}
+.page-seminar.theme-intl .pres-list{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1rem;
+}
+.page-seminar.theme-intl .pres-card{
+  background:#0a141c;border:1px solid #40b4c828;border-radius:16px;
+  padding:1.2rem;opacity:0;transform:scale(.94);
+  transition:opacity .5s,transform .5s,box-shadow .3s,border-color .3s;
+}
+.page-seminar.theme-intl .pres-card.in-view{opacity:1;transform:scale(1)}
+.page-seminar.theme-intl .pres-card:hover{
+  border-color:#40b4c8;box-shadow:0 0 0 2px rgba(64,180,200,.25),0 12px 36px rgba(64,180,200,.15);
+  transform:scale(1.02);
+}
+.page-seminar.theme-intl .pres-title{color:#e0f4f8;font-weight:700}
+.page-seminar.theme-intl .globe-ring{
+  position:absolute;inset:8%;border:1px dashed rgba(64,180,200,.35);
+  border-radius:50%;animation:globeSpin 22s linear infinite;pointer-events:none;
+}
+.page-seminar.theme-intl .globe-ring::after{
+  content:'';position:absolute;inset:18%;border:1px solid rgba(64,180,200,.2);
+  border-radius:50%;animation:globeSpin 15s linear infinite reverse;
+}
+@keyframes globeSpin{to{transform:rotate(360deg)}}

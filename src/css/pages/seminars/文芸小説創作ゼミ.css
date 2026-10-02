@@ -1,18 +1,53 @@
 @import url("../../../../src/css/pages/seminars/seminar-common.css");
-.page-seminar.theme-novel{--rt-accent:#e8a0b0;font-family:"Shippori Mincho",serif}
-.page-seminar.theme-novel .seminar-hero{background:linear-gradient(160deg,#1a0c10,#0e080a);border:none;border-radius:0;padding:3rem 1.5rem;box-shadow:inset 0 0 80px rgba(232,160,176,.08)}
-.page-seminar.theme-novel .seminar-hero h1{font-style:italic;letter-spacing:.2em;font-size:1.9rem;background:linear-gradient(90deg,#e8a0b0,#fff0f3,#e8a0b0);background-size:200% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:inkShine 6s linear infinite}
+.page-seminar.theme-novel{
+  --rt-accent:#e8a0b0;--rt-lab:#f0c0cc;
+  font-family:"Shippori Mincho","Noto Serif JP",serif;
+}
+.page-seminar.theme-novel .main{max-width:36rem}
+.page-seminar.theme-novel .seminar-hero{
+  background:linear-gradient(180deg,#1a0e12 0%,#221418 100%);
+  border:none;border-bottom:1px solid #e8a0b044;
+  padding:2.5rem 1rem 2rem;text-align:center;border-radius:0;
+}
+.page-seminar.theme-novel .seminar-hero h1{
+  font-style:italic;letter-spacing:.22em;font-size:1.85rem;
+  color:#f0d0d8;
+  background:linear-gradient(90deg,#e8a0b0,#fff0f3,#e8a0b0);
+  background-size:200% 100%;
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  animation:inkShine 7s linear infinite;
+}
 @keyframes inkShine{to{background-position:200% 0}}
-.page-seminar.theme-novel .tagline{font-style:italic;letter-spacing:.3em;color:#e8a0b0aa}
-.page-seminar.theme-novel .meta-pill{border:none;border-bottom:1px solid #e8a0b055;background:none;border-radius:0;color:#d0a0a8;font-size:.75rem;padding:.2rem .4rem}
-.page-seminar.theme-novel .section-title,.page-seminar.theme-novel .pres-section-title{border:none;text-align:center;font-style:italic;letter-spacing:.2em;color:#e8a0b0}
+.page-seminar.theme-novel .tagline{
+  font-style:italic;letter-spacing:.32em;color:#e8a0b0aa;font-size:.72rem;
+}
+.page-seminar.theme-novel .meta-pill{
+  border:none;border-bottom:1px solid #e8a0b055;background:none;
+  border-radius:0;color:#d0a0a8;font-size:.72rem;padding:.2rem .4rem;
+}
+.page-seminar.theme-novel .section-title,
+.page-seminar.theme-novel .pres-section-title{
+  border:none;text-align:center;font-style:italic;letter-spacing:.2em;color:#e8a0b0;
+  width:100%;display:block;
+}
 .page-seminar.theme-novel .section-title::before{display:none}
-.page-seminar.theme-novel .overview-box{background:rgba(30,12,16,.6);border:none;border-left:3px solid #e8a0b055;border-radius:0;padding:1.5rem;line-height:2;font-style:italic}
-.page-seminar.theme-novel .pres-list{display:flex;flex-direction:column;gap:1.25rem}
-.page-seminar.theme-novel .pres-card{background:rgba(20,10,12,.7);border:none;box-shadow:0 8px 32px rgba(0,0,0,.4);border-radius:2px;padding:1.5rem 1.4rem;opacity:0;transform:translateY(20px);transition:opacity .8s ease,transform .8s ease}
+.page-seminar.theme-novel .overview-box{
+  background:rgba(30,12,16,.65);border:none;border-left:3px solid #e8a0b055;
+  border-radius:0;padding:1.5rem;line-height:2.05;font-style:italic;color:#e8d8dc;
+}
+.page-seminar.theme-novel .pres-list{display:flex;flex-direction:column;gap:1.1rem}
+.page-seminar.theme-novel .pres-card{
+  background:transparent;border:none;border-bottom:1px solid #e8a0b022;
+  border-radius:0;padding:1.1rem .2rem 1.4rem;opacity:0;transform:translateY(10px);
+  transition:opacity .6s,transform .6s;
+}
 .page-seminar.theme-novel .pres-card.in-view{opacity:1;transform:translateY(0)}
-.page-seminar.theme-novel .pres-title{font-style:italic;font-size:1.15rem;letter-spacing:.05em;line-height:1.7}
-.page-seminar.theme-novel .type-cursor::after{content:"▌";animation:typeCaret .9s step-end infinite;color:#e8a0b0;margin-left:2px}
+.page-seminar.theme-novel .pres-card:hover{transform:translateY(-6px)}
+.page-seminar.theme-novel .pres-title{font-style:italic;color:#f4e4e8;font-size:1.05rem}
+.page-seminar.theme-novel .type-cursor::after{
+  content:"▌";animation:typeCaret .9s step-end infinite;color:#e8a0b0;margin-left:2px;
+}
 @keyframes typeCaret{50%{opacity:0}}
-.page-seminar.theme-novel .pres-overview{border-top:none;border-left:2px solid #e8a0b044;padding-left:1rem;margin-top:.75rem;line-height:1.9}
-.page-seminar.theme-novel .ink-blot{position:absolute;border-radius:40% 60% 55% 45%;background:rgba(232,160,176,.1);filter:blur(10px);pointer-events:none}
+.page-seminar.theme-novel .pres-overview{
+  border-top:none;border-left:2px solid #e8a0b044;padding-left:1rem;margin-top:.75rem;line-height:1.95;
+}
