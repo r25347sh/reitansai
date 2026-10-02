@@ -1,4 +1,5 @@
 @import url("../../../../src/css/pages/seminars/seminar-common.css");
+/* 化学ゼミ — Lab flask / Bubbles / Reaction */
 .page-seminar.theme-chem{--rt-accent:#7ee0a0;--rt-lab:#a8f0c0}
 .page-seminar.theme-chem .seminar-hero{
   background:
@@ -50,4 +51,87 @@
 @keyframes chemBubble{
   0%{transform:translateY(0) scale(1);opacity:.6}
   100%{transform:translateY(-120px) scale(.6);opacity:0}
+}
+
+/* LIGHT — soft mint lab + deep green */
+html[data-color-scheme="classic"] .page-seminar.theme-chem,
+html[data-color-scheme="green"] .page-seminar.theme-chem,
+html[data-color-scheme="light"] .page-seminar.theme-chem{--rt-accent:#1a7a48;--rt-lab:#0e5a34}
+html[data-color-scheme="classic"] .page-seminar.theme-chem .seminar-hero,
+html[data-color-scheme="green"] .page-seminar.theme-chem .seminar-hero,
+html[data-color-scheme="light"] .page-seminar.theme-chem .seminar-hero{
+  background:
+    radial-gradient(ellipse 80% 50% at 50% 100%,rgba(26,122,72,.12),transparent 55%),
+    linear-gradient(180deg,#e8f5ec 0%,#dcf0e4 100%) !important;
+  border:2px solid #1a7a4866 !important;
+  border-radius:12px 12px 40% 40% / 12px 12px 18% 18% !important;
+  box-shadow:0 8px 28px rgba(26,122,72,.1) !important;color:#0a1a10 !important;
+}
+html[data-color-scheme="classic"] .page-seminar.theme-chem .seminar-hero h1,
+html[data-color-scheme="green"] .page-seminar.theme-chem .seminar-hero h1,
+html[data-color-scheme="light"] .page-seminar.theme-chem .seminar-hero h1{
+  color:#0e4a28 !important;text-shadow:none !important;
+}
+html[data-color-scheme="classic"] .page-seminar.theme-chem .tagline,
+html[data-color-scheme="green"] .page-seminar.theme-chem .tagline,
+html[data-color-scheme="light"] .page-seminar.theme-chem .tagline{color:#1a7a48 !important}
+html[data-color-scheme="classic"] .page-seminar.theme-chem .meta-pill,
+html[data-color-scheme="green"] .page-seminar.theme-chem .meta-pill,
+html[data-color-scheme="light"] .page-seminar.theme-chem .meta-pill{
+  background:#1a7a4814 !important;border:1px solid #1a7a4844 !important;color:#0e5a34 !important;
+}
+html[data-color-scheme="classic"] .page-seminar.theme-chem .section-title,
+html[data-color-scheme="classic"] .page-seminar.theme-chem .pres-section-title,
+html[data-color-scheme="green"] .page-seminar.theme-chem .section-title,
+html[data-color-scheme="green"] .page-seminar.theme-chem .pres-section-title,
+html[data-color-scheme="light"] .page-seminar.theme-chem .section-title,
+html[data-color-scheme="light"] .page-seminar.theme-chem .pres-section-title{
+  color:#1a7a48 !important;border-left:4px solid #1a7a48 !important;
+}
+html[data-color-scheme="classic"] .page-seminar.theme-chem .overview-box,
+html[data-color-scheme="green"] .page-seminar.theme-chem .overview-box,
+html[data-color-scheme="light"] .page-seminar.theme-chem .overview-box{
+  background:#f0f8f2 !important;border:1px solid #1a7a4833 !important;color:#1a2a1c !important;
+}
+html[data-color-scheme="classic"] .page-seminar.theme-chem .pres-card,
+html[data-color-scheme="green"] .page-seminar.theme-chem .pres-card,
+html[data-color-scheme="light"] .page-seminar.theme-chem .pres-card{
+  background:#f4faf6 !important;border:1px solid #1a7a4833 !important;color:#0a1a10 !important;
+  box-shadow:0 2px 12px rgba(26,122,72,.08) !important;opacity:1 !important;
+}
+html[data-color-scheme="classic"] .page-seminar.theme-chem .pres-title,
+html[data-color-scheme="green"] .page-seminar.theme-chem .pres-title,
+html[data-color-scheme="light"] .page-seminar.theme-chem .pres-title{color:#0e2a18 !important}
+html[data-color-scheme="classic"] .page-seminar.theme-chem .pres-speakers,
+html[data-color-scheme="classic"] .page-seminar.theme-chem .pres-overview,
+html[data-color-scheme="green"] .page-seminar.theme-chem .pres-speakers,
+html[data-color-scheme="green"] .page-seminar.theme-chem .pres-overview,
+html[data-color-scheme="light"] .page-seminar.theme-chem .pres-speakers,
+html[data-color-scheme="light"] .page-seminar.theme-chem .pres-overview{color:#3a5a42 !important}
+html[data-color-scheme="classic"] .page-seminar.theme-chem .pres-time,
+html[data-color-scheme="classic"] .page-seminar.theme-chem .pres-time-end,
+html[data-color-scheme="classic"] .page-seminar.theme-chem .pres-no-val,
+html[data-color-scheme="green"] .page-seminar.theme-chem .pres-time,
+html[data-color-scheme="green"] .page-seminar.theme-chem .pres-time-end,
+html[data-color-scheme="green"] .page-seminar.theme-chem .pres-no-val,
+html[data-color-scheme="light"] .page-seminar.theme-chem .pres-time,
+html[data-color-scheme="light"] .page-seminar.theme-chem .pres-time-end,
+html[data-color-scheme="light"] .page-seminar.theme-chem .pres-no-val{color:#1a7a48 !important}
+html[data-color-scheme="classic"] .page-seminar.theme-chem .pres-no,
+html[data-color-scheme="classic"] .page-seminar.theme-chem .pres-time-block,
+html[data-color-scheme="green"] .page-seminar.theme-chem .pres-no,
+html[data-color-scheme="green"] .page-seminar.theme-chem .pres-time-block,
+html[data-color-scheme="light"] .page-seminar.theme-chem .pres-no,
+html[data-color-scheme="light"] .page-seminar.theme-chem .pres-time-block{
+  background:#1a7a4818 !important;border-color:#1a7a4844 !important;
+}
+html[data-color-scheme="classic"] .page-seminar.theme-chem .pres-form,
+html[data-color-scheme="green"] .page-seminar.theme-chem .pres-form,
+html[data-color-scheme="light"] .page-seminar.theme-chem .pres-form{
+  background:#1a7a4814 !important;border:1px solid #1a7a4855 !important;color:#1a7a48 !important;
+}
+html[data-color-scheme="classic"] .page-seminar.theme-chem .bubble,
+html[data-color-scheme="green"] .page-seminar.theme-chem .bubble,
+html[data-color-scheme="light"] .page-seminar.theme-chem .bubble{
+  background:rgba(26,122,72,.2) !important;border-color:rgba(26,122,72,.35) !important;
 }
