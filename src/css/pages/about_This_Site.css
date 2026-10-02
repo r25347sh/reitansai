@@ -1,5 +1,12 @@
 .about-list{list-style:none;display:flex;flex-direction:column;gap:.75rem}
 .about-list li{padding:1rem 1.15rem;background:var(--rt-card);border:1px solid var(--rt-border);border-radius:var(--radius);box-shadow:var(--shadow);font-size:.92rem;line-height:1.65}
+.about-list.compact li{padding:.55rem .9rem;font-size:.88rem}
 .about-list strong{color:var(--rt-accent);margin-right:.35rem}
 .footer-credit{margin-top:.35rem;font-size:.72rem;letter-spacing:.08em;opacity:.85}
 .hero-compact{padding:2.2rem 1rem 1.5rem}
+.about-profile .profile-sub{margin:1.1rem 0 .45rem;font-size:.95rem;color:var(--rt-accent)}
+.about-profile .lang-list{font-size:.88rem;line-height:1.7;opacity:.95}
+.cert-panel{text-align:center}
+.cert-figure{margin:1rem auto 0;max-width:420px}
+.cert-figure img{width:100%;height:auto;border-radius:8px;border:1px solid var(--rt-border);box-shadow:var(--shadow)}
+.cert-figure figcaption{margin-top:.5rem;font-size:.78rem;opacity:.8}
