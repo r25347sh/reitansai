@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="麗探祭サイトへのフィードバック。使用感・デザイン・バグ報告・アイデアをお寄せください。">
+  <title>サイトフィードバック | 麗探祭 2026</title>
+  <link rel="stylesheet" href="../src/css/common.css">
+  <link rel="stylesheet" href="../src/css/pages/site-feedback.css">
+  <link rel="stylesheet" href="../MENU/MENU.css">
+  <script src="../src/js/theme-control.js"></script>
+  <script src="../src/js/time-theme.js" defer></script>
+</head>
+<body class="page-site-feedback">
+  <header class="site-header">
+    <a class="site-logo" href="../index.html">
+      <img src="../sources/麗探祭ロゴ.png" alt="麗探祭" width="40" height="40">
+      <span class="logo-text"><strong>麗探祭</strong><span>Reitaku Inquiry EXPO 2026</span></span>
+    </a>
+    <nav class="nav-desktop">
+      <a href="../index.html">ホーム</a>
+      <a href="../pages/schedule.html">スケジュール</a>
+      <a href="../pages/my/my_schedule.html">Myスケジュール</a>
+      <a href="../pages/venue.html">会場マップ</a>
+      <a href="../pages/feedback.html">振り返り</a>
+      <a href="../pages/site-feedback.html" class="is-active">サイトFB</a>
+      <a href="../pages/seminars/index.html">ゼミ一覧</a>
+      <a href="../pages/about_This_Site.html">About</a>
+    </nav>
+  </header>
+
+  <main class="main">
+    <section class="hero hero-compact">
+      <div class="hero-badge">SITE FEEDBACK</div>
+      <h1>サイトへのフィードバック</h1>
+      <p class="lead">当サイトの使用感・デザイン・バグ・アイデアを教えてください。<br>制作者の励みになります。</p>
+    </section>
+
+    <section class="section feedback-section">
+      <div class="feedback-layout">
+        <!-- 左：案内カード -->
+        <aside class="feedback-aside">
+          <div class="aside-card">
+            <div class="aside-icon">💬</div>
+            <h2>お願い</h2>
+            <p>使いやすさ、見た目、見つけにくかった点、バグなど、どんな小さなことでも歓迎します。</p>
+          </div>
+          <div class="aside-card">
+            <div class="aside-icon">🐛</div>
+            <h2>バグ報告</h2>
+            <p>再現手順や端末・ブラウザが分かると助かります。</p>
+          </div>
+          <div class="aside-card">
+            <div class="aside-icon">💡</div>
+            <h2>アイデア</h2>
+            <p>「こんな機能あったら」も大歓迎です。</p>
+          </div>
+          <p class="aside-note">
+            Googleフォームへ送信されます。<br>
+            所要時間は1〜3分程度です。
+          </p>
+        </aside>
+
+        <!-- 右：フォーム本体 -->
+        <div class="feedback-form-wrap">
+          <form
+            id="site-feedback-form"
+            action="https://docs.google.com/forms/d/e/1FAIpQLScOgipEyCe0saQUlzU6C9mgN5F1l1eVI5Fas2tj3pNHbFa2Hg/formResponse"
+            method="POST"
+            target="_blank"
+            novalidate
+          >
+            <div class="form-group">
+              <label for="entry-impression">
+                当サイトを使用した感想 <span class="required">*</span>
+              </label>
+              <p class="field-hint">皆さんの言葉は制作者の励みになります！</p>
+              <textarea
+                id="entry-impression"
+                name="entry.1621467886"
+                rows="4"
+                required
+                placeholder="例：会場が探しやすかった / 色が時間で変わるのが面白い など"
+              ></textarea>
+              <span class="field-error" data-for="entry-impression" hidden>必須項目です</span>
+            </div>
+
+            <div class="form-group">
+              <label for="entry-bug">バグなどを発見した場合</label>
+              <p class="field-hint">任意。再現手順や環境が分かると助かります。</p>
+              <textarea
+                id="entry-bug"
+                name="entry.1993036494"
+                rows="3"
+                placeholder="例：iPhoneのSafariでメニューが開かない など"
+              ></textarea>
+            </div>
+
+            <div class="form-group">
+              <label for="entry-idea">欲しい機能・アイデア</label>
+              <p class="field-hint">任意。「こんな機能があったらいいな」を教えてください。</p>
+              <textarea
+                id="entry-idea"
+                name="entry.812987968"
+                rows="3"
+                placeholder="例：お気に入りゼミをホームに固定したい など"
+              ></textarea>
+            </div>
+
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary btn-submit" id="submit-btn">
+                <span class="btn-text">送信する</span>
+                <span class="btn-loading" hidden>送信中…</span>
+              </button>
+              <button type="reset" class="btn btn-ghost">クリア</button>
+            </div>
+
+            <p class="form-footer-note">
+              送信後、新しいタブでGoogleフォームの完了画面が開きます。<br>
+              直接フォームを開きたい場合は
+              <a href="https://docs.google.com/forms/d/e/1FAIpQLScOgipEyCe0saQUlzU6C9mgN5F1l1eVI5Fas2tj3pNHbFa2Hg/viewform" target="_blank" rel="noopener noreferrer">こちら</a>。
+            </p>
+          </form>
+
+          <div id="success-panel" class="success-panel" hidden>
+            <div class="success-icon">✓</div>
+            <h2>ありがとうございます</h2>
+            <p>フィードバックを受け付けました。<br>サイト改善の参考にさせていただきます。</p>
+            <a href="../index.html" class="btn btn-primary">ホームへ戻る</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>© 2026 麗探祭 — Reitaku Inquiry EXPO / 麗澤高等学校</p>
+    <p class="footer-credit">Site by 5G 佐藤 晴</p>
+  </footer>
+
+  <script src="../MENU/MENU.js"></script>
+  <script src="../src/js/pages/site-feedback.js"></script>
+</body>
+</html>
