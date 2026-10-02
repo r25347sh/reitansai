@@ -1,1 +1,207 @@
-PLACEHOLDER
+@import url("../../../../src/css/pages/seminars/seminar-common.css");
+/* データサイエンス探究AIゼミ — Terminal / Matrix / CRT */
+.page-seminar.theme-data{
+  --rt-accent:#00e8b0;
+  --rt-lab:#5affd0;
+  font-family:ui-monospace,"Cascadia Code","SF Mono",Menlo,Consolas,monospace;
+}
+.page-seminar.theme-data .main{max-width:52rem}
+.page-seminar.theme-data .seminar-hero{
+  background:#020a08;
+  border:1px solid #00e8b055;
+  border-radius:0;
+  padding:2.2rem 1.4rem 1.8rem;
+  box-shadow:0 0 0 1px #003d30,0 0 48px rgba(0,232,176,.18),inset 0 0 80px rgba(0,40,30,.5);
+  position:relative;
+}
+.page-seminar.theme-data .seminar-hero::before{
+  content:"> boot seminar_data.exe — OK";
+  position:absolute;top:.55rem;left:.85rem;
+  font-size:.62rem;color:#00e8b088;letter-spacing:.06em;
+}
+.page-seminar.theme-data .seminar-hero::after{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,232,176,.03) 3px);
+}
+.page-seminar.theme-data .hero-emoji{display:none}
+.page-seminar.theme-data .seminar-hero h1{
+  font-family:inherit;font-size:1.35rem;letter-spacing:.1em;
+  color:#00e8b0;margin-top:1.1rem;font-weight:700;
+  text-shadow:0 0 12px rgba(0,232,176,.45);
+}
+.page-seminar.theme-data .tagline{
+  color:#7dffd0;font-size:.72rem;letter-spacing:.28em;margin-top:.5rem;
+}
+.page-seminar.theme-data .meta-pill{
+  border:1px solid #00e8b044;background:#00e8b010;color:#00e8b0;
+  font-size:.68rem;padding:.28rem .65rem;border-radius:0;
+}
+.page-seminar.theme-data .section-title,
+.page-seminar.theme-data .pres-section-title{
+  font-family:inherit;font-size:.82rem;letter-spacing:.18em;
+  color:#00e8b0;border:none;border-bottom:1px dashed #00e8b044;
+  padding-bottom:.4rem;padding-left:0;
+}
+.page-seminar.theme-data .section-title::before{display:none}
+.page-seminar.theme-data .overview-box{
+  background:#00140f;border:1px solid #00e8b033;border-radius:0;
+  padding:1.25rem;font-size:.85rem;line-height:1.75;color:#b8ffe8;
+}
+.page-seminar.theme-data .pres-list{display:flex;flex-direction:column;gap:.55rem}
+.page-seminar.theme-data .pres-card{
+  background:#000c0a;border:1px solid #00e8b028;border-radius:0;
+  padding:1rem 1.15rem;opacity:0;transform:translateX(-16px);
+  transition:opacity .45s,transform .45s,border-color .25s,box-shadow .25s;
+}
+.page-seminar.theme-data .pres-card.in-view{opacity:1;transform:translateX(0)}
+.page-seminar.theme-data .pres-card:hover{
+  border-color:#00e8b0;box-shadow:inset 3px 0 0 #00e8b0;
+}
+.page-seminar.theme-data .pres-title{
+  font-family:inherit;font-size:.92rem;color:#e0fff5;font-weight:600;
+}
+.page-seminar.theme-data .pres-time,
+.page-seminar.theme-data .pres-time-end{color:#00e8b0}
+.page-seminar.theme-data .pres-form{
+  background:transparent;border:1px solid #00e8b055;color:#00e8b0;border-radius:0;
+}
+.page-seminar.theme-data .pres-speakers{color:#6a9e90;font-size:.76rem}
+.page-seminar.theme-data .pres-overview{border-top:1px solid #00e8b022;color:#9ecfc0;font-size:.8rem}
+.page-seminar.theme-data .data-bar{height:2px;background:#00e8b018;margin-top:.55rem}
+.page-seminar.theme-data .data-bar span{
+  display:block;height:100%;background:#00e8b0;width:0;
+  transition:width 1s cubic-bezier(.22,1,.36,1);box-shadow:0 0 8px #00e8b0;
+}
+.page-seminar.theme-data .pres-card.in-view .data-bar span{width:var(--w,70%)}
+.page-seminar.theme-data .scan-fx{
+  position:absolute;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,#00e8b0,transparent);
+  animation:dataScan 3.2s linear infinite;opacity:.55;pointer-events:none;
+}
+@keyframes dataScan{0%{top:0;opacity:0}10%{opacity:.6}90%{opacity:.6}100%{top:100%;opacity:0}}
+.page-seminar.theme-data .pres-no{
+  background:#00e8b012;border:1px solid #00e8b044;border-radius:0;
+}
+.page-seminar.theme-data .pres-no-val{color:#00e8b0;font-family:inherit}
+.page-seminar.theme-data .pres-time-block{
+  background:#001a14;border:1px solid #00e8b033;border-radius:0;
+}
+html[data-color-scheme="classic"] .page-seminar.theme-data,
+html[data-color-scheme="green"] .page-seminar.theme-data,
+html[data-color-scheme="light"] .page-seminar.theme-data{
+  --rt-accent:#007a5c;
+  --rt-lab:#0a5c48;
+}
+html[data-color-scheme="classic"] .page-seminar.theme-data .seminar-hero,
+html[data-color-scheme="green"] .page-seminar.theme-data .seminar-hero,
+html[data-color-scheme="light"] .page-seminar.theme-data .seminar-hero{
+  background:#e6f2ed !important;
+  border:2px solid #007a5c !important;
+  border-radius:0 !important;
+  box-shadow:0 0 0 1px #004d3a,4px 4px 0 #007a5c33 !important;
+  color:#0a2a20 !important;
+}
+html[data-color-scheme="classic"] .page-seminar.theme-data .seminar-hero::before,
+html[data-color-scheme="green"] .page-seminar.theme-data .seminar-hero::before,
+html[data-color-scheme="light"] .page-seminar.theme-data .seminar-hero::before{
+  color:#007a5c !important;opacity:1 !important;
+}
+html[data-color-scheme="classic"] .page-seminar.theme-data .seminar-hero::after,
+html[data-color-scheme="green"] .page-seminar.theme-data .seminar-hero::after,
+html[data-color-scheme="light"] .page-seminar.theme-data .seminar-hero::after{
+  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,122,92,.06) 3px) !important;
+  opacity:1 !important;
+}
+html[data-color-scheme="classic"] .page-seminar.theme-data .seminar-hero h1,
+html[data-color-scheme="green"] .page-seminar.theme-data .seminar-hero h1,
+html[data-color-scheme="light"] .page-seminar.theme-data .seminar-hero h1{
+  color:#005c45 !important;text-shadow:none !important;
+  background:none !important;-webkit-background-clip:unset !important;background-clip:unset !important;
+}
+html[data-color-scheme="classic"] .page-seminar.theme-data .tagline,
+html[data-color-scheme="green"] .page-seminar.theme-data .tagline,
+html[data-color-scheme="light"] .page-seminar.theme-data .tagline{
+  color:#007a5c !important;
+}
+html[data-color-scheme="classic"] .page-seminar.theme-data .meta-pill,
+html[data-color-scheme="green"] .page-seminar.theme-data .meta-pill,
+html[data-color-scheme="light"] .page-seminar.theme-data .meta-pill{
+  background:#007a5c14 !important;border:1px solid #007a5c66 !important;color:#005c45 !important;
+}
+html[data-color-scheme="classic"] .page-seminar.theme-data .section-title,
+html[data-color-scheme="classic"] .page-seminar.theme-data .pres-section-title,
+html[data-color-scheme="green"] .page-seminar.theme-data .section-title,
+html[data-color-scheme="green"] .page-seminar.theme-data .pres-section-title,
+html[data-color-scheme="light"] .page-seminar.theme-data .section-title,
+html[data-color-scheme="light"] .page-seminar.theme-data .pres-section-title{
+  color:#005c45 !important;border-bottom:1px dashed #007a5c66 !important;
+}
+html[data-color-scheme="classic"] .page-seminar.theme-data .overview-box,
+html[data-color-scheme="green"] .page-seminar.theme-data .overview-box,
+html[data-color-scheme="light"] .page-seminar.theme-data .overview-box{
+  background:#f0faf5 !important;border:1px solid #007a5c44 !important;color:#1a3328 !important;
+}
+html[data-color-scheme="classic"] .page-seminar.theme-data .pres-card,
+html[data-color-scheme="green"] .page-seminar.theme-data .pres-card,
+html[data-color-scheme="light"] .page-seminar.theme-data .pres-card{
+  background:#f4fbf7 !important;border:1px solid #007a5c33 !important;color:#1a3328 !important;opacity:1 !important;
+}
+html[data-color-scheme="classic"] .page-seminar.theme-data .pres-card:hover,
+html[data-color-scheme="green"] .page-seminar.theme-data .pres-card:hover,
+html[data-color-scheme="light"] .page-seminar.theme-data .pres-card:hover{
+  border-color:#007a5c !important;box-shadow:inset 3px 0 0 #007a5c !important;
+}
+html[data-color-scheme="classic"] .page-seminar.theme-data .pres-title,
+html[data-color-scheme="green"] .page-seminar.theme-data .pres-title,
+html[data-color-scheme="light"] .page-seminar.theme-data .pres-title{
+  color:#0a2a20 !important;
+}
+html[data-color-scheme="classic"] .page-seminar.theme-data .pres-time,
+html[data-color-scheme="classic"] .page-seminar.theme-data .pres-time-end,
+html[data-color-scheme="classic"] .page-seminar.theme-data .pres-no-val,
+html[data-color-scheme="green"] .page-seminar.theme-data .pres-time,
+html[data-color-scheme="green"] .page-seminar.theme-data .pres-time-end,
+html[data-color-scheme="green"] .page-seminar.theme-data .pres-no-val,
+html[data-color-scheme="light"] .page-seminar.theme-data .pres-time,
+html[data-color-scheme="light"] .page-seminar.theme-data .pres-time-end,
+html[data-color-scheme="light"] .page-seminar.theme-data .pres-no-val{
+  color:#007a5c !important;
+}
+html[data-color-scheme="classic"] .page-seminar.theme-data .pres-speakers,
+html[data-color-scheme="classic"] .page-seminar.theme-data .pres-overview,
+html[data-color-scheme="classic"] .page-seminar.theme-data .pres-meta-label,
+html[data-color-scheme="green"] .page-seminar.theme-data .pres-speakers,
+html[data-color-scheme="green"] .page-seminar.theme-data .pres-overview,
+html[data-color-scheme="green"] .page-seminar.theme-data .pres-meta-label,
+html[data-color-scheme="light"] .page-seminar.theme-data .pres-speakers,
+html[data-color-scheme="light"] .page-seminar.theme-data .pres-overview,
+html[data-color-scheme="light"] .page-seminar.theme-data .pres-meta-label{
+  color:#3a5a4e !important;border-color:#007a5c33 !important;
+}
+html[data-color-scheme="classic"] .page-seminar.theme-data .pres-form,
+html[data-color-scheme="green"] .page-seminar.theme-data .pres-form,
+html[data-color-scheme="light"] .page-seminar.theme-data .pres-form{
+  background:#007a5c12 !important;border:1px solid #007a5c66 !important;color:#005c45 !important;
+}
+html[data-color-scheme="classic"] .page-seminar.theme-data .pres-no,
+html[data-color-scheme="classic"] .page-seminar.theme-data .pres-time-block,
+html[data-color-scheme="green"] .page-seminar.theme-data .pres-no,
+html[data-color-scheme="green"] .page-seminar.theme-data .pres-time-block,
+html[data-color-scheme="light"] .page-seminar.theme-data .pres-no,
+html[data-color-scheme="light"] .page-seminar.theme-data .pres-time-block{
+  background:#007a5c12 !important;border:1px solid #007a5c44 !important;
+}
+html[data-color-scheme="classic"] .page-seminar.theme-data .data-bar,
+html[data-color-scheme="green"] .page-seminar.theme-data .data-bar,
+html[data-color-scheme="light"] .page-seminar.theme-data .data-bar{
+  background:#007a5c18 !important;
+}
+html[data-color-scheme="classic"] .page-seminar.theme-data .data-bar span,
+html[data-color-scheme="green"] .page-seminar.theme-data .data-bar span,
+html[data-color-scheme="light"] .page-seminar.theme-data .data-bar span{
+  background:#007a5c !important;box-shadow:none !important;
+}
+html[data-color-scheme="classic"] .page-seminar.theme-data .scan-fx,
+html[data-color-scheme="green"] .page-seminar.theme-data .scan-fx,
+html[data-color-scheme="light"] .page-seminar.theme-data .scan-fx{
+  background:linear-gradient(90deg,transparent,#007a5c,transparent) !important;opacity:.4 !important;
+}
