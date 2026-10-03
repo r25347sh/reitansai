@@ -1,5 +1,5 @@
 /**
- * Bootstrap MENU + site-fb highlight + reliable triple-tap open
+ * Bootstrap MENU + stronger site-fb highlight + triple-tap open
  */
 (function () {
   'use strict';
@@ -11,10 +11,11 @@
         var style = document.createElement('style');
         style.id = 'rt-sitefb-menu-extra';
         style.textContent = [
-          '.rm-item.rm-item-sitefb{border-color:#5ec8c8;background:linear-gradient(145deg,#5ec8c8 0%,#2a7a7a 100%);color:#0b0e14;box-shadow:0 0 0 3px rgba(94,200,200,.3),0 0 24px rgba(94,200,200,.45),0 10px 28px rgba(0,0,0,.4);z-index:5}',
-          '.rm-item.rm-item-sitefb::after{background:#5ec8c8;color:#0b0e14;border-color:#8ee0e0;font-weight:800}',
-          '.nav-desktop a.nav-sitefb{color:#5ec8c8;background:rgba(94,200,200,.14);font-weight:700}',
-          '.ham-link-sitefb{border-color:rgba(94,200,200,.75)!important;background:linear-gradient(135deg,rgba(94,200,200,.18),#151a24 60%)!important;position:relative}',
+          '.rm-item.rm-item-sitefb{border-color:#8ee0e0!important;background:linear-gradient(145deg,#5ec8c8 0%,#2a7a7a 100%)!important;color:#0b0e14!important;box-shadow:0 0 0 3px rgba(94,200,200,.4),0 0 28px rgba(94,200,200,.55),0 10px 28px rgba(0,0,0,.45)!important;animation:rmSitefbPulse 2.2s ease-in-out infinite;z-index:6}',
+          '.rm-item.rm-item-sitefb::after{background:#5ec8c8!important;color:#0b0e14!important;border-color:#8ee0e0!important;font-weight:800!important}',
+          '@keyframes rmSitefbPulse{0%,100%{box-shadow:0 0 0 3px rgba(94,200,200,.35),0 0 22px rgba(94,200,200,.45),0 10px 28px rgba(0,0,0,.45)}50%{box-shadow:0 0 0 5px rgba(94,200,200,.25),0 0 36px rgba(94,200,200,.7),0 12px 32px rgba(0,0,0,.5)}}',
+          '.nav-desktop a.nav-sitefb{color:#5ec8c8!important;background:rgba(94,200,200,.18)!important;font-weight:700!important;box-shadow:0 0 0 1px rgba(94,200,200,.4)}',
+          '.ham-link-sitefb{border-color:rgba(94,200,200,.9)!important;background:linear-gradient(135deg,rgba(94,200,200,.28),#151a24 55%)!important;box-shadow:0 0 0 1px rgba(94,200,200,.35),0 8px 24px rgba(94,200,200,.2)!important;position:relative}',
           '.ham-link-sitefb::after{content:"ご意見";position:absolute;top:.45rem;right:.65rem;font-size:.62rem;font-weight:700;padding:.18rem .45rem;border-radius:999px;background:#5ec8c8;color:#0b0e14}'
         ].join('');
         document.head.appendChild(style);
@@ -51,7 +52,6 @@
     enhance();
   }
 
-  /** Reliable triple-tap / triple-click to open radial menu */
   function installTripleOpen() {
     if (window.__rtTripleOpenInstalled) return;
     window.__rtTripleOpenInstalled = true;
@@ -67,6 +67,8 @@
         el.closest('#ham-panel') ||
         el.closest('#ham-overlay') ||
         el.closest('.feedback-fab') ||
+        el.closest('.sitefb-fab') ||
+        el.closest('.cta-fab-stack') ||
         el.closest('.feedback-banner') ||
         el.closest('input') ||
         el.closest('textarea') ||
@@ -86,18 +88,13 @@
     function onPointerUp(e) {
       if (e.pointerType === 'mouse' && e.button !== 0) return;
       if (isBlockedTarget(e.target)) return;
-
       var now = Date.now();
       var x = e.clientX;
       var y = e.clientY;
-
       taps = taps.filter(function (t) {
-        return (now - t.t) < WINDOW_MS &&
-          Math.abs(t.x - x) < MAX_MOVE &&
-          Math.abs(t.y - y) < MAX_MOVE;
+        return (now - t.t) < WINDOW_MS && Math.abs(t.x - x) < MAX_MOVE && Math.abs(t.y - y) < MAX_MOVE;
       });
       taps.push({ t: now, x: x, y: y });
-
       if (taps.length >= 3) {
         var last = taps[taps.length - 1];
         taps = [];
@@ -105,10 +102,8 @@
       }
     }
 
-    // pointerup covers touch + mouse; also listen click as fallback for older browsers
     document.addEventListener('pointerup', onPointerUp, true);
 
-    // Fallback: pure click triple (desktop)
     var clickTimes = [];
     document.addEventListener('click', function (e) {
       if (isBlockedTarget(e.target)) return;
@@ -175,7 +170,5 @@
     ensureLiveStatus();
   };
   document.head.appendChild(s);
-
-  // Install early so taps during load still count once MENU is ready
   installTripleOpen();
 })();
