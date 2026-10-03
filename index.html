@@ -36,14 +36,15 @@
     </nav>
   </header>
 
-  <aside class="feedback-banner" role="region" aria-label="振り返りフォームのご案内">
+  <aside class="feedback-banner" role="region" aria-label="フィードバックのご案内">
     <div class="feedback-banner-inner">
       <span class="feedback-banner-icon" aria-hidden="true">📝</span>
       <p class="feedback-banner-text">
-        <strong>見学後は振り返りフォームへ</strong>
-        <span class="feedback-banner-sub">保護者・外部見学者・大学教員の方 — ご感想をお寄せください</span>
+        <strong>見学後は振り返り／サイトへのご意見を</strong>
+        <span class="feedback-banner-sub">保護者・外部見学者・大学教員の方 — ご感想・改善案をお寄せください</span>
       </p>
-      <a class="feedback-banner-btn" href="pages/feedback.html">フォームを開く</a>
+      <a class="feedback-banner-btn" href="pages/feedback.html">振り返り</a>
+      <a class="feedback-banner-btn feedback-banner-btn-site" href="pages/site-feedback.html">サイトFB</a>
       <button type="button" class="feedback-banner-close" aria-label="案内を閉じる" data-feedback-banner-close>×</button>
     </div>
   </aside>
@@ -61,7 +62,7 @@
 問いが他者と出会い、新たな視点が生まれることを大切にしています。</p>
       <div class="hero-actions">
         <a class="btn btn-primary btn-feedback-hero" href="pages/feedback.html">📝 振り返りフォーム</a>
-        <a class="btn btn-sitefb" href="pages/site-feedback.html">💬 サイトFB</a>
+        <a class="btn btn-sitefb btn-sitefb-hero" href="pages/site-feedback.html">💬 サイトへのフィードバック</a>
         <a class="btn btn-ghost" href="pages/schedule.html">スケジュール</a>
         <a class="btn btn-ghost" href="pages/my/my_schedule.html">Myスケジュール</a>
       </div>
@@ -130,10 +131,16 @@
     </section>
   </main>
 
-  <a class="feedback-fab" href="pages/feedback.html" aria-label="振り返りフォームを開く">
-    <span class="feedback-fab-icon" aria-hidden="true">📝</span>
-    <span class="feedback-fab-label">振り返り</span>
-  </a>
+  <div class="cta-fab-stack" aria-label="フィードバックへのショートカット">
+    <a class="feedback-fab" href="pages/feedback.html" aria-label="振り返りフォームを開く">
+      <span class="feedback-fab-icon" aria-hidden="true">📝</span>
+      <span class="feedback-fab-label">振り返り</span>
+    </a>
+    <a class="sitefb-fab" href="pages/site-feedback.html" aria-label="サイトフィードバックを開く">
+      <span class="sitefb-fab-icon" aria-hidden="true">💬</span>
+      <span class="sitefb-fab-label">サイトFB</span>
+    </a>
+  </div>
 
   <footer class="site-footer">
     <p>© 2026 麗探祭 — Reitaku Inquiry EXPO / 麗澤高等学校</p>
