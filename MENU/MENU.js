@@ -1,22 +1,24 @@
 /**
- * Bootstrap MENU + site-fb highlight patch
+ * Bootstrap MENU + site-fb highlight + reliable triple-tap open
  */
 (function () {
   'use strict';
   var GOOD = 'https://cdn.jsdelivr.net/gh/r25347sh/reitansai@e8e1f779fbf483f5778d9205ab6fa99490a29d5f/MENU/MENU.js';
-  function patch() {
+
+  function patchSiteFb() {
     try {
-      if (document.getElementById('rt-sitefb-menu-extra')) return;
-      var style = document.createElement('style');
-      style.id = 'rt-sitefb-menu-extra';
-      style.textContent = [
-        '.rm-item.rm-item-sitefb{border-color:#5ec8c8;background:linear-gradient(145deg,#5ec8c8 0%,#2a7a7a 100%);color:#0b0e14;box-shadow:0 0 0 3px rgba(94,200,200,.3),0 0 24px rgba(94,200,200,.45),0 10px 28px rgba(0,0,0,.4);z-index:5}',
-        '.rm-item.rm-item-sitefb::after{background:#5ec8c8;color:#0b0e14;border-color:#8ee0e0;font-weight:800}',
-        '.nav-desktop a.nav-sitefb{color:#5ec8c8;background:rgba(94,200,200,.14);font-weight:700}',
-        '.ham-link-sitefb{border-color:rgba(94,200,200,.75)!important;background:linear-gradient(135deg,rgba(94,200,200,.18),#151a24 60%)!important;position:relative}',
-        '.ham-link-sitefb::after{content:"ご意見";position:absolute;top:.45rem;right:.65rem;font-size:.62rem;font-weight:700;padding:.18rem .45rem;border-radius:999px;background:#5ec8c8;color:#0b0e14}'
-      ].join('');
-      document.head.appendChild(style);
+      if (!document.getElementById('rt-sitefb-menu-extra')) {
+        var style = document.createElement('style');
+        style.id = 'rt-sitefb-menu-extra';
+        style.textContent = [
+          '.rm-item.rm-item-sitefb{border-color:#5ec8c8;background:linear-gradient(145deg,#5ec8c8 0%,#2a7a7a 100%);color:#0b0e14;box-shadow:0 0 0 3px rgba(94,200,200,.3),0 0 24px rgba(94,200,200,.45),0 10px 28px rgba(0,0,0,.4);z-index:5}',
+          '.rm-item.rm-item-sitefb::after{background:#5ec8c8;color:#0b0e14;border-color:#8ee0e0;font-weight:800}',
+          '.nav-desktop a.nav-sitefb{color:#5ec8c8;background:rgba(94,200,200,.14);font-weight:700}',
+          '.ham-link-sitefb{border-color:rgba(94,200,200,.75)!important;background:linear-gradient(135deg,rgba(94,200,200,.18),#151a24 60%)!important;position:relative}',
+          '.ham-link-sitefb::after{content:"ご意見";position:absolute;top:.45rem;right:.65rem;font-size:.62rem;font-weight:700;padding:.18rem .45rem;border-radius:999px;background:#5ec8c8;color:#0b0e14}'
+        ].join('');
+        document.head.appendChild(style);
+      }
     } catch (e) {}
 
     function enhance() {
@@ -40,10 +42,84 @@
       });
     }
 
-    var mo = new MutationObserver(function () { enhance(); });
-    mo.observe(document.documentElement, { childList: true, subtree: true });
-    setInterval(enhance, 800);
+    if (!window.__rtSiteFbEnhance) {
+      window.__rtSiteFbEnhance = true;
+      var mo = new MutationObserver(function () { enhance(); });
+      mo.observe(document.documentElement, { childList: true, subtree: true });
+      setInterval(enhance, 1000);
+    }
     enhance();
+  }
+
+  /** Reliable triple-tap / triple-click to open radial menu */
+  function installTripleOpen() {
+    if (window.__rtTripleOpenInstalled) return;
+    window.__rtTripleOpenInstalled = true;
+
+    var taps = [];
+    var WINDOW_MS = 900;
+    var MAX_MOVE = 40;
+
+    function isBlockedTarget(el) {
+      if (!el || !el.closest) return false;
+      return !!(el.closest('.menu-fab') ||
+        el.closest('.radial-menu-wrapper') ||
+        el.closest('#ham-panel') ||
+        el.closest('#ham-overlay') ||
+        el.closest('.feedback-fab') ||
+        el.closest('.feedback-banner') ||
+        el.closest('input') ||
+        el.closest('textarea') ||
+        el.closest('select') ||
+        el.closest('label') ||
+        el.closest('[contenteditable="true"]'));
+    }
+
+    function tryOpen(x, y) {
+      if (window.ReitansaiMenu && typeof window.ReitansaiMenu.open === 'function') {
+        window.ReitansaiMenu.open(x, y);
+        return true;
+      }
+      return false;
+    }
+
+    function onPointerUp(e) {
+      if (e.pointerType === 'mouse' && e.button !== 0) return;
+      if (isBlockedTarget(e.target)) return;
+
+      var now = Date.now();
+      var x = e.clientX;
+      var y = e.clientY;
+
+      taps = taps.filter(function (t) {
+        return (now - t.t) < WINDOW_MS &&
+          Math.abs(t.x - x) < MAX_MOVE &&
+          Math.abs(t.y - y) < MAX_MOVE;
+      });
+      taps.push({ t: now, x: x, y: y });
+
+      if (taps.length >= 3) {
+        var last = taps[taps.length - 1];
+        taps = [];
+        tryOpen(last.x, last.y);
+      }
+    }
+
+    // pointerup covers touch + mouse; also listen click as fallback for older browsers
+    document.addEventListener('pointerup', onPointerUp, true);
+
+    // Fallback: pure click triple (desktop)
+    var clickTimes = [];
+    document.addEventListener('click', function (e) {
+      if (isBlockedTarget(e.target)) return;
+      var now = Date.now();
+      clickTimes = clickTimes.filter(function (t) { return now - t < WINDOW_MS; });
+      clickTimes.push(now);
+      if (clickTimes.length >= 3) {
+        clickTimes = [];
+        tryOpen(e.clientX || (window.innerWidth / 2), e.clientY || (window.innerHeight / 2));
+      }
+    }, true);
   }
 
   function getBase() {
@@ -86,9 +162,20 @@
     s.setAttribute('data-rt-live-status', '1');
     document.head.appendChild(s);
   }
+
   var s = document.createElement('script');
   s.src = GOOD;
-  s.onload = function () { patch(); setTimeout(ensureLiveStatus, 50); };
-  s.onerror = function () { ensureLiveStatus(); };
+  s.onload = function () {
+    patchSiteFb();
+    installTripleOpen();
+    setTimeout(ensureLiveStatus, 50);
+  };
+  s.onerror = function () {
+    installTripleOpen();
+    ensureLiveStatus();
+  };
   document.head.appendChild(s);
+
+  // Install early so taps during load still count once MENU is ready
+  installTripleOpen();
 })();
