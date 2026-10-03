@@ -35,6 +35,19 @@
       <a href="pages/about_This_Site.html">About</a>
     </nav>
   </header>
+
+  <aside class="feedback-banner" role="region" aria-label="振り返りフォームのご案内">
+    <div class="feedback-banner-inner">
+      <span class="feedback-banner-icon" aria-hidden="true">📝</span>
+      <p class="feedback-banner-text">
+        <strong>見学後は振り返りフォームへ</strong>
+        <span class="feedback-banner-sub">保護者・外部見学者・大学教員の方 — ご感想をお寄せください</span>
+      </p>
+      <a class="feedback-banner-btn" href="pages/feedback.html">フォームを開く</a>
+      <button type="button" class="feedback-banner-close" aria-label="案内を閉じる" data-feedback-banner-close>×</button>
+    </div>
+  </aside>
+
   <main class="main home-main">
     <section class="hero">
       <div class="hero-badge">REITAKU INQUIRY EXPO</div>
@@ -47,9 +60,9 @@
 生徒が自ら立てた問いを、調査・実験・制作・実践・対話を通して深め、その過程と成果を共有します。<br>
 問いが他者と出会い、新たな視点が生まれることを大切にしています。</p>
       <div class="hero-actions">
-        <a class="btn btn-primary" href="pages/schedule.html">スケジュールを見る</a>
+        <a class="btn btn-primary btn-feedback-hero" href="pages/feedback.html">📝 振り返りフォーム</a>
+        <a class="btn btn-ghost" href="pages/schedule.html">スケジュールを見る</a>
         <a class="btn btn-ghost" href="pages/my/my_schedule.html">Myスケジュール</a>
-        <a class="btn btn-feedback" href="pages/feedback.html">📝 振り返りフォーム</a>
       </div>
     </section>
     <nav class="home-toc section" aria-label="ページ内目次">
@@ -59,6 +72,7 @@
           <li><a href="#sec-overview">開催概要</a></li>
           <li><a href="#sec-seminars">ゼミ一覧</a></li>
           <li><a href="#sec-visitors">来場の皆様へ</a></li>
+          <li><a href="pages/feedback.html">振り返りフォーム</a></li>
         </ul>
       </details>
     </nav>
@@ -108,9 +122,16 @@
       </div>
     </section>
   </main>
+
+  <a class="feedback-fab" href="pages/feedback.html" aria-label="振り返りフォームを開く">
+    <span class="feedback-fab-icon" aria-hidden="true">📝</span>
+    <span class="feedback-fab-label">振り返り</span>
+  </a>
+
   <footer class="site-footer">
     <p>© 2026 麗探祭 — Reitaku Inquiry EXPO / 麗澤高等学校</p>
     <p class="footer-credit">Site by 5G 佐藤 晴</p>
+    <p class="footer-feedback"><a href="pages/feedback.html">📝 振り返りフォームはこちら</a></p>
   </footer>
   <script src="MENU/MENU.js"></script>
   <script src="src/js/index.js"></script>

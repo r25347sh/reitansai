@@ -46,7 +46,113 @@
 .home-main .section:nth-of-type(2) { animation-delay: .14s; }
 .home-main .section:nth-of-type(3) { animation-delay: .2s; }
 
-/* —— 振り返り導線を目立たせる —— */
+/* —— 振り返り導線（強化） —— */
+
+/* トップ帯バナー */
+.feedback-banner {
+  position: sticky;
+  top: var(--header-h);
+  z-index: 900;
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--rt-accent) 22%, var(--rt-bg-soft)) 0%,
+    color-mix(in srgb, var(--rt-accent) 12%, var(--rt-card)) 50%,
+    color-mix(in srgb, var(--rt-accent) 22%, var(--rt-bg-soft)) 100%
+  );
+  border-bottom: 1px solid color-mix(in srgb, var(--rt-accent) 45%, var(--rt-border));
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+  animation: rtFadeUp 0.45s var(--ease) both;
+}
+.feedback-banner.is-hidden {
+  display: none;
+}
+.feedback-banner-inner {
+  width: min(100% - 1.5rem, 1100px);
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem 1rem;
+  padding: 0.7rem 0.25rem;
+  flex-wrap: wrap;
+}
+.feedback-banner-icon {
+  font-size: 1.35rem;
+  flex-shrink: 0;
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.2));
+}
+.feedback-banner-text {
+  flex: 1 1 12rem;
+  margin: 0;
+  line-height: 1.35;
+  color: var(--rt-text);
+  font-size: 0.88rem;
+}
+.feedback-banner-text strong {
+  display: block;
+  font-size: 0.95rem;
+  letter-spacing: 0.04em;
+  color: var(--rt-accent);
+}
+.feedback-banner-sub {
+  display: block;
+  margin-top: 0.15rem;
+  font-size: 0.75rem;
+  color: var(--rt-text-muted);
+}
+.feedback-banner-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.55rem 1.15rem;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  border-radius: 999px;
+  background: var(--rt-accent);
+  color: var(--rt-bg) !important;
+  box-shadow: 0 4px 16px color-mix(in srgb, var(--rt-accent) 35%, transparent);
+  transition: transform 0.22s var(--ease), filter 0.22s, box-shadow 0.22s;
+  white-space: nowrap;
+}
+.feedback-banner-btn:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.08);
+  box-shadow: 0 6px 22px color-mix(in srgb, var(--rt-accent) 45%, transparent);
+  color: var(--rt-bg) !important;
+}
+.feedback-banner-close {
+  appearance: none;
+  border: none;
+  background: color-mix(in srgb, var(--rt-text) 8%, transparent);
+  color: var(--rt-text-muted);
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  font-size: 1.15rem;
+  line-height: 1;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.2s, color 0.2s;
+}
+.feedback-banner-close:hover {
+  background: color-mix(in srgb, var(--rt-text) 14%, transparent);
+  color: var(--rt-text);
+}
+
+/* ヒーロー主ボタンとして振り返り */
+.btn-feedback-hero {
+  font-size: 0.95rem;
+  padding: 0.8rem 1.6rem;
+  box-shadow:
+    0 0 0 2px color-mix(in srgb, var(--rt-accent) 40%, transparent),
+    0 8px 28px color-mix(in srgb, var(--rt-accent) 35%, transparent);
+  animation: feedbackPulse 2.4s ease-in-out infinite;
+}
+@keyframes feedbackPulse {
+  0%, 100% { box-shadow: 0 0 0 2px color-mix(in srgb, var(--rt-accent) 35%, transparent), 0 8px 28px color-mix(in srgb, var(--rt-accent) 30%, transparent); }
+  50% { box-shadow: 0 0 0 4px color-mix(in srgb, var(--rt-accent) 25%, transparent), 0 10px 34px color-mix(in srgb, var(--rt-accent) 42%, transparent); }
+}
+
 .btn-feedback {
   background: color-mix(in srgb, var(--rt-accent) 18%, transparent);
   color: var(--rt-accent);
@@ -104,4 +210,81 @@
 }
 .card-featured h3 {
   padding-right: 5.5rem;
+}
+
+/* 左下フローティング CTA（MENU FAB は右下） */
+.feedback-fab {
+  position: fixed;
+  left: 1.1rem;
+  bottom: 1.35rem;
+  z-index: 980;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.7rem 1.05rem 0.7rem 0.85rem;
+  border-radius: 999px;
+  background: var(--rt-accent);
+  color: var(--rt-bg) !important;
+  font-weight: 700;
+  font-size: 0.88rem;
+  letter-spacing: 0.05em;
+  box-shadow:
+    0 0 0 2px color-mix(in srgb, var(--rt-accent) 30%, transparent),
+    0 10px 32px rgba(0, 0, 0, 0.35),
+    0 4px 16px color-mix(in srgb, var(--rt-accent) 40%, transparent);
+  transition: transform 0.25s var(--ease), filter 0.22s, box-shadow 0.25s;
+  animation: fabIn 0.55s var(--ease) 0.6s both;
+}
+@keyframes fabIn {
+  from { opacity: 0; transform: translateY(16px) scale(0.92); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+.feedback-fab:hover {
+  transform: translateY(-3px) scale(1.03);
+  filter: brightness(1.07);
+  color: var(--rt-bg) !important;
+  box-shadow:
+    0 0 0 3px color-mix(in srgb, var(--rt-accent) 35%, transparent),
+    0 14px 40px rgba(0, 0, 0, 0.4),
+    0 6px 20px color-mix(in srgb, var(--rt-accent) 50%, transparent);
+}
+.feedback-fab-icon {
+  font-size: 1.15rem;
+  line-height: 1;
+}
+.feedback-fab-label {
+  line-height: 1;
+}
+
+.footer-feedback {
+  margin-top: 0.85rem;
+  font-size: 0.85rem;
+}
+.footer-feedback a {
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--rt-accent) 14%, transparent);
+  border: 1px solid color-mix(in srgb, var(--rt-accent) 40%, transparent);
+  transition: background 0.22s, border-color 0.22s;
+}
+.footer-feedback a:hover {
+  background: color-mix(in srgb, var(--rt-accent) 22%, transparent);
+  border-color: var(--rt-accent);
+}
+
+@media (max-width: 520px) {
+  .feedback-banner-inner {
+    gap: 0.5rem;
+  }
+  .feedback-banner-text strong {
+    font-size: 0.88rem;
+  }
+  .feedback-fab {
+    left: 0.85rem;
+    bottom: 1.1rem;
+    padding: 0.65rem 0.95rem 0.65rem 0.75rem;
+    font-size: 0.82rem;
+  }
 }
