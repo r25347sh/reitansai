@@ -1,1 +1,237 @@
-PLACEHOLDER_CSS
+/* Radial Menu + FAB — stacking above everything */
+:root {
+  --rm-font: 'Noto Sans JP', system-ui, sans-serif;
+  --rm-item-size: 58px;
+  --rm-ease: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --rm-z: 2147482000;
+}
+
+.radial-menu-wrapper {
+  position: fixed !important;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+  z-index: var(--rm-z) !important;
+  pointer-events: none;
+  visibility: hidden;
+  opacity: 0;
+  transition: visibility 0s linear 0.28s, opacity 0.18s ease-out;
+}
+.radial-menu-wrapper.active {
+  pointer-events: auto;
+  visibility: visible;
+  opacity: 1;
+  transition: visibility 0s linear 0s, opacity 0.12s ease-in;
+}
+
+.rm-shell-orbit {
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid rgba(94, 200, 200, 0.35);
+  box-shadow: 0 0 20px rgba(94, 200, 200, 0.12);
+  pointer-events: none;
+  z-index: 2;
+  transform: scale(0.15) rotate(-90deg);
+  opacity: 0;
+  transition: transform 0.6s var(--rm-ease), opacity 0.35s ease;
+}
+.radial-menu-wrapper.active .rm-shell-orbit {
+  transform: scale(1) rotate(0deg);
+  opacity: 1;
+}
+
+.rm-core-btn {
+  position: absolute;
+  width: 52px;
+  height: 52px;
+  margin-top: -26px;
+  margin-left: -26px;
+  border-radius: 50%;
+  border: 2px solid rgba(201, 162, 39, 0.7);
+  background: #151a24;
+  color: #c9a227;
+  font-size: 18px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  box-shadow: 0 0 24px rgba(201, 162, 39, 0.35);
+  opacity: 0;
+  pointer-events: none;
+  transform: scale(0);
+  transition: transform 0.45s var(--rm-ease), opacity 0.22s ease;
+  touch-action: manipulation;
+}
+.rm-core-btn.visible {
+  opacity: 1;
+  pointer-events: auto;
+  transform: scale(1);
+}
+
+.rm-item {
+  position: absolute;
+  width: var(--rm-item-size);
+  height: var(--rm-item-size);
+  margin-top: calc(-1 * var(--rm-item-size) / 2);
+  margin-left: calc(-1 * var(--rm-item-size) / 2);
+  border-radius: 50%;
+  border: 2px solid rgba(201, 162, 39, 0.55);
+  background: #1a2230;
+  color: #e8eef7;
+  font-size: 22px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 3;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.45), inset 0 0 0 1px rgba(255,255,255,0.06);
+  opacity: 0;
+  pointer-events: none;
+  transform: translate3d(0, 0, 0) scale(0);
+  transition: transform 0.5s var(--rm-ease), opacity 0.28s ease, border-color 0.2s, background 0.25s;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+.radial-menu-wrapper.active .rm-item.rendered {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translate3d(var(--x), var(--y), 0) scale(1);
+}
+.rm-item:hover,
+.rm-item:active {
+  background: #c9a227 !important;
+  border-color: #f0d060;
+  color: #0b0e14;
+  transform: translate3d(var(--x), var(--y), 0) scale(1.14) !important;
+  z-index: 5;
+}
+.rm-item.has-sub {
+  border-color: #5ec8c8;
+  background: #162028;
+}
+
+.rm-item::after {
+  content: attr(data-label);
+  position: absolute;
+  bottom: -36px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-6px) scale(0.85);
+  background: #0b0e14;
+  color: #ffffff;
+  padding: 5px 10px;
+  border-radius: 4px;
+  border: 1px solid rgba(201, 162, 39, 0.65);
+  font-family: var(--rm-font);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+  max-width: 9.5em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  opacity: 0;
+  pointer-events: none;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.55);
+  transition: transform 0.35s var(--rm-ease), opacity 0.22s ease;
+  z-index: 20;
+}
+.radial-menu-wrapper.active .rm-item.rendered::after {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0) scale(1);
+}
+.rm-item:hover::after {
+  background: #c9a227;
+  color: #0b0e14;
+  border-color: #f0d060;
+}
+
+.menu-fab {
+  position: fixed !important;
+  right: max(1rem, env(safe-area-inset-right));
+  bottom: max(1.2rem, env(safe-area-inset-bottom));
+  z-index: 2147481000 !important;
+  width: 56px;
+  height: 56px;
+  border-radius: 6px;
+  border: 1px solid rgba(201, 162, 39, 0.6);
+  cursor: pointer;
+  font-size: 1.35rem;
+  background: #151a24;
+  color: #c9a227;
+  box-shadow: 0 0 0 1px rgba(0,0,0,0.3), 0 12px 32px rgba(0,0,0,0.4), 0 0 20px rgba(201, 162, 39, 0.2);
+  transition: transform 0.25s var(--rm-ease), background 0.2s, color 0.2s;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+.menu-fab:hover,
+.menu-fab:active {
+  transform: scale(1.06);
+  background: #c9a227;
+  color: #0b0e14;
+}
+
+@media (max-width: 480px) {
+  :root { --rm-item-size: 50px; }
+  .rm-item { font-size: 18px; }
+  .rm-item::after {
+    font-size: 10px;
+    padding: 4px 8px;
+    bottom: -32px;
+    max-width: 7.5em;
+  }
+  .menu-fab {
+    width: 52px;
+    height: 52px;
+    right: max(0.75rem, env(safe-area-inset-right));
+    bottom: max(1rem, env(safe-area-inset-bottom));
+  }
+}
+
+/* —— 振り返り項目の強調 —— */
+.rm-item.rm-item-highlight {
+  border-color: #f0d060;
+  background: linear-gradient(145deg, #c9a227 0%, #8a6e14 100%);
+  color: #0b0e14;
+  box-shadow:
+    0 0 0 3px rgba(201, 162, 39, 0.35),
+    0 0 28px rgba(201, 162, 39, 0.55),
+    0 10px 28px rgba(0, 0, 0, 0.45);
+  animation: rmHighlightPulse 2.2s ease-in-out infinite;
+  z-index: 6;
+}
+.rm-item.rm-item-highlight::after {
+  background: #c9a227;
+  color: #0b0e14;
+  border-color: #f0d060;
+  font-weight: 800;
+  box-shadow: 0 6px 20px rgba(201, 162, 39, 0.4);
+}
+.rm-item.rm-item-highlight:hover,
+.rm-item.rm-item-highlight:active {
+  background: #f0d060 !important;
+  border-color: #fff3b0;
+  color: #0b0e14;
+}
+@keyframes rmHighlightPulse {
+  0%, 100% {
+    box-shadow:
+      0 0 0 3px rgba(201, 162, 39, 0.3),
+      0 0 22px rgba(201, 162, 39, 0.45),
+      0 10px 28px rgba(0, 0, 0, 0.45);
+  }
+  50% {
+    box-shadow:
+      0 0 0 5px rgba(201, 162, 39, 0.2),
+      0 0 36px rgba(201, 162, 39, 0.7),
+      0 12px 32px rgba(0, 0, 0, 0.5);
+  }
+}
+
+.nav-desktop a.nav-feedback {
+  color: #c9a227;
+  background: rgba(201, 162, 39, 0.16);
+  font-weight: 700;
+}
